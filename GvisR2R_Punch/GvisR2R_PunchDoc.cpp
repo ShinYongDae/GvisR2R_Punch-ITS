@@ -3470,6 +3470,11 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	else
 		m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD] = 0;
 
+	if (0 < ::GetPrivateProfileString(_T("Sapp3Code"), _T("VHOPEN_NOVH_VHALIGN_VHDEF"), NULL, szData, sizeof(szData), sPath))
+		m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF] = _tstoi(szData);
+	else
+		m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF] = 0;
+
 
 	return TRUE;
 }
@@ -13023,7 +13028,7 @@ int CGvisR2R_PunchDoc::GetItsDefCode(int nDefCode)
 		return m_nSapp3Code[SAPP3_USHORT];
 	else if (sDefCode == _T("I"))	//7 PINHOLE = 134 -> m_nSapp3Code[SAPP3_PINHOLE]
 		return m_nSapp3Code[SAPP3_PINHOLE];
-	else if (sDefCode == _T("H"))	//8 HMISS_HPOS_HBAD = 309 -> m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD] : No Hole
+	else if (sDefCode == _T("H"))	//8 HMISS_HPOS_HBAD = 309 -> m_nSapp3Code[	SAPP3_HMISS_HPOS_HBAD] : No Hole
 		return m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD];
 	else if (sDefCode == _T("E"))	//9 SPACE_EXTRA_PROTRUSION = 160 -> m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION] : EXTRA
 		return m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION];
@@ -13031,20 +13036,20 @@ int CGvisR2R_PunchDoc::GetItsDefCode(int nDefCode)
 		return m_nSapp3Code[SAPP3_PAD];
 	else if (sDefCode == _T("L"))	//11 HMISS_HPOS_HBAD = 309 -> m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD] : Hole Align
 		return m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD];
-	else if (sDefCode == _T("X"))	//12 : POI -> m_nSapp3Code[SAPP3_SHORT]
+	else if (sDefCode == _T("X"))	//12 POI -> m_nSapp3Code[SAPP3_SHORT]
 		return m_nSapp3Code[SAPP3_SHORT];
-	else if (sDefCode == _T("T"))	//13 HMISS_HPOS_HBAD = 309 -> m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD] : VH Align
-		return m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD];
-	else if (sDefCode == _T("M"))	//14 HMISS_HPOS_HBAD = 309 -> m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD] : No VH
-		return m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD];
+	else if (sDefCode == _T("T"))	//13 VH_POSITION = 379 -> m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF] : VH Align
+		return m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF];
+	else if (sDefCode == _T("M"))	//14 VH_MISS = 379 -> m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF] : No VH
+		return m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF];
 	else if (sDefCode == _T("F"))	//15 HMISS_HPOS_HBAD = 309 -> m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD] : Hole Defect
 		return m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD];
 	else if (sDefCode == _T("C"))	//16 HOPEN = 308 -> m_nSapp3Code[SAPP3_HOPEN]
 		return m_nSapp3Code[SAPP3_HOPEN];
-	else if (sDefCode == _T("G"))	//17 HMISS_HPOS_HBAD = 309 -> m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD] : VH Open
-		return m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD];
-	else if (sDefCode == _T("V"))	//18 HMISS_HPOS_HBAD = 309 -> m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD] : VH Def
-		return m_nSapp3Code[SAPP3_HMISS_HPOS_HBAD];
+	else if (sDefCode == _T("G"))	//17 VH_OPEN = 379 -> m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF] : VH Open
+		return m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF];
+	else if (sDefCode == _T("V"))	//18 VH_DEF = 379 -> m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF] : VH Def
+		return m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF];
 	else if (sDefCode == _T("K"))	//19 E.Nick = 137 -> m_nSapp3Code[SAPP3_NICK]
 		return m_nSapp3Code[SAPP3_NICK];
 	else if (sDefCode == _T("R"))	//20 E.Prot = 160 -> m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION]

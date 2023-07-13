@@ -26278,8 +26278,20 @@ void CGvisR2R_PunchView::SetTwoMetal(BOOL bSel, BOOL bOn)
 
 void CGvisR2R_PunchView::RestoreReelmap()
 {
+	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+
 	if (pDoc->m_pReelMapUp)
 		pDoc->m_pReelMapUp->RestoreReelmap();
+
+	if (bDualTest)
+	{
+		if (pDoc->m_pReelMapDn)
+			pDoc->m_pReelMapDn->RestoreReelmap();
+		if (pDoc->m_pReelMapAllUp)
+			pDoc->m_pReelMapAllUp->RestoreReelmap();
+		if (pDoc->m_pReelMapAllDn)
+			pDoc->m_pReelMapAllDn->RestoreReelmap();
+	}
 }
 
 void CGvisR2R_PunchView::AdjPinPos()
