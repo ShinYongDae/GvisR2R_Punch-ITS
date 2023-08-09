@@ -895,9 +895,9 @@ public:
 	double GetAoiUpFdLen();
 	double GetAoiDnFdLen();
 	BOOL IsVerify();
-	BOOL IsFixPcs();
-	BOOL IsFixPcsUp();
-	BOOL IsFixPcsDn();
+	//BOOL IsFixPcs();
+	//BOOL IsFixPcsUp();
+	//BOOL IsFixPcsDn();
 	BOOL IsFixPcsUp(int nSerial);
 	BOOL IsFixPcsDn(int nSerial);
 	BOOL IsReview();

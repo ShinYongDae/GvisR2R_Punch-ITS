@@ -1323,7 +1323,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 
 		DispStsBar();
 		DoDispMain();
-		//		DispMyMsgBox();
+		//DispMyMsgBox();
 
 		if (m_bStopFromThread)
 		{

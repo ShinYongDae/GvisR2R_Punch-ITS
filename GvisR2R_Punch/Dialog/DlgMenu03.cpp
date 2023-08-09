@@ -3447,11 +3447,8 @@ BOOL CDlgMenu03::GetReady()
 
 	//if(pDoc->m_pMpeIo[28] & (0x01<<3))	// 마킹부 운전준비 스위치 램프
 	//if(pDoc->m_pMpeSignal[0] & (0x01<<0))	// PLC 운전준비 완료(PC가 확인하고 Reset시킴.)
-	//if(pView->m_bReadyDone)
-	//{
-	//	pView->m_bReadyDone = TRUE;
+	if(pView->m_bReadyDone)
 		return TRUE;
-	//}
 
 	return FALSE;
 }
