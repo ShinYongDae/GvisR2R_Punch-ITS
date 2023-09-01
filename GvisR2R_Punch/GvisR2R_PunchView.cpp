@@ -725,6 +725,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 	BOOL bRtn = FALSE;
 
 	if (nIDEvent == TIM_INIT_VIEW)
+	
 	{
 		KillTimer(TIM_INIT_VIEW);
 
