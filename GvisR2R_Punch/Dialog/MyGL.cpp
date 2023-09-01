@@ -216,7 +216,7 @@ void CMyGL::GetPixelInfo(int &nSzCtrlX, int &nSzCtrlY, int &nSzImgX, int &nSzImg
 
 void CMyGL::SetPcsDef()
 {
-	if(!m_pReelMap)//pDoc->
+	if(!m_pReelMap)
 		return;
 
 	int i;

@@ -644,15 +644,6 @@ void CDlgMenu06::OpenReelmap(int nSelRmap)
 		}
 		pDoc->m_pReelMapInner->m_nLayer = nSelRmap;
 		pDoc->m_pReelMapInner->Open(sPath);
-// #else
-// 		if(sPath == PATH_REELMAP_UP)
-// 			pDoc->m_pReelMapInner->m_nLayer = 0; // [0]:Up
-// 		else if(sPath == PATH_REELMAP_DN)
-// 			pDoc->m_pReelMapInner->m_nLayer = 1; // [1]:Dn
-// 		else if(sPath == PATH_REELMAP_ALL_UP)
-// 			pDoc->m_pReelMapInner->m_nLayer = 2; // [2]:AllUp
-// 		else if(sPath == PATH_REELMAP_ALL_DN)
-// 			pDoc->m_pReelMapInner->m_nLayer = 3; // [2]:AllDn
 #else
 		if(nSelRmap < 0)
 			pDoc->m_pReelMapInner->m_nLayer = pView->m_nSelRmapInner;

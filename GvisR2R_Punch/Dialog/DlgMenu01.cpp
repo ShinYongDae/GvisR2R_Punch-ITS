@@ -510,20 +510,6 @@ BOOL CDlgMenu01::DispReelmap(int nSerial, BOOL bDumy)
 	this->MoveWindow(m_pRect, TRUE);
 
 	return TRUE;
-// 	if(nSerial == pView->m_nLotEndSerial)
-// 		int nBreak = 1;
-// 
-// 	m_nSerial = nSerial;
-// 	if(pView->GetLotEndSerial() % 2)
-// 	{
-// 		if(nSerial <= pView->GetLotEndSerial() || !pView->GetLotEndSerial())
-// 			DispMkInfo();
-// 	}
-// 	else
-// 	{
-// 		if(nSerial < pView->GetLotEndSerial() || !pView->GetLotEndSerial())
-// 			DispMkInfo();
-// 	}
 }
 
 void CDlgMenu01::SetPnlNum()

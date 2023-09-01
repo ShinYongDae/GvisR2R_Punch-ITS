@@ -627,56 +627,6 @@ void CGvisR2R_PunchView::DestroyView()
 
 		Buzzer(FALSE, 0);
 		Buzzer(FALSE, 1);
-
-//#ifdef USE_VISION
-//		if (m_pVisionInner[1])
-//		{
-//			delete m_pVisionInner[1];
-//			m_pVisionInner[1] = NULL;
-//		}
-//
-//		if (m_pVisionInner[0])
-//		{
-//			delete m_pVisionInner[0];
-//			m_pVisionInner[0] = NULL;
-//		}
-//		if (m_pVision[1])
-//		{
-//			delete m_pVision[1];
-//			m_pVision[1] = NULL;
-//		}
-//
-//		if (m_pVision[0])
-//		{
-//			delete m_pVision[0];
-//			m_pVision[0] = NULL;
-//		}
-//#endif
-//
-//		m_bTIM_MPE_IO = FALSE;
-//		m_bTIM_DISP_STATUS = FALSE;
-//		m_bTIM_INIT_VIEW = FALSE;
-//		Sleep(100);
-//
-//
-//		InitIoWrite();
-//		SetMainMc(FALSE);
-//
-//		// H/W Device 소멸.....
-//		HwKill();
-//
-//		// 	if(m_pDlgMyMsg != NULL) 
-//		// 	{
-//		// 		m_pDlgMyMsg->DestroyWindow();
-//		// 		delete m_pDlgMyMsg;
-//		// 		m_pDlgMyMsg = NULL;
-//		// 	}
-//		CloseMyMsg();
-//
-//		if (m_ArrayMyMsgBox.GetSize() > 0)
-//		{
-//			m_ArrayMyMsgBox.RemoveAll();
-//		}
 	}
 }
 
@@ -806,24 +756,24 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 			break;
 		case 4:
 			m_nStepInitView++;
-			// 			if(m_pMotion)
-			// 				TowerLamp(RGB_YELLOW, TRUE, TRUE);
+ 			//if(m_pMotion)
+ 			//	TowerLamp(RGB_YELLOW, TRUE, TRUE);
 
 			break;
 		case 5:
 			m_nStepInitView++;
 			DispMsg(_T("화면구성을 생성합니다.- 1"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
 			ShowDlg(IDD_DLG_MENU_02);
-			// 			ShowDlg(IDD_DLG_UTIL_01);
+ 			//ShowDlg(IDD_DLG_UTIL_01);
 			break;
 		case 6:
 			m_nStepInitView++;
-			// 			ShowDlg(IDD_DLG_UTIL_02);
+ 			//ShowDlg(IDD_DLG_UTIL_02);
 			break;
 		case 7:
 			m_nStepInitView++;
-			// 			DispMsg(_T("화면구성을 생성합니다.- 2"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
-			// 			ShowDlg(IDD_DLG_UTIL_03);
+ 			//DispMsg(_T("화면구성을 생성합니다.- 2"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+ 			//ShowDlg(IDD_DLG_UTIL_03);
 			break;
 		case 8:
 			m_nStepInitView++;
@@ -833,7 +783,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 		case 9:
 			m_nStepInitView++;
 			DispMsg(_T("화면구성을 생성합니다.- 3"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
-			// 			ShowDlg(IDD_DLG_MENU_02);
+ 			//ShowDlg(IDD_DLG_MENU_02);
 			break;
 		case 10:
 			m_nStepInitView++;
@@ -862,37 +812,6 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 			if (m_pDlgFrameHigh)
 				m_pDlgFrameHigh->ChkMenu01();
 			SetDualTest(pDoc->WorkingInfo.LastJob.bDualTest);
-/*
-#ifndef TEST_MODE
-			if (m_pDlgMenu01)
-				m_pDlgMenu01->RedrawWindow();
-
-			DispMsg(_T("릴맵을 초기화합니다."), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
-			OpenReelmap();
-#endif
-			SetPathAtBuf(); // Reelmap path를 설정함.
-			LoadPcrFromBuf();
-
-			//MakeResultMDS(); // For Test - 20220421
-#ifdef TEST_MODE
-			//pDoc->LoadPCR(TEST_SHOT);					// for Test
-			//m_pDlgMenu01->OpenReelmap(PATH_REELMAP);	// for Test
-			//m_pDlgMenu01->DispReelmap(2);				// for Test
-			//m_pDlgMenu01->SelMap(ALL);
-			//SetSerial(TEST_SHOT);						// for Test
-#else
-			//nSrl = pDoc->GetLastSerial();
-			nSrl = pDoc->GetLastShotMk();
-			SetMkFdLen();
-			if (nSrl >= 0)
-			{
-				if (bDualTest)
-					m_pDlgMenu01->SelMap(ALL);
-				else
-					m_pDlgMenu01->SelMap(UP);
-			}
-#endif
-*/
 
 			if (pDoc->GetCurrentInfoEng())
 			{
@@ -998,9 +917,9 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 			//Sleep(30);
 			//m_pMotion->SetFeedRate(MS_X1Y1, 1.0);
 			m_pMotion->SetR2RConf();
-			// 			m_pMotion->SetTorque(AXIS_MKTQ, _tstof(pDoc->WorkingInfo.Motion.sMkTq));
-			// 			m_pMotion->SetTorque(AXIS_AOITQ, _tstof(pDoc->WorkingInfo.Motion.sAoiTq));
-			// 			TowerLamp(RGB_YELLOW, FALSE, TRUE);
+ 			//m_pMotion->SetTorque(AXIS_MKTQ, _tstof(pDoc->WorkingInfo.Motion.sMkTq));
+ 			//m_pMotion->SetTorque(AXIS_AOITQ, _tstof(pDoc->WorkingInfo.Motion.sAoiTq));
+ 			//TowerLamp(RGB_YELLOW, FALSE, TRUE);
 			TowerLamp(RGB_YELLOW, TRUE);
 
 			if (!SetCollision(-1.0*_tstof(pDoc->WorkingInfo.Motion.sCollisionLength)))
@@ -1262,14 +1181,6 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 			SetTimer(TIM_INIT_VIEW, 100, NULL);
 	}
 
-	// 	if(nIDEvent == TIM_MK_START)
-	// 	{
-	// 		KillTimer(TIM_MK_START);
-	// 		Marking();
-	// 		if(m_bTIM_MK_START)
-	// 			SetTimer(TIM_MK_START, 50, NULL);
-	// 	}
-
 	if (nIDEvent == TIM_MPE_IO)
 	{
 		KillTimer(TIM_MPE_IO);
@@ -1295,14 +1206,6 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 		if (m_bTimTowerWinker)
 			SetTimer(TIM_TOWER_WINKER, 100, NULL);
 	}
-
-	// 	if(nIDEvent == TIM_BTN_WINKER)
-	// 	{
-	// 		KillTimer(TIM_BTN_WINKER);
-	// 		DispBtnWinker();
-	// 		if(m_bTimBtnWinker)
-	// 			SetTimer(TIM_BTN_WINKER, 100, NULL);
-	// 	}
 
 	if (nIDEvent == TIM_BUZZER_WARN)
 	{
@@ -18197,6 +18100,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 						m_pDlgMenu01->UpdateData();
 				}
 
+				
 				m_nStepAuto = AT_LP;
 			}
 		}

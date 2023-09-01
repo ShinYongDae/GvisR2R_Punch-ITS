@@ -158,6 +158,150 @@ void CDlgMenu05::OnSelchangeListLot()
 	{
 		((CListBox*)GetDlgItem(IDC_LIST_LOT))->GetText(nIndex, m_sLot);
 		ModifyLayerData();
+		nIndex = GetIdxTopLayer();
+		if (nIndex > -1)
+		{
+			SelchangeComboLayer(nIndex);
+		}
+	}
+}
+
+int CDlgMenu05::GetIdxTopLayer()
+{
+	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+	int nIdx = 0;
+	((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->GetLBText(nIdx, m_sLayer);
+
+	CFileFind finder;
+	CString sPath, sVal, sLayer;
+	sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
+		m_sModel, m_sLot, m_sLayer);
+	if (bDualTest)
+	{
+		m_sRmapPath.Format(_T("%s\\ReelMapDataAll.txt"), sPath);
+		if (finder.FindFile(sPath))
+		{
+			TCHAR szData[MAX_PATH];
+			if (0 < ::GetPrivateProfileString(_T("Info"), _T("상면레이어"), NULL, szData, sizeof(szData), m_sRmapPath))
+				sLayer = CString(szData);
+			else
+				sLayer = _T("");
+
+			if (m_sLayer == sLayer)
+			{
+				return 0;
+			}
+			else if (sLayer.IsEmpty())
+			{
+				return -1;
+			}
+			else
+			{
+				nIdx = 1;
+				((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->GetLBText(nIdx, m_sLayer);
+				if (m_sLayer == sLayer)
+					return 1;
+
+				m_sLayer = _T("");
+				return -1;
+			}
+		}
+	}
+	else
+	{
+		m_sRmapPath.Format(_T("%s\\ReelMapDataUp.txt"), sPath);
+		if (finder.FindFile(sPath))
+		{
+			return 0;
+		}
+		else
+			return -1;
+	}
+
+	return nIdx;
+}
+
+void CDlgMenu05::SelchangeComboLayer(int nIndex)
+{
+	// TODO: Add your control notification handler code here
+	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+	//int nIndex = m_nCurSelLayerIdx = ((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->GetCurSel();
+	m_nCurSelLayerIdx = nIndex;
+	((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->SetCurSel(nIndex);
+
+	if (nIndex != LB_ERR)
+	{
+		((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->GetLBText(nIndex, m_sLayer);
+
+		CString sPath, sVal;
+		sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
+			m_sModel, m_sLot, m_sLayer);
+
+		if (bDualTest)
+			m_sRmapPath.Format(_T("%s\\ReelMapDataAll.txt"), sPath);
+		else
+			m_sRmapPath.Format(_T("%s\\ReelMapDataUp.txt"), sPath);
+
+		//char szData[MAX_PATH];
+		TCHAR szData[MAX_PATH];
+		if (0 < ::GetPrivateProfileString(_T("Info"), _T("Start Serial"), NULL, szData, sizeof(szData), m_sRmapPath))
+			m_nSerialSt = _tstoi(szData);
+		else
+			m_nSerialSt = 1;
+
+		sVal = _T("");
+		if (m_nSerialSt > 0)
+			sVal.Format(_T("%d"), m_nSerialSt);
+		myStcSerialSt.SetText(sVal);
+
+		if (0 < ::GetPrivateProfileString(_T("Info"), _T("Completed Shot"), NULL, szData, sizeof(szData), m_sRmapPath))
+			m_nCompletedShot = _tstoi(szData);
+		else
+			m_nCompletedShot = 0; // Failed.
+
+		if (0 < ::GetPrivateProfileString(_T("Info"), _T("Marked Shot"), NULL, szData, sizeof(szData), m_sRmapPath))
+			m_nMarkedShot = _tstoi(szData);
+		else
+			m_nMarkedShot = 0; // Failed.
+
+		if (0 < ::GetPrivateProfileString(_T("Info"), _T("End Serial"), NULL, szData, sizeof(szData), m_sRmapPath))
+			m_nSerialEd = _tstoi(szData);
+		else
+			m_nSerialEd = (m_nMarkedShot > m_nCompletedShot) ? m_nMarkedShot : m_nCompletedShot;
+
+		sVal = _T("");
+		if (m_nSerialEd > 0)
+			sVal.Format(_T("%d"), m_nSerialEd);
+		myStcSerialEd.SetText(sVal);
+
+		ReloadReelmap();
+		DispProcCode(m_sRmapPath);
+
+		if (((CButton*)GetDlgItem(IDC_CHK_REELMAP))->GetCheck())
+		{
+			if (m_nCurSelLotIdx < 0)
+			{
+				pView->MsgBox(_T("로트를 선택해 주세요."));
+				//AfxMessageBox(_T("로트를 선택해 주세요."));
+				((CButton*)GetDlgItem(IDC_CHK_REELMAP))->SetCheck(FALSE);
+				return;
+			}
+			if (m_nCurSelLayerIdx < 0)
+			{
+				pView->MsgBox(_T("레이어를 선택해 주세요."));
+				//AfxMessageBox(_T("레이어를 선택해 주세요."));
+				((CButton*)GetDlgItem(IDC_CHK_REELMAP))->SetCheck(FALSE);
+				return;
+			}
+			((CListBox*)GetDlgItem(IDC_LIST_LOT))->SetCurSel(m_nCurSelLotIdx);
+			((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->SetCurSel(m_nCurSelLayerIdx);
+			//DisplayReelMapData();
+			DisplayReelMapUser();
+		}
+		else
+		{
+			DisplayResultData();
+		}
 	}
 }
 
@@ -1188,118 +1332,6 @@ CString CDlgMenu05::DisplayData()
 	strFileData += _T("\r\n");
 
 	strFileData += _T("\t-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\r\n");
-	
-// 	strData.Format(_T("\t19\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_EDGE_NICK]);
-// 	strFileData += strData;
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[0][DEF_EDGE_NICK]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[1][DEF_EDGE_NICK]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[2][DEF_EDGE_NICK]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[3][DEF_EDGE_NICK]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_EDGE_NICK]);
-// 	strFileData += strData;
-// 	strFileData += _T("\r\n");
-// 	
-// 	strData.Format(_T("\t20\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_EDGE_PROT]);
-// 	strFileData += strData;
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[0][DEF_EDGE_PROT]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[1][DEF_EDGE_PROT]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[2][DEF_EDGE_PROT]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[3][DEF_EDGE_PROT]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_EDGE_PROT]);
-// 	strFileData += strData;
-// 	strFileData += _T("\r\n");
-// 	
-// 	strData.Format(_T("\t21\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_EDGE_SPACE]);
-// 	strFileData += strData;
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[0][DEF_EDGE_SPACE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[1][DEF_EDGE_SPACE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[2][DEF_EDGE_SPACE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[3][DEF_EDGE_SPACE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_EDGE_SPACE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\r\n");
-// 	
-// 	strData.Format(_T("\t22\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_USER_DEFINE_1]);
-// 	strFileData += strData;
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[0][DEF_USER_DEFINE_1]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[1][DEF_USER_DEFINE_1]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[2][DEF_USER_DEFINE_1]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[3][DEF_USER_DEFINE_1]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_USER_DEFINE_1]);
-// 	strFileData += strData;
-// 	strFileData += _T("\r\n");
-// 	
-// 	strData.Format(_T("\t23\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_NARROW]);
-// 	strFileData += strData;
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[0][DEF_NARROW]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[1][DEF_NARROW]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[2][DEF_NARROW]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[3][DEF_NARROW]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_NARROW]);
-// 	strFileData += strData;
-// 	strFileData += _T("\r\n");
-// 	
-// 	strData.Format(_T("\t24\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_WIDE]);
-// 	strFileData += strData;
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[0][DEF_WIDE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[1][DEF_WIDE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[2][DEF_WIDE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%3d"), m_nDefPerStrip[3][DEF_WIDE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\t\t");
-// 	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_WIDE]);
-// 	strFileData += strData;
-// 	strFileData += _T("\r\n");
-// 
-// 	strFileData += _T("\t-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\r\n");
-
-//	strData.Format(_T("\t25\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_LIGHT]);
 
 	strData.Format(_T("\t19\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_LIGHT]);
 	strFileData += strData; // "\t19\t    노광    \t");
@@ -2072,254 +2104,6 @@ CString CDlgMenu05::TxtDataMDS()
 	return strFileData;
 }
 
-
-//CString CDlgMenu05::TxtData()
-//{
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-//
-//	CString strFileData, strData;
-//
-//	//리포트 작성. =====================================================================
-//
-//	strFileData = _T("");
-//	strFileData += _T("1. 일반 정보\r\n");
-//	
-//	strFileData += _T("\t모 델 명 : \t");
-//	strFileData += m_sModel;
-//	strFileData += _T("\r\n");
-//	strFileData += _T("\t로 트 명 : \t");
-//	strFileData += m_sLot;
-//	strFileData += _T("\r\n");
-//	strFileData += _T("\t상면 레이어명 : \t");
-//	strFileData += pDoc->WorkingInfo.LastJob.sLayerUp;
-//	strFileData += _T("\r\n");
-//	if(bDualTest)
-//	{
-//		strFileData += _T("\t하면 레이어명 : \t");
-//		strFileData += pDoc->WorkingInfo.LastJob.sLayerDn;
-//		strFileData += _T("\r\n");
-//	}
-//	strFileData += _T("\t시작시간 : \t");
-//	strFileData += m_strLotStartTime;
-//	strFileData += _T("\r\n");
-//	strFileData += _T("\t진행시간 : \t");
-//	strFileData += m_strLotWorkingTime;
-//	strFileData += _T("\r\n");
-//	strFileData += _T("\t종료시간 : \t");
-//	strFileData += m_strLotEndTime;
-//	strFileData += _T("\r\n");
-//	strFileData += _T("\r\n");
-//	
-//	strFileData += _T("2. 제품 검사 결과\r\n");
-//
-//	strFileData += _T("\t-------------------------------------------------------------------------------\r\n");
-//	strFileData += _T("\t  구분                             검사수량                                    \r\n");
-//	strFileData += _T("\t-------------------------------------------------------------------------------\r\n");
-//	strFileData += _T("\t              총 검 사      양 품 수      불 량 수      양 품 율      불 량 율 \r\n");
-//	strFileData += _T("\t-------------------------------------------------------------------------------\r\n");
-//	strData.Format(_T("\t  Unit          %d          %d           %d           %.2f         %.2f         \r\n"), 
-//													m_nEntirePieceNum, m_nGoodPieceNum, m_nDefectPieceNum,
-//													(m_nEntirePieceNum>0)?100.0*(double)(m_nGoodPieceNum)/(double)(m_nEntirePieceNum):0.0, 
-//													(m_nEntirePieceNum>0)?100.0*(double)(m_nDefectPieceNum)/(double)(m_nEntirePieceNum):0.0);
-//	strFileData += strData;
-//	strFileData += _T("\t-------------------------------------------------------------------------------\r\n");
-//	strFileData += _T("\r\n");
-//	
-//	strFileData += _T("3. 스트립 별 불량수\r\n");
-//
-//	strFileData += _T("\t-----------------------------------------------------------------\r\n");
-//	strFileData += _T("\t  구분                      불량수량                             \r\n");
-//	strFileData += _T("\t-----------------------------------------------------------------\r\n");
-//	strFileData += _T("\t              Strip0      Strip1      Strip2      Strip3 \r\n");
-//	strFileData += _T("\t-----------------------------------------------------------------\r\n");
-//	strData.Format(_T("\t  Unit          %d          %d           %d           %d         \r\n"), 
-//													m_nDefStrip[0], m_nDefStrip[1], m_nDefStrip[2], m_nDefStrip[3]); // MAX_STRIP_NUM
-//	strFileData += strData;
-//	strFileData += _T("\t-----------------------------------------------------------------\r\n");
-//	strFileData += _T("\r\n");
-//
-//	strFileData += _T("4. 불량 내역\r\n");
-//	strFileData += _T("\t--------------------------------------\r\n");
-//	strFileData += _T("\t번호      불량유형      유형별 불량수 \r\n");
-//	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t1\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_OPEN]);
-//	strFileData += strData; // "\t 1\t    오픈    \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_OPEN]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t2\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_SHORT]);
-//	strFileData += strData; // "\t 2\t    쇼트    \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_SHORT]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//	strData.Format(_T("\t3\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_USHORT]);
-//	strFileData += strData; // "\t 3\t   U-쇼트   \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_USHORT]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t4\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_NICK]);
-//	strFileData += strData; // "\t 4\t    결손    \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_NICK]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t5\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_SPACE]);
-//	strFileData += strData; // "\t 5\t  선간폭  \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_SPACE]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//	strData.Format(_T("\t6\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_EXTRA]);
-//	strFileData += strData; // "\t 6\t    잔동    \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_EXTRA]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//	strData.Format(_T("\t7\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_PROTRUSION]);
-//	strFileData += strData; // "\t 7\t    돌기    \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_PROTRUSION]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t8\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_PINHOLE]);
-//	strFileData += strData; // "\t 8\t    핀홀    \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_PINHOLE]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//	strData.Format(_T("\t9\t    %s\t"), pDoc->m_pReelMap->m_sKorDef[DEF_PAD]);
-//	strFileData += strData; // "\t 9\t패드결함\t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_PAD]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t10\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_HOLE_OPEN]);
-//	strFileData += strData; // "\t10\t  홀오픈  \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_HOLE_OPEN]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t11\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_HOLE_MISS]);
-//	strFileData += strData; // "\t11\t  홀없음  \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_HOLE_MISS]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//	strData.Format(_T("\t12\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_HOLE_POSITION]);
-//	strFileData += strData; // "\t12\t  홀편심  \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_HOLE_POSITION]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//	strData.Format(_T("\t13\t    %s\t"), pDoc->m_pReelMap->m_sKorDef[DEF_HOLE_DEFECT]);
-//	strFileData += strData; // "\t13\t홀내불량\t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_HOLE_DEFECT]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t14\t      %s      \t"), pDoc->m_pReelMap->m_sKorDef[DEF_POI]);
-//	strFileData += strData; // "\t14\t      POI      \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_POI]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t15\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_VH_OPEN]);
-//	strFileData += strData; // "\t15\t  VH오픈  \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_VH_OPEN]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t--------------------------------------\r\n");
-//
-//	strData.Format(_T("\t16\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_VH_MISS]);
-//	strFileData += strData; // "\t16\t  VH없음  \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_VH_MISS]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//	strData.Format(_T("\t17\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_VH_POSITION]);
-//	strFileData += strData; // "\t17\t  VH편심  \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_VH_POSITION]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//	strData.Format(_T("\t18\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_VH_DEF]);
-//	strFileData += strData; // "\t18\t  VH결함  \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_VH_DEF]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//// 	strFileData += _T("\t---------------------------------------------------------------------------------------------------------------------------------------------------------------------\r\n");
-//	
-//	strData.Format(_T("\t19\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_EDGE_NICK]);
-//	strFileData += strData;
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_EDGE_NICK]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//	
-//	strData.Format(_T("\t20\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_EDGE_PROT]);
-//	strFileData += strData;
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_EDGE_PROT]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//	
-//	strData.Format(_T("\t21\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_EDGE_SPACE]);
-//	strFileData += strData;
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_EDGE_SPACE]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//	
-//	strData.Format(_T("\t22\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_USER_DEFINE_1]);
-//	strFileData += strData;
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_USER_DEFINE_1]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//	
-//	strData.Format(_T("\t23\t    %s\t"), pDoc->m_pReelMap->m_sKorDef[DEF_NARROW]);
-//	strFileData += strData;
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_NARROW]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//	
-//	strData.Format(_T("\t24\t    %s\t"), pDoc->m_pReelMap->m_sKorDef[DEF_WIDE]);
-//	strFileData += strData;
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_WIDE]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//
-//	strFileData += _T("\t--------------------------------------\r\n");
-//	
-//	strData.Format(_T("\t25\t    %s    \t"), pDoc->m_pReelMap->m_sKorDef[DEF_LIGHT]);
-//	strFileData += strData; // "\t19\t    노광    \t");
-//	strData.Format(_T("%13d"), m_nEntireAddedDefect[DEF_LIGHT]);
-//	strFileData += strData;
-//	strFileData += _T("\r\n");
-//	strFileData += _T("\t--------------------------------------\r\n");
-//	strFileData += _T("\r\n");
-//
-//	return strFileData;
-//}
-
 BOOL CDlgMenu05::ReloadReelmap()
 {
 	int nFirstShot, nLastShot;
@@ -3062,10 +2846,10 @@ CString CDlgMenu05::Sapp3Data()
 
 		// 레이어
 		// m_sLayer;
-// 		if (0 < ::GetPrivateProfileString(_T("WorkInfo"), _T("LAYER_NAME"), NULL, szData, sizeof(szData), strPath))
-// 			m_strLayer = CString(szData);
-// 		else
-// 			m_strLayer = SearchLayerName();
+ 		//if (0 < ::GetPrivateProfileString(_T("WorkInfo"), _T("LAYER_NAME"), NULL, szData, sizeof(szData), strPath))
+ 		//	m_strLayer = CString(szData);
+ 		//else
+ 		//	m_strLayer = SearchLayerName();
 	}
 	else
 	{
@@ -3150,12 +2934,12 @@ CString CDlgMenu05::Sapp3Data()
 			strFileData += strData;
 		}
 
-	// 			nSum = m_nDefPerStrip[0][DEF_PINHOLE] + m_nDefPerStrip[0][DEF_PAD];
-	// 			if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD] > 0)
-	// 			{
-	// 				strData.Format(_T("B%d,%d\r\n"), pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD], nSum); // 핀홀+패드(B134)
-	// 				strFileData += strData;
-	// 			}
+ 		//nSum = m_nDefPerStrip[0][DEF_PINHOLE] + m_nDefPerStrip[0][DEF_PAD];
+ 		//if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD] > 0)
+ 		//{
+ 		//	strData.Format(_T("B%d,%d\r\n"), pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD], nSum); // 핀홀+패드(B134)
+ 		//	strFileData += strData;
+ 		//}
 
 		nSum = m_nDefPerStrip[0][DEF_PINHOLE];
 		if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE] > 0)
@@ -3488,7 +3272,7 @@ CString CDlgMenu05::Sapp3Data()
 			strFileData += strData;
 		}
 
-		nSum = m_nDefPerStrip[2][DEF_VH_OPEN] + m_nDefPerStrip[2][DEF_VH_MISS] + m_nDefPerStrip[2][DEF_VH_POSITION] + m_nDefPerStrip[2][DEF_VH_DEF];
+		nSum = m_nDefPerStrip[3][DEF_VH_OPEN] + m_nDefPerStrip[3][DEF_VH_MISS] + m_nDefPerStrip[3][DEF_VH_POSITION] + m_nDefPerStrip[3][DEF_VH_DEF];
 		if (nSum > 0 && pDoc->m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF] > 0)
 		{
 			strData.Format(_T("B%d,%d\r\n"), pDoc->m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF], nSum);

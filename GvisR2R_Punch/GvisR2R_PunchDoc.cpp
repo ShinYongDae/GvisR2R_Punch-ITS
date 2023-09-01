@@ -334,12 +334,6 @@ CGvisR2R_PunchDoc::~CGvisR2R_PunchDoc()
 		m_pReelMapIts = NULL;
 	}
 
-	//if (m_pReelMapInner)
-	//{
-	//	delete m_pReelMapInner;
-	//	m_pReelMapInner = NULL;
-	//}
-
 	if (m_pReelMapInnerUp)
 	{
 		delete m_pReelMapInnerUp;
@@ -4170,51 +4164,35 @@ BOOL CGvisR2R_PunchDoc::InitReelmap()
 	int nTotPcs = m_Master[0].m_pPcsRgn->nTotPcs;
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	//if (m_pReelMap)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMap;
-	//	m_pReelMap = NULL;
-	//}
-	//m_pReelMap = new CReelMap(RMAP_NONE, MAX_DISP_PNL, nTotPcs);
-
 	if (m_pReelMapUp)
 	{
-		//m_pReelMapUp->ResetReelmap();
 		delete m_pReelMapUp;
 		m_pReelMapUp = NULL;
 	}
 	m_pReelMapUp = new CReelMap(RMAP_UP, MAX_DISP_PNL, nTotPcs);
-	//m_pReelMapUp->m_nLayer = RMAP_UP;
 
 	if (bDualTest)
 	{
 		if (m_pReelMapDn)
 		{
-			//m_pReelMapDn->ResetReelmap();
 			delete m_pReelMapDn;
 			m_pReelMapDn = NULL;
 		}
 		m_pReelMapDn = new CReelMap(RMAP_DN, MAX_DISP_PNL, nTotPcs);
-		//m_pReelMapDn->m_nLayer = RMAP_DN;
 
 		if (m_pReelMapAllUp)
 		{
-			//m_pReelMapAllUp->ResetReelmap();
 			delete m_pReelMapAllUp;
 			m_pReelMapAllUp = NULL;
 		}
 		m_pReelMapAllUp = new CReelMap(RMAP_ALLUP, MAX_DISP_PNL, nTotPcs);
-		//m_pReelMapAllUp->m_nLayer = RMAP_ALLUP;
 
 		if (m_pReelMapAllDn)
 		{
-			//m_pReelMapAllDn->ResetReelmap();
 			delete m_pReelMapAllDn;
 			m_pReelMapAllDn = NULL;
 		}
 		m_pReelMapAllDn = new CReelMap(RMAP_ALLDN, MAX_DISP_PNL, nTotPcs);
-		//m_pReelMapAllDn->m_nLayer = RMAP_ALLDN;
 
 		if(pDoc->GetTestMode() != MODE_OUTER)
 			m_pReelMap = m_pReelMapAllUp;
@@ -4222,7 +4200,6 @@ BOOL CGvisR2R_PunchDoc::InitReelmap()
 		{
 			if (m_pReelMapIts)
 			{
-				//m_pReelMap->ResetReelmap();
 				delete m_pReelMapIts;
 				m_pReelMapIts = NULL;
 			}
@@ -4249,9 +4226,6 @@ BOOL CGvisR2R_PunchDoc::InitReelmap()
 	if (!pMkInfo)
 		pMkInfo = new CString[nTotPcs];
 
-	//CString sPath = m_pReelMap->GetIpPath();
-	//SetMkMenu01(_T("DispDefImg"), _T("ReelmapPath"), sPath);
-
 	if (m_pReelMap)
 	{
 		m_pReelMapDisp = m_pReelMap;
@@ -4271,44 +4245,28 @@ BOOL CGvisR2R_PunchDoc::InitReelmapUp()
 		CString strMsg;
 		strMsg.Format(_T("피스 영역이 존재하지 않습니다."));
 		pView->MsgBox(strMsg);
-		// 		AfxMessageBox(strMsg,MB_ICONSTOP);
+		//AfxMessageBox(strMsg,MB_ICONSTOP);
 		return FALSE;
 	}
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	int nTotPcs = m_Master[0].m_pPcsRgn->nTotPcs;
 
-	//if (m_pReelMap)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMap;
-	//	m_pReelMap = NULL;
-	//}
-	//m_pReelMap = new CReelMap(RMAP_NONE, MAX_DISP_PNL, nTotPcs);
-
-
-	//if (m_pReelMap->m_nLayer < 0)
-	//	m_pReelMap->m_nLayer = pView->m_nSelRmap;
-
 	if (m_pReelMapUp)
 	{
-		//m_pReelMapUp->ResetReelmap();
 		delete m_pReelMapUp;
 		m_pReelMapUp = NULL;
 	}
 	m_pReelMapUp = new CReelMap(RMAP_UP, MAX_DISP_PNL, nTotPcs);
-	//m_pReelMapUp->m_nLayer = RMAP_UP;
 
 	if (bDualTest)
 	{
 		if (m_pReelMapAllUp)
 		{
-			//m_pReelMapAllUp->ResetReelmap();
 			delete m_pReelMapAllUp;
 			m_pReelMapAllUp = NULL;
 		}
 		m_pReelMapAllUp = new CReelMap(RMAP_ALLUP, MAX_DISP_PNL, nTotPcs);
-		//m_pReelMapAllUp->m_nLayer = RMAP_ALLUP;
 
 		if (pDoc->GetTestMode() != MODE_OUTER)
  			m_pReelMap = m_pReelMapAllUp;
@@ -4331,14 +4289,6 @@ BOOL CGvisR2R_PunchDoc::InitReelmapUp()
 
 	if (m_pReelMap->m_nLayer == RMAP_UP || m_pReelMap->m_nLayer == RMAP_ALLUP)
 	{
-		//if (m_pReelMap)
-		//{
-		//	//m_pReelMap->ResetReelmap();
-		//	delete m_pReelMap;
-		//	m_pReelMap = NULL;
-		//}
-		//m_pReelMap = new CReelMap(MAX_DISP_PNL, nTotPcs);
-
 		if (pMkInfo)
 		{
 			delete[] pMkInfo;
@@ -4347,9 +4297,6 @@ BOOL CGvisR2R_PunchDoc::InitReelmapUp()
 		if (!pMkInfo)
 			pMkInfo = new CString[nTotPcs];
 	}
-
-	//CString sPath = m_pReelMap->GetIpPath();
-	//SetMkMenu01(_T("DispDefImg"), _T("ReelmapPath"), sPath);
 
 	if (pView->m_pDlgMenu01)
 		pView->m_pDlgMenu01->SwitchReelmapDisp(pView->m_nSelRmap);
@@ -4368,52 +4315,28 @@ BOOL CGvisR2R_PunchDoc::InitReelmapDn()
 		CString strMsg;
 		strMsg.Format(_T("피스 영역이 존재하지 않습니다."));
 		pView->MsgBox(strMsg);
-		// 		AfxMessageBox(strMsg,MB_ICONSTOP);
+		//AfxMessageBox(strMsg,MB_ICONSTOP);
 		return FALSE;
 	}
 
 	int nTotPcs = m_Master[0].m_pPcsRgn->nTotPcs;
 
-	//if (m_pReelMap)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMap;
-	//	m_pReelMap = NULL;
-	//}
-	//m_pReelMap = new CReelMap(RMAP_NONE, MAX_DISP_PNL, nTotPcs);
-
-
-	//if (m_pReelMap->m_nLayer < 0)
-	//	m_pReelMap->m_nLayer = pView->m_nSelRmap;
-
 	if (m_pReelMapDn)
 	{
-		//m_pReelMapDn->ResetReelmap();
 		delete m_pReelMapDn;
 		m_pReelMapDn = NULL;
 	}
 	m_pReelMapDn = new CReelMap(RMAP_DN, MAX_DISP_PNL, nTotPcs);
-	//m_pReelMapDn->m_nLayer = RMAP_DN;
 
 	if (m_pReelMapAllDn)
 	{
-		//m_pReelMapAllDn->ResetReelmap();
 		delete m_pReelMapAllDn;
 		m_pReelMapAllDn = NULL;
 	}
 	m_pReelMapAllDn = new CReelMap(RMAP_ALLDN, MAX_DISP_PNL, nTotPcs);
-	//m_pReelMapAllDn->m_nLayer = RMAP_ALLDN;
 
 	if (m_pReelMap->m_nLayer == RMAP_DN || m_pReelMap->m_nLayer == RMAP_ALLDN)
 	{
-		//if (m_pReelMap)
-		//{
-		//	//m_pReelMap->ResetReelmap();
-		//	delete m_pReelMap;
-		//	m_pReelMap = NULL;
-		//}
-		//m_pReelMap = new CReelMap(MAX_DISP_PNL, nTotPcs);
-
 		if (pMkInfo)
 		{
 			delete[] pMkInfo;
@@ -12582,94 +12505,39 @@ BOOL CGvisR2R_PunchDoc::InitReelmapInner()
 	int nTotPcs = m_MasterInner[0].m_pPcsRgn->GetTotPcs();
 	BOOL bDualTest = WorkingInfo.LastJob.bDualTestInner;
 
-	//if (m_pReelMapInner)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMapInner;
-	//	m_pReelMapInner = NULL;
-	//}
-	//m_pReelMapInner = new CReelMap(RMAP_NONE, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
-
 	if (m_pReelMapInnerUp)
 	{
-		//m_pReelMapUp->ResetReelmap();
 		delete m_pReelMapInnerUp;
 		m_pReelMapInnerUp = NULL;
 	}
 	m_pReelMapInnerUp = new CReelMap(RMAP_INNER_UP, MAX_DISP_PNL, nTotPcs);
-	//m_pReelMapUp->m_nLayer = RMAP_UP;
-
-	//if (m_pReelMapInOuterUp)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMapInOuterUp;
-	//	m_pReelMapInOuterUp = NULL;
-	//}
-	//m_pReelMapInOuterUp = new CReelMap(RMAP_INOUTER_UP, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
-
-	//if (m_pReelMapIts)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMapIts;
-	//	m_pReelMapIts = NULL;
-	//}
-	//m_pReelMapIts = new CReelMap(RMAP_ITS, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 
 	if (bDualTest)
 	{
 		if (m_pReelMapInnerDn)
 		{
-			//m_pReelMapDn->ResetReelmap();
 			delete m_pReelMapInnerDn;
 			m_pReelMapInnerDn = NULL;
 		}
 		m_pReelMapInnerDn = new CReelMap(RMAP_INNER_DN, MAX_DISP_PNL, nTotPcs);
-		//m_pReelMapDn->m_nLayer = RMAP_DN;
 
 		if (m_pReelMapInnerAllUp)
 		{
-			//m_pReelMapAllUp->ResetReelmap();
 			delete m_pReelMapInnerAllUp;
 			m_pReelMapInnerAllUp = NULL;
 		}
 		m_pReelMapInnerAllUp = new CReelMap(RMAP_INNER_ALLUP, MAX_DISP_PNL, nTotPcs);
-		//m_pReelMapAllUp->m_nLayer = RMAP_ALLUP;
 
 		if (m_pReelMapInnerAllDn)
 		{
-			//m_pReelMapAllDn->ResetReelmap();
 			delete m_pReelMapInnerAllDn;
 			m_pReelMapInnerAllDn = NULL;
 		}
 		m_pReelMapInnerAllDn = new CReelMap(RMAP_INNER_ALLDN, MAX_DISP_PNL, nTotPcs);
-		//m_pReelMapAllDn->m_nLayer = RMAP_ALLDN;
-
-		//if (m_pReelMapInOuterDn)
-		//{
-		//	//m_pReelMap->ResetReelmap();
-		//	delete m_pReelMapInOuterDn;
-		//	m_pReelMapInOuterDn = NULL;
-		//}
-		//m_pReelMapInOuterDn = new CReelMap(RMAP_INOUTER_DN, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
-
-		//if (m_pReelMapInner)
-		//{
-		//	//m_pReelMap->ResetReelmap();
-		//	delete m_pReelMapInner;
-		//	m_pReelMapInner = NULL;
-		//}
-		//m_pReelMapInner = new CReelMap(RMAP_INNER_ALLUP, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 		m_pReelMapInner = m_pReelMapInnerAllUp;
 	}
 	else
 	{
-		//if (m_pReelMapInner)
-		//{
-		//	//m_pReelMap->ResetReelmap();
-		//	delete m_pReelMapInner;
-		//	m_pReelMapInner = NULL;
-		//}
-		//m_pReelMapInner = new CReelMap(RMAP_INNER_UP, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 		m_pReelMapInner = m_pReelMapInnerUp;
 	}
 
@@ -12677,23 +12545,7 @@ BOOL CGvisR2R_PunchDoc::InitReelmapInner()
 	{
 		if(m_pReelMapIts)
 			m_pReelMap = m_pReelMapIts;
-
-		//CString sPath = m_pReelMap->GetIpPath();
-		//SetMkMenu01(_T("DispDefImg"), _T("ReelmapPath"), sPath);
-
-		//CString sPath = m_pReelMap->GetIpPath();
-		//CString sPathUp = m_pReelMapUp->GetIpPath();
-		//SetMkMenu01(_T("DispDefImg"), _T("ReelmapPath"), sPath);
-		//SetMkMenu01(_T("DispDefImg"), _T("ReelmapUpPath"), sPathUp);
 	}
-
-	//if (pMkInfo)
-	//{
-	//	delete[] pMkInfo;
-	//	pMkInfo = NULL;
-	//}
-	//if (!pMkInfo)
-	//	pMkInfo = new CString[nTotPcs];
 
 	return TRUE;
 }
@@ -12712,41 +12564,13 @@ BOOL CGvisR2R_PunchDoc::InitReelmapInnerUp()
 	//GetCurrentInfoEng();
 	BOOL bDualTest = WorkingInfo.LastJob.bDualTestInner;
 	int nTotPcs = m_MasterInner[0].m_pPcsRgn->GetTotPcs();
-	//int nTotPcs = m_MasterInner[0].m_pPcsRgn->GetTotPcs();
-	//int nTotPcs = m_MasterInner[0].m_pPcsRgn->nTotPcs;
-
-	//if (m_pReelMapInner)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMapInner;
-	//	m_pReelMapInner = NULL;
-	//}
-	//m_pReelMapInner = new CReelMap(RMAP_NONE, MAX_DISP_PNL, nTotPcs);	// Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 
 	if (m_pReelMapInnerUp)
 	{
-		//m_pReelMapUp->ResetReelmap();
 		delete m_pReelMapInnerUp;
 		m_pReelMapInnerUp = NULL;
 	}
 	m_pReelMapInnerUp = new CReelMap(RMAP_INNER_UP, MAX_DISP_PNL, nTotPcs);
-	//m_pReelMapUp->m_nLayer = RMAP_UP;
-
-	//if (m_pReelMapInOuterUp)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMapInOuterUp;
-	//	m_pReelMapInOuterUp = NULL;
-	//}
-	//m_pReelMapInOuterUp = new CReelMap(RMAP_INOUTER_UP, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
-
-	//if (m_pReelMapIts)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMapIts;
-	//	m_pReelMapIts = NULL;
-	//}
-	//m_pReelMapIts = new CReelMap(RMAP_ITS, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 
 	if (bDualTest)
 	{
@@ -12758,35 +12582,16 @@ BOOL CGvisR2R_PunchDoc::InitReelmapInnerUp()
 			m_pReelMapInnerAllUp = NULL;
 		}
 		m_pReelMapInnerAllUp = new CReelMap(RMAP_INNER_ALLUP, MAX_DISP_PNL, nTotPcs);
-		//m_pReelMapAllUp->m_nLayer = RMAP_ALLUP;
-
-		//if (m_pReelMapInner)
-		//{
-		//	//m_pReelMap->ResetReelmap();
-		//	delete m_pReelMapInner;
-		//	m_pReelMapInner = NULL;
-		//}
-		//m_pReelMapInner = new CReelMap(RMAP_INNER_ALLUP, MAX_DISP_PNL, nTotPcs);	// Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 		m_pReelMapInner = m_pReelMapInnerAllUp;
 	}
 	else
 	{
-		//if (m_pReelMapInner)
-		//{
-		//	//m_pReelMap->ResetReelmap();
-		//	delete m_pReelMapInner;
-		//	m_pReelMapInner = NULL;
-		//}
-		//m_pReelMapInner = new CReelMap(RMAP_INNER_UP, MAX_DISP_PNL, nTotPcs);	// Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 		m_pReelMapInner = m_pReelMapInnerUp;
 	}
 
 	if (pDoc->GetTestMode() == MODE_OUTER)
 	{
 		m_pReelMap = m_pReelMapIts;
-
-		//CString sPath = m_pReelMap->GetIpPath();
-		//SetMkMenu01(_T("DispDefImg"), _T("ReelmapPath"), sPath);
 	}
 
 	return TRUE;
@@ -12808,43 +12613,21 @@ BOOL CGvisR2R_PunchDoc::InitReelmapInnerDn()
 		return FALSE;
 	}
 
-	//int nTotPcs = m_MasterInner[0].GetTotPcs();
 	int nTotPcs = m_MasterInner[0].m_pPcsRgn->GetTotPcs();
-	//int nTotPcs = m_MasterInner[0].m_pPcsRgn->nTotPcs;
-
-	//if (m_pReelMapInner)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMapInner;
-	//	m_pReelMapInner = NULL;
-	//}
-	//m_pReelMapInner = new CReelMap(RMAP_INNER_ALLUP, MAX_DISP_PNL, nTotPcs);	// Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 
 	if (m_pReelMapInnerDn)
 	{
-		//m_pReelMapDn->ResetReelmap();
 		delete m_pReelMapInnerDn;
 		m_pReelMapInnerDn = NULL;
 	}
 	m_pReelMapInnerDn = new CReelMap(RMAP_INNER_DN, MAX_DISP_PNL, nTotPcs);
-	//m_pReelMapDn->m_nLayer = RMAP_DN;
 
 	if (m_pReelMapInnerAllDn)
 	{
-		//m_pReelMapAllDn->ResetReelmap();
 		delete m_pReelMapInnerAllDn;
 		m_pReelMapInnerAllDn = NULL;
 	}
 	m_pReelMapInnerAllDn = new CReelMap(RMAP_INNER_ALLDN, MAX_DISP_PNL, nTotPcs);
-	//m_pReelMapAllDn->m_nLayer = RMAP_ALLDN;
-
-	//if (m_pReelMapInOuterDn)
-	//{
-	//	//m_pReelMap->ResetReelmap();
-	//	delete m_pReelMapInOuterDn;
-	//	m_pReelMapInOuterDn = NULL;
-	//}
-	//m_pReelMapInOuterDn = new CReelMap(RMAP_INOUTER_DN, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 
 	return TRUE;
 }
@@ -12885,10 +12668,10 @@ void CGvisR2R_PunchDoc::SetReelmapInner(int nDir)
 			m_pReelMapInner->pFrmRgn[k].top = m_MasterInner[0].m_pPcsRgn->rtFrm.top;
 			m_pReelMapInner->pFrmRgn[k].right = (m_MasterInner[0].m_pPcsRgn->rtFrm.right + MYGL_GAP_PNL*dScale)*(nTotPnl - 1 - k) + fRight;
 			m_pReelMapInner->pFrmRgn[k].bottom = fBottom;
-			// 			m_pReelMap->pFrmRgn[k].left = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+m_pPcsRgn->rtFrm.left;
-			// 			m_pReelMap->pFrmRgn[k].top = m_pPcsRgn->rtFrm.top;
-			// 			m_pReelMap->pFrmRgn[k].right = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+m_pPcsRgn->rtFrm.right;
-			// 			m_pReelMap->pFrmRgn[k].bottom = m_pPcsRgn->rtFrm.bottom;
+			//m_pReelMap->pFrmRgn[k].left = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+m_pPcsRgn->rtFrm.left;
+			//m_pReelMap->pFrmRgn[k].top = m_pPcsRgn->rtFrm.top;
+			//m_pReelMap->pFrmRgn[k].right = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+m_pPcsRgn->rtFrm.right;
+			//m_pReelMap->pFrmRgn[k].bottom = m_pPcsRgn->rtFrm.bottom;
 
 			for (i = 0; i < nTotPcs; i++)
 			{
@@ -12905,25 +12688,25 @@ void CGvisR2R_PunchDoc::SetReelmapInner(int nDir)
 				m_pReelMapInner->pPcsRgn[k][i].bottom = fData4;
 			}
 			break;
-			// 		case ROT_NONE:
-			// 			m_pReelMap->pFrmRgn[k].left = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+m_pPcsRgn->rtFrm.left;
-			// 			m_pReelMap->pFrmRgn[k].top = m_pPcsRgn->rtFrm.top;
-			// 			m_pReelMap->pFrmRgn[k].right = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+m_pPcsRgn->rtFrm.right;
-			// 			m_pReelMap->pFrmRgn[k].bottom = m_pPcsRgn->rtFrm.bottom;
-			// 
-			// 			for(i=0; i<nTotPcs; i++)
-			// 			{
-			// 				fData1 = m_pPcsRgn->pPcs[i].left; // left
-			// 				fData2 = m_pPcsRgn->pPcs[i].top; // top
-			// 				fData3 = m_pPcsRgn->pPcs[i].right; // right
-			// 				fData4 = m_pPcsRgn->pPcs[i].bottom; // bottom
-			// 
-			// 				m_pReelMap->pPcsRgn[k][i].left = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+fData1;
-			// 				m_pReelMap->pPcsRgn[k][i].top = fData2;
-			// 				m_pReelMap->pPcsRgn[k][i].right = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+fData3;
-			// 				m_pReelMap->pPcsRgn[k][i].bottom = fData4;
-			// 			}
-			// 			break;
+ 		//case ROT_NONE:
+ 		//	m_pReelMap->pFrmRgn[k].left = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+m_pPcsRgn->rtFrm.left;
+ 		//	m_pReelMap->pFrmRgn[k].top = m_pPcsRgn->rtFrm.top;
+ 		//	m_pReelMap->pFrmRgn[k].right = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+m_pPcsRgn->rtFrm.right;
+ 		//	m_pReelMap->pFrmRgn[k].bottom = m_pPcsRgn->rtFrm.bottom;
+ 
+ 		//	for(i=0; i<nTotPcs; i++)
+ 		//	{
+ 		//		fData1 = m_pPcsRgn->pPcs[i].left; // left
+ 		//		fData2 = m_pPcsRgn->pPcs[i].top; // top
+ 		//		fData3 = m_pPcsRgn->pPcs[i].right; // right
+ 		//		fData4 = m_pPcsRgn->pPcs[i].bottom; // bottom
+ 
+ 		//		m_pReelMap->pPcsRgn[k][i].left = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+fData1;
+ 		//		m_pReelMap->pPcsRgn[k][i].top = fData2;
+ 		//		m_pReelMap->pPcsRgn[k][i].right = (m_pPcsRgn->rtFrm.right+MYGL_GAP_PNL*dScale)*(nTotPnl-1-k)+fData3;
+ 		//		m_pReelMap->pPcsRgn[k][i].bottom = fData4;
+ 		//	}
+ 		//	break;
 		case ROT_CCW_90: // right->bottom, top->left, bottom->right, left->top ; Dir (x *= 1, y *= -1) 
 			fDistX = 0;
 			fDistY = m_MasterInner[0].m_pPcsRgn->rtFrm.left + m_MasterInner[0].m_pPcsRgn->rtFrm.right;

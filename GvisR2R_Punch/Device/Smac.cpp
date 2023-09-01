@@ -1131,7 +1131,6 @@ void CSmac::CalcAveSmacHeight(int nCamNum)
 //		pDoc->WorkingInfo.VoiceCoil[VOICE_COIL_SECOND_CAM].sSmacAverageDist = strVal;
 		::WritePrivateProfileString(_T("Marking1"), _T("MARKING_AVER_DIST"), strVal, PATH_WORKING_INFO);
 //		::WritePrivateProfileString(_T("VoiceCoil1"), _T("Smac_Average_Distance"), strVal, PATH_WORKING_INFO);
-
 	}
 }
 
