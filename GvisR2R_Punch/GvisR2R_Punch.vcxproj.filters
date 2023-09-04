@@ -396,6 +396,12 @@
     <ClInclude Include="Dialog\MySharedMem.h">
       <Filter>Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="safelockdoc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\DlgOption01.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GvisR2R_Punch.cpp">
@@ -693,6 +699,9 @@
       <Filter>Dialog</Filter>
     </ClCompile>
     <ClCompile Include="Dialog\MySharedMem.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\DlgOption01.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
   </ItemGroup>

@@ -562,6 +562,7 @@ public:
 	void ShowDlg(int nID);
 	void DispIo();
 	void DispDatabaseConnection();
+	void Option01();
 
 	void TowerLamp(COLORREF color, BOOL bOn, BOOL bWink = FALSE);
 	void DispTowerWinker();

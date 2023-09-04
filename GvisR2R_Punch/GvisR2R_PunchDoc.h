@@ -13,6 +13,9 @@
 #include "Global/Yield.h"
 #include "Process/CamMaster.h"
 
+#define PATH_LOG		_T("C:\R2RSet\Log")
+#define PATH_LOG_AUTO	_T("C:\R2RSet\Log\Auto")
+
 class CGvisR2R_PunchDoc : public CDocument
 {
 	int GetIdxPcrBuf(int nSerial);
@@ -21,6 +24,7 @@ class CGvisR2R_PunchDoc : public CDocument
 	void DeleteFileInFolder(CString sPathDir);
 	int CheckPath(CString strPath);
 	void InitPcr();
+	void StringToChar(CString str, char* pCh); // char* returned must be deleted... 
 
 protected: // serialization에서만 만들어집니다.
 	CGvisR2R_PunchDoc();
@@ -28,6 +32,7 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
+	BOOL m_bOffLogAuto;
 	int m_nDelayShow;
 	BOOL m_bBufEmpty[2]; // [0]: Up, [1]: Dn
 	BOOL m_bBufEmptyF[2]; // [0]: Up, [1]: Dn
@@ -126,6 +131,7 @@ public:
 
 // 작업입니다.
 public:
+	void Log(CString strMsg, int nType = 0);
 	CString GetProcessNum();
 	BOOL LoadWorkingInfo();
 	void SaveWorkingInfo();
