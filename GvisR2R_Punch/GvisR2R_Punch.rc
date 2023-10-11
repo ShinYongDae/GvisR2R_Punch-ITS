@@ -160,9 +160,9 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "GvisR2R_Punch, 버전 2.0.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2023.08.31",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2023.09.25",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,41,50,14,WS_GROUP
-    LTEXT           "MB440100 : PLC 운전준비 완료",IDC_STATIC,13,40,92,11
+    LTEXT           "Thread DeadLock-Yield && 릴맵  카메라해상도 Yes/No 메시지",IDC_STATIC,8,35,97,20
 END
 
 IDD_GVISR2R_PUNCH_FORM DIALOGEX 0, 0, 630, 461

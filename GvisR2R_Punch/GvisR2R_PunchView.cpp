@@ -18406,6 +18406,18 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		if (!IsRun())
 			break;
 
+		if (m_bTHREAD_UPDATE_REELMAP_UP) // Write Reelmap
+		{
+			Sleep(100);
+			break;
+		}
+
+		if (m_bTHREAD_REELMAP_YIELD_UP) // Write Reelmap
+		{
+			Sleep(100);
+			break;
+		}
+
 		if (!bDualTest)
 		{
 			if (pDoc->GetTestMode() == MODE_OUTER)
@@ -18418,11 +18430,6 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					if (m_bTHREAD_UPDATE_REELMAP_INNER_DN || m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP || m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN) // Write Reelmap
 						break;
 				}
-			}
-			else
-			{
-				if (m_bTHREAD_UPDATE_REELMAP_UP) // Write Reelmap
-					break;
 			}
 		}
 
@@ -18649,7 +18656,16 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		}
 
 		if (m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
+		{
+			Sleep(100);
 			break;
+		}
+
+		if (m_bTHREAD_REELMAP_YIELD_DN || m_bTHREAD_REELMAP_YIELD_ALLUP || m_bTHREAD_REELMAP_YIELD_ALLDN) // Write Reelmap
+		{
+			Sleep(100);
+			break;
+		}
 
 		m_nStepAuto++;
 
@@ -20040,17 +20056,24 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			{
 				if (!m_bUpdateYieldOnRmap)
 				{
-					if (!m_bTHREAD_UPDATE_YIELD_UP && !m_bTHREAD_UPDATE_YIELD_DN && !m_bTHREAD_UPDATE_YIELD_ALLUP && !m_bTHREAD_UPDATE_YIELD_ALLDN)
+					if (!m_bTHREAD_UPDATE_REELMAP_UP && !m_bTHREAD_UPDATE_REELMAP_DN && !m_bTHREAD_UPDATE_REELMAP_ALLUP && !m_bTHREAD_UPDATE_REELMAP_ALLDN)
 					{
-						m_bUpdateYieldOnRmap = TRUE;
-						pDoc->UpdateYieldOnRmap(); // 20230614
-						m_nMkStAuto++;
+						if (!m_bTHREAD_UPDATE_YIELD_UP && !m_bTHREAD_UPDATE_YIELD_DN && !m_bTHREAD_UPDATE_YIELD_ALLUP && !m_bTHREAD_UPDATE_YIELD_ALLDN)
+						{
+							m_bUpdateYieldOnRmap = TRUE;
+							pDoc->UpdateYieldOnRmap(); // 20230614
+							m_nMkStAuto++;
+						}
+						else
+							Sleep(100);
 					}
+					else
+						Sleep(100);
 				}
 				else
 				{
 					Sleep(100);
-					m_nMkStAuto++;
+					m_nMkStAuto++; // 마킹 및 verify가 완전히 끝나지 않은 경우.
 				}
 			}
 			break;

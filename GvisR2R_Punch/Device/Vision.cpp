@@ -3421,7 +3421,7 @@ double CVision::CalcCameraPixelSize()
 			{
 				pView->ClrDispMsg();
 				AfxMessageBox(_T("Move XY Error..."));
-		}
+			}
 		}
 		else
 		{
@@ -3435,9 +3435,9 @@ double CVision::CalcCameraPixelSize()
 				{
 					pView->ClrDispMsg();
 					AfxMessageBox(_T("Move XY Error..."));
+				}
 			}
 		}
-	}
 	}
 	else if(m_nIdx==1)
 	{
@@ -3452,7 +3452,7 @@ double CVision::CalcCameraPixelSize()
 			{
 				pView->ClrDispMsg();
 				AfxMessageBox(_T("Move XY Error..."));
-		}
+			}
 		}
 		else
 		{
@@ -3466,9 +3466,9 @@ double CVision::CalcCameraPixelSize()
 				{
 					pView->ClrDispMsg();
 					AfxMessageBox(_T("Move XY Error..."));
+				}
 			}
 		}
-	}
 	}
 	Sleep(500);
 
@@ -3588,17 +3588,24 @@ double CVision::CalcCameraPixelSize()
 	//m_pIds->CalcPixelSize(fabs(fptCameraPos[1].x-fptCameraPos[0].x), fabs(fptCameraPos[1].y-fptCameraPos[0].y), fptMoveDistance.x, fptMoveDistance.y);
 #endif
 
-	// 6. Save Cam Resolution
-	CString sItem, sData, sPath=PATH_WORKING_INFO;
+	if (IDYES == pView->MsgBox(_T("카메라 해상도를 변경하시겠습니까?"), 0, MB_YESNO))
+	{
+		// 6. Save Cam Resolution
+		CString sItem, sData, sPath = PATH_WORKING_INFO;
 
-	sItem.Format(_T("Vision%d"), m_nIdx);
-	sData.Format(_T("%f"), dPixelSizeX);
-	pDoc->WorkingInfo.Vision[m_nIdx].sResX = sData;
-	::WritePrivateProfileString(sItem, _T("RESOLUTION_X"), sData, sPath);	
-	sData.Format(_T("%f"), dPixelSizeY);
-	pDoc->WorkingInfo.Vision[m_nIdx].sResY = sData;
-	::WritePrivateProfileString(sItem, _T("RESOLUTION_Y"), sData, sPath);
-
+		sItem.Format(_T("Vision%d"), m_nIdx);
+		sData.Format(_T("%f"), dPixelSizeX);
+		pDoc->WorkingInfo.Vision[m_nIdx].sResX = sData;
+		::WritePrivateProfileString(sItem, _T("RESOLUTION_X"), sData, sPath);
+		sData.Format(_T("%f"), dPixelSizeY);
+		pDoc->WorkingInfo.Vision[m_nIdx].sResY = sData;
+		::WritePrivateProfileString(sItem, _T("RESOLUTION_Y"), sData, sPath);
+		dVal = (dPixelSizeX+dPixelSizeY)/2.0;
+	}
+	else
+	{
+		dVal = (_tstof(pDoc->WorkingInfo.Vision[m_nIdx].sResX) + _tstof(pDoc->WorkingInfo.Vision[m_nIdx].sResY)) / 2.0;
+	}
 // #ifdef USE_IDS
 // 	if(m_pMeasure)
 // 		m_pMeasure->SetPixelSize(m_pIds->m_dPixelSizeX, m_pIds->m_dPixelSizeY);
@@ -3612,7 +3619,6 @@ double CVision::CalcCameraPixelSize()
 
 	SetClrOverlay();
 
-	dVal = (dPixelSizeX+dPixelSizeY)/2.0;
 	return dVal;
 }
 

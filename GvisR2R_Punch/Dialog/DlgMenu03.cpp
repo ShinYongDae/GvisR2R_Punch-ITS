@@ -1861,8 +1861,8 @@ void CDlgMenu03::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 			m_bTIM_CHK_DONE_READY = FALSE;
 			//pView->ClrDispMsg();
 			pView->m_bReadyDone = TRUE;
-			//if(pView->m_pMpe)
-			//	pView->m_pMpe->Write(_T("MB440100"), 0);	// PLC 운전준비 완료(PC가 확인하고 Reset시킴.)
+			if(pView->m_pMpe)
+				pView->m_pMpe->Write(_T("MB440100"), 0);	// PLC 운전준비 완료(PC가 확인하고 Reset시킴.)
 		}
 		else
 		{
