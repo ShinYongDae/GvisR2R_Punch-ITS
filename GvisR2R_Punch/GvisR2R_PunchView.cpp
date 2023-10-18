@@ -2957,6 +2957,7 @@ UINT CGvisR2R_PunchView::ThreadProc1(LPVOID lpContext)	// ChkCollision()
 
 			//pThread->ChkCollision();
 			pThread->GetEnc();
+			//pThread->GetInput();
 
 			if (!pThread->m_bTHREAD_MK[0] && !pThread->m_bTHREAD_MK[1] &&
 				!pThread->m_bTHREAD_MK[2] && !pThread->m_bTHREAD_MK[3])
@@ -5230,6 +5231,13 @@ void CGvisR2R_PunchView::DoEmgSw()
 #endif
 }
 
+void CGvisR2R_PunchView::GetInput()
+{
+	GetEnc();
+	GetMpeSignal();
+	DoMainSw();
+}
+
 void CGvisR2R_PunchView::GetEnc()
 {
 	if (!m_pMotion)
@@ -6013,7 +6021,8 @@ void CGvisR2R_PunchView::DoMainSw()
 		*usInF |= (0x01 << 3);								// 마킹부 운전준비 스위치
 		m_bSwStopNow = FALSE;
 		if (m_pDlgMenu03)
-			m_pDlgMenu03->SwReady();
+			m_pDlgMenu03->
+			SwReady();
 	}
 	else if (!(usIn & (0x01 << 3)) && (*usInF & (0x01 << 3)))
 	{
@@ -27529,7 +27538,7 @@ UINT CGvisR2R_PunchView::ThreadProc11(LPVOID lpContext)	// UpdateReelmapYieldDn(
 
 		if (pThread->m_bTHREAD_REELMAP_YIELD_DN) // Yield Reelmap
 		{
-			if (!pThread->m_bTHREAD_UPDATE_REELMAP_DN) // Write Reelmap
+			if (!pThread->m_bTHREAD_UPDATE_REELMAP_DN && !pThread->m_bTHREAD_UPDATE_REELMAP_ALLUP && !pThread->m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
 			{
 				pThread->UpdateReelmapYieldDn(); // Yield Reelmap
 				pThread->m_bTHREAD_REELMAP_YIELD_DN = FALSE;

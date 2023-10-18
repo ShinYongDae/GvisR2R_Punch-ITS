@@ -570,6 +570,7 @@ public:
 	void Buzzer(BOOL bOn, int nCh = 0);
 	int MyPassword(CString strMsg, int nCtrlId = 0);
 
+	void GetInput();
 	void GetEnc();
 	// 	void GetIO();
 	// 	void SetIO();
