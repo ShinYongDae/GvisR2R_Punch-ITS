@@ -3170,7 +3170,12 @@ void CGvisR2R_PunchView::DispThreadTick()
 	//if (m_sTick != str)
 	{
 		//m_sTick = str;
-		str.Format(_T("%d"), pDoc->m_nShotNum); // "m_sOrderNum-m_sShotNum" : "9-3"
+		//str.Format(_T("%d"), pDoc->m_nShotNum); // "m_sOrderNum-m_sShotNum" : "9-3"
+		str.Format(_T("%d%d%d%d:%d%d%d%d"),
+			m_bTHREAD_UPDATE_REELMAP_UP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_DN ? 1 : 0, 
+			m_bTHREAD_UPDATE_REELMAP_ALLUP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_ALLDN ? 1 : 0,
+			m_bTHREAD_REELMAP_YIELD_UP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_DN ? 1 : 0, 
+			m_bTHREAD_REELMAP_YIELD_ALLUP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_ALLDN ? 1 : 0);
 		pFrm->DispStatusBar(str, 5);
 #ifdef USE_IDS
 		double dFPS[2];
@@ -18415,23 +18420,35 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		if (!IsRun())
 			break;
 
-		if (m_bTHREAD_UPDATE_REELMAP_UP) // Write Reelmap
+		if (m_bTHREAD_UPDATE_YIELD_UP || m_bTHREAD_UPDATE_YIELD_DN || m_bTHREAD_UPDATE_YIELD_ALLUP || m_bTHREAD_UPDATE_YIELD_ALLDN) // Write Reelmap
 		{
 			Sleep(100);
 			break;
 		}
 
-		if (m_bTHREAD_REELMAP_YIELD_UP) // Write Reelmap
+		if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
 		{
 			Sleep(100);
 			break;
 		}
+
+		//if (m_bTHREAD_UPDATE_REELMAP_UP)
+		//{
+		//	Sleep(100);
+		//	break;
+		//}
+
+		//if (m_bTHREAD_REELMAP_YIELD_UP)
+		//{
+		//	Sleep(100);
+		//	break;
+		//}
 
 		if (!bDualTest)
 		{
 			if (pDoc->GetTestMode() == MODE_OUTER)
 			{
-				if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_INNER_UP) // Write Reelmap
+				if (m_bTHREAD_UPDATE_REELMAP_INNER_UP) // Write Reelmap
 					break;
 
 				if (pDoc->WorkingInfo.LastJob.bDualTestInner)
@@ -20136,7 +20153,10 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 		case MK_ST + (Mk2PtIdx::DoneMk) :	 // Align변수 초기화
 			if (!IsRun()) 
 				break;
-			
+
+			//if (m_bTHREAD_UPDATE_YIELD_UP || m_bTHREAD_UPDATE_YIELD_DN || m_bTHREAD_UPDATE_YIELD_ALLUP || m_bTHREAD_UPDATE_YIELD_ALLDN)
+			//	break;
+
 			if (m_bInitAuto)
 			{
 				m_bInitAuto = FALSE;

@@ -366,7 +366,7 @@ BOOL CNmcDevice::InitAxisParam(int nAxis)
 	m_pAxis[nAxis]->m_stParam.Speed.fJogAcc = m_pParamMotion[nAxis].Speed.fJogAcc;				// Acceleration
 
 	m_pAxis[nAxis]->m_stParam.Io.bPosLimit = m_pParamMotor[nAxis].bPosLimitLevel;	// 정방향 리미트 스위치 신호 레벨
-	m_pAxis[nAxis]->m_stParam.Io.bNegLimit = m_pParamMotor[nAxis].bNegLimitLeve l;	// 역방향 리미트 스위치 신호 레벨
+	m_pAxis[nAxis]->m_stParam.Io.bNegLimit = m_pParamMotor[nAxis].bNegLimitLevel;	// 역방향 리미트 스위치 신호 레벨
 	m_pAxis[nAxis]->m_stParam.Io.bOrg = m_pParamMotor[nAxis].bHomeLevel;				// 원점 스위치 신호 레벨
 	m_pAxis[nAxis]->m_stParam.Io.bAmpFault = m_pParamMotor[nAxis].bAmpFaultLevel;	// Amp Fault 신호 레벨
 	m_pAxis[nAxis]->m_stParam.Io.bAmpEnable = m_pParamMotor[nAxis].bAmpEnableLevel;	// Amp Enable 신호 레벨
