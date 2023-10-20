@@ -18420,35 +18420,23 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		if (!IsRun())
 			break;
 
-		if (m_bTHREAD_UPDATE_YIELD_UP || m_bTHREAD_UPDATE_YIELD_DN || m_bTHREAD_UPDATE_YIELD_ALLUP || m_bTHREAD_UPDATE_YIELD_ALLDN) // Write Reelmap
-		{
-			Sleep(100);
-			break;
-		}
-
 		if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
 		{
 			Sleep(100);
 			break;
 		}
 
-		//if (m_bTHREAD_UPDATE_REELMAP_UP)
-		//{
-		//	Sleep(100);
-		//	break;
-		//}
-
-		//if (m_bTHREAD_REELMAP_YIELD_UP)
-		//{
-		//	Sleep(100);
-		//	break;
-		//}
+		if (m_bTHREAD_UPDATE_YIELD_UP || m_bTHREAD_UPDATE_YIELD_DN || m_bTHREAD_UPDATE_YIELD_ALLUP || m_bTHREAD_UPDATE_YIELD_ALLDN) // Write Reelmap
+		{
+			Sleep(100);
+			break;
+		}
 
 		if (!bDualTest)
 		{
 			if (pDoc->GetTestMode() == MODE_OUTER)
 			{
-				if (m_bTHREAD_UPDATE_REELMAP_INNER_UP) // Write Reelmap
+				if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_INNER_UP) // Write Reelmap
 					break;
 
 				if (pDoc->WorkingInfo.LastJob.bDualTestInner)
