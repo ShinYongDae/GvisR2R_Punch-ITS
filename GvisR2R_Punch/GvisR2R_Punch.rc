@@ -160,9 +160,9 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "GvisR2R_Punch, 버전 2.0.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2023.10.19",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2023.10.23",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
-    LTEXT           "마킹완료 후 릴맵수율완료대기",IDC_STATIC,13,40,92,11
+    LTEXT           "StripBin관련 LED표시 수정",IDC_STATIC,13,40,92,11
     LTEXT           "",IDC_STATIC,13,51,92,11
 END
 
