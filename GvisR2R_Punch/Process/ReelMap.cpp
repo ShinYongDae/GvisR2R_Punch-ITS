@@ -1829,7 +1829,7 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 					else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
 					{
 						//m_pPnlDefNum[k] = pDoc->m_pPcrInner[RMAP_ALLUP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
-						m_pPnlDefNum[k] = pDoc->m_pPcrInner[m_nLayer][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
+						m_pPnlDefNum[k] = pDoc->m_pPcrInner[m_nLayer - RMAP_INNER_UP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
 					}
 					else if (m_nLayer == RMAP_ITS)
 						m_pPnlDefNum[k] = pDoc->m_pPcrIts[pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
@@ -1863,7 +1863,8 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 					else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
 					{
 						//m_pPnlDefNum[k] = pDoc->m_pPcrInner[RMAP_ALLUP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
-						m_pPnlDefNum[k] = pDoc->m_pPcrInner[m_nLayer][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
+						if(pDoc->m_pPcrInner)
+							m_pPnlDefNum[k] = pDoc->m_pPcrInner[m_nLayer - RMAP_INNER_UP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
 					}
 					else if (m_nLayer == RMAP_ITS)
 						m_pPnlDefNum[k] = pDoc->m_pPcrIts[pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;

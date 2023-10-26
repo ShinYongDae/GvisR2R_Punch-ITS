@@ -338,7 +338,7 @@ BOOL CDlgMenu06::OnInitDialog()
 	SetRgbStcDef();
 	SetTitleStcDef();
 
-	//InitGL();
+	InitGL();
 	//SetPnlNum();
 	//SetPnlDefNum();
 
@@ -3768,6 +3768,7 @@ void CDlgMenu06::DispDef()
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTestInner;
 
 	CReelMap* pReelMap;
+	pReelMap = NULL;
 
 	if(bDualTest)
 	{

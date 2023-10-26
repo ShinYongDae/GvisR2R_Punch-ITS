@@ -3800,6 +3800,7 @@ void CDlgMenu01::DispDef()
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
 	CReelMap* pReelMap;
+	pReelMap = NULL;
 
 	//if(bDualTest)
 	//{
@@ -3853,6 +3854,8 @@ void CDlgMenu01::DispDef()
 		break;
 	}
 
+	if (!pReelMap)
+		return;
 
 	nNum = pReelMap->GetDefNum(DEF_OPEN);
 	str.Format(_T("%d"), nNum);

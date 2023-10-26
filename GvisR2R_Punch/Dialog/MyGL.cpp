@@ -261,8 +261,13 @@ void CMyGL::SetPnlDefNum()
 		return;
 
 	int k;
-	for(k=0; k<m_nTotPnl; k++)
-		m_pPnlDefNum[k] = m_pReelMap->m_pPnlDefNum[k];//pDoc->
+	for (k = 0; k < m_nTotPnl; k++)
+	{
+		if (m_pReelMap->m_pPnlDefNum)
+			m_pPnlDefNum[k] = m_pReelMap->m_pPnlDefNum[k];//pDoc->
+		else
+			m_pPnlDefNum[k] = 0;
+	}
 }
 
 void CMyGL::ResetRgn()
