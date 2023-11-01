@@ -43,6 +43,7 @@ CEngrave::CEngrave(CString sAddrCli, CString sAddrSvr, CString sPortSvr, CWnd* p
 
 	m_pThread = NULL;
 	m_bTIM_CHECK_CONNECT = FALSE;
+	m_bTIM_MPE_OFFSET_INITPOS_MOVE = FALSE;
 
 	m_bGetOpInfo = FALSE; m_bGetInfo = FALSE; m_bGetEngInfo = FALSE;
 	m_bGetSignalMain = FALSE; m_bGetSignalTorqueMotor = FALSE; m_bGetSignalInductionMotor = FALSE; m_bGetSignalCore150mm = FALSE; m_bGetSignalEtc = FALSE;
@@ -57,6 +58,7 @@ CEngrave::CEngrave(CString sAddrCli, CString sAddrSvr, CString sPortSvr, CWnd* p
 CEngrave::~CEngrave()
 {
 	m_bTIM_CHECK_CONNECT = FALSE;
+	m_bTIM_MPE_OFFSET_INITPOS_MOVE = FALSE;
 
 	if (m_pClient)
 	{
@@ -424,6 +426,29 @@ void CEngrave::OnTimer(UINT_PTR nIDEvent)
 				SetTimer(TIM_CHECK_CONNECT, DELAY_CHECK_CONNECT, NULL);
 		}
 		break;
+	case TIM_MPE_OFFSET_INITPOS_MOVE:
+		KillTimer(TIM_MPE_OFFSET_INITPOS_MOVE);
+		if (m_bTIM_MPE_OFFSET_INITPOS_MOVE)
+		{
+#ifdef USE_MPE
+			if (pDoc->m_pMpeSignal[3] & (0x01 << 15))
+			{
+				SetTimer(TIM_MPE_OFFSET_INITPOS_MOVE, 100, NULL);
+			}
+			else
+			{
+#ifdef USE_ENGRAVE
+				if (pView && pView->m_pEngrave)
+				{
+					pView->m_pEngrave->Set2DOffsetInitPosMove(FALSE);	//_stSigInx::_2DOffsetInitPosMove
+				}
+#endif
+
+				m_bTIM_MPE_OFFSET_INITPOS_MOVE = FALSE;
+			}
+#endif
+		}
+		break;
 	}
 	CWnd::OnTimer(nIDEvent);
 }
@@ -451,6 +476,8 @@ void CEngrave::GetSysSignal(SOCKET_DATA SockData)
 
 	GetSignalEngraveAutoSequence(SockData);
 	GetSignalMyMsg(SockData);
+
+	GetSignal2dEng(SockData);
 }
 
 void CEngrave::GetSignalDisp(SOCKET_DATA SockData)
@@ -8819,4 +8846,54 @@ void CEngrave::SwMenu01DispDefImg(BOOL bOn)
 	SocketData.nMsgID = _SigInx::_DispDefImg;
 	SocketData.nData1 = bOn ? 1 : 0;
 	SendCommand(SocketData);
+}
+
+
+void CEngrave::Set2DOffsetInitPosMove(BOOL bOn)
+{
+	if (!pDoc)
+		return;
+
+	pDoc->BtnStatus.SettingEng.OffsetInitPosMove = bOn;
+
+	SOCKET_DATA SocketData;
+	SocketData.nCmdCode = _SetSig;
+
+	SocketData.nMsgID = _stSigInx::_2DOffsetInitPosMove;
+	SocketData.nData1 = pDoc->BtnStatus.SettingEng.OffsetInitPosMove ? 1 : 0;
+	SendCommand(SocketData);
+}
+
+void CEngrave::GetSignal2dEng(SOCKET_DATA SockData)
+{
+	int nCmdCode = SockData.nCmdCode;
+	int nMsgId = SockData.nMsgID;
+	CString sVal;
+	long lData;
+
+	if (nCmdCode == _SetSig)
+	{
+		switch (nMsgId)
+		{
+		case _SigInx::_2DOffsetInitPos:
+#ifdef USE_MPE
+			lData = (long)(pDoc->GetOffsetInitPos() * 1000.0); // WorkingInfo.Motion.sOffsetInitPos
+			pView->m_pMpe->Write(_T("ML44040"), lData);	// 각인부, 검사부, 마킹부 offset 이송 값 (단위 mm * 1000)
+#endif
+			break;
+
+		case _SigInx::_2DOffsetInitPosMove:
+			pDoc->BtnStatus.SettingEng.OffsetInitPosMove = (SockData.nData1 > 0) ? TRUE : FALSE;
+			if (pDoc->BtnStatus.SettingEng.OffsetInitPosMove)
+			{
+				m_bTIM_MPE_OFFSET_INITPOS_MOVE = TRUE;
+				SetTimer(TIM_MPE_OFFSET_INITPOS_MOVE, 100, NULL);
+#ifdef USE_MPE
+				if (pView->m_pMpe)
+					pView->m_pMpe->Write(_T("MB44013F"), 1); // 각인부, 검사부, 마킹부 offset 이송 ON(PC가 On시키고, PLC가 확인하고 Off시킴)
+#endif
+			}
+			break;
+		}
+	}
 }

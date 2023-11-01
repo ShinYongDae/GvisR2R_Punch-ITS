@@ -3165,7 +3165,7 @@ void CGvisR2R_PunchView::DispThreadTick()
 		return;
 
 	CString str;
-	//	str.Format(_T("%d"), m_dwThreadTick[1]);//, m_dwThreadTick[1], m_dwThreadTick[2]);
+	//str.Format(_T("%d"), m_dwThreadTick[1]);//, m_dwThreadTick[1], m_dwThreadTick[2]);
 	//str.Format(_T("%d,%d,%d"), m_dwThreadTick[0], m_dwThreadTick[1], m_dwThreadTick[2]); // MK, Collision, Enc
 	//if (m_sTick != str)
 	{
