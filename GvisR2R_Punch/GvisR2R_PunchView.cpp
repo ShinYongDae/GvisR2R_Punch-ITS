@@ -57,6 +57,9 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	// TODO: 여기에 생성 코드를 추가합니다.
 	pView = this;
 
+	m_sAoiUpAlarmReStartMsg = _T(""); m_sAoiDnAlarmReStartMsg = _T("");
+	m_sAoiUpAlarmReTestMsg = _T(""); m_sAoiDnAlarmReTestMsg = _T("");
+
 	m_bShift2Mk = FALSE;
 
 	m_bBufEmpty[0] = FALSE;
@@ -5048,6 +5051,28 @@ void CGvisR2R_PunchView::ChkBufDn()
 	}
 }
 
+int CGvisR2R_PunchView::GetAoiUpAutoSerial()
+{
+	int nSerial = 0;
+	CString sPath = pDoc->WorkingInfo.System.sPathAoiUpStatusInfo;
+	TCHAR szData[512];
+
+	if (0 < ::GetPrivateProfileString(_T("Auto"), _T("nSerial"), NULL, szData, sizeof(szData), sPath))
+		nSerial = _ttoi(szData);
+	else
+		nSerial = -1;
+
+	return nSerial;
+}
+
+void CGvisR2R_PunchView::SetAoiUpAutoSerial(int nSerial)
+{
+	CString sPath = pDoc->WorkingInfo.System.sPathAoiUpStatusInfo;
+	CString str;
+	str.Format(_T("%d"), nSerial);
+	::WritePrivateProfileString(_T("Auto"), _T("nSerial"), str, sPath);
+}
+
 int CGvisR2R_PunchView::GetAoiUpAutoStep()
 {
 	TCHAR szData[512];
@@ -5064,6 +5089,28 @@ void CGvisR2R_PunchView::SetAoiUpAutoStep(int nStep)
 	CString str;
 	str.Format(_T("%d"), nStep);
 	::WritePrivateProfileString(_T("Set"), _T("nStep"), str, sPath);
+}
+
+int CGvisR2R_PunchView::GetAoiDnAutoSerial()
+{
+	int nSerial = 0;
+	CString sPath = pDoc->WorkingInfo.System.sPathAoiDnStatusInfo;
+	TCHAR szData[512];
+
+	if (0 < ::GetPrivateProfileString(_T("Auto"), _T("nSerial"), NULL, szData, sizeof(szData), sPath))
+		nSerial = _ttoi(szData);
+	else
+		nSerial = -1;
+
+	return nSerial;
+}
+
+void CGvisR2R_PunchView::SetAoiDnAutoSerial(int nSerial)
+{
+	CString sPath = pDoc->WorkingInfo.System.sPathAoiDnStatusInfo;
+	CString str;
+	str.Format(_T("%d"), nSerial);
+	::WritePrivateProfileString(_T("Auto"), _T("nSerial"), str, sPath);
 }
 
 int CGvisR2R_PunchView::GetAoiDnAutoStep()
@@ -5095,12 +5142,34 @@ CString CGvisR2R_PunchView::GetAoiUpAlarmRestartMsg()
 	return sMsg;
 }
 
+CString CGvisR2R_PunchView::GetAoiUpAlarmReTestMsg()
+{
+	CString sMsg = _T("Not Find Message.");
+	TCHAR szData[512];
+	CString sPath = PATH_ALARM;
+	if (0 < ::GetPrivateProfileString(_T("20"), _T("9"), NULL, szData, sizeof(szData), sPath))
+		sMsg = CString(szData);
+
+	return sMsg;
+}
+
 CString CGvisR2R_PunchView::GetAoiDnAlarmRestartMsg()
 {
 	CString sMsg = _T("Not Find Message.");
 	TCHAR szData[512];
 	CString sPath = PATH_ALARM;
 	if (0 < ::GetPrivateProfileString(_T("11"), _T("28"), NULL, szData, sizeof(szData), sPath))
+		sMsg = CString(szData);
+
+	return sMsg;
+}
+
+CString CGvisR2R_PunchView::GetAoiDnAlarmReTestMsg()
+{
+	CString sMsg = _T("Not Find Message.");
+	TCHAR szData[512];
+	CString sPath = PATH_ALARM;
+	if (0 < ::GetPrivateProfileString(_T("20"), _T("10"), NULL, szData, sizeof(szData), sPath))
 		sMsg = CString(szData);
 
 	return sMsg;
@@ -5136,7 +5205,7 @@ void CGvisR2R_PunchView::DoIO()
 			pDoc->Log(pDoc->m_sAlmMsg);
 			MsgBox(pDoc->m_sAlmMsg, 0, 0, DEFAULT_TIME_OUT, FALSE);
 
-			if (pDoc->m_sAlmMsg == GetAoiUpAlarmRestartMsg())
+			if (pDoc->m_sAlmMsg == m_sAoiUpAlarmReStartMsg || pDoc->m_sAlmMsg == m_sAoiUpAlarmReTestMsg)
 			{
 				ChkReTestAlarmOnAoiUp();
 				//SetAoiUpAutoStep(2); // Wait for AOI 검사시작 신호.
@@ -5144,7 +5213,7 @@ void CGvisR2R_PunchView::DoIO()
 				//if(m_pMpe)
 				//	m_pMpe->Write(_T("MB44013B"), 1); // 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off
 			}
-			else if(pDoc->m_sAlmMsg == GetAoiDnAlarmRestartMsg())
+			else if(pDoc->m_sAlmMsg == m_sAoiDnAlarmReStartMsg || pDoc->m_sAlmMsg == m_sAoiDnAlarmReTestMsg)
 			{
 				ChkReTestAlarmOnAoiDn();
 				//SetAoiDnAutoStep(2); // Wait for AOI 검사시작 신호.
@@ -10782,6 +10851,11 @@ BOOL CGvisR2R_PunchView::SetSerialMkInfo(int nSerial, BOOL bDumy)
 
 void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 {
+	m_sAoiUpAlarmReStartMsg = GetAoiUpAlarmRestartMsg();
+	m_sAoiDnAlarmReStartMsg = GetAoiDnAlarmRestartMsg();
+	m_sAoiUpAlarmReTestMsg = GetAoiUpAlarmReTestMsg();
+	m_sAoiDnAlarmReTestMsg = GetAoiDnAlarmReTestMsg();
+
 	pView->m_nDebugStep = 10; pView->DispThreadTick();
 	int nCam, nPoint, kk, a, b;
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
@@ -17959,25 +18033,27 @@ void CGvisR2R_PunchView::DoAutoChkCycleStop()
 			pDoc->Log(pDoc->m_sAlmMsg);
 			MsgBox(pDoc->m_sAlmMsg, 0, 0, DEFAULT_TIME_OUT, FALSE);
 
-			if (pDoc->m_sAlmMsg == GetAoiUpAlarmRestartMsg())
+			if (pDoc->m_sAlmMsg == m_sAoiUpAlarmReStartMsg || pDoc->m_sAlmMsg == m_sAoiUpAlarmReTestMsg)
 			{
-				SetAoiUpAutoStep(2); // Wait for AOI 검사시작 신호.
-				Sleep(300);
-				if (m_pMpe)
-				{
-					m_pMpe->Write(_T("MB44013B"), 1); // 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off
-					pDoc->Log(_T("PC: 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off"));
-				}
+				ChkReTestAlarmOnAoiUp();
+				//SetAoiUpAutoStep(2); // Wait for AOI 검사시작 신호.
+				//Sleep(300);
+				//if (m_pMpe)
+				//{
+				//	m_pMpe->Write(_T("MB44013B"), 1); // 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off
+				//	pDoc->Log(_T("PC: 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off"));
+				//}
 			}
-			else if (pDoc->m_sAlmMsg == GetAoiDnAlarmRestartMsg())
+			else if (pDoc->m_sAlmMsg == m_sAoiDnAlarmReStartMsg || pDoc->m_sAlmMsg == m_sAoiDnAlarmReTestMsg)
 			{
-				SetAoiDnAutoStep(2); // Wait for AOI 검사시작 신호.
-				Sleep(300);
-				if (m_pMpe)
-				{
-					m_pMpe->Write(_T("MB44013C"), 1); // 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off
-					pDoc->Log(_T("PC: 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off"));
-				}
+				ChkReTestAlarmOnAoiDn();
+				//SetAoiDnAutoStep(2); // Wait for AOI 검사시작 신호.
+				//Sleep(300);
+				//if (m_pMpe)
+				//{
+				//	m_pMpe->Write(_T("MB44013C"), 1); // 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off
+				//	pDoc->Log(_T("PC: 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off"));
+				//}
 			}
 		}
 		pDoc->m_sAlmMsg = _T("");
@@ -31567,19 +31643,21 @@ void CGvisR2R_PunchView::DelOverLotEndSerialDn(int nSerial)
 
 void CGvisR2R_PunchView::ChkReTestAlarmOnAoiUp()
 {
+	CString sMsg;
+	sMsg.Format(_T("U%03d"), GetAoiUpAutoSerial());
+	DispStsBar(sMsg, 0);
+
 	int nSerial = m_pBufSerial[0][m_nBufTot[0] - 1];
 
 	if (pView->m_bSerialDecrese)
 	{
 		if (m_nLotEndSerial > 0 && nSerial > m_nLotEndSerial)
 		{
-			//if (pDoc->m_sAlmMsg == GetAoiUpAlarmRestartMsg())
-			{
-				SetAoiUpAutoStep(2); // Wait for AOI 검사시작 신호.
-				Sleep(300);
-				if (m_pMpe)
-					m_pMpe->Write(_T("MB44013B"), 1); // 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off
-			}
+			SetAoiUpAutoStep(2); // Wait for AOI 검사시작 신호.
+			Sleep(300);
+			if (m_pMpe)
+				m_pMpe->Write(_T("MB44013B"), 1); // 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off : PLC가 처음부터 다시 시작
+			//pDoc->Log(_T("PC: 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off"));
 		}
 		else if(m_nLotEndSerial > 0 && nSerial <= m_nLotEndSerial)
 		{
@@ -31591,18 +31669,17 @@ void CGvisR2R_PunchView::ChkReTestAlarmOnAoiUp()
 	{
 		if (m_nLotEndSerial > 0 && nSerial < m_nLotEndSerial)
 		{
-			//if (pDoc->m_sAlmMsg == GetAoiUpAlarmRestartMsg())
-			{
-				SetAoiUpAutoStep(2); // Wait for AOI 검사시작 신호.
-				Sleep(300);
-				if (m_pMpe)
-					m_pMpe->Write(_T("MB44013B"), 1); // 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off
-			}
+			SetAoiUpAutoStep(2); // Wait for AOI 검사시작 신호.
+			Sleep(300);
+			if (m_pMpe)
+				m_pMpe->Write(_T("MB44013B"), 1); // 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off : PLC가 처음부터 다시 시작
+			//pDoc->Log(_T("PC: 검사부 상부 재작업 (시작신호) : PC가 On시키고 PLC가 Off"));
 		}
 		else if (m_nLotEndSerial > 0 && nSerial >= m_nLotEndSerial)
 		{
 			if (m_pMpe)
 				m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
+			//pDoc->Log(_T("PC: 검사부 상부 재작업 (시작신호) PCR파일 Received : PC가 On시키고 PLC가 Off"));
 		}
 	}
 
@@ -31611,19 +31688,21 @@ void CGvisR2R_PunchView::ChkReTestAlarmOnAoiUp()
 
 void CGvisR2R_PunchView::ChkReTestAlarmOnAoiDn()
 {
+	CString sMsg;
+	sMsg.Format(_T("D%03d"), GetAoiDnAutoSerial());
+	DispStsBar(sMsg, 0);
+
 	int nSerial = m_pBufSerial[1][m_nBufTot[1] - 1];
 
 	if (pView->m_bSerialDecrese)
 	{
 		if (m_nLotEndSerial > 0 && nSerial > m_nLotEndSerial)
 		{
-			//if (pDoc->m_sAlmMsg == GetAoiDnAlarmRestartMsg())
-			{
-				SetAoiDnAutoStep(2); // Wait for AOI 검사시작 신호.
-				Sleep(300);
-				if (m_pMpe)
-					m_pMpe->Write(_T("MB44013C"), 1); // 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off
-			}
+			SetAoiDnAutoStep(2); // Wait for AOI 검사시작 신호.
+			Sleep(300);
+			if (m_pMpe)
+				m_pMpe->Write(_T("MB44013C"), 1); // 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off : PLC가 처음부터 다시 시작
+			//pDoc->Log(_T("PC: 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off"));
 		}
 		else if(m_nLotEndSerial > 0 && nSerial <= m_nLotEndSerial)
 		{
@@ -31635,13 +31714,11 @@ void CGvisR2R_PunchView::ChkReTestAlarmOnAoiDn()
 	{
 		if (m_nLotEndSerial > 0 && nSerial < m_nLotEndSerial)
 		{
-			//if (pDoc->m_sAlmMsg == GetAoiDnAlarmRestartMsg())
-			{
 				SetAoiDnAutoStep(2); // Wait for AOI 검사시작 신호.
 				Sleep(300);
 				if (m_pMpe)
-					m_pMpe->Write(_T("MB44013C"), 1); // 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off
-			}
+					m_pMpe->Write(_T("MB44013C"), 1); // 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off : PLC가 처음부터 다시 시작
+				//pDoc->Log(_T("PC: 검사부 하부 재작업 (시작신호) : PC가 On시키고 PLC가 Off"));
 		}
 		else if (m_nLotEndSerial > 0 && nSerial >= m_nLotEndSerial)
 		{

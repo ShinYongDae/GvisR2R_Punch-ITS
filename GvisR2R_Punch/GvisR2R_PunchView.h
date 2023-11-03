@@ -148,6 +148,8 @@ typedef CArray<stDispMain, stDispMain> CArDispMain;
 
 class CGvisR2R_PunchView : public CFormView
 {
+	CString m_sAoiUpAlarmReStartMsg, m_sAoiDnAlarmReStartMsg;
+	CString m_sAoiUpAlarmReTestMsg, m_sAoiDnAlarmReTestMsg;
 	BOOL m_bDestroyedView;
 	BOOL m_bBufEmpty[2];
 
@@ -1182,11 +1184,17 @@ public:
 
 	int GetAoiUpAutoStep();
 	void SetAoiUpAutoStep(int nStep);
+	int GetAoiUpAutoSerial();
+	void SetAoiUpAutoSerial(int nSerial);
 	CString GetAoiUpAlarmRestartMsg();
+	CString GetAoiUpAlarmReTestMsg();
 
 	int GetAoiDnAutoStep();
 	void SetAoiDnAutoStep(int nStep);
+	int GetAoiDnAutoSerial();
+	void SetAoiDnAutoSerial(int nSerial);
 	CString GetAoiDnAlarmRestartMsg();
+	CString GetAoiDnAlarmReTestMsg();
 
 	void DelOverLotEndSerialUp(int nSerial);
 	void DelOverLotEndSerialDn(int nSerial);
