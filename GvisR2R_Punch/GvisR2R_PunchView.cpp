@@ -18635,7 +18635,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					pDoc->m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo();
 					if ((pDoc->m_nAoiCamInfoStrPcs[0] == 1 ? TRUE : FALSE) != pDoc->WorkingInfo.System.bStripPcsRgnBin)
 					{
-						if (pDoc->m_nAoiCamInfoStrPcs[0])
+						if (pDoc->m_nAoiCamInfoStrPcs[0] == 1 ? TRUE : FALSE)
 							pView->MsgBox(_T("현재 마킹부는 일반 모드 인데, \r\n상면 AOI는 DTS 모드에서 검사를 진행하였습니다."));
 						else
 							pView->MsgBox(_T("현재 마킹부는 DTS 모드 인데, \r\n상면 AOI는 일반 모드에서 검사를 진행하였습니다."));
@@ -18643,6 +18643,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 						Stop();
 						TowerLamp(RGB_RED, TRUE);
 						break;
+
 					}
 				}
 			}
@@ -18810,7 +18811,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					pDoc->m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo();
 					if ((pDoc->m_nAoiCamInfoStrPcs[1] == 1 ? TRUE : FALSE) != pDoc->WorkingInfo.System.bStripPcsRgnBin)
 					{
-						if (pDoc->m_nAoiCamInfoStrPcs[1])
+						if (pDoc->m_nAoiCamInfoStrPcs[1] == 1 ? TRUE : FALSE)
 							pView->MsgBox(_T("현재 마킹부는 일반 모드 인데, \r\n하면 AOI는 DTS 모드에서 검사를 진행하였습니다."));
 						else
 							pView->MsgBox(_T("현재 마킹부는 DTS 모드 인데, \r\n하면 AOI는 일반 모드에서 검사를 진행하였습니다."));
