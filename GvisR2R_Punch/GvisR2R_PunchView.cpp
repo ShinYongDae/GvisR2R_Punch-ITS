@@ -18643,6 +18643,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 						Stop();
 						TowerLamp(RGB_RED, TRUE);
 						break;
+
 					}
 				}
 			}
