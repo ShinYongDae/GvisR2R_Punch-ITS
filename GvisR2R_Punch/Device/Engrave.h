@@ -170,6 +170,7 @@ public:
 	void SetTotReelLen();
 	void SetOnePnlLen();
 	void SetTempPause();
+	void SetUse380mm();
 	void SetTempStopLen();
 	void SetLotCut();
 	void SetLotCutLen();

@@ -1664,6 +1664,7 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 #endif
 			}
 			break;
+
 		case _SigInx::_DoorUncoiler:
 			if (pDoc->WorkingInfo.LastJob.bUclDrSen != (SockData.nData1 > 0) ? TRUE : FALSE)
 			{
@@ -1723,6 +1724,17 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 #ifdef USE_MPE
 				if (pView && pView->m_pMpe)
 					pView->m_pMpe->Write(_T("MB44016E"), pDoc->WorkingInfo.LastJob.bUseEngraveUltrasonic ? 1 : 0);
+#endif
+			}
+			break;
+		case _SigInx::_Use380mm:
+			if (pDoc->WorkingInfo.LastJob.bUse380mm != (SockData.nData1 > 0) ? TRUE : FALSE)
+			{
+				m_bGetOpInfo = TRUE;
+				pDoc->WorkingInfo.LastJob.bUse380mm = (SockData.nData1 > 0) ? TRUE : FALSE;
+#ifdef USE_MPE
+				if (pView && pView->m_pMpe)
+					pView->m_pMpe->Write(_T("MB440177"), pDoc->WorkingInfo.LastJob.bUse380mm ? 1 : 0);	// EPC실린더(제품소->OFF/제품대->ON)
 #endif
 			}
 			break;
@@ -4369,6 +4381,19 @@ void CEngrave::SetTempPause()
 
 	SocketData.nMsgID = _SigInx::_TempPause;
 	SocketData.nData1 = pDoc->WorkingInfo.LastJob.bTempPause ? 1 : 0;
+	SendCommand(SocketData);
+}
+
+void CEngrave::SetUse380mm()
+{
+	if (!pDoc)
+		return;
+
+	SOCKET_DATA SocketData;
+	SocketData.nCmdCode = _SetSig;
+
+	SocketData.nMsgID = _SigInx::_Use380mm;
+	SocketData.nData1 = pDoc->WorkingInfo.LastJob.bUse380mm ? 1 : 0;
 	SendCommand(SocketData);
 }
 
@@ -8878,7 +8903,7 @@ void CEngrave::GetSignal2dEng(SOCKET_DATA SockData)
 		case _SigInx::_2DOffsetInitPos:
 #ifdef USE_MPE
 			lData = (long)(pDoc->GetOffsetInitPos() * 1000.0); // WorkingInfo.Motion.sOffsetInitPos
-			pView->m_pMpe->Write(_T("ML44040"), lData);	// 각인부, 검사부, 마킹부 offset 이송 값 (단위 mm * 1000)
+			pView->m_pMpe->Write(_T("ML44046"), lData);	// 각인부, 검사부, 마킹부 offset 이송 값 (단위 mm * 1000)
 #endif
 			break;
 

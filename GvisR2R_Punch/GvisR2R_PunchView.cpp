@@ -673,14 +673,15 @@ void CGvisR2R_PunchView::OnInitialUpdate()
 	//_stprintf(szFile, _T("%s\\*.*"), sDir);
 	//if (!finder.FindFile(sDir)) // Check 1st Spec folder is
 
-	//if(!pDoc->DirectoryExists(sDir))
-	//{
-	//	sMsg.Format(_T("캠마스터에 스펙폴더가 없습니다. : \n 1.SpecFolder : %s"), sDir);
-	//	pView->ClrDispMsg();
-	//	AfxMessageBox(sMsg, MB_ICONSTOP | MB_OK);
-	//	ExitProgram();
-	//	return;
-	//}
+	//if (!finder.FindFile(sDir)) // Check 1st Spec folder is
+	if(!pDoc->DirectoryExists(sDir))
+	{
+		sMsg.Format(_T("캠마스터에 스펙폴더가 없습니다. : \n 1.SpecFolder : %s"), sDir);
+		pView->ClrDispMsg();
+		AfxMessageBox(sMsg, MB_ICONSTOP | MB_OK);
+		ExitProgram();
+		return;
+	}
 #endif
 
 	if (!m_bTIM_INIT_VIEW)
@@ -864,7 +865,6 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 				if (m_pMotion->IsHomeDone())// && m_pMotion->IsHomeDone(MS_MKFD))
 				{
 					m_nStepInitView++;
-					Sleep(300);
 				}
 
 				sMsg.Format(_T("X0(%s) , Y0(%s)\r\nX1(%s) , Y1(%s)"), m_pMotion->IsHomeDone(MS_X0) ? _T("Done") : _T("Doing"),
@@ -872,6 +872,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 					m_pMotion->IsHomeDone(MS_X1) ? _T("Done") : _T("Doing"),
 					m_pMotion->IsHomeDone(MS_Y1) ? _T("Done") : _T("Doing"));
 				DispMsg(sMsg, _T("Homming"), RGB_GREEN, 2000, TRUE);
+				Sleep(300);
 			}
 			else
 			{
@@ -23816,6 +23817,8 @@ void CGvisR2R_PunchView::InitPLC()
 	lData = (long)(_tstof(pDoc->WorkingInfo.LastJob.sUltraSonicCleannerStTim) * 100.0);
 	m_pMpe->Write(_T("MW05940"), lData);	// AOI_Dn (단위 [초] * 100) : 1 is 10 mSec.
 	m_pMpe->Write(_T("MW05942"), lData);	// AOI_Up (단위 [초] * 100) : 1 is 10 mSec.
+	
+	m_pMpe->Write(_T("MB440177"), pDoc->WorkingInfo.LastJob.bUse380mm ? 1 : 0);	// EPC실린더(제품소->OFF/제품대->ON)
 #endif
 }
 

@@ -1828,6 +1828,11 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	else
 		WorkingInfo.LastJob.bBufDrSen = TRUE;
 
+	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Use 380mm Roll"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.LastJob.bUse380mm = _ttoi(szData) ? TRUE : FALSE;
+	else
+		WorkingInfo.LastJob.bUse380mm = FALSE;
+
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Use Display Marked Piece"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.bDispMkPcs = _ttoi(szData) ? TRUE : FALSE;
 	else
@@ -3711,6 +3716,9 @@ void CGvisR2R_PunchDoc::SaveWorkingInfo()
 
 	sData.Format(_T("%d"), WorkingInfo.LastJob.bBufDrSen ? 1 : 0);
 	::WritePrivateProfileString(_T("Last Job"), _T("Use Buffer Door Sensor"), sData, sPath);
+
+	sData.Format(_T("%d"), WorkingInfo.LastJob.bUse380mm ? 1 : 0);
+	::WritePrivateProfileString(_T("Last Job"), _T("Use 380mm Roll"), sData, sPath);
 
 	sData.Format(_T("%d"), WorkingInfo.LastJob.bDispMkPcs ? 1 : 0);
 	::WritePrivateProfileString(_T("Last Job"), _T("Use Display Marked Piece"), sData, sPath);
@@ -9708,7 +9716,7 @@ void CGvisR2R_PunchDoc::SetOffsetInitPos(double dLen)
 	::WritePrivateProfileString(_T("Motion"), _T("INIT_POSITION_OFFSET"), sData, sPath);
 #ifdef USE_MPE
 	long lData = (long)(_tstof(WorkingInfo.Motion.sOffsetInitPos) * 1000.0);
-	pView->m_pMpe->Write(_T("ML44040"), lData);	// 각인부, 검사부, 마킹부 offset 이송 값 (단위 mm * 1000)
+	pView->m_pMpe->Write(_T("ML44046"), lData);	// 각인부, 검사부, 마킹부 offset 이송 값 (단위 mm * 1000)
 #endif
 }
 
