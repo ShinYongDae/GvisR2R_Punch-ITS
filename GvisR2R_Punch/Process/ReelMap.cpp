@@ -6943,29 +6943,31 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		}
 		break;
 	case RMAP_INNER_UP:
+		nLayer = RMAP_UP;
 		sSide = _T("T");
-		if (pDoc->m_pPcrInner[0])
+		if (pDoc->m_pPcr[nLayer])
 		{
-			if (pDoc->m_pPcrInner[0][nIdx])
-				nTotDefPcs = pDoc->m_pPcrInner[0][nIdx]->m_nTotDef;
+			if (pDoc->m_pPcr[nLayer][nIdx])
+				nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
 		}
-		//if (pDoc->m_pPcr[nLayer])
+		//if (pDoc->m_pPcrInner[0])
 		//{
-		//	if (pDoc->m_pPcr[nLayer][nIdx])
-		//		nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
+		//	if (pDoc->m_pPcrInner[0][nIdx])
+		//		nTotDefPcs = pDoc->m_pPcrInner[0][nIdx]->m_nTotDef;
 		//}
 		break;
 	case RMAP_INNER_DN:
+		nLayer = RMAP_DN;
 		sSide = _T("B");
-		if (pDoc->m_pPcrInner[1])
+		if (pDoc->m_pPcr[nLayer])
 		{
-			if (pDoc->m_pPcrInner[1][nIdx])
-				nTotDefPcs = pDoc->m_pPcrInner[1][nIdx]->m_nTotDef;
+			if (pDoc->m_pPcr[nLayer][nIdx])
+				nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
 		}
-		//if (pDoc->m_pPcr[nLayer])
+		//if (pDoc->m_pPcrInner[1])
 		//{
-		//	if (pDoc->m_pPcr[nLayer][nIdx])
-		//		nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
+		//	if (pDoc->m_pPcrInner[1][nIdx])
+		//		nTotDefPcs = pDoc->m_pPcrInner[1][nIdx]->m_nTotDef;
 		//}
 		break;
 	}

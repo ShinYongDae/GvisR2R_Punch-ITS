@@ -150,6 +150,7 @@ public:
 	// SetOpInfo()
 	void SetOpName();
 	void SetDualTest();
+	void SetDispContRun();
 	void SetSampleTest();
 	void SetSampleShotNum();
 	void SetTestMode();

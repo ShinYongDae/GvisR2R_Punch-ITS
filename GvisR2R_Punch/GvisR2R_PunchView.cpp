@@ -661,6 +661,7 @@ void CGvisR2R_PunchView::OnInitialUpdate()
 	pDoc->LoadDataInfo();
 	if (!LoadMySpec())
 		LoadMySpec();
+	pDoc->GetMkInfo();
 
 #ifdef USE_CAM_MASTER
 	CFileFind finder;
@@ -10857,6 +10858,9 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 	m_sAoiUpAlarmReTestMsg = GetAoiUpAlarmReTestMsg();
 	m_sAoiDnAlarmReTestMsg = GetAoiDnAlarmReTestMsg();
 
+	SetAoiUpAutoStep(0);
+	SetAoiDnAutoStep(0);
+
 	pView->m_nDebugStep = 10; pView->DispThreadTick();
 	int nCam, nPoint, kk, a, b;
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
@@ -18209,7 +18213,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		m_nStepAuto++;
 		break;
 	case 1:
-		if (IsReady())		// 운전준비
+		if (IsReady() || IsAuto())		// 운전준비
 		{
 			TowerLamp(RGB_YELLOW, TRUE, TRUE);
 			m_nStepAuto++;
@@ -24837,7 +24841,7 @@ BOOL CGvisR2R_PunchView::IsLastJob(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : AO
 void CGvisR2R_PunchView::MonPlcSignal()
 {
 #ifdef USE_MPE
-	if (pDoc->m_pMpeSignal[3] & (0x01 << 0))		// 각인부 2D Leading 작업완료(PLC가 ON/OFF)
+	if (pDoc->m_pMpeSignal[3] & (0x01 << 0))		// 각인부 2D Leading 작업완료(PLC가 ON/OFF) - MB440130
 	{
 		if (m_pDlgMenu03)
 			m_pDlgMenu03->SetLed(0, TRUE);
@@ -24848,7 +24852,7 @@ void CGvisR2R_PunchView::MonPlcSignal()
 			m_pDlgMenu03->SetLed(0, FALSE);
 	}
 
-	if (pDoc->m_pMpeSignal[3] & (0x01 << 2))		// 각인부 Laser 작업완료(PLC가 ON/OFF)
+	if (pDoc->m_pMpeSignal[3] & (0x01 << 2))		// 각인부 Laser 작업완료(PLC가 ON/OFF) - MB440132
 	{
 		if (m_pDlgMenu03)
 			m_pDlgMenu03->SetLed(1, TRUE);
@@ -24859,7 +24863,7 @@ void CGvisR2R_PunchView::MonPlcSignal()
 			m_pDlgMenu03->SetLed(1, FALSE);
 	}
 
-	if (pDoc->m_pMpeSignal[3] & (0x01 << 3))		// 검사부 상면 검사 작업완료(PLC가 ON/OFF)
+	if (pDoc->m_pMpeSignal[3] & (0x01 << 3))		// 검사부 상면 검사 작업완료(PLC가 ON/OFF) - MB440133
 	{
 		if (m_pDlgMenu03)
 			m_pDlgMenu03->SetLed(2, TRUE);
@@ -24870,7 +24874,7 @@ void CGvisR2R_PunchView::MonPlcSignal()
 			m_pDlgMenu03->SetLed(2, FALSE);
 	}
 
-	if (pDoc->m_pMpeSignal[3] & (0x01 << 4))		// 검사부 하면 검사 작업완료(PLC가 ON/OFF)
+	if (pDoc->m_pMpeSignal[3] & (0x01 << 4))		// 검사부 하면 검사 작업완료(PLC가 ON/OFF) - MB440134
 	{
 		if (m_pDlgMenu03)
 			m_pDlgMenu03->SetLed(3, TRUE);
@@ -24881,7 +24885,7 @@ void CGvisR2R_PunchView::MonPlcSignal()
 			m_pDlgMenu03->SetLed(3, FALSE);
 	}
 
-	if (pDoc->m_pMpeSignal[3] & (0x01 << 5))		// 마킹부 마킹 작업완료(PLC가 ON/OFF)
+	if (pDoc->m_pMpeSignal[3] & (0x01 << 5))		// 마킹부 마킹 작업완료(PLC가 ON/OFF) - MB440135
 	{
 		if (m_pDlgMenu03)
 			m_pDlgMenu03->SetLed(4, TRUE);
@@ -24892,7 +24896,32 @@ void CGvisR2R_PunchView::MonPlcSignal()
 			m_pDlgMenu03->SetLed(4, FALSE);
 	}
 
+	if (pDoc->m_pMpeSignal[2] & (0x01 << 5))		// 내층 제품시 이어가기 상태 표시 - MB440125
+	{
+		DispContRun(TRUE);
+	}
+	else
+	{
+		DispContRun(FALSE);
+	}
+
 #endif
+}
+
+
+void CGvisR2R_PunchView::DispContRun(BOOL bOn)
+{
+	if (pDoc->WorkingInfo.LastJob.bDispContRun != bOn)
+	{
+		pDoc->WorkingInfo.LastJob.bDispContRun = bOn;
+		pDoc->SetMkInfo(_T("Signal"), _T("DispContRun"), bOn);
+
+#ifdef USE_ENGRAVE
+		if (pView && pView->m_pEngrave)
+			pView->m_pEngrave->SetDispContRun();	//_stSigInx::_DispContRun
+#endif
+
+	}
 }
 
 void CGvisR2R_PunchView::MonDispMain()
@@ -30915,22 +30944,24 @@ void CGvisR2R_PunchView::UpdateRMapInnerUp()
 {
 	if (pDoc->GetTestMode() == MODE_INNER)
 	{
-		//if(pDoc->m_pReelMapInnerUp)
-		//	pDoc->m_pReelMapInnerUp->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_INNER_UP);
+		//if (pDoc->m_pReelMapInnerUp)
+		//	pDoc->m_pReelMapInnerUp->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_UP);
 		if (pDoc->m_pReelMapUp)
 			pDoc->m_pReelMapUp->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_INNER_UP);
 	}
 
 	if (pDoc->GetTestMode() == MODE_OUTER)
 	{
-		if(pDoc->m_pReelMapInnerUp)
-			pDoc->m_pReelMapInnerUp->Write(m_nSerialRmapInnerUpdate); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+		if (pDoc->m_pReelMapUp)
+			pDoc->m_pReelMapUp->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_UP);
+		//if(pDoc->m_pReelMapInnerUp)
+		//	pDoc->m_pReelMapInnerUp->Write(m_nSerialRmapInnerUpdate); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 			//pDoc->m_pReelMapInnerUp->Write(m_nSerialRmapInnerUpdate, 0, m_sPathRmapInnerUpdate[0]); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 
 		//if (pDoc->m_pReelMapInnerUp)
 		//	pDoc->m_pReelMapInnerUp->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_INNER_UP);
-		if (pDoc->m_pReelMapInnerUp)
-			pDoc->m_pReelMapInnerUp->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_UP);
+		//if (pDoc->m_pReelMapInnerUp)
+		//	pDoc->m_pReelMapInnerUp->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_UP);
 	}
 }
 
@@ -30946,14 +30977,16 @@ void CGvisR2R_PunchView::UpdateRMapInnerDn()
 
 	if (pDoc->GetTestMode() == MODE_OUTER)
 	{
-		if (pDoc->m_pReelMapInnerDn)
-			pDoc->m_pReelMapInnerDn->Write(m_nSerialRmapInnerUpdate); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+		if (pDoc->m_pReelMapDn)
+			pDoc->m_pReelMapDn->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_DN);
+		//if (pDoc->m_pReelMapInnerDn)
+		//	pDoc->m_pReelMapInnerDn->Write(m_nSerialRmapInnerUpdate); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 			//pDoc->m_pReelMapInnerDn->Write(m_nSerialRmapInnerUpdate, 1, m_sPathRmapInnerUpdate[1]); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 
 		//if (pDoc->m_pReelMapInnerDn)
 		//	pDoc->m_pReelMapInnerDn->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_INNER_DN);
-		if (pDoc->m_pReelMapInnerDn)
-			pDoc->m_pReelMapInnerDn->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_DN);
+		//if (pDoc->m_pReelMapInnerDn)
+		//	pDoc->m_pReelMapInnerDn->MakeItsFile(m_nSerialRmapInnerUpdate, RMAP_DN);
 	}
 }
 

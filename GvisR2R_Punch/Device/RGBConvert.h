@@ -122,8 +122,6 @@ public:
 		PixelFormat_ = frame.frameInfo.pixelFormat;
 		BlockId_ = frame.frameInfo.blockId;
 
-		// Mono8无需转换直接源数据显示
-		// Mono8 does not need to convert direct source data display
 		if (frame.frameInfo.pixelFormat == gvspPixelMono8)
 		{
 			memcpy(Buffer_, frame.pData, DataSize_);

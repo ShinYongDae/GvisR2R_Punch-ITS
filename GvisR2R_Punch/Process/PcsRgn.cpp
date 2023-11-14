@@ -314,6 +314,7 @@ void CPcsRgn::GetPcsRgn(int nC, int nR, int &nPcsId, CRect &ptRect)
 		nPcsId = -1;
 }
 
+
 BOOL CPcsRgn::GetMkMatrix(int nPcsId, int &nC, int &nR)
 {
 	int nNodeX = nCol;

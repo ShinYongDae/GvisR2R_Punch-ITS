@@ -769,6 +769,7 @@ struct stLastJob
 	BOOL bVelEngraveUltrasonic, bVelAoiDnUltrasonic;
 	CString sCurrentShotNum, sSettingShotNum;
 	int nAlarmTimePunch, nAlarmTimeAoi;
+	BOOL bDispContRun;
 
 	stLastJob()
 	{
@@ -824,6 +825,7 @@ struct stLastJob
 		sCurrentShotNum = _T(""); sSettingShotNum = _T("");
 
 		nAlarmTimePunch = 10800; nAlarmTimeAoi = 10800;
+		bDispContRun = FALSE;
 	}
 };
 

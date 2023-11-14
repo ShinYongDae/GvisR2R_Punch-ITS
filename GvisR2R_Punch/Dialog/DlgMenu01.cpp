@@ -2474,13 +2474,24 @@ void CDlgMenu01::InitStcTitle()
 	myStcTitle[67].SubclassDlgItem(IDC_STC_TQ_L, this);
 	myStcTitle[68].SubclassDlgItem(IDC_STC_TQ_R, this);
 
+	myStcTitle[69].SubclassDlgItem(IDC_STC_380mm, this);
+
 	for(i=65; i<MAX_MENU01_STC_TITLE; i++)
 	{
 		myStcTitle[i].SetFontName(_T("Arial"));
 		myStcTitle[i].SetFontSize(12);
-		myStcTitle[i].SetFontBold(FALSE);
-		myStcTitle[i].SetTextColor(RGB_BLACK);
-		myStcTitle[i].SetBkColor(RGB_LTDKORANGE);
+		if (i == 69)
+		{
+			myStcTitle[i].SetFontBold(TRUE);
+			myStcTitle[i].SetTextColor(RGB_YELLOW);
+			myStcTitle[i].SetBkColor(RGB_RED);
+		}
+		else
+		{
+			myStcTitle[i].SetFontBold(FALSE);
+			myStcTitle[i].SetTextColor(RGB_BLACK);
+			myStcTitle[i].SetBkColor(RGB_LTDKORANGE);
+		}
 	}
 }
 
@@ -3245,6 +3256,10 @@ void CDlgMenu01::UpdateData()
 
 	((CButton*)GetDlgItem(IDC_CHK_2LAYER))->SetCheck(pDoc->WorkingInfo.LastJob.bUse2Layer);
 
+	if(pDoc->WorkingInfo.LastJob.bUse380mm)
+		GetDlgItem(IDC_STC_380mm)->ShowWindow(SW_SHOW);
+	else
+		GetDlgItem(IDC_STC_380mm)->ShowWindow(SW_HIDE);
 }
 
 void CDlgMenu01::UpdateWorking()

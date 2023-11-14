@@ -4121,6 +4121,19 @@ void CEngrave::SetDualTest()
 	SendCommand(SocketData);
 }
 
+void CEngrave::SetDispContRun()
+{
+	if (!pDoc)
+		return;
+
+	SOCKET_DATA SocketData;
+	SocketData.nCmdCode = _SetSig;
+
+	SocketData.nMsgID = _SigInx::_DispContRun;
+	SocketData.nData1 = pDoc->WorkingInfo.LastJob.bDispContRun ? 1 : 0;
+	SendCommand(SocketData);
+}
+
 void CEngrave::SetSampleTest()
 {
 	if (!pDoc)

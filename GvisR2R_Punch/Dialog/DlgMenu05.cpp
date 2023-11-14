@@ -339,7 +339,7 @@ BOOL CDlgMenu05::OnInitDialog()
 	InitModel();
 
 	GetDlgItem(IDC_BTN_MES)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_BTN_SAVE4)->ShowWindow(SW_HIDE);
+	//GetDlgItem(IDC_BTN_SAVE4)->ShowWindow(SW_HIDE);
 
 	ShowDlg(IDD_DLG_UTIL_01);
 	OnCheck1();
@@ -2535,12 +2535,22 @@ void CDlgMenu05::MakeIts()
 	CFileFind cFile2;
 	bExist = cFile2.FindFile(sPathReelmapUp);
 	if (bExist)
-		nLayer = RMAP_UP;
+	{
+		if (pDoc->GetTestMode() == MODE_INNER)
+			nLayer = RMAP_INNER_UP;
+		else
+			nLayer = RMAP_UP;
+	}
 	else
 	{
 		bExist = cFile2.FindFile(sPathReelmapDn);
 		if (bExist)
-			nLayer = RMAP_DN;
+		{
+			if (pDoc->GetTestMode() == MODE_INNER)
+				nLayer = RMAP_INNER_DN;
+			else
+				nLayer = RMAP_DN;
+		}
 		else
 			return; // Layer속성의 릴맵이 존재하지 않음.
 	}
@@ -2631,6 +2641,8 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 
 	int nTotDefPcs = 0;
 
+
+
 	switch (nLayer)
 	{
 	case RMAP_UP:
@@ -2650,30 +2662,32 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 		}
 		break;
 	case RMAP_INNER_UP:
+		nLayer = RMAP_UP;
 		sSide = _T("T");
-		if (pDoc->m_pPcrInner[0])
-		{
-			if (pDoc->m_pPcrInner[0][nIdx])
-				nTotDefPcs = pDoc->m_pPcrInner[0][nIdx]->m_nTotDef;
-		}
-		//if (pDoc->m_pPcr[nLayer])
+		//if (pDoc->m_pPcrInner[0])
 		//{
-		//	if (pDoc->m_pPcr[nLayer][nIdx])
-		//		nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
+		//	if (pDoc->m_pPcrInner[0][nIdx])
+		//		nTotDefPcs = pDoc->m_pPcrInner[0][nIdx]->m_nTotDef;
 		//}
+		if (pDoc->m_pPcr[nLayer])
+		{
+			if (pDoc->m_pPcr[nLayer][nIdx])
+				nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
+		}
 		break;
 	case RMAP_INNER_DN:
+		nLayer = RMAP_DN;
 		sSide = _T("B");
-		if (pDoc->m_pPcrInner[1])
-		{
-			if (pDoc->m_pPcrInner[1][nIdx])
-				nTotDefPcs = pDoc->m_pPcrInner[1][nIdx]->m_nTotDef;
-		}
-		//if (pDoc->m_pPcr[nLayer])
+		//if (pDoc->m_pPcrInner[1])
 		//{
-		//	if (pDoc->m_pPcr[nLayer][nIdx])
-		//		nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
+		//	if (pDoc->m_pPcrInner[1][nIdx])
+		//		nTotDefPcs = pDoc->m_pPcrInner[1][nIdx]->m_nTotDef;
 		//}
+		if (pDoc->m_pPcr[nLayer])
+		{
+			if (pDoc->m_pPcr[nLayer][nIdx])
+				nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
+		}
 		break;
 	}
 
@@ -4089,19 +4103,19 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			{
 				pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
 
-				//switch (m_Master[0].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+				//switch (pDoc->m_Master[0].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
 				//{
 				//case 0:
-				//	m_pPcr[0][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+				//	pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
 				//	break;
 				//case 1:
-				//	m_pPcr[0][nIdx]->m_pDefPcs[i] = MirrorLR(_tstoi(strPieceID));
+				//	pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = pDoc->MirrorLR(_tstoi(strPieceID));
 				//	break;
 				//case 3:
-				//	m_pPcr[0][nIdx]->m_pDefPcs[i] = Rotate180(_tstoi(strPieceID));
+				//	pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = pDoc->Rotate180(_tstoi(strPieceID));
 				//	break;
 				//default:
-				//	m_pPcr[0][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+				//	pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
 				//	break;
 				//}
 			}
@@ -4161,6 +4175,7 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			strFileData.Delete(0, nTemp + 1);
 			nFileSize = nFileSize - nTemp - 1;
 			pDoc->m_pPcr[0][nIdx]->m_pMk[i] = _tstoi(strMarkingCode);
+
 		}
 	}
 
@@ -4401,19 +4416,19 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			{
 				pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
 
-				//switch (m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+				//switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
 				//{
 				//case 0:
-				//	m_pPcr[1][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+				//	pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
 				//	break;
 				//case 1:
-				//	m_pPcr[1][nIdx]->m_pDefPcs[i] = MirrorLR(_tstoi(strPieceID));
+				//	pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = pDoc->MirrorLR(_tstoi(strPieceID));
 				//	break;
 				//case 3:
-				//	m_pPcr[1][nIdx]->m_pDefPcs[i] = Rotate180(_tstoi(strPieceID));
+				//	pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = pDoc->Rotate180(_tstoi(strPieceID));
 				//	break;
 				//default:
-				//	m_pPcr[1][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+				//	pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
 				//	break;
 				//}
 			}
@@ -4444,7 +4459,8 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			pDoc->m_pPcr[1][nIdx]->m_pDefType[i] = _tstoi(strBadName);
 
 			// Temp for ITS - m_pPcr[0][nIdx]->m_pDefPcs[i] = Rotate180(_tstoi(strPieceID));
-			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->Rotate180(pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i]), nC, nR);
+			//pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->Rotate180(pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i]), nC, nR);
+			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i], nC, nR);
 			pDoc->m_pPcr[1][nIdx]->m_arDefType[nR][nC] = pDoc->m_pPcr[1][nIdx]->m_pDefType[i];
 
 			// CellNum
@@ -4474,6 +4490,7 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			strFileData.Delete(0, nTemp + 1);
 			nFileSize = nFileSize - nTemp - 1;
 			pDoc->m_pPcr[1][nIdx]->m_pMk[i] = _tstoi(strMarkingCode);
+
 		}
 	}
 

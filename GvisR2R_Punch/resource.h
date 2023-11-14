@@ -675,6 +675,7 @@
 #define IDC_STC_ALN3                    1208
 #define IDC_CHK_66                      1208
 #define IDC_BTN_BUFF_INIT_MOVE2         1208
+#define IDC_STC_380mm                   1208
 #define IDC_CHK_010                     1209
 #define IDC_STC_MK_POS1_2               1209
 #define IDC_CHK_11                      1209

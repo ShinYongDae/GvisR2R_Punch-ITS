@@ -5761,16 +5761,29 @@ int CGvisR2R_PunchDoc::LoadPCRUp(int nSerial, BOOL bFromShare)	// return : 2(Fai
 
 	if (WorkingInfo.LastJob.sLotUp != strLot || WorkingInfo.LastJob.sEngItsCode != sItsCode)
 	{
+		if (WorkingInfo.LastJob.sLotUp != strLot)
+		{
+			WorkingInfo.LastJob.sLotUp = strLot;
+			pView->m_pEngrave->SetLotUpName();
+		}
 		bUpdate = TRUE;
-		WorkingInfo.LastJob.sLotUp = strLot;
 		m_sItsCode = WorkingInfo.LastJob.sEngItsCode = sItsCode;
 	}
 
 	if (WorkingInfo.LastJob.sModelUp != strModel || WorkingInfo.LastJob.sLayerUp != strLayer)
 	{
+		if (WorkingInfo.LastJob.sModelUp != strModel)
+		{
+			WorkingInfo.LastJob.sModelUp = strModel;
+			pView->m_pEngrave->SetModelUpName();
+		}
+		if (WorkingInfo.LastJob.sLayerUp != strLayer)
+		{
+			WorkingInfo.LastJob.sLayerUp = strLayer;
+			pView->m_pEngrave->SetLayerUpName();
+		}
+
 		bUpdate = TRUE;
-		WorkingInfo.LastJob.sModelUp = strModel;
-		WorkingInfo.LastJob.sLayerUp = strLayer;
 
 		//if (!WorkingInfo.LastJob.bDualTest)
 		{
@@ -6089,16 +6102,28 @@ int CGvisR2R_PunchDoc::LoadPCRDn(int nSerial, BOOL bFromShare)	// return : 2(Fai
 
 	if (WorkingInfo.LastJob.sLotDn != strLot || WorkingInfo.LastJob.sEngItsCode != sItsCode)
 	{
+		if (WorkingInfo.LastJob.sLotDn != strLot)
+		{
+			WorkingInfo.LastJob.sLotDn = strLot;
+			pView->m_pEngrave->SetLotDnName();
+		}
 		bUpdate = TRUE;
-		WorkingInfo.LastJob.sLotDn = strLot;
 		m_sItsCode = WorkingInfo.LastJob.sEngItsCode = sItsCode;
 	}
 
 	if (WorkingInfo.LastJob.sModelDn != strModel || WorkingInfo.LastJob.sLayerDn != strLayer)
 	{
+		if (WorkingInfo.LastJob.sModelDn != strModel)
+		{
+			WorkingInfo.LastJob.sModelDn = strModel;
+			pView->m_pEngrave->SetModelUpName();
+		}
+		if (WorkingInfo.LastJob.sLayerDn != strLayer)
+		{
+			WorkingInfo.LastJob.sLayerDn = strLayer;
+			pView->m_pEngrave->SetLayerDnName();
+		}
 		bUpdate = TRUE;
-		WorkingInfo.LastJob.sModelDn = strModel;
-		WorkingInfo.LastJob.sLayerDn = strLayer;
 
 		//if (WorkingInfo.LastJob.bDualTest)
 		//{
@@ -10545,6 +10570,11 @@ void CGvisR2R_PunchDoc::GetMkInfo()
 	if (sPath.IsEmpty())
 		return;
 
+	if (0 < ::GetPrivateProfileString(_T("Signal"), _T("DispContRunI"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.LastJob.bDispContRun = (_ttoi(szData) > 0) ? TRUE : FALSE;
+	else
+		WorkingInfo.LastJob.bDispContRun = FALSE;
+
 	if (0 < ::GetPrivateProfileString(_T("Signal"), _T("Use Dual AOI"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.bDualTest = (_ttoi(szData) > 0) ? TRUE : FALSE;
 
@@ -12803,19 +12833,19 @@ CString CGvisR2R_PunchDoc::GetItsTargetPath(int nSerial, int nLayer)	// RMAP_UP,
 	switch (nLayer)
 	{
 	case RMAP_UP: // 諼類 Top
-		str.Format(_T("%s_L1_%04d_T_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
-		sPath.Format(_T("%s\\%s"), sItsFolderPath, str);
-		break;
-	case RMAP_DN: // 諼類 Bottom
-		str.Format(_T("%s_L4_%04d_B_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
-		sPath.Format(_T("%s\\%s"), sItsFolderPath, str);
-		break;
-	case RMAP_INNER_UP: // 頂類 Top
 		str.Format(_T("%s_L2_%04d_T_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
 		sPath.Format(_T("%s\\%s"), sItsFolderPath, str);
 		break;
+	case RMAP_DN: // 諼類 Bottom
+		str.Format(_T("%s_L2_%04d_B_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
+		sPath.Format(_T("%s\\%s"), sItsFolderPath, str);
+		break;
+	case RMAP_INNER_UP: // 頂類 Top
+		str.Format(_T("%s_L1_%04d_T_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
+		sPath.Format(_T("%s\\%s"), sItsFolderPath, str);
+		break;
 	case RMAP_INNER_DN: // 頂類 Bottom
-		str.Format(_T("%s_L3_%04d_B_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
+		str.Format(_T("%s_L1_%04d_B_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
 		sPath.Format(_T("%s\\%s"), sItsFolderPath, str);
 		break;
 	}
@@ -12833,19 +12863,19 @@ CString CGvisR2R_PunchDoc::GetItsPath(int nSerial, int nLayer)	// RMAP_UP, RMAP_
 	switch (nLayer)
 	{
 	case RMAP_UP: // 諼類 Top
-		str.Format(_T("%s_L1_%04d_T_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
+		str.Format(_T("%s_L2_%04d_T_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
 		sPath.Format(_T("%s\\Outer\\%s"), sItsFolderPath, str);
 		break;
 	case RMAP_DN: // 諼類 Bottom
-		str.Format(_T("%s_L4_%04d_B_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
+		str.Format(_T("%s_L2_%04d_B_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
 		sPath.Format(_T("%s\\Outer\\%s"), sItsFolderPath, str);
 		break;
 	case RMAP_INNER_UP: // 頂類 Top
-		str.Format(_T("%s_L2_%04d_T_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
+		str.Format(_T("%s_L1_%04d_T_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
 		sPath.Format(_T("%s\\Inner\\%s"), sItsFolderPath, str);
 		break;
 	case RMAP_INNER_DN: // 頂類 Bottom
-		str.Format(_T("%s_L3_%04d_B_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
+		str.Format(_T("%s_L1_%04d_B_%s_%s_AVR01_%s.dat"), m_sItsCode, nSerial, WorkingInfo.LastJob.sSelUserName, WorkingInfo.System.sMcName, sTime);
 		sPath.Format(_T("%s\\Inner\\%s"), sItsFolderPath, str);
 		break;
 	}

@@ -975,6 +975,8 @@ public:
 	BOOL IsLastProc();
 	BOOL IsLastJob(int nAoi); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
 
+	void DispContRun(BOOL bOn);
+
 	void MonPlcSignal();
 	void MonPlcAlm();
 	void MonDispMain();
