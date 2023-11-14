@@ -8,6 +8,10 @@
 //
 #include "MyStatic.h"
 #include "DlgUtil01.h"
+#include "MyLabel.h"
+
+#define MAX_MENU05_LABEL			2
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgMenu05 dialog
@@ -35,10 +39,17 @@ class CDlgMenu05 : public CDialog
 	int m_nNodeX, m_nNodeY;
 
 	CDlgUtil01 *m_pDlgUtil01;
+	CMyLabel myLabel[MAX_MENU05_LABEL];
+	BOOL m_bLoadImg;
+
+	void InitLabel();
+	void LoadImg();
+	void DelImg();
 
 	void ModifyModelData();
 	void ModifyLotData();
 	void ModifyLayerData();
+	void DispTestMode();
 	//void DisplayReelMapData();
 	void DisplayReelMapUser();
 	void DisplayResultData();

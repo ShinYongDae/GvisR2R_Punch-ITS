@@ -44,10 +44,13 @@ CDlgMenu05::CDlgMenu05(CWnd* pParent /*=NULL*/)
 	m_nCompletedShot = m_nMarkedShot = m_nSerialEd = 0;
 
 	m_pDlgUtil01 = NULL;
+	m_bLoadImg = FALSE;
 }
 
 CDlgMenu05::~CDlgMenu05()
 {
+	DelImg();
+
 	if(m_pRect)
 	{
 		delete m_pRect;
@@ -127,15 +130,59 @@ void CDlgMenu05::OnShowWindow(BOOL bShow, UINT nStatus)
 
 void CDlgMenu05::AtDlgShow()
 {
+	LoadImg();
 	ModifyModelData();
 	((CComboBox*)GetDlgItem(IDC_COMBO_MODEL))->SelectString(0, m_sModel);
 	((CComboBox*)GetDlgItem(IDC_COMBO_MODEL))->SetWindowText(m_sModel);
 	ModifyLotData();
+
+	DispTestMode();
 }
 
 void CDlgMenu05::AtDlgHide()
 {
 
+}
+
+void CDlgMenu05::InitLabel()
+{
+	myLabel[0].SubclassDlgItem(IDC_STC_SIG00, this);	// ³»Ãþ
+	myLabel[1].SubclassDlgItem(IDC_STC_SIG01, this);	// ¿ÜÃþ
+
+	for (int i = 0; i < MAX_MENU05_LABEL; i++)
+	{
+		myLabel[i].SetFontName(_T("Arial"));
+		myLabel[i].SetFontSize(18);
+		myLabel[i].SetFontBold(TRUE);
+		myLabel[i].SetTextColor(RGB_DARKRED);
+		myLabel[i].SetImageBk(LBL_IMG_UP);
+	}
+}
+
+void CDlgMenu05::LoadImg()
+{
+	if (m_bLoadImg)
+		return;
+	m_bLoadImg = TRUE;
+
+	int i;
+	for (i = 0; i < MAX_MENU05_LABEL; i++)
+	{
+		myLabel[i].LoadImage(ICO_LED_GRY_DlgFrameHigh, LBL_IMG_UP, CSize(20, 20), LBL_POS_CENTER);
+		myLabel[i].LoadImage(ICO_LED_BLU_DlgFrameHigh, LBL_IMG_DN, CSize(20, 20), LBL_POS_CENTER);
+	}
+}
+
+void CDlgMenu05::DelImg()
+{
+	if (!m_bLoadImg)
+		return;
+	m_bLoadImg = FALSE;
+
+	int i;
+
+	for (i = 0; i < MAX_MENU05_LABEL; i++)
+		myLabel[i].DelImgList();
 }
 
 void CDlgMenu05::OnSelchangeComboModel() 
@@ -335,6 +382,7 @@ BOOL CDlgMenu05::OnInitDialog()
 	CComboBox* pCtlComboLayer = (CComboBox*)GetDlgItem(IDC_COMBO_LAYER);
 	pCtlComboLayer->SetFont((CFont*)&m_FontOfListCtrl, TRUE);
 
+	InitLabel();
 	InitStc();
 	InitModel();
 
@@ -508,6 +556,26 @@ void CDlgMenu05::ModifyLotData()
 
 	for (i = 0; i < nCount ; i++)
 		((CListBox*)GetDlgItem(IDC_LIST_LOT))->DeleteString(0);
+}
+
+void CDlgMenu05::DispTestMode()
+{
+	//m_pPcr[0][nIdx]->m_sItsCode
+
+	BOOL bOn;
+
+	bOn = (pDoc->GetTestMode() == MODE_INNER) ? TRUE : FALSE; // ³»Ãþ °Ë»ç ¸ðµå
+	if (bOn && myLabel[0].GetImageBk() != LBL_IMG_DN)
+		myLabel[0].SetImageBk(LBL_IMG_DN);
+	else if (!bOn && myLabel[0].GetImageBk() != LBL_IMG_UP)
+		myLabel[0].SetImageBk(LBL_IMG_UP);
+
+	bOn = (pDoc->GetTestMode() == MODE_OUTER) ? TRUE : FALSE; // ¿ÜÃþ °Ë»ç ¸ðµå
+	if (bOn && myLabel[1].GetImageBk() != LBL_IMG_DN)
+		myLabel[1].SetImageBk(LBL_IMG_DN);
+	else if (!bOn && myLabel[1].GetImageBk() != LBL_IMG_UP)
+		myLabel[1].SetImageBk(LBL_IMG_UP);
+
 }
 
 void CDlgMenu05::ModifyLayerData()
@@ -1936,6 +2004,9 @@ void CDlgMenu05::OnSelchangeComboLayer()
 		{
 			DisplayResultData();
 		}
+
+		//DispTestMode();
+
 	}
 }
 

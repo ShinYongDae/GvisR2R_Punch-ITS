@@ -9658,7 +9658,8 @@ BOOL CGvisR2R_PunchView::IsRun()
 {
 	//return TRUE; // AlignTest
 	if (m_sDispMain == _T("¿îÀüÁß") || m_sDispMain == _T("ÃÊ±â¿îÀü") || m_sDispMain == _T("´Ü¸é»ùÇÃ")
-		|| m_sDispMain == _T("´Ü¸é°Ë»ç") || m_sDispMain == _T("¾ç¸é°Ë»ç") || m_sDispMain == _T("¾ç¸é»ùÇÃ"))
+		|| m_sDispMain == _T("´Ü¸é°Ë»ç") || m_sDispMain == _T("³»Ãþ°Ë»ç") || m_sDispMain == _T("¿ÜÃþ°Ë»ç")
+		|| m_sDispMain == _T("¾ç¸é°Ë»ç") || m_sDispMain == _T("¾ç¸é»ùÇÃ"))
 		return TRUE;
 	return FALSE;
 	//return m_bSwRun;
@@ -18254,6 +18255,16 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-ÀÜ·®Ã³¸® ½Ã °è¼ÓÀûÀ¸
 							DispMain(_T("´Ü¸é»ùÇÃ"), RGB_GREEN);
 					}
 				}
+				else if(pDoc->GetTestMode() == MODE_INNER)
+				{
+					if (m_sDispMain != _T("³»Ãþ°Ë»ç"))
+						DispMain(_T("³»Ãþ°Ë»ç"), RGB_GREEN);
+				}
+				else if (pDoc->GetTestMode() == MODE_OUTER)
+				{
+					if (m_sDispMain != _T("¿ÜÃþ°Ë»ç"))
+						DispMain(_T("¿ÜÃþ°Ë»ç"), RGB_GREEN);
+				}
 				else if (pDoc->WorkingInfo.LastJob.bDualTest)
 				{
 					if (m_sDispMain != _T("¾ç¸é°Ë»ç"))
@@ -25063,6 +25074,16 @@ void CGvisR2R_PunchView::MonDispMain()
 							//}
 						}
 					}
+				}
+				else if (pDoc->GetTestMode() == MODE_INNER)
+				{
+					if (m_sDispMain != _T("³»Ãþ°Ë»ç"))
+						DispMain(_T("³»Ãþ°Ë»ç"), RGB_GREEN);
+				}
+				else if (pDoc->GetTestMode() == MODE_OUTER)
+				{
+					if (m_sDispMain != _T("¿ÜÃþ°Ë»ç"))
+						DispMain(_T("¿ÜÃþ°Ë»ç"), RGB_GREEN);
 				}
 				else if (pDoc->WorkingInfo.LastJob.bDualTest)
 				{

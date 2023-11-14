@@ -9901,6 +9901,42 @@ void CGvisR2R_PunchDoc::SetTestMode(int nMode)
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Test Mode"), sData, sPath);
 
+#ifdef USE_MPE	
+	if (pView && pView->m_pMpe)
+	{
+		if (pDoc->GetTestMode() == MODE_INNER)
+		{
+			pView->m_pMpe->Write(_T("MB440172"), 1);// 내층 검사 사용/미사용 
+			pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
+			pDoc->SetMkInfo(_T("Signal"), _T("Inner Test On"), TRUE);
+			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), FALSE);
+			if (pView->m_pDlgMenu01)
+				pView->m_pDlgMenu01->EnableItsMode(FALSE);
+		}
+		else if (pDoc->GetTestMode() == MODE_OUTER)
+		{
+			pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
+			pView->m_pMpe->Write(_T("MB440176"), 1);// 외층 검사 사용/미사용
+			pDoc->SetMkInfo(_T("Signal"), _T("Inner Test On"), FALSE);
+			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), TRUE);
+			if (pView->m_pDlgMenu01)
+				pView->m_pDlgMenu01->EnableItsMode();
+
+			//pView->m_bLoadMstInfo = TRUE; // LoadMstInfo()
+			//pView->m_bLoadMstInfo = TRUE; // LoadMstInfo()
+		}
+		else
+		{
+			pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
+			pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
+			pDoc->SetMkInfo(_T("Signal"), _T("Inner Test On"), FALSE);
+			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), FALSE);
+			if (pView->m_pDlgMenu01)
+				pView->m_pDlgMenu01->EnableItsMode(FALSE);
+		}
+	}
+#endif
+
 }
 
 

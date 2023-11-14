@@ -1558,26 +1558,26 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 				m_bGetOpInfo = TRUE;
 				pDoc->SetTestMode((int)SockData.nData1); // MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2
 				//pDoc->WorkingInfo.LastJob.nTestMode = (int)SockData.nData1; // MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2
-#ifdef USE_MPE	
-				if (pView && pView->m_pMpe)
-				{
-					if (pDoc->GetTestMode() == MODE_INNER)
-					{
-						pView->m_pMpe->Write(_T("MB440172"), 1);// 내층 검사 사용/미사용
-						pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
-					}
-					else if (pDoc->GetTestMode() == MODE_OUTER)
-					{
-						pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
-						pView->m_pMpe->Write(_T("MB440176"), 1);// 외층 검사 사용/미사용
-					}
-					else
-					{
-						pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
-						pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
-					}
-				}
-#endif
+//#ifdef USE_MPE	
+//				if (pView && pView->m_pMpe)
+//				{
+//					if (pDoc->GetTestMode() == MODE_INNER)
+//					{
+//						pView->m_pMpe->Write(_T("MB440172"), 1);// 내층 검사 사용/미사용
+//						pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
+//					}
+//					else if (pDoc->GetTestMode() == MODE_OUTER)
+//					{
+//						pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
+//						pView->m_pMpe->Write(_T("MB440176"), 1);// 외층 검사 사용/미사용
+//					}
+//					else
+//					{
+//						pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
+//						pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
+//					}
+//				}
+//#endif
 			}
 			break;
 		case _SigInx::_RecoilerCcw:
