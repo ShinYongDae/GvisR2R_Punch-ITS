@@ -4302,6 +4302,11 @@ BOOL CGvisR2R_PunchDoc::InitReelmapUp()
 		else
 		{
 			if (m_pReelMapIts)
+			{
+				delete m_pReelMapIts;
+				m_pReelMapIts = NULL;
+			}
+			m_pReelMapIts = new CReelMap(RMAP_ITS, MAX_DISP_PNL, nTotPcs); // Default: RMAP_NONE (RMAP_INNER -> RMAP_INNER_UP)
 				m_pReelMap = m_pReelMapIts;
 		}
 	}
@@ -11068,8 +11073,8 @@ BOOL CGvisR2R_PunchDoc::GetItsSerialInfo(int nItsSerial, BOOL &bDualTest, CStrin
 	CFileFind finder;
 	if (finder.FindFile(sPath) == FALSE)
 	{
-		//strTemp.Format(_T("GetItsSerialInfo - Didn't find file.\r\n%s"), sPath);
-		//pView->MsgBox(strTemp);
+		strTemp.Format(_T("GetItsSerialInfo - Didn't find file.\r\n%s"), sPath);
+		pView->MsgBox(strTemp);
 		return FALSE;
 	}
 

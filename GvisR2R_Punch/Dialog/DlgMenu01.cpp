@@ -6224,6 +6224,12 @@ void CDlgMenu01::SwitchReelmapDisp(int nSelRmap)
 			myBtn[13].SetCheck(FALSE);
 			myBtn[14].SetCheck(TRUE);
 			break;
+		case RMAP_ITS:
+			pDoc->m_pReelMapDisp = pDoc->m_pReelMapIts;
+			myBtn[12].SetCheck(FALSE);
+			myBtn[13].SetCheck(FALSE);
+			myBtn[14].SetCheck(TRUE);
+			break;
 		}
 	}
 	else

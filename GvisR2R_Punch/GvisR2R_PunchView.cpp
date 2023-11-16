@@ -825,7 +825,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 				if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
 				{
 					//if (pDoc->GetTestMode() == MODE_OUTER)
-					if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+					if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 					{
 						if (m_pDlgMenu06)
 							m_pDlgMenu06->RedrawWindow();
@@ -989,7 +989,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 				{
 					if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 3))
 					{
-						if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+						if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 						{
 							if (m_pDlgMenu06)
 							{
@@ -11318,7 +11318,7 @@ void CGvisR2R_PunchView::ClrMkInfo()
 	{
 		if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 3))
 		{
-			if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+			if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 			{
 				if (m_pDlgMenu06)
 				{
@@ -11399,7 +11399,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 			if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 3))
 			{
 				//if (pDoc->GetTestMode() == MODE_OUTER)
-				if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 				{
 					if (!bDualTestInner)
 					{
@@ -11426,7 +11426,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 				if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
 				{
 					//if (pDoc->GetTestMode() == MODE_OUTER)
-					if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+					if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 					{
 						pDoc->m_MasterInner[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
 							pDoc->WorkingInfo.LastJob.sModelUp,
@@ -11458,7 +11458,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 		{
 			if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
 			{
-				if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 				{
 					InitReelmapInnerUp();
 					if (bDualTestInner)
@@ -11495,7 +11495,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 			if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
 			{
 				//if (pDoc->GetTestMode() == MODE_OUTER)
-				if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 				{
 					if (m_pDlgMenu06)
 					{
@@ -11567,8 +11567,35 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 			if (m_pDlgMenu01)
 			{
 				m_pDlgMenu01->InitCadImgDn();
+if (nAoi == 1)
+{
 				m_pDlgMenu01->InitGL();
 				m_bDrawGL = TRUE;
+
+
+		if (bGetCurrentInfoEng)
+		{
+			if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
+			{
+				//if (pDoc->GetTestMode() == MODE_OUTER)
+				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+				{
+					if (m_pDlgMenu06)
+					{
+						m_pDlgMenu06->InitCadImgUp();
+						if (bDualTestInner)
+							m_pDlgMenu06->InitCadImgDn();
+
+						m_pDlgMenu06->InitGL();
+						m_pDlgMenu06->RefreshRmap();
+					}
+
+				}
+			}
+		}
+
+
+}
 				m_pDlgMenu01->RefreshRmap();
 			}
 
@@ -13744,7 +13771,7 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 			if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 3))
 			{
 				//if (pDoc->GetTestMode() == MODE_OUTER)
-				if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 				{
 					pDoc->m_MasterInner[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
 						pDoc->WorkingInfo.LastJob.sModelUp,
@@ -13771,7 +13798,7 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 			if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
 			{
 				//if (pDoc->GetTestMode() == MODE_OUTER)
-				if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerDn))
+				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerDn))
 				{
 					//GetCurrentInfoEng();
 					pDoc->m_MasterInner[1].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
@@ -13802,7 +13829,7 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 		if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
 		{
 			//if (pDoc->GetTestMode() == MODE_OUTER)
-			if (pDoc->m_Master[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+			if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 			{
 				// Reelmap Á¤º¸ Loading.....
 				InitReelmapInner(); // Delete & New
