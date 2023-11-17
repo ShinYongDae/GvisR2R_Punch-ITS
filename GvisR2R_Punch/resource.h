@@ -106,6 +106,9 @@
 #define IDD_DLG_MENU_06                 353
 #define IDD_DLG_KEY_NUM1                354
 #define IDD_DLG_OPTION_01               355
+#define IDD_DLG_CAMMASTERINFO_MST       357
+#define IDD_DLG_CAMMASTERINFO_PCH       358
+#define IDD_DLG_CAMMASTERINFO_STRPCS    359
 #define IDC_SVR_PORT                    374
 #define IDC_TXT_MESSAGE                 376
 #define IDC_BTN_START                   486
@@ -118,12 +121,15 @@
 #define IDC_STC_REELMAP_IMG             1000
 #define IDC_STATUS                      1000
 #define IDC_CHECK_SR1000W               1000
+#define IDC_BUTTON1                     1000
 #define IDC_PIC_CAD_001                 1001
 #define IDC_PROGRESS                    1001
 #define IDC_CHECK_ENGRAVE               1001
+#define IDC_STATIC_PATH                 1001
 #define IDC_PIC_CAD_002                 1002
 #define IDC_PIC_CAD_003                 1003
 #define IDC_BTN_00                      1003
+#define IDC_EDIT2                       1003
 #define IDC_PIC_CAD_004                 1004
 #define IDC_BTN_01                      1004
 #define IDC_PIC_CAD_005                 1005
@@ -1319,14 +1325,19 @@
 #define ID_DATABASECONNECTION           32777
 #define ID_DATABASE_CONNECTION          32778
 #define ID_OPTION01                     32779
+#define ID_CAMMASTERINFO_               32780
+#define ID_CAMMASTERINFO_32781          32781
+#define ID_CAMMASTERINFO_STRPCS         32782
+#define ID_CAMMASTERINFO_MST            32783
+#define ID_CAMMASTERINFO_PCH            32784
 #define ID_INDICATOR_PROGRESS_PANE      61204
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        357
-#define _APS_NEXT_COMMAND_VALUE         32780
+#define _APS_NEXT_RESOURCE_VALUE        361
+#define _APS_NEXT_COMMAND_VALUE         32785
 #define _APS_NEXT_CONTROL_VALUE         1204
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

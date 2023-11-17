@@ -94,7 +94,7 @@ void CCamMaster::Init(CString sPathSpec, CString sModel, CString sLayer, CString
 	m_sPathCamSpecDir = sPathSpec;
 	m_sModel = sModel;
 	m_sLayer = sLayer;
-	m_sLayerUp = sLayerUp;
+	m_sLayerUp = sLayerUp; // 하면 CamMaster정보에는 상면의 Align 이미지를 담아야 함.
 }
 
 //BOOL CCamMaster::LoadMstInfo()
@@ -498,31 +498,31 @@ BOOL CCamMaster::LoadCadMk4PntAlign(CString sPath)
 		return(FALSE);
 }
  
- CString CCamMaster::GetCamPxlRes()
- {
+CString CCamMaster::GetCamPxlRes()
+{
  	CString sRes=_T("");
  	CString sPath;
- #ifdef TEST_MODE
- 	sPath = PATH_PIN_IMG_;
- #else
+#ifdef TEST_MODE
+	sPath = PATH_PIN_IMG_;
+#else
 	if (m_sPathCamSpecDir.Right(1) != "\\")
 		sPath.Format(_T("%s\\%s\\%s.mst"), m_sPathCamSpecDir, m_sModel, m_sLayer);
 	else
 		sPath.Format(_T("%s%s\\%s.mst"), m_sPathCamSpecDir, m_sModel, m_sLayer);
 #endif
- 
- 	int nPos = sPath.ReverseFind('-');
- 	if(nPos > 0)
- 	{
- 		sRes = sPath.Right(sPath.GetLength()-(nPos+1));
- 		nPos = sRes.ReverseFind('.');
- 		if(nPos > 0)
- 			sRes = sRes.Left(nPos);
+
+	int nPos = sPath.ReverseFind('-');
+	if (nPos > 0)
+	{
+		sRes = sPath.Right(sPath.GetLength() - (nPos + 1));
+		nPos = sRes.ReverseFind('.');
+		if (nPos > 0)
+			sRes = sRes.Left(nPos);
 		pDoc->WorkingInfo.Vision[0].sCamPxlRes = sRes;
 		pDoc->WorkingInfo.Vision[1].sCamPxlRes = sRes;
- 	}
- 	return sRes;
- }
+	}
+	return sRes;
+}
 
 BOOL CCamMaster::LoadStripRgnFromCam() // sprintf(FileNCam,"%s%s\\%s.mst",strSpecPath,strModelPath,strLayerPath);
 {
@@ -2162,4 +2162,19 @@ BOOL CCamMaster::IsMstSpec(CString sSpecFolderPath, CString  sModel, CString sLa
 		return FALSE;
 
 	return TRUE;
+}
+
+CString CCamMaster::GetLayer()
+{
+	return m_sLayer;
+}
+
+CString CCamMaster::GetModel()
+{
+	return m_sModel;
+}
+
+CString CCamMaster::GetMasterLocation()
+{
+	return MasterInfo.strMasterLocation;
 }

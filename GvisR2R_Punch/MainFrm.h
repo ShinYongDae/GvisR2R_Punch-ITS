@@ -55,6 +55,9 @@ public:
 	virtual BOOL DestroyWindow();
 	virtual void PostNcDestroy();
 	afx_msg void OnOption01();
+	afx_msg void OnCamMasterInfoMst();
+	afx_msg void OnCamMasterInfoPch();
+	afx_msg void OnCamMasterInfoStrPcs();
 	afx_msg void OnDatabaseConnection();
 	afx_msg void OnTestIo();
 	afx_msg void OnAppMinimize();

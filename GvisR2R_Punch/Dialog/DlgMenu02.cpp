@@ -537,7 +537,7 @@ BOOL CDlgMenu02::OnInitDialog()
  	//GetDlgItem(IDC_CHK_ELEC_TEST)->ShowWindow(SW_HIDE);
 
 	
-	//ShowDlg(IDD_DLG_UTIL_03);
+	ShowDlg(IDD_DLG_UTIL_03);
 #ifdef USE_FLUCK
 	ShowDlg(IDD_DLG_UTIL_06);
 #endif

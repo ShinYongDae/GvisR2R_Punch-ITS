@@ -244,6 +244,9 @@
     <ClInclude Include="Device\vic7defs.h" />
     <ClInclude Include="Device\Vicdefs.h" />
     <ClInclude Include="Device\Vision.h" />
+    <ClInclude Include="Dialog\DlgCammasterinfoMst.h" />
+    <ClInclude Include="Dialog\DlgCammasterinfoPch.h" />
+    <ClInclude Include="Dialog\DlgCammasterinfoStrpcs.h" />
     <ClInclude Include="Dialog\DlgClient.h" />
     <ClInclude Include="Dialog\DlgFrameHigh.h" />
     <ClInclude Include="Dialog\DlgInfo.h" />
@@ -358,6 +361,9 @@
     <ClCompile Include="Device\Tool.cpp" />
     <ClCompile Include="Device\User.cpp" />
     <ClCompile Include="Device\Vision.cpp" />
+    <ClCompile Include="Dialog\DlgCammasterinfoMst.cpp" />
+    <ClCompile Include="Dialog\DlgCammasterinfoPch.cpp" />
+    <ClCompile Include="Dialog\DlgCammasterinfoStrpcs.cpp" />
     <ClCompile Include="Dialog\DlgClient.cpp" />
     <ClCompile Include="Dialog\DlgFrameHigh.cpp" />
     <ClCompile Include="Dialog\DlgInfo.cpp" />

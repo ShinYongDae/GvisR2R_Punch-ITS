@@ -31,6 +31,10 @@
 #include "Device/SR1000WDEF.h"
 #include "Process/DataFile.h"
 
+#include "Dialog/DlgCammasterinfoMst.h"
+#include "Dialog/DlgCammasterinfoPch.h"
+#include "Dialog/DlgCammasterinfoStrpcs.h"
+
 extern CMainFrame* pFrm;
 extern CGvisR2R_PunchDoc* pDoc;
 CGvisR2R_PunchView* pView;
@@ -769,7 +773,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 			break;
 		case 5:
 			m_nStepInitView++;
-			DispMsg(_T("화면구성을 생성합니다.- 1"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+			DispMsg(_T("화면구성을 생성합니다.- MENU_02"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
 			ShowDlg(IDD_DLG_MENU_02);
  			//ShowDlg(IDD_DLG_UTIL_01);
 			break;
@@ -779,42 +783,42 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 			break;
 		case 7:
 			m_nStepInitView++;
- 			//DispMsg(_T("화면구성을 생성합니다.- 2"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
- 			//ShowDlg(IDD_DLG_UTIL_03);
+			//DispMsg(_T("마킹위치데이터 화면구성을 생성합니다.- 2"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+			//ShowDlg(IDD_DLG_UTIL_03);
 			break;
 		case 8:
 			m_nStepInitView++;
-			DispMsg(_T("화면구성을 생성합니다.-2"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+			DispMsg(_T("화면구성을 생성합니다.-MENU_01"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
 			ShowDlg(IDD_DLG_MENU_01);
 			break;
 		case 9:
 			m_nStepInitView++;
-			DispMsg(_T("화면구성을 생성합니다.- 3"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+			//DispMsg(_T("화면구성을 생성합니다.- 3"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
  			//ShowDlg(IDD_DLG_MENU_02);
 			break;
 		case 10:
 			m_nStepInitView++;
-			DispMsg(_T("화면구성을 생성합니다.- 4"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+			DispMsg(_T("화면구성을 생성합니다.- MENU_03"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
 			ShowDlg(IDD_DLG_MENU_03);
 			break;
 		case 11:
 			m_nStepInitView++;
-			DispMsg(_T("화면구성을 생성합니다.- 5"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+			DispMsg(_T("화면구성을 생성합니다.- MENU_04"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
 			ShowDlg(IDD_DLG_MENU_04);
 			break;
 		case 12:
 			m_nStepInitView++;
-			DispMsg(_T("화면구성을 생성합니다.- 6"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+			DispMsg(_T("화면구성을 생성합니다.- MENU_05"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
 			ShowDlg(IDD_DLG_MENU_05);
 			break;
 		case 13:
 			m_nStepInitView++;
-			DispMsg(_T("화면구성을 생성합니다.- 7"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+			DispMsg(_T("화면구성을 생성합니다.- MENU_06"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
 			ShowDlg(IDD_DLG_MENU_06);
 			break;
 		case 14:
 			m_nStepInitView++;
-			DispMsg(_T("화면구성을 생성합니다.- 8"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
+			DispMsg(_T("화면구성을 생성합니다.- FRAME_HIGH"), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
 			ShowDlg(IDD_DLG_FRAME_HIGH);
 			if (m_pDlgFrameHigh)
 				m_pDlgFrameHigh->ChkMenu01();
@@ -2360,6 +2364,27 @@ void CGvisR2R_PunchView::Option01()
 {
 	ClrDispMsg();
 	CDlgOption01 Dlg;
+	Dlg.DoModal();
+}
+
+void CGvisR2R_PunchView::CamMasterInfoMst()
+{
+	ClrDispMsg();
+	CDlgCammasterinfoMst Dlg;
+	Dlg.DoModal();
+}
+
+void CGvisR2R_PunchView::CamMasterInfoPch()
+{
+	ClrDispMsg();
+	CDlgCammasterinfoPch Dlg;
+	Dlg.DoModal();
+}
+
+void CGvisR2R_PunchView::CamMasterInfoStrPcs()
+{
+	ClrDispMsg();
+	CDlgCammasterinfoStrpcs Dlg;
 	Dlg.DoModal();
 }
 

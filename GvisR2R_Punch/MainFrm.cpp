@@ -30,6 +30,9 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_TEST_IO, &CMainFrame::OnTestIo)
 	ON_COMMAND(ID_DATABASE_CONNECTION, &CMainFrame::OnDatabaseConnection)
 	ON_COMMAND(ID_OPTION01, &CMainFrame::OnOption01)
+	ON_COMMAND(ID_CAMMASTERINFO_MST, &CMainFrame::OnCamMasterInfoMst)
+	ON_COMMAND(ID_CAMMASTERINFO_PCH, &CMainFrame::OnCamMasterInfoPch)
+	ON_COMMAND(ID_CAMMASTERINFO_STRPCS, &CMainFrame::OnCamMasterInfoStrPcs)
 	ON_COMMAND(ID_APP_MINIMIZE, &CMainFrame::OnAppMinimize)
 	ON_WM_SIZE()
 	ON_WM_CLOSE()
@@ -274,6 +277,24 @@ void CMainFrame::OnOption01()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	pView->Option01();
+}
+
+void CMainFrame::OnCamMasterInfoMst()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	pView->CamMasterInfoMst();
+}
+
+void CMainFrame::OnCamMasterInfoPch()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	pView->CamMasterInfoPch();
+}
+
+void CMainFrame::OnCamMasterInfoStrPcs()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	pView->CamMasterInfoStrPcs();
 }
 
 

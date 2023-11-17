@@ -402,6 +402,15 @@
     <ClInclude Include="Dialog\DlgOption01.h">
       <Filter>Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="Dialog\DlgCammasterinfoMst.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\DlgCammasterinfoPch.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\DlgCammasterinfoStrpcs.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GvisR2R_Punch.cpp">
@@ -702,6 +711,15 @@
       <Filter>Dialog</Filter>
     </ClCompile>
     <ClCompile Include="Dialog\DlgOption01.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\DlgCammasterinfoMst.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\DlgCammasterinfoPch.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\DlgCammasterinfoStrpcs.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
   </ItemGroup>

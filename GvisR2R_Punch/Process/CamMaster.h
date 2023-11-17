@@ -122,6 +122,10 @@ public:
 	BOOL IsMstSpec();
 	BOOL IsMstSpec(CString sSpecFolderPath, CString  sModel, CString sLayer);
 
+	CString GetLayer();
+	CString GetModel();
+	CString GetMasterLocation();
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CCamMaster)

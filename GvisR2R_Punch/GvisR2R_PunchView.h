@@ -36,6 +36,11 @@
 
 #include "GvisR2R_PunchDoc.h"
 
+//#include "Process/CamMasterDefine.h"
+//#include "Dialog/DlgCammasterinfoMst.h"
+//#include "Dialog/DlgCammasterinfoPch.h"
+//#include "Dialog/DlgCammasterinfoStrpcs.h"
+
 
 #define LAMP_DELAY				5	// 5 * 100[mSec]
 #define BUZZER_DELAY			2	// 5 * 100[mSec]
@@ -565,6 +570,9 @@ public:
 	void DispIo();
 	void DispDatabaseConnection();
 	void Option01();
+	void CamMasterInfoMst();
+	void CamMasterInfoPch();
+	void CamMasterInfoStrPcs();
 
 	void TowerLamp(COLORREF color, BOOL bOn, BOOL bWink = FALSE);
 	void DispTowerWinker();
