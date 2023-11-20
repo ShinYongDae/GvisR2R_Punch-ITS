@@ -12270,6 +12270,14 @@ CfPoint CGvisR2R_PunchView::GetMkPnt1(int nMkPcs) // pcr 불량 피스 읽은 순서 인�
 	return ptPnt;
 }
 
+BOOL CGvisR2R_PunchView::CheckMkPnt()
+{
+	if (GetMkPnt(0).x == GetMkPnt(1).x && GetMkPnt(0).y == GetMkPnt(1).y)
+		return FALSE;
+
+	return TRUE;
+}
+
 // CfPoint CGvisR2R_PunchView::GetMkPnt(int nSerial, int nMkPcs)
 // {
 // 	if(nSerial <= 0)
@@ -20194,13 +20202,22 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 	{
 		switch (m_nMkStAuto)
 		{
-		case MK_ST + (Mk2PtIdx::DoMk) :				// Mk 마킹 시작
-			if (pDoc->GetTestMode() == MODE_OUTER)
-				SetMkIts(TRUE);						// ITS 마킹 시작
-			else
-				SetMk(TRUE);						// Mk 마킹 시작
+		case MK_ST + (Mk2PtIdx::DoMk) :				// Mk 마킹 시작]
+			if (CheckMkPnt())
+			{
+				if (pDoc->GetTestMode() == MODE_OUTER)
+					SetMkIts(TRUE);						// ITS 마킹 시작
+				else
+					SetMk(TRUE);						// Mk 마킹 시작
 
-			m_nMkStAuto++;
+				m_nMkStAuto++;
+			}
+			else
+			{
+				MsgBox(_T("캠마스터의 마킹위치좌표가 설정되어 있지않습니다.\r\n확인하세요."));
+				Stop();
+				TowerLamp(RGB_RED, TRUE);
+			}
 			break;
 
 		case MK_ST + (Mk2PtIdx::DoMk) + 1:

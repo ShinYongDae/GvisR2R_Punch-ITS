@@ -1168,6 +1168,7 @@ public:
 	int GetMkStripIdx1Its(int nSerial, int nMkPcs); // 0 : Fail , 1~4 : Strip Idx
 
 	BOOL SetMkIts(BOOL bRun);	// Marking Start
+	BOOL CheckMkPnt();
 
 	BOOL m_bTHREAD_DISP_DEF_INNER;
 	int	m_nStepTHREAD_DISP_DEF_INNER;
