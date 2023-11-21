@@ -373,6 +373,8 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	m_lFuncId = 0;
 
 	m_bDrawGL = TRUE;
+	m_bDrawGL_Menu01 = TRUE;
+	m_bDrawGL_Menu06 = TRUE;
 	m_bCont = FALSE;
 	m_bCam = FALSE;
 	m_bReview = FALSE;
@@ -11414,7 +11416,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 	{
 		if (!bDualTest)
 		{
-			m_bDrawGL = FALSE;
+			m_bDrawGL_Menu01 = FALSE;
 			if (m_pDlgMenu01)
 				m_pDlgMenu01->ResetMkInfo();
 		}
@@ -11428,6 +11430,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 				{
 					if (!bDualTestInner)
 					{
+						m_bDrawGL_Menu06 = FALSE;
 						if (m_pDlgMenu06)
 							m_pDlgMenu06->ResetMkInfo();
 					}
@@ -11466,6 +11469,10 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 								pDoc->WorkingInfo.LastJob.sModelUp,
 								sLayerDn);
 							pDoc->m_MasterInner[1].LoadMstInfo();
+
+							m_bDrawGL_Menu06 = FALSE;
+							if (m_pDlgMenu06)
+								m_pDlgMenu06->ResetMkInfo();
 						}
 					}
 				}
@@ -11529,6 +11536,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 							m_pDlgMenu06->InitCadImgDn();
 
 						m_pDlgMenu06->InitGL();
+						m_bDrawGL_Menu06 = TRUE;
 						m_pDlgMenu06->RefreshRmap();
 					}
 
@@ -11541,7 +11549,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 			if (!bDualTest)
 			{
 				m_pDlgMenu01->InitGL();
-				m_bDrawGL = TRUE;
+				m_bDrawGL_Menu01 = TRUE;
 				m_pDlgMenu01->RefreshRmap();
 			}
 		}
@@ -11552,7 +11560,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 	{
 		if (nAoi == 1 || nAoi == 2)
 		{
-			m_bDrawGL = FALSE;
+			m_bDrawGL_Menu01 = FALSE;
 			if (m_pDlgMenu01)
 				m_pDlgMenu01->ResetMkInfo();
 
@@ -11592,36 +11600,34 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 			if (m_pDlgMenu01)
 			{
 				m_pDlgMenu01->InitCadImgDn();
-if (nAoi == 1)
-{
-				m_pDlgMenu01->InitGL();
-				m_bDrawGL = TRUE;
-
-
-		if (bGetCurrentInfoEng)
-		{
-			if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
-			{
-				//if (pDoc->GetTestMode() == MODE_OUTER)
-				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+				if (nAoi == 1)
 				{
-					if (m_pDlgMenu06)
+					if (bGetCurrentInfoEng)
 					{
-						m_pDlgMenu06->InitCadImgUp();
-						if (bDualTestInner)
-							m_pDlgMenu06->InitCadImgDn();
+						if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
+						{
+							//if (pDoc->GetTestMode() == MODE_OUTER)
+							if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+							{
+								if (m_pDlgMenu06)
+								{
+									m_pDlgMenu06->InitCadImgUp();
+									if (bDualTestInner)
+										m_pDlgMenu06->InitCadImgDn();
 
-						m_pDlgMenu06->InitGL();
-						m_pDlgMenu06->RefreshRmap();
+									m_pDlgMenu06->InitGL();
+									m_bDrawGL_Menu06 = TRUE;
+									m_pDlgMenu06->RefreshRmap();
+								}
+
+							}
+						}
 					}
 
+					m_pDlgMenu01->InitGL();
+					m_bDrawGL_Menu01 = TRUE;
+					m_pDlgMenu01->RefreshRmap();
 				}
-			}
-		}
-
-
-}
-				m_pDlgMenu01->RefreshRmap();
 			}
 
 			// 		m_bDrawGL = TRUE;
@@ -13892,7 +13898,7 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 	if (m_pDlgMenu01)
 	{
 		m_pDlgMenu01->InitGL();
-		m_bDrawGL = TRUE;
+		m_bDrawGL_Menu01 = TRUE;
 		m_pDlgMenu01->RefreshRmap();
 		m_pDlgMenu01->InitCadImg();
 		m_pDlgMenu01->SetPnlNum();
@@ -18690,7 +18696,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				if (m_pDlgMenu01)
 				{
 					m_pDlgMenu01->InitGL();
-					m_bDrawGL = TRUE;
+					m_bDrawGL_Menu01 = TRUE;
 					m_pDlgMenu01->RefreshRmap();
 					m_pDlgMenu01->InitCadImg();
 					m_pDlgMenu01->SetPnlNum();
@@ -18701,6 +18707,19 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				{
 					m_pDlgMenu02->ChgModelUp(); // PinImg, AlignImg를 Display함.
 					m_pDlgMenu02->InitCadImg();
+				}
+
+				if (pDoc->GetTestMode() == MODE_OUTER) // syd-20231121
+				{
+					if (m_pDlgMenu06)
+					{
+						m_pDlgMenu06->InitGL();
+						m_bDrawGL_Menu06 = TRUE;
+						m_pDlgMenu06->RefreshRmap();
+						m_pDlgMenu06->InitCadImg();
+						m_pDlgMenu06->SetPnlNum();
+						m_pDlgMenu06->SetPnlDefNum();
+					}
 				}
 
 			}

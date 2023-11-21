@@ -1677,7 +1677,7 @@ void CDlgMenu01::ShiftDefInfoDn()
 
 void CDlgMenu01::ShowDefInfoUp(int nIdx) // nIdx : 0 ~ 11 (12ea)
 {
-	if(!pView->m_bDrawGL)
+	if(!pView->m_bDrawGL_Menu01)
 		return;
 	if(!pDoc->m_pReelMap)
 	{
@@ -1730,7 +1730,7 @@ void CDlgMenu01::ShowDefInfoDn(int nIdx) // nIdx : 0 ~ 11 (12ea)
 	if(!bDualTest)
 		return;
 
-	if(!pView->m_bDrawGL)
+	if(!pView->m_bDrawGL_Menu01)
 		return;
 	if(!pDoc->m_pReelMap)
 	{
@@ -6246,7 +6246,7 @@ void CDlgMenu01::DispReelmapDisp()
 	{
 		pDoc->m_pReelMapDisp->Disp(m_nSerial);
 
-		pView->m_bDrawGL = TRUE;
+		pView->m_bDrawGL_Menu01 = TRUE;
 		InitGL();
 
 		SetPnlNum();

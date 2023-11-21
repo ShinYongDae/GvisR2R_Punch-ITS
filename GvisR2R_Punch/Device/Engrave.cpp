@@ -1983,10 +1983,10 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 			}
 			break;
 		case _ItemInx::_ModelUpName:
-			if (pDoc->WorkingInfo.LastJob.sModelUp != CharToString(SockData.strData))
+			if (pDoc->WorkingInfo.EngInfo.sModelUp != CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sModelUp = CharToString(SockData.strData);
+				pDoc->WorkingInfo.EngInfo.sModelUp = CharToString(SockData.strData);
 			}
 			break;
 		//case _ItemInx::_ModelDnName:
@@ -1997,31 +1997,31 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 		//	}
 		//	break;
 		case _ItemInx::_LotUpName:
-			if (pDoc->WorkingInfo.LastJob.sLotUp != CharToString(SockData.strData))
+			if (pDoc->WorkingInfo.EngInfo.sLotUp != CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sLotUp = CharToString(SockData.strData);
+				pDoc->WorkingInfo.EngInfo.sLotUp = CharToString(SockData.strData);
 			}
 			break;
 		case _ItemInx::_LotDnName:
-			if (pDoc->WorkingInfo.LastJob.sLotDn != CharToString(SockData.strData))
+			if (pDoc->WorkingInfo.EngInfo.sLotDn != CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sLotDn = CharToString(SockData.strData);
+				pDoc->WorkingInfo.EngInfo.sLotDn = CharToString(SockData.strData);
 			}
 			break;
 		case _ItemInx::_LayerUpName:
-			if (pDoc->WorkingInfo.LastJob.sLayerUp != CharToString(SockData.strData))
+			if (pDoc->WorkingInfo.EngInfo.sLayerUp != CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sLayerUp = CharToString(SockData.strData);
+				pDoc->WorkingInfo.EngInfo.sLayerUp = CharToString(SockData.strData);
 			}
 			break;
 		case _ItemInx::_LayerDnName:
-			if (pDoc->WorkingInfo.LastJob.sLayerDn = CharToString(SockData.strData))
+			if (pDoc->WorkingInfo.EngInfo.sLayerDn = CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sLayerDn = CharToString(SockData.strData);
+				pDoc->WorkingInfo.EngInfo.sLayerDn = CharToString(SockData.strData);
 			}
 			break;
 		case _ItemInx::_TotReelLen:

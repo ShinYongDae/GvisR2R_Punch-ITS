@@ -446,6 +446,7 @@ public:
 	DWORD m_dwLotSt, m_dwLotEd;
 	long m_lFuncId;
 	BOOL m_bDrawGL;
+	BOOL m_bDrawGL_Menu01, m_bDrawGL_Menu06;
 	BOOL m_bCont;	// 이어가기
 	DWORD m_dwStMkDn[2];
 	BOOL m_bInit;

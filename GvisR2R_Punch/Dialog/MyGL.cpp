@@ -424,8 +424,16 @@ void CMyGL::Draw()
 	if(m_nCtrlId < 0)
 		return;
 
-	if(!pView->m_bDrawGL)
-		return;
+	if (m_pParent == pView->m_pDlgMenu01)
+	{
+		if (!pView->m_bDrawGL_Menu01)
+			return;
+	}
+	else if (m_pParent == pView->m_pDlgMenu06)
+	{
+		if (!pView->m_bDrawGL_Menu06)
+			return;
+	}
 	
 	GVGLMakehDC(m_hDC,m_hRC);
 	GVGLSetupLight();
@@ -717,7 +725,10 @@ void CMyGL::DrawPnlDefNum()
 	if(!m_pPnlDefNum || !m_pReelMap)
 		return;
 
- 	int k;
+	if (m_pPnlDefNum < 0 || m_pReelMap < 0)
+		return;
+
+	int k;
 	//char cPnlDefNum[MAX_PATH];
 	//TCHAR cPnlDefNum[MAX_PATH];
 	CString sPnlDefNum;
