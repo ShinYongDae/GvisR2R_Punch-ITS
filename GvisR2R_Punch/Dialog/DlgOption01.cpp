@@ -47,6 +47,7 @@ void CDlgOption01::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDlgOption01, CDialog)
 	ON_WM_SHOWWINDOW()
 	ON_BN_CLICKED(IDC_CHECK1, &CDlgOption01::OnBnClickedCheck1)
+	ON_BN_CLICKED(IDC_CHECK2, &CDlgOption01::OnBnClickedCheck2)
 END_MESSAGE_MAP()
 
 
@@ -83,6 +84,7 @@ void CDlgOption01::OnShowWindow(BOOL bShow, UINT nStatus)
 void CDlgOption01::AtDlgShow()
 {
 	((CButton*)GetDlgItem(IDC_CHECK1))->SetCheck(pDoc->m_bOffLogAuto);
+	((CButton*)GetDlgItem(IDC_CHECK2))->SetCheck(pDoc->m_bOffLogPLC);
 }
 
 void CDlgOption01::AtDlgHide()
@@ -115,5 +117,22 @@ void CDlgOption01::OnBnClickedCheck1()
 	else
 	{
 		::WritePrivateProfileString(_T("System"), _T("OffLogAuto"), _T("0"), PATH_WORKING_INFO);
+	}
+}
+
+
+void CDlgOption01::OnBnClickedCheck2()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	BOOL bOn = ((CButton*)GetDlgItem(IDC_CHECK2))->GetCheck();
+	pDoc->m_bOffLogPLC = bOn;
+
+	if (bOn)
+	{
+		::WritePrivateProfileString(_T("System"), _T("OffLogPLC"), _T("1"), PATH_WORKING_INFO);
+	}
+	else
+	{
+		::WritePrivateProfileString(_T("System"), _T("OffLogPLC"), _T("0"), PATH_WORKING_INFO);
 	}
 }

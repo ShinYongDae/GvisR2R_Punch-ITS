@@ -13,8 +13,9 @@
 #include "Global/Yield.h"
 #include "Process/CamMaster.h"
 
-#define PATH_LOG		_T("C:\R2RSet\Log")
-#define PATH_LOG_AUTO	_T("C:\R2RSet\Log\Auto")
+#define PATH_LOG		_T("C:\Debuging\Log")
+#define PATH_LOG_AUTO	_T("C:\Debuging\Log\Auto")
+#define PATH_LOG_PLC	_T("C:\Debuging\Log\PLC")
 
 class CGvisR2R_PunchDoc : public CDocument
 {
@@ -32,7 +33,7 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
-	BOOL m_bOffLogAuto;
+	BOOL m_bOffLogAuto, m_bOffLogPLC;
 	int m_nDelayShow;
 	BOOL m_bBufEmpty[2]; // [0]: Up, [1]: Dn
 	BOOL m_bBufEmptyF[2]; // [0]: Up, [1]: Dn
@@ -131,7 +132,8 @@ public:
 
 // 작업입니다.
 public:
-	void Log(CString strMsg, int nType = 0);
+	void LogAuto(CString strMsg, int nType = 0);
+	void LogPLC(CString strMsg, int nType = 0);
 	CString GetProcessNum();
 	BOOL LoadWorkingInfo();
 	void SaveWorkingInfo();
@@ -485,6 +487,7 @@ public:
 	void LoadPCRIts10(int nSerial); // 10 -> 외층 : 양면, 내층 : 단면
 	void LoadPCRIts01(int nSerial); // 11 -> 외층 : 단면, 내층 : 양면
 	void LoadPCRIts00(int nSerial); // 10 -> 외층 : 단면, 내층 : 단면
+	void DelItsAll(CString strPath);
 
 	BOOL InitReelmapInner();
 	BOOL InitReelmapInnerUp();

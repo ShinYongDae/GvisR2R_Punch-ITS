@@ -8413,6 +8413,7 @@ BOOL CReelMap::FinalCopyItsFiles()
 			break;
 	}
 
+	pDoc->DelItsAll(sPathSrcDir);
 	return TRUE;
 }
 

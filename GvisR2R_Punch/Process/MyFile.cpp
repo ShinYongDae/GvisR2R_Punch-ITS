@@ -701,3 +701,46 @@ BOOL CMyFile::ChkLotEnd(CString sPath)
 	return FALSE;
 }
 
+
+void CMyFile::DelItsAll(CString strPath)
+{
+	CString strFileName;
+	CString strFilePath;
+	CFileFind cFile;
+	BOOL bExist;
+
+	bExist = cFile.FindFile(strPath + _T("\\*.dat"));
+	if (!bExist)
+		return;
+
+	BeginWaitCursor();
+	while (bExist)
+	{
+		bExist = cFile.FindNextFile();
+		if (cFile.IsDots()) continue;
+		if (!cFile.IsDirectory())
+		{
+			// 파일명을 얻음.
+			strFileName = cFile.GetFileName();
+
+			// 파일 Path를 얻음.
+			strFilePath = cFile.GetFilePath();
+
+			m_sError = _T("No error");
+			m_dwError = 0; // 에러코드 초기화.
+			m_bAskIfReadOnly = FALSE; // File을 Read Only로 하지 않음.
+			m_bOverwriteMode = TRUE; // File을 Over Write로.
+			m_bAborted = FALSE; // 파일관련 처리를 Abort하지 않는다.
+			m_iRecursionLimit = -1; // 하위폴더의 갯수를 초기화한다. 양수부터 의미 있음.
+
+			if (!DeleteFolerOrFile(strFilePath))
+			{
+				ShowError();
+				return; // 실패.
+			}
+		}
+	}
+	EndWaitCursor();
+
+	return; // Sucess.
+}

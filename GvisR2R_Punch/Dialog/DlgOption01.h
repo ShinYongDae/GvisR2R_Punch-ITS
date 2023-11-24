@@ -30,4 +30,5 @@ public:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedCheck1();
+	afx_msg void OnBnClickedCheck2();
 };

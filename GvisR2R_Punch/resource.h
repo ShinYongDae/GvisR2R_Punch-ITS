@@ -1245,6 +1245,7 @@
 #define IDC_CHECK1                      1414
 #define IDC_BTN_GD_RA_2                 1415
 #define IDC_STATIC_0                    1415
+#define IDC_CHECK2                      1415
 #define IDC_BTN_GD_RA_3                 1416
 #define IDC_STATIC_13                   1416
 #define IDC_BTN_GD_RA_4                 1417

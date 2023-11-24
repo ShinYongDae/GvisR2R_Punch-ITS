@@ -50,6 +50,7 @@ CGvisR2R_PunchDoc::CGvisR2R_PunchDoc()
 	pDoc = this;
 
 	m_bOffLogAuto = FALSE;
+	m_bOffLogPLC = FALSE;
 	m_strUserNameList = _T("");
 
 	m_bBufEmpty[0] = FALSE; // Exist
@@ -1029,6 +1030,11 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		m_bOffLogAuto = _ttoi(szData) ? TRUE : FALSE;
 	else
 		m_bOffLogAuto = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("OffLogPLC"), NULL, szData, sizeof(szData), PATH_WORKING_INFO))
+		m_bOffLogPLC = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bOffLogPLC = FALSE;
 
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("DebugGrabAlign"), NULL, szData, sizeof(szData), PATH_WORKING_INFO))
 		m_bDebugGrabAlign = _ttoi(szData) ? TRUE : FALSE;
@@ -13092,7 +13098,7 @@ int CGvisR2R_PunchDoc::GetAoiDnCamMstInfo()
 
 // Write Log for Auto
 
-void CGvisR2R_PunchDoc::Log(CString strMsg, int nType)
+void CGvisR2R_PunchDoc::LogAuto(CString strMsg, int nType)
 {
 	if (m_bOffLogAuto)
 		return;
@@ -13145,6 +13151,61 @@ void CGvisR2R_PunchDoc::Log(CString strMsg, int nType)
 	file.Close();
 }
 
+// Write Log for PLC
+
+void CGvisR2R_PunchDoc::LogPLC(CString strMsg, int nType)
+{
+	if (m_bOffLogPLC)
+		return;
+
+	CSafeLockDoc lock(&g_LogLockDoc);
+
+	TCHAR szFile[MAX_PATH] = { 0, };
+	TCHAR szPath[MAX_PATH] = { 0, };
+	TCHAR* pszPos = NULL;
+
+	_stprintf(szPath, PATH_LOG);
+	if (!DirectoryExists(szPath))
+		CreateDirectory(szPath, NULL);
+
+	_stprintf(szPath, PATH_LOG_PLC);
+	if (!DirectoryExists(szPath))
+		CreateDirectory(szPath, NULL);
+
+	COleDateTime time = COleDateTime::GetCurrentTime();
+
+	switch (nType)
+	{
+	case 0:
+		_stprintf(szFile, _T("%s\\%s.txt"), szPath, COleDateTime::GetCurrentTime().Format(_T("%Y%m%d")));
+		break;
+	}
+
+	CString strDate;
+	CString strContents;
+	CTime now;
+
+	strDate.Format(_T("%s: "), COleDateTime::GetCurrentTime().Format(_T("%Y/%m/%d %H:%M:%S")));
+	strContents = strDate;
+	strContents += strMsg;
+	strContents += _T("\r\n");
+	strContents += _T("\r\n");
+
+	CFile file;
+
+	if (file.Open(szFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyNone) == 0)
+		return;
+
+	char cameraKey[1024];
+	StringToChar(strContents, cameraKey);
+
+	file.SeekToEnd();
+	int nLenth = strContents.GetLength();
+	file.Write(cameraKey, nLenth);
+	file.Flush();
+	file.Close();
+}
+
 void CGvisR2R_PunchDoc::StringToChar(CString str, char* pCh) // char* returned must be deleted... 
 {
 	wchar_t*	wszStr;
@@ -13160,4 +13221,13 @@ void CGvisR2R_PunchDoc::StringToChar(CString str, char* pCh) // char* returned m
 																			  //3. wchar_t* to char* conversion
 	WideCharToMultiByte(CP_ACP, 0, wszStr, -1, pCh, nLenth, 0, 0);
 	return;
+}
+
+
+void CGvisR2R_PunchDoc::DelItsAll(CString strPath)
+{
+	if (m_pFile)
+	{
+		m_pFile->DelItsAll(strPath);
+	}
 }

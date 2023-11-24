@@ -55,6 +55,7 @@ public:
 	BOOL ChkLotEnd(CString sPath);
 	BOOL IsPcrExist(CString strPath);
 
+	void DelItsAll(CString strPath);
 
 // Overrides
 	// ClassWizard generated virtual function overrides

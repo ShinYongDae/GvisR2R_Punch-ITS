@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 
-//#define TEST_MODE		1
+#define TEST_MODE		1
 
 #ifndef MAX_STRIP
 	#define MAX_STRIP				4
@@ -56,7 +56,7 @@
 	#define USE_ENGRAVE
 	#define USE_DTS
 
-	#define USE_CAM_MASTER
+	//#define USE_CAM_MASTER
 	//#define	USE_NMC
 	//#define	USE_MPE
 	//#define	USE_IRAYPLE
