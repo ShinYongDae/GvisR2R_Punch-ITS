@@ -757,7 +757,7 @@ BOOL CCamMaster::LoadStripPieceRegion_Binary()	//20121120-ndy for PairPanel
 
 	if (!find.FindFile(strFileNCam))
 	{
-		pView->MsgBox(_T("캠마스터에 피스정보가 설정되지 않았습니다."));
+		pView->MsgBox(_T("캠마스터에 피스정보가 설정되지 않았습니다.")); // syd-20231127
 		return(FALSE);
 	}
 

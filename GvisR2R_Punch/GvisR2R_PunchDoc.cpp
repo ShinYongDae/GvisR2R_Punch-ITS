@@ -31,7 +31,9 @@ CGvisR2R_PunchDoc* pDoc;
 extern CGvisR2R_PunchView* pView;
 
 #include "safelockdoc.h"
-CCriticalSection g_LogLockDoc;
+CCriticalSection g_LogLockAuto;
+CCriticalSection g_LogLockPLC;
+
 
 // CGvisR2R_PunchDoc
 
@@ -11031,10 +11033,16 @@ int CGvisR2R_PunchDoc::SearchFirstShotOnIts()
 
 	if (!pDataFile->Open(sPath))
 	{
-		sMsg.Format(_T("%s File not found."), sPath);
-		pView->MsgBox(sMsg);
-		delete pDataFile;
-		return 0;
+		Path[1] = pDoc->m_sEngModel;
+		sPath.Format(_T("%s%s\\%s\\%s"), Path[0], Path[1], Path[2], sName); // ITS_Code.txt
+
+		if (!pDataFile->Open(sPath))
+		{
+			sMsg.Format(_T("%s File not found."), sPath);
+			pView->MsgBox(sMsg);
+			delete pDataFile;
+			return 0;
+		}
 	}
 
 	int i = 0, nLastShot = 0; 
@@ -11079,9 +11087,14 @@ BOOL CGvisR2R_PunchDoc::GetItsSerialInfo(int nItsSerial, BOOL &bDualTest, CStrin
 	CFileFind finder;
 	if (finder.FindFile(sPath) == FALSE)
 	{
-		strTemp.Format(_T("GetItsSerialInfo - Didn't find file.\r\n%s"), sPath);
-		pView->MsgBox(strTemp);
-		return FALSE;
+		Path[1] = pDoc->m_sEngModel;
+		sPath.Format(_T("%s%s\\%s\\%s"), Path[0], Path[1], Path[2], sName); // ITS_Code.txt
+		if (finder.FindFile(sPath) == FALSE)
+		{
+			strTemp.Format(_T("GetItsSerialInfo - Didn't find file.\r\n%s"), sPath);
+			pView->MsgBox(strTemp);
+			return FALSE;
+		}
 	}
 
 	if (nItsSerial == 0)
@@ -13103,7 +13116,7 @@ void CGvisR2R_PunchDoc::LogAuto(CString strMsg, int nType)
 	if (m_bOffLogAuto)
 		return;
 
-	CSafeLockDoc lock(&g_LogLockDoc);
+	CSafeLockDoc lock(&g_LogLockAuto);
 
 	TCHAR szFile[MAX_PATH] = { 0, };
 	TCHAR szPath[MAX_PATH] = { 0, };
@@ -13158,7 +13171,7 @@ void CGvisR2R_PunchDoc::LogPLC(CString strMsg, int nType)
 	if (m_bOffLogPLC)
 		return;
 
-	CSafeLockDoc lock(&g_LogLockDoc);
+	CSafeLockDoc lock(&g_LogLockPLC);
 
 	TCHAR szFile[MAX_PATH] = { 0, };
 	TCHAR szPath[MAX_PATH] = { 0, };

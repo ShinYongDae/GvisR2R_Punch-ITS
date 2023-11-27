@@ -831,7 +831,8 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 				if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
 				{
 					//if (pDoc->GetTestMode() == MODE_OUTER)
-					if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+					//if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+					if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->m_sEngModel, sLayerUp))
 					{
 						if (m_pDlgMenu06)
 							m_pDlgMenu06->RedrawWindow();
@@ -995,7 +996,8 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 				{
 					if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 3))
 					{
-						if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+						//if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+						if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->m_sEngModel, sLayerUp))
 						{
 							if (m_pDlgMenu06)
 							{
@@ -13794,59 +13796,83 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 	CString sLot, sLayerUp, sLayerDn;
 	BOOL bDualTestInner, bGetCurrentInfoEng;
 
-	bGetCurrentInfoEng = GetCurrentInfoEng();
+	bGetCurrentInfoEng = GetCurrentInfoEng(); // TRUE: MODE_INNER or MODE_OUTER
 	pDoc->GetCamPxlRes();
 
 	if (IsLastJob(0)) // Up
 	{
-		pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
-			pDoc->WorkingInfo.LastJob.sModelUp,
-			pDoc->WorkingInfo.LastJob.sLayerUp);
-		pDoc->m_Master[0].LoadMstInfo();
-		//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
-
 		if (bGetCurrentInfoEng)
 		{
+			pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
+				pDoc->m_sEngModel,
+				pDoc->m_sEngLayerUp);
+			pDoc->m_Master[0].LoadMstInfo();
+			//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
+
 			if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 3))
 			{
 				//if (pDoc->GetTestMode() == MODE_OUTER)
-				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->m_sEngModel, sLayerUp))
 				{
 					pDoc->m_MasterInner[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
-						pDoc->WorkingInfo.LastJob.sModelUp,
+						pDoc->m_sEngModel,
 						sLayerUp);
 					pDoc->m_MasterInner[0].LoadMstInfo();
 				}
 			}
 		}
+		else
+		{
+			pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
+				pDoc->WorkingInfo.LastJob.sModelUp,
+				pDoc->WorkingInfo.LastJob.sLayerUp);
+			pDoc->m_Master[0].LoadMstInfo();
+			//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
+		}
 	}
 
 	if (IsLastJob(1)) // Dn
 	{
-		pDoc->m_Master[1].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
-			pDoc->WorkingInfo.LastJob.sModelUp,
-			//pDoc->WorkingInfo.LastJob.sModelDn,
-			pDoc->WorkingInfo.LastJob.sLayerDn,
-			pDoc->WorkingInfo.LastJob.sLayerUp);
-
-		pDoc->m_Master[1].LoadMstInfo();
-		//pDoc->m_Master[1].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotDn);
-
 		if (bGetCurrentInfoEng)
 		{
+			pDoc->m_Master[1].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
+				pDoc->m_sEngModel,
+				//pDoc->WorkingInfo.LastJob.sModelDn,
+				pDoc->m_sEngLayerDn,
+				pDoc->m_sEngLayerUp);
+
+			pDoc->m_Master[1].LoadMstInfo();
+			//pDoc->m_Master[1].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotDn);
+			
 			if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
 			{
 				//if (pDoc->GetTestMode() == MODE_OUTER)
-				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerDn))
+				//if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerDn))
+				if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->m_sEngModel, sLayerDn))
 				{
 					//GetCurrentInfoEng();
+					//pDoc->m_MasterInner[1].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
+					//	pDoc->WorkingInfo.LastJob.sModelUp,
+					//	sLayerDn,
+					//	sLayerUp);
 					pDoc->m_MasterInner[1].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
-						pDoc->WorkingInfo.LastJob.sModelUp,
+						pDoc->m_sEngModel,
 						sLayerDn,
 						sLayerUp);
 					pDoc->m_MasterInner[1].LoadMstInfo();
 				}
 			}
+		}
+		else
+		{
+			pDoc->m_Master[1].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
+				pDoc->WorkingInfo.LastJob.sModelUp,
+				//pDoc->WorkingInfo.LastJob.sModelDn,
+				pDoc->WorkingInfo.LastJob.sLayerDn,
+				pDoc->WorkingInfo.LastJob.sLayerUp);
+
+			pDoc->m_Master[1].LoadMstInfo();
+			//pDoc->m_Master[1].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotDn);
 		}
 	}
 
@@ -13868,7 +13894,8 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 		if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 0))
 		{
 			//if (pDoc->GetTestMode() == MODE_OUTER)
-			if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+			//if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
+			if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->m_sEngModel, sLayerUp))
 			{
 				// Reelmap 정보 Loading.....
 				InitReelmapInner(); // Delete & New
@@ -13889,7 +13916,7 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 			}
 			else
 			{
-				MsgBox(_T("InitReelmapInner()를 위한 GetItsSerialInfo의 정보가 없습니다."));
+				MsgBox(_T("InitReelmapInner()를 위한 GetItsSerialInfo의 정보가 없습니다.")); // syd-20231127
 				return FALSE;
 			}
 		}
