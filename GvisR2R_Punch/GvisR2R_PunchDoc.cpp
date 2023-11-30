@@ -10619,7 +10619,7 @@ void CGvisR2R_PunchDoc::GetMkInfo()
 	if (sPath.IsEmpty())
 		return;
 
-	if (0 < ::GetPrivateProfileString(_T("Signal"), _T("DispContRunI"), NULL, szData, sizeof(szData), sPath))
+	if (0 < ::GetPrivateProfileString(_T("Signal"), _T("DispContRun"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.bDispContRun = (_ttoi(szData) > 0) ? TRUE : FALSE;
 	else
 		WorkingInfo.LastJob.bDispContRun = FALSE;

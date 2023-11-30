@@ -2013,6 +2013,11 @@ void CDlgMenu05::OnSelchangeComboLayer()
 void CDlgMenu05::OnBtnSave() 
 {
 	// TODO: Add your control notification handler code here
+	if (pView->IsRun() || pView->IsBuffer())
+	{
+		pView->MsgBox(_T("작업중입니다."));
+		return;
+	}
 //	if(IDNO == pView->DoMyMsgBox(_T("검사결과를 저장하시겠습니까?"), MB_YESNO))
 	if(IDNO == pView->MsgBox(_T("검사결과를 저장하시겠습니까?"), 0, MB_YESNO))
 		return;
@@ -2566,6 +2571,11 @@ CString CDlgMenu05::GetProcCode(CString sPath)
 void CDlgMenu05::OnBtnSave4() 
 {
 	// TODO: Add your control notification handler code here
+	if (pView->IsRun() || pView->IsBuffer())
+	{
+		pView->MsgBox(_T("작업중입니다."));
+		return;
+	}
 
 	if(IDYES==pView->MsgBox(_T("ITS용의 파일을 저장하시겠습니까?"), 0, MB_YESNO))
 		MakeIts();
@@ -2652,7 +2662,7 @@ void CDlgMenu05::MakeIts()
 
 			nSerial = _tstoi(sSerial);
 
-			if(nLayer == RMAP_UP)
+			if(nLayer == RMAP_UP || nLayer == RMAP_INNER_UP)
 				LoadPCRUpFromMk(nSerial);
 			else
 				LoadPCRDnFromMk(nSerial);
@@ -2702,8 +2712,8 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 	//CString sPath = pDoc->GetItsPath(nSerial, nLayer);
 
 	CString str = _T(""), sSide = _T(""), sTemp = _T(""), sItsData = _T("");
-	//CString sItsCode = pDoc->WorkingInfo.LastJob.sEngItsCode;
-	CString sItsCode = m_sLot;
+	CString sItsCode = pDoc->WorkingInfo.LastJob.sEngItsCode;
+	//CString sItsCode = m_sLot;
 
 	int nNodeX = pDoc->m_Master[0].m_pPcsRgn->nCol;
 	int nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow;
@@ -2869,6 +2879,11 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 void CDlgMenu05::OnBtnSave3()
 {
 	// TODO: Add your control notification handler code here
+	if (pView->IsRun() || pView->IsBuffer())
+	{
+		pView->MsgBox(_T("작업중입니다."));
+		return;
+	}
 
 	//	if(IDYES==pView->DoMyMsgBox(_T("Sap3용의 파일을 저장하시겠습니까?"), MB_YESNO))
 	if (IDYES == pView->MsgBox(_T("Sap3용의 파일을 저장하시겠습니까?"), 0, MB_YESNO))
@@ -3643,6 +3658,12 @@ CString CDlgMenu05::Sapp3Data()
 void CDlgMenu05::OnBtnSave2() 
 {
 	// TODO: Add your control notification handler code here
+	if (pView->IsRun() || pView->IsBuffer())
+	{
+		pView->MsgBox(_T("작업중입니다."));
+		return;
+	}
+
 	Print(AfxGetMainWnd()->GetSafeHwnd());
 }
 

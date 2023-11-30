@@ -1717,6 +1717,7 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 	int nLoadPnl, nDefCode;
 	int nNodeX = pDoc->m_Master[0].m_pPcsRgn->nCol; // 10
 	int nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow; // 5
+	int nActionCode;
 
 	for(k=nTotPnl-1; k>=0; k--) // k = 7 ~ 0
 	{
@@ -1894,7 +1895,21 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 
 						if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
 						{
-							switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+							if (m_nLayer == RMAP_UP || m_nLayer == RMAP_DN || m_nLayer == RMAP_ALLUP || m_nLayer == RMAP_ALLDN)
+							{
+								nActionCode = pDoc->m_Master[0].MasterInfo.nActionCode;
+							}
+							else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
+							{
+								nActionCode = pDoc->m_MasterInner[0].MasterInfo.nActionCode;
+							}
+							else if (m_nLayer == RMAP_ITS)
+							{
+								nActionCode = pDoc->m_Master[0].MasterInfo.nActionCode;
+							}
+
+							//switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+							switch (nActionCode)
 							{
 							case 0:
 								break;
@@ -1936,8 +1951,22 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 								nP = nNodeY * (nR + 1) - (nC + 1);
 
 							if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
-							{
-								switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+							{								
+								if (m_nLayer == RMAP_UP || m_nLayer == RMAP_DN || m_nLayer == RMAP_ALLUP || m_nLayer == RMAP_ALLDN)
+								{
+									nActionCode = pDoc->m_Master[0].MasterInfo.nActionCode;
+								}
+								else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
+								{
+									nActionCode = pDoc->m_MasterInner[0].MasterInfo.nActionCode;
+								}
+								else if (m_nLayer == RMAP_ITS)
+								{
+									nActionCode = pDoc->m_Master[0].MasterInfo.nActionCode;
+								}
+
+								//switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+								switch (nActionCode)
 								{
 								case 0:
 									break;
@@ -1998,7 +2027,21 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 
 									if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
 									{
-										switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+										if (m_nLayer == RMAP_UP || m_nLayer == RMAP_DN || m_nLayer == RMAP_ALLUP || m_nLayer == RMAP_ALLDN)
+										{
+											nActionCode = pDoc->m_Master[0].MasterInfo.nActionCode;
+										}
+										else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
+										{
+											nActionCode = pDoc->m_MasterInner[0].MasterInfo.nActionCode;
+										}
+										else if (m_nLayer == RMAP_ITS)
+										{
+											nActionCode = pDoc->m_Master[0].MasterInfo.nActionCode;
+										}
+
+										//switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+										switch (nActionCode)
 										{
 										case 0:
 											break;
@@ -2038,7 +2081,21 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 
 								if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
 								{
-									switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+									if (m_nLayer == RMAP_UP || m_nLayer == RMAP_DN || m_nLayer == RMAP_ALLUP || m_nLayer == RMAP_ALLDN)
+									{
+										nActionCode = pDoc->m_Master[0].MasterInfo.nActionCode;
+									}
+									else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
+									{
+										nActionCode = pDoc->m_MasterInner[0].MasterInfo.nActionCode;
+									}
+									else if (m_nLayer == RMAP_ITS)
+									{
+										nActionCode = pDoc->m_Master[0].MasterInfo.nActionCode;
+									}
+
+									//switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+									switch (nActionCode)
 									{
 									case 0:
 										break;
