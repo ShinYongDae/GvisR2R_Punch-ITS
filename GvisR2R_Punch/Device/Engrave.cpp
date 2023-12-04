@@ -2024,6 +2024,9 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 				pDoc->WorkingInfo.EngInfo.sLayerDn = CharToString(SockData.strData);
 			}
 			break;
+		case _ItemInx::_LoadMstInfo:
+			pView->m_bLoadMstInfo = TRUE;
+			break;
 		case _ItemInx::_TotReelLen:
 			m_bGetInfo = TRUE;
 			pDoc->WorkingInfo.LastJob.sReelTotLen = CharToString(SockData.strData);
@@ -4689,6 +4692,18 @@ void CEngrave::SetLayerDnName()
 	SocketData.nMsgID = _stItemInx::_LayerDnName;
 	StringToChar(pDoc->WorkingInfo.LastJob.sLayerDn, cData);
 	sprintf(SocketData.strData, "%s", cData);
+	SendCommand(SocketData);
+}
+
+void CEngrave::SetLoadMstInfo()
+{
+	if (!pDoc)
+		return;
+
+	SOCKET_DATA SocketData;
+	SocketData.nCmdCode = _SetData;
+
+	SocketData.nMsgID = _stItemInx::_LoadMstInfo;
 	SendCommand(SocketData);
 }
 

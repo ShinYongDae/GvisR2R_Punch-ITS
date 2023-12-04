@@ -193,6 +193,7 @@ public:
 	void SetLotDnName();
 	void SetLayerUpName();
 	void SetLayerDnName();
+	void SetLoadMstInfo();
 	void SetOrderNum();
 	void SetShotNum();
 	void SetTotOpRto();
