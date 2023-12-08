@@ -1999,8 +1999,8 @@ BOOL CDlgMenu02::MovePinPos()
 				{
 					pView->ClrDispMsg();
 					AfxMessageBox(_T("Move XY Error..."));
+				}
 			}
-		}
 		}
 
 		return TRUE;

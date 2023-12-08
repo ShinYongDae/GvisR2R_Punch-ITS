@@ -166,11 +166,10 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "GvisR2R_Punch, 버전 2.0.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2023.12.04",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2023.12.08",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
-    LTEXT           "외층검사시 내층릴맵 nActionCode적용",IDC_STATIC,7,38,100,8
-    LTEXT           "각인부 LoadMstInfo Msg Error",IDC_STATIC,7,46,103,8
-    LTEXT           "수동 ITS파일 생성 확인",IDC_STATIC,7,54,100,8
+    LTEXT           "Modify ChkRcvSig()",IDC_STATIC,7,38,100,8
+    LTEXT           "Delete Watch Dog",IDC_STATIC,7,46,100,8
 END
 
 IDD_GVISR2R_PUNCH_FORM DIALOGEX 0, 0, 630, 461

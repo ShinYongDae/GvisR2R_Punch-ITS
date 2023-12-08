@@ -61,6 +61,12 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	// TODO: 여기에 생성 코드를 추가합니다.
 	pView = this;
 
+	int i = 0;
+	for (i = 0; i < _SigInx::_EndIdx; i++)
+	{
+		m_bRcvSig[i] = FALSE;
+	}
+
 	m_sAoiUpAlarmReStartMsg = _T(""); m_sAoiDnAlarmReStartMsg = _T("");
 	m_sAoiUpAlarmReTestMsg = _T(""); m_sAoiDnAlarmReTestMsg = _T("");
 
@@ -99,10 +105,10 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 
 	m_bInit = FALSE;
 	m_bDispMsg = FALSE;
-	for (int kk = 0; kk < 10; kk++)
+	for (i = 0; i < 10; i++)
 	{
-		m_bDispMsgDoAuto[kk] = FALSE;
-		m_nStepDispMsg[kk] = 0;
+		m_bDispMsgDoAuto[i] = FALSE;
+		m_nStepDispMsg[i] = 0;
 	}
 	m_sFixMsg[0] = _T("");
 	m_sFixMsg[1] = _T("");
@@ -140,10 +146,10 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	m_bBtnWinker[1] = FALSE; // Reset
 	m_bBtnWinker[2] = FALSE; // Run
 	m_bBtnWinker[3] = FALSE; // Stop
-	for (int nI = 0; nI < 4; nI++)
+	for (i = 0; i < 4; i++)
 	{
-		m_nCntBtnWinker[nI] = 0;
-		m_nDlyWinker[nI] = 5;
+		m_nCntBtnWinker[i] = 0;
+		m_nDlyWinker[i] = 5;
 	}
 
 	m_bAoiFdWriteF[0] = FALSE;
@@ -1265,6 +1271,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 		ChkEmg();
 		ChkSaftySen();
 		ChkDoor();
+		ChkRcvSig();
 
 		if (m_bTIM_DISP_STATUS)
 			SetTimer(TIM_DISP_STATUS, 100, NULL);
@@ -32480,4 +32487,298 @@ UINT CGvisR2R_PunchView::ThreadProc38(LPVOID lpContext)	// UpdateYieldUp()
 	pThread->m_bThread[38] = FALSE;
 
 	return 0;
+}
+
+void CGvisR2R_PunchView::ChkRcvSig()
+{
+	long lData = 0;
+	int i = 0;
+
+	for (i = 0; i < _SigInx::_EndIdx; i++)
+	{
+		if (m_bRcvSig[i])
+		{
+			m_bRcvSig[i] = FALSE;
+			switch (i)
+			{
+			case _SigInx::_Ready:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440162"), (long)0); // 마킹부 정지 스위치 램프 ON(PC가 On, PLC가 확인하고 Off시킴)
+				break;
+			case _SigInx::_Run:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440162"), (long)0); // 마킹부 정지 스위치 램프 ON(PC가 On, PLC가 확인하고 Off시킴)
+				break;
+			case _SigInx::_Reset:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440162"), (long)0); // 마킹부 정지 스위치 램프 ON(PC가 On, PLC가 확인하고 Off시킴)
+				break;
+			case _SigInx::_Stop:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440162"), (long)(pDoc->BtnStatus.Main.Stop ? 1 : 0)); // 마킹부 정지 스위치 램프 ON(PC가 On, PLC가 확인하고 Off시킴)
+				break;
+			case _SigInx::_MkTq:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440155"), (long)(pDoc->BtnStatus.Tq.Mk ? 1 : 0)); // 마킹부 텐션 ON (PC가 ON/OFF시킴)
+				break;
+			case _SigInx::_AoiTq:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440156"), (long)(pDoc->BtnStatus.Tq.Aoi ? 1 : 0)); // 검사부/각인부 텐션 ON (PC가 ON/OFF시킴)
+				break;
+			case _SigInx::_EngTq:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440156"), (long)(pDoc->BtnStatus.Tq.Eng ? 1 : 0)); // 검사부/각인부 텐션 ON (PC가 ON/OFF시킴)
+				break;
+			case _SigInx::_CcwModRe:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44017D"), (long)(pDoc->BtnStatus.Induct.Rc ? 1 : 0)); // 마킹(GUI) 리코일러 정방향(Off->CW/On->CCW)
+				break;
+			case _SigInx::_CcwModUn:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44017C"), (long)(pDoc->BtnStatus.Induct.Uc ? 1 : 0)); // 마킹(GUI) 언코일러 정방향(Off->CW/On->CCW)
+				break;
+			case _SigInx::_Core150Re:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44017E"), (long)(pDoc->BtnStatus.Core150.Rc ? 1 : 0)); // Marking GUI Recoiler Core 150[mm](PC On/Off)
+				break;
+			case _SigInx::_Core150Un:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44017F"), (long)(pDoc->BtnStatus.Core150.Uc ? 1 : 0)); // Marking GUI Uncoiler Core 150[mm](PC On/Off)
+				break;
+			case _SigInx::_MvCwRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_5, 1);	// 리코일러 제품휠 정회전 스위치
+				break;
+			case _SigInx::_MvCcwRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_6, 1);	// 리코일러 제품휠 역회전 스위치
+				break;
+			case _SigInx::_PrdChuckRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_41, 1);	// 리코일러 제품척 클램프 스위치
+				break;
+			case _SigInx::_DancerUpRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_42, 1);	// 리코일러 댄서롤 상승/하강 스위치
+				break;
+			case _SigInx::_PasteUpLfRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_43, 1);	// 리코일러 제품 이음매(상/좌) 스위치
+				break;
+			case _SigInx::_PasteUpRtRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_7, 1);	// 리코일러 제품 이음매(하/우) 스위치
+				break;
+			case _SigInx::_PasteVacRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_8, 1);	// 리코일러 제품 이음매 진공 스위치
+				break;
+			case _SigInx::_PprChuckRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_44, 1);	// 리코일러 간지척 클램프 스위치
+				break;
+			case _SigInx::_PprCwRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_45, 1);	// 리코일러 간지휠 정회전 스위치
+				break;
+			case _SigInx::_PprCcwRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_46, 1);	// 리코일러 간지휠 역회전 스위치
+				break;
+			case _SigInx::_DoRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_66, 1);	// 리코일러 Rewinder 동작 스위치
+				break;
+			case _SigInx::_PrdPprRe:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_67, 1);	// 리코일러 Rewinder 제품 & 간지 스위치
+				break;
+			case _SigInx::_Relation:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_9, 1);	// 마킹부 연동 온/오프 스위치
+				break;
+			case _SigInx::_MvCwMk:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_10, 1);	// 마킹부 피딩 정회전 스위치
+				break;
+			case _SigInx::_MvCcwMk:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_11, 1);	// 마킹부 피딩 역회전 스위치
+				break;
+			case _SigInx::_FdVacMk:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_12, 1);	// 마킹부 피딩 진공 스위치
+				break;
+			case _SigInx::_PushUpMk:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_13, 1);	// 마킹부 제품푸쉬 스위치 // (토크 진공 스위치) - X
+				break;
+			case _SigInx::_TblBlwMk:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_14, 1);	// 마킹부 테이블 브로워 스위치
+				break;
+			case _SigInx::_TblVacMk:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_15, 1);	// 마킹부 테이블 진공 스위치
+				break;
+			case _SigInx::_FdClampMk:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_51, 1);	// 마킹부 피딩 클램프 스위치
+				break;
+			case _SigInx::_TensClampMk:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_52, 1);	// 마킹부 텐션 클램프 스위치
+				break;
+			case _SigInx::_OnePnlMk:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440151"), (long)(pDoc->BtnStatus.Mk.MvOne ? 1: 0));
+				break;
+			case _SigInx::_DancerUpMk:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_48, 1);	// 마킹부 댄서롤 상승/하강 스위치
+				break;
+			case _SigInx::_MvCwAoiDn:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_56, 1);	// 검사부 하 피딩 정회전 스위치
+				break;
+			case _SigInx::_MvCcwAoiDn:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_57, 1);	// 검사부 하 피딩 역회전 스위치
+				break;
+			case _SigInx::_FdVacAoiDn:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_58, 1);	// 검사부 하 피딩 진공 스위치
+				break;
+			case _SigInx::_PushUpAoiDn:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_59, 1);	// 검사부 하 제품푸쉬 스위치 // (토크 진공 스위치) - X
+				break;
+			case _SigInx::_TblBlwAoiDn:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_60, 1);	// 검사부 하 테이블 브로워 스위치
+				break;
+			case _SigInx::_TblVacAoiDn:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_61, 1);	// 검사부 하 테이블 진공 스위치
+				break;
+			case _SigInx::_FdClampAoiDn:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_64, 1);	// 검사부 하 피딩 클램프 스위치
+				break;
+			case _SigInx::_TensClampAoiDn:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_65, 1);	// 검사부 하 텐션 클램프 스위치
+				break;
+			case _SigInx::_OnePnlAoiDn:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440151"), (long)(pDoc->BtnStatus.AoiDn.MvOne ? 1 : 0)); // 한판넬 이송상태 ON (PC가 ON, OFF)
+				break;
+			case _SigInx::_VelClrSonicAoiDn:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_88, 1);	// AOI(하) 초음파 세정기 속도 ON (PC가 ON/OFF시킴)
+				break;
+			case _SigInx::_OnePnlAoiUp:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440151"), (long)(pDoc->BtnStatus.AoiUp.MvOne ? 1 : 0)); // 한판넬 이송상태 ON (PC가 ON, OFF)
+				break;
+			case _SigInx::_OnePnlEng:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440151"), (long)(pDoc->BtnStatus.Eng.MvOne ? 1 : 0)); // 한판넬 이송상태 ON (PC가 ON, OFF)
+				break;
+			case _SigInx::_VelClrSonicEng:
+				if (m_pDlgMenu03)
+					m_pDlgMenu03->SwMpeBtn(IDC_CHK_87, 1);	// 각인부 초음파 세정기 속도 ON (PC가 ON/OFF시킴)
+				break;
+			case _SigInx::_MyMsgYes:
+				SetMyMsgYes();
+				break;
+			case _SigInx::_MyMsgNo:
+				SetMyMsgNo();
+				break;
+			case _SigInx::_MyMsgOk:
+				SetMyMsgOk();
+				break;
+			case _SigInx::_DualTest:
+				SetDualTest(pDoc->WorkingInfo.LastJob.bDualTest);
+				break;
+			case _SigInx::_SampleTest:
+				if(m_pMpe)
+					m_pMpe->Write(_T("MB44017B"), (pDoc->WorkingInfo.LastJob.bSampleTest) ? 1 : 0);		// Sample 검사 On
+				break;
+			case _SigInx::_TestMode:
+				pDoc->SetTestMode(pDoc->WorkingInfo.LastJob.nTestMode); // MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2
+				break;
+			case _SigInx::_RecoilerCcw:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44017D"), (long)(pDoc->BtnStatus.Induct.Rc ? 1 : 0));
+				::WritePrivateProfileString(_T("Last Job"), _T("One Metal On"), pDoc->BtnStatus.Induct.Rc ? _T("1") : _T("0"), PATH_WORKING_INFO);// IDC_CHK_ONE_METAL - Recoiler\r정방향 CW : FALSE
+				break;
+			case _SigInx::_UncoilerCcw:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44017C"), (long)(pDoc->BtnStatus.Induct.Uc ? 1 : 0));
+				::WritePrivateProfileString(_T("Last Job"), _T("Two Metal On"), pDoc->BtnStatus.Induct.Uc ? _T("1") : _T("0"), PATH_WORKING_INFO);// IDC_CHK_ONE_METAL - Recoiler\r정방향 CW : FALSE
+				break;
+			case _SigInx::_DoorRecoiler:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440163"), (long)(pDoc->WorkingInfo.LastJob.bRclDrSen ? 1 : 0));	// 리코일러Door센서 사용
+				break;
+			case _SigInx::_DoorAoiUp:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440166"), (long)(pDoc->WorkingInfo.LastJob.bAoiUpDrSen ? 1 : 0));	// AOI(상) Door센서 사용
+				break;
+			case _SigInx::_DoorAoiDn:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440167"), (long)(pDoc->WorkingInfo.LastJob.bAoiDnDrSen ? 1 : 0));	// AOI(하) Door센서 사용
+				break;
+			case _SigInx::_DoorMk:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440164"), (long)(pDoc->WorkingInfo.LastJob.bMkDrSen ? 1 : 0));	// 마킹Door센서 사용
+				break;
+			case _SigInx::_DoorEngrave:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44019B"), (long)(pDoc->WorkingInfo.LastJob.bEngvDrSen ? 1 : 0));	// 각인부 Door센서 사용
+				break;
+			case _SigInx::_DoorUncoiler:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440168"), (long)(pDoc->WorkingInfo.LastJob.bUclDrSen ? 1 : 0));	// 언코일러Door센서 사용
+				break;
+			case _SigInx::_CleannerAoiUp:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44010E"), (long)(pDoc->WorkingInfo.LastJob.bUseAoiUpCleanRoler ? 1 : 0));
+				break;
+			case _SigInx::_CleannerAoiDn:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44010F"), (long)(pDoc->WorkingInfo.LastJob.bUseAoiDnCleanRoler ? 1 : 0));
+				break;
+			case _SigInx::_UltraSonicAoiDn:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44016F"), (long)(pDoc->WorkingInfo.LastJob.bUseAoiDnUltrasonic ? 1 : 0));
+				break;
+			case _SigInx::_UltraSonicEngrave:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44016E"), (long)(pDoc->WorkingInfo.LastJob.bUseEngraveUltrasonic ? 1 : 0));
+				break;
+			case _SigInx::_Use380mm:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440177"), (long)(pDoc->WorkingInfo.LastJob.bUse380mm ? 1 : 0));	// EPC실린더(제품소->OFF/제품대->ON)
+				break;
+			case _SigInx::_TempPause:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB440183"), (long)(pDoc->WorkingInfo.LastJob.bTempPause ? 1 : 0));	// 일시정지사용(PC가 On시키고, PLC가 확인하고 Off시킴)
+				::WritePrivateProfileString(_T("Last Job"), _T("Use Temporary Pause"), pDoc->WorkingInfo.LastJob.bTempPause ? _T("1") : _T("0"), PATH_WORKING_INFO);
+				break;
+			case _SigInx::_2DOffsetInitPos:
+				lData = (long)(pDoc->GetOffsetInitPos() * 1000.0); // WorkingInfo.Motion.sOffsetInitPos
+				if (m_pMpe)
+					m_pMpe->Write(_T("ML44046"), lData);	// 각인부, 검사부, 마킹부 offset 이송 값 (단위 mm * 1000)
+				break;
+			case _SigInx::_2DOffsetInitPosMove:
+				if (m_pMpe)
+					m_pMpe->Write(_T("MB44013F"), (long)1); // 각인부, 검사부, 마킹부 offset 이송 ON(PC가 On시키고, PLC가 확인하고 Off시킴)
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
