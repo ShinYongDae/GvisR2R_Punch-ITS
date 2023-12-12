@@ -3217,11 +3217,15 @@ void CGvisR2R_PunchView::DispThreadTick()
 	{
 		//m_sTick = str;
 		//str.Format(_T("%d"), pDoc->m_nShotNum); // "m_sOrderNum-m_sShotNum" : "9-3"
-		str.Format(_T("%d%d%d%d:%d%d%d%d"),
-			m_bTHREAD_UPDATE_REELMAP_UP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_DN ? 1 : 0, 
+		//str.Format(_T("%d%d%d%d:%d%d%d%d"),
+		//	m_bTHREAD_UPDATE_REELMAP_UP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_DN ? 1 : 0, 
+		//	m_bTHREAD_UPDATE_REELMAP_ALLUP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_ALLDN ? 1 : 0,
+		//	m_bTHREAD_REELMAP_YIELD_UP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_DN ? 1 : 0, 
+		//	m_bTHREAD_REELMAP_YIELD_ALLUP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_ALLDN ? 1 : 0);
+		str.Format(_T("%d%d%d%d:%d%d"),
+			m_bTHREAD_UPDATE_REELMAP_UP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_DN ? 1 : 0,
 			m_bTHREAD_UPDATE_REELMAP_ALLUP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_ALLDN ? 1 : 0,
-			m_bTHREAD_REELMAP_YIELD_UP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_DN ? 1 : 0, 
-			m_bTHREAD_REELMAP_YIELD_ALLUP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_ALLDN ? 1 : 0);
+			m_bTHREAD_REELMAP_YIELD_UP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_DN ? 1 : 0);
 		pFrm->DispStatusBar(str, 5);
 #ifdef USE_IDS
 		double dFPS[2];
@@ -3233,7 +3237,7 @@ void CGvisR2R_PunchView::DispThreadTick()
 		pFrm->DispStatusBar(str, 6);
 #else
 		//str.Format(_T("%d"), m_nDebugStep);
-		str.Format(_T("%d,%d,%d"), pView->m_nStepAuto, pView->m_nMkStAuto, pView->m_nLotEndAuto);
+		str.Format(_T("%d,%d,%d,%d"), m_nStepAuto, m_nMkStAuto, m_nStepMk[0], m_nStepMk[1]);//pView->m_nLotEndAuto
 		pFrm->DispStatusBar(str, 6);
 #endif
 	}
@@ -15501,7 +15505,8 @@ void CGvisR2R_PunchView::DoReject0()
 					DispMain(_T("정 지"), RGB_RED);
 					m_pVoiceCoil[0]->SearchHomeSmac0();
 
-					nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					//nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -15765,7 +15770,8 @@ void CGvisR2R_PunchView::DoReject1()
 					DispMain(_T("정 지"), RGB_RED);
 					m_pVoiceCoil[1]->SearchHomeSmac1();
 
-					nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					//nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -16266,7 +16272,8 @@ void CGvisR2R_PunchView::DoMark0()
 		else
 		{
 			StopFromThread();
-			AsyncMsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 1);
+			//AsyncMsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 1);
+			MsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 1);
 			BuzzerFromThread(TRUE, 0);
 			//pView->DispStsBar(_T("정지-31"), 0);
 			DispMain(_T("정 지"), RGB_RED);
@@ -16518,7 +16525,8 @@ void CGvisR2R_PunchView::DoMark0()
 					DispMain(_T("정 지"), RGB_RED);
 					m_pVoiceCoil[0]->SearchHomeSmac0();
 
-					nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					//nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -16693,7 +16701,8 @@ void CGvisR2R_PunchView::DoMark0()
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
 		m_pVoiceCoil[0]->SearchHomeSmac0();
-		AsyncMsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
+		//AsyncMsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
+		MsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		m_nStepMk[0]++;
 		break;
 	case ERR_PROC + 1:
@@ -16707,12 +16716,13 @@ void CGvisR2R_PunchView::DoMark0()
 		m_nRtnMyMsgBoxIdx = 0;
 		m_bRtnMyMsgBox[0] = FALSE;
 		m_nRtnMyMsgBox[0] = -1;
-		pView->AsyncMsgBox(sMsg, 1, MB_YESNO);
+		//pView->AsyncMsgBox(sMsg, 1, MB_YESNO);
+		pView->MsgBox(sMsg, 1, MB_YESNO);
 		sMsg.Empty();
 		m_nStepMk[0]++;
 		break;
 	case ERR_PROC + 2:
-		if ((nRtn = WaitRtnVal()) > -1)
+		if ((nRtn = WaitRtnVal(1)) > -1)
 		{
 			if (IDYES == nRtn)
 			{
@@ -16724,7 +16734,8 @@ void CGvisR2R_PunchView::DoMark0()
 				m_bRtnMyMsgBox[0] = FALSE;
 				m_nRtnMyMsgBox[0] = -1;
 				sMsg.Format(_T("계속 다음 작업을 진행하시겠습니까?"), nSerial);
-				pView->AsyncMsgBox(sMsg, 1, MB_YESNO);
+				//pView->AsyncMsgBox(sMsg, 1, MB_YESNO);
+				pView->MsgBox(sMsg, 1, MB_YESNO);
 				sMsg.Empty();
 
 				m_nStepMk[0]++;
@@ -16732,7 +16743,7 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		break;
 	case ERR_PROC + 3:
-		if ((nRtn = WaitRtnVal()) > -1)
+		if ((nRtn = WaitRtnVal(1)) > -1)
 		{
 			if (IDYES == nRtn)
 			{
@@ -16887,7 +16898,8 @@ void CGvisR2R_PunchView::DoMark1()
 		else
 		{
 			StopFromThread();
-			AsyncMsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 2);
+			//AsyncMsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 2);
+			MsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 2);
 			BuzzerFromThread(TRUE, 0);
 			DispMain(_T("정 지"), RGB_RED);
 		}
@@ -17135,7 +17147,8 @@ void CGvisR2R_PunchView::DoMark1()
 					DispMain(_T("정 지"), RGB_RED);
 					m_pVoiceCoil[1]->SearchHomeSmac1();
 
-					nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					//nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -17309,7 +17322,8 @@ void CGvisR2R_PunchView::DoMark1()
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
 		m_pVoiceCoil[1]->SearchHomeSmac1();
-		AsyncMsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
+		//AsyncMsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
+		MsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		m_nStepMk[1]++;
 		break;
 	case ERR_PROC + 1:
@@ -17323,12 +17337,13 @@ void CGvisR2R_PunchView::DoMark1()
 		m_nRtnMyMsgBoxIdx = 1;
 		m_bRtnMyMsgBox[1] = FALSE;
 		m_nRtnMyMsgBox[1] = -1;
-		pView->AsyncMsgBox(sMsg, 2, MB_YESNO);
+		//pView->AsyncMsgBox(sMsg, 2, MB_YESNO);
+		pView->MsgBox(sMsg, 2, MB_YESNO);
 		sMsg.Empty();
 		m_nStepMk[1]++;
 		break;
 	case ERR_PROC + 2:
-		if ((nRtn = WaitRtnVal()) > -1)
+		if ((nRtn = WaitRtnVal(2)) > -1)
 		{
 			if (IDYES == nRtn)
 			{
@@ -17340,7 +17355,8 @@ void CGvisR2R_PunchView::DoMark1()
 				m_bRtnMyMsgBox[1] = FALSE;
 				m_nRtnMyMsgBox[1] = -1;
 				sMsg.Format(_T("계속 다음 작업을 진행하시겠습니까?"), nSerial);
-				pView->AsyncMsgBox(sMsg, 2, MB_YESNO);
+				//pView->AsyncMsgBox(sMsg, 2, MB_YESNO);
+				pView->MsgBox(sMsg, 2, MB_YESNO);
 				sMsg.Empty();
 
 				m_nStepMk[1]++;
@@ -17349,7 +17365,7 @@ void CGvisR2R_PunchView::DoMark1()
 		}
 		break;
 	case ERR_PROC + 3:
-		if ((nRtn = WaitRtnVal()) > -1)
+		if ((nRtn = WaitRtnVal(2)) > -1)
 		{
 			if (IDYES == nRtn)
 			{
@@ -28594,7 +28610,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 		else
 		{
 			StopFromThread();
-			AsyncMsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 1);
+			//AsyncMsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 1);
+			MsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 1);
 			BuzzerFromThread(TRUE, 0);
 			DispMain(_T("정 지"), RGB_RED);
 		}
@@ -28842,7 +28859,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 					DispMain(_T("정 지"), RGB_RED);
 					m_pVoiceCoil[0]->SearchHomeSmac0();
 
-					nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					//nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -29017,7 +29035,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
 		m_pVoiceCoil[0]->SearchHomeSmac0();
-		AsyncMsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
+		//AsyncMsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
+		MsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		m_nStepMk[0]++;
 		break;
 	case ERR_PROC + 1:
@@ -29031,12 +29050,13 @@ void CGvisR2R_PunchView::DoMark0Its()
 		m_nRtnMyMsgBoxIdx = 0;
 		m_bRtnMyMsgBox[0] = FALSE;
 		m_nRtnMyMsgBox[0] = -1;
-		pView->AsyncMsgBox(sMsg, 1, MB_YESNO);
+		//pView->AsyncMsgBox(sMsg, 1, MB_YESNO);
+		pView->MsgBox(sMsg, 1, MB_YESNO);
 		sMsg.Empty();
 		m_nStepMk[0]++;
 		break;
 	case ERR_PROC + 2:
-		if ((nRtn = WaitRtnVal()) > -1)
+		if ((nRtn = WaitRtnVal(1)) > -1)
 		{
 			if (IDYES == nRtn)
 			{
@@ -29048,7 +29068,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 				m_bRtnMyMsgBox[0] = FALSE;
 				m_nRtnMyMsgBox[0] = -1;
 				sMsg.Format(_T("계속 다음 작업을 진행하시겠습니까?"), nSerial);
-				pView->AsyncMsgBox(sMsg, 1, MB_YESNO);
+				//pView->AsyncMsgBox(sMsg, 1, MB_YESNO);
+				pView->MsgBox(sMsg, 1, MB_YESNO);
 				sMsg.Empty();
 
 				m_nStepMk[0]++;
@@ -29056,7 +29077,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 		}
 		break;
 	case ERR_PROC + 3:
-		if ((nRtn = WaitRtnVal()) > -1)
+		if ((nRtn = WaitRtnVal(1)) > -1)
 		{
 			if (IDYES == nRtn)
 			{
@@ -29158,7 +29179,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 		else
 		{
 			StopFromThread();
-			AsyncMsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 2);
+			//AsyncMsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 2);
+			MsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 2);
 			BuzzerFromThread(TRUE, 0);
 			//pView->DispStsBar(_T("정지-34"), 0);
 			DispMain(_T("정 지"), RGB_RED);
@@ -29408,7 +29430,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 					DispMain(_T("정 지"), RGB_RED);
 					m_pVoiceCoil[1]->SearchHomeSmac1();
 
-					nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					//nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -29582,7 +29605,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
 		m_pVoiceCoil[1]->SearchHomeSmac1();
-		AsyncMsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
+		//AsyncMsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
+		MsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		m_nStepMk[1]++;
 		break;
 	case ERR_PROC + 1:
@@ -29596,12 +29620,13 @@ void CGvisR2R_PunchView::DoMark1Its()
 		m_nRtnMyMsgBoxIdx = 1;
 		m_bRtnMyMsgBox[1] = FALSE;
 		m_nRtnMyMsgBox[1] = -1;
-		pView->AsyncMsgBox(sMsg, 2, MB_YESNO);
+		//pView->AsyncMsgBox(sMsg, 2, MB_YESNO);
+		pView->MsgBox(sMsg, 2, MB_YESNO);
 		sMsg.Empty();
 		m_nStepMk[1]++;
 		break;
 	case ERR_PROC + 2:
-		if ((nRtn = WaitRtnVal()) > -1)
+		if ((nRtn = WaitRtnVal(2)) > -1)
 		{
 			if (IDYES == nRtn)
 			{
@@ -29613,7 +29638,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 				m_bRtnMyMsgBox[1] = FALSE;
 				m_nRtnMyMsgBox[1] = -1;
 				sMsg.Format(_T("계속 다음 작업을 진행하시겠습니까?"), nSerial);
-				pView->AsyncMsgBox(sMsg, 2, MB_YESNO);
+				//pView->AsyncMsgBox(sMsg, 2, MB_YESNO);
+				pView->MsgBox(sMsg, 2, MB_YESNO);
 				sMsg.Empty();
 
 				m_nStepMk[1]++;
@@ -29622,7 +29648,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 		}
 		break;
 	case ERR_PROC + 3:
-		if ((nRtn = WaitRtnVal()) > -1)
+		if ((nRtn = WaitRtnVal(2)) > -1)
 		{
 			if (IDYES == nRtn)
 			{

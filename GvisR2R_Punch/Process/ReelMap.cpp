@@ -3600,7 +3600,7 @@ CString CReelMap::MakeDirRmapRestore()
 		Path[4] = _T("");
 		break;
 	case RMAP_INNER_UP:
-		str = _T("YieldUp.txt");
+		str = _T("ReelMapDataUp.txt");
 		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
 		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
 		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
@@ -3608,7 +3608,7 @@ CString CReelMap::MakeDirRmapRestore()
 		Path[4] = pDoc->WorkingInfo.LastJob.sInnerLayerUp;
 		break;
 	case RMAP_INNER_DN:
-		str = _T("YieldDn.txt");
+		str = _T("ReelMapDataDn.txt");
 		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
 		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
 		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
@@ -3616,7 +3616,7 @@ CString CReelMap::MakeDirRmapRestore()
 		Path[4] = pDoc->WorkingInfo.LastJob.sInnerLayerDn;
 		break;
 	case RMAP_INNER_ALLUP:
-		str = _T("YieldAll.txt");
+		str = _T("ReelMapDataAll.txt");
 		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
 		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
 		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
@@ -3624,7 +3624,7 @@ CString CReelMap::MakeDirRmapRestore()
 		Path[4] = pDoc->WorkingInfo.LastJob.sInnerLayerUp;
 		break;
 	case RMAP_INNER_ALLDN:
-		str = _T("YieldAll.txt");
+		str = _T("ReelMapDataAll.txt");
 		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
 		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
 		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
@@ -3636,7 +3636,7 @@ CString CReelMap::MakeDirRmapRestore()
 	case RMAP_INOUTER_DN:
 		break;
 	case RMAP_ITS:
-		str = _T("YieldIts.txt");
+		str = _T("ReelMapDataIts.txt");
 		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
 		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
 		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
