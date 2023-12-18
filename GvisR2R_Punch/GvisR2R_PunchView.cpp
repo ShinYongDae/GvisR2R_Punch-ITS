@@ -19623,10 +19623,11 @@ void CGvisR2R_PunchView::Mk2PtInit()
 		case MK_ST + (Mk2PtIdx::InitMk) + 1:
 			if (IsRun())
 			{
-				if (MODE_INNER != pDoc->GetTestMode())
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1);	// Move - Cam1 - Pt0
-				else
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::MoveInitPt);
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1);	// Move - Cam1 - Pt0
+				//if (MODE_INNER != pDoc->GetTestMode())
+				//	m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1);	// Move - Cam1 - Pt0
+				//else
+				//	m_nMkStAuto = MK_ST + (Mk2PtIdx::MoveInitPt);
 			}
 			break;
 		}
@@ -20749,13 +20750,57 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 		switch (m_nMkStAuto)
 		{
 		case MK_ST + (Mk2PtIdx::Shift2Mk) :
+			//if (!m_bUpdateYield)
+			//{
+				if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
+				{
+					//m_bUpdateYield = TRUE;
+					UpdateYield(); // Cam[0],  Cam[1]
+					m_nMkStAuto++;
+				}
+			//}
+			//else
+			//{
+			//	Sleep(100);
+			//	m_nMkStAuto++;
+			//}
+			break;
+
+		case MK_ST + (Mk2PtIdx::Shift2Mk) + 1:
+			if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
+			{
+				//if (!m_bUpdateYieldOnRmap)
+				//{
+					if (!m_bTHREAD_UPDATE_REELMAP_UP && !m_bTHREAD_UPDATE_REELMAP_DN && !m_bTHREAD_UPDATE_REELMAP_ALLUP && !m_bTHREAD_UPDATE_REELMAP_ALLDN)
+					{
+						if (!m_bTHREAD_UPDATE_YIELD_UP && !m_bTHREAD_UPDATE_YIELD_DN && !m_bTHREAD_UPDATE_YIELD_ALLUP && !m_bTHREAD_UPDATE_YIELD_ALLDN)
+						{
+							//m_bUpdateYieldOnRmap = TRUE;
+							pDoc->UpdateYieldOnRmap(); // 20230614
+							m_nMkStAuto++;
+						}
+						else
+							Sleep(100);
+					}
+					else
+						Sleep(100);
+				//}
+				//else
+				//{
+				//	Sleep(100);
+				//	m_nMkStAuto++; // 마킹 및 verify가 완전히 끝나지 않은 경우.
+				//}
+			}
+			break;
+
+		case MK_ST + (Mk2PtIdx::Shift2Mk) + 2:
 			m_pMpe->Write(_T("MB440150"), 0);	// 마킹부 마킹중 ON (PC가 ON, OFF)
 			m_pMpe->Write(_T("MB440170"), 1);	// 마킹완료(PLC가 확인하고 Reset시킴.)-20141029
 			pDoc->LogAuto(_T("PC: 마킹완료(PLC가 확인하고 Reset시킴.)"));
 			m_nMkStAuto++;
 			break;
 
-		case MK_ST + (Mk2PtIdx::Shift2Mk) + 1:
+		case MK_ST + (Mk2PtIdx::Shift2Mk) + 3:
 			if (pDoc->m_pMpeSignal[0] & (0x01 << 1))	// 마킹부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)-20141030
 			{
 				pDoc->LogAuto(_T("PLC: 마킹부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)"));
@@ -20768,7 +20813,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 			}
 			break;
 
-		case MK_ST + (Mk2PtIdx::Shift2Mk) + 2:
+		case MK_ST + (Mk2PtIdx::Shift2Mk) + 4:
 #ifdef USE_MPE
 			//if (pDoc->m_pMpeSignal[0] & (0x01 << 1))	// 마킹부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)-20141030
 			{
@@ -20788,7 +20833,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 			}
 #endif
 			break;
-		case MK_ST + (Mk2PtIdx::Shift2Mk) + 3:
+		case MK_ST + (Mk2PtIdx::Shift2Mk) + 5:
 			if (!m_bTHREAD_SHIFT2MK && !m_bTHREAD_REELMAP_YIELD_UP && !m_bTHREAD_REELMAP_YIELD_DN && !m_bTHREAD_REELMAP_YIELD_ALLUP && !m_bTHREAD_REELMAP_YIELD_ALLDN) // Yield Reelmap
 			{
 				if (pDoc->GetTestMode() == MODE_OUTER)
@@ -20803,7 +20848,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 				ChkYield();
 			}
 			break;
-		case MK_ST + (Mk2PtIdx::Shift2Mk) + 4:
+		case MK_ST + (Mk2PtIdx::Shift2Mk) + 6:
 			if (!m_bTHREAD_SHIFT2MK)
 			{
 				SetListBuf();
@@ -20811,7 +20856,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 				m_nMkStAuto++;
 			}
 			break;
-		case MK_ST + (Mk2PtIdx::Shift2Mk) + 5:
+		case MK_ST + (Mk2PtIdx::Shift2Mk) + 7:
 			m_nMkStAuto++;
 			if (!IsBuffer(0))
 			{
@@ -20883,7 +20928,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 			}
 
 			break;
-		case MK_ST + (Mk2PtIdx::Shift2Mk) + 6:
+		case MK_ST + (Mk2PtIdx::Shift2Mk) + 8:
 			m_bMkSt = FALSE;
 			::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("0"), PATH_WORKING_INFO);
 			break;

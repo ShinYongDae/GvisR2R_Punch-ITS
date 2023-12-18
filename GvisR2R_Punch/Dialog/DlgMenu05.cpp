@@ -2699,7 +2699,7 @@ void CDlgMenu05::MakeItsFile(int nSerial, int nLayer)
 	}
 	else
 	{
-		pView->MsgBox(_T("It is trouble to MakeItsFile."), MB_ICONWARNING | MB_OK);
+		pView->MsgBox(_T("It is trouble to MakeItsFile."));
 		return;
 	}
 
@@ -2912,7 +2912,7 @@ void CDlgMenu05::MakeSapp3()
 		CString strMsg;
 		strMsg.Format(_T("It is trouble to open file.\r\n%s"), sPath);
 		pView->ClrDispMsg();
-		AfxMessageBox(strMsg, MB_ICONWARNING | MB_OK);
+		AfxMessageBox(strMsg);
 	}
 	if(pRtn)
 		delete pRtn;

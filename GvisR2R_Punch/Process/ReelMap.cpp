@@ -6932,6 +6932,7 @@ BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_IN
 {
 	MakeDirIts();
 
+	CString sMsg;
 	CFileFind cFile;
 	CString sPath = pDoc->GetItsPath(nSerial, nLayer);
 
@@ -6955,8 +6956,24 @@ BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_IN
 	}
 	else
 	{
-		pView->MsgBox(_T("It is trouble to MakeItsFile."), MB_ICONWARNING | MB_OK);
-		return FALSE;
+		Sleep(300);
+
+		fp = fopen(FileName, "w+");
+		if (fp != NULL)
+		{
+			fprintf(fp, "%s", pRtn = StringToChar(GetItsFileData(nSerial, nLayer)));
+			if (pRtn)
+			{
+				delete pRtn;
+				pRtn = NULL;
+			}
+		}
+		else
+		{
+			sMsg.Format(_T("It is trouble to MakeItsFile.\r\n%s"), FileName);
+			pView->MsgBox(sMsg);
+			return FALSE;
+		}
 	}
 
 	fclose(fp);
@@ -7365,7 +7382,7 @@ BOOL CReelMap::RemakeReelmap()
 	}
 	else
 	{
-		pView->MsgBox(_T("It is trouble to remake ReelMap."), MB_ICONWARNING | MB_OK);
+		pView->MsgBox(_T("It is trouble to remake ReelMap."));
 		return FALSE;
 	}
 
