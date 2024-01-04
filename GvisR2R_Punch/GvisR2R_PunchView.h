@@ -359,6 +359,7 @@ public:
 
 	int m_nDebugStep; 	void DispThreadTick();
 
+	int m_nParamErrorRead2dCode;
 	BOOL m_bRcvSig[_SigInx::_EndIdx];
 	stRcvSig m_stRcvSig;
 	CMpDevice* m_pMpe;
@@ -948,6 +949,7 @@ public:
 	BOOL IsDoneDispMkInfo();
 	BOOL IsSetLotEnd();
 	void ChkRcvSig();
+	void UpdateItsJobFile();
 
 	afx_msg LRESULT OnBufThreadDone(WPARAM wPara, LPARAM lPara);
 	int ChkSerial(); // 0: Continue, -: Previous, +:Discontinue
@@ -988,6 +990,7 @@ public:
 	BOOL IsLastJob(int nAoi); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
 
 	void DispContRun(BOOL bOn);
+	void DispLotEnd(BOOL bOn);
 
 	void MonPlcSignal();
 	void MonPlcAlm();

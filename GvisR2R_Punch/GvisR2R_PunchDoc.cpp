@@ -1110,6 +1110,14 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathEngSignalInfo = CString(_T(""));
 	}
 
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("PunchingPath"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.sIpPathMk = CString(szData);
+	else
+	{
+		AfxMessageBox(_T("PunchingPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.sIpPathMk = CString(_T(""));
+	}
+
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("PunchingCurrentInfoPath"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.System.sPathMkCurrInfo = CString(szData);
 	else
@@ -1400,6 +1408,23 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	{
 		AfxMessageBox(_T("ItsFileDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathIts = CString(_T(""));
+	}
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("UseItsJobFilePath"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.bUseItsJob = _ttoi(szData) > 0 ? TRUE : FALSE;
+	else
+	{
+		//AfxMessageBox(_T("UseItsJobFilePath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.bUseItsJob = FALSE;
+	}
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("ItsJobFilePath"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.sPathItsJob = CString(szData);
+	else
+	{
+		if(WorkingInfo.System.bUseItsJob)
+			AfxMessageBox(_T("ItsJobFilePath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.sPathItsJob = CString(_T(""));
 	}
 
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("VrsOldFileDirIpPath"), NULL, szData, sizeof(szData), sPath))
@@ -9913,6 +9938,7 @@ void CGvisR2R_PunchDoc::SetTestMode(int nMode)
 		return;
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Test Mode"), sData, sPath);
+	UpdateItsJobFile();
 
 #ifdef USE_MPE	
 	if (pView && pView->m_pMpe)
@@ -10624,6 +10650,11 @@ void CGvisR2R_PunchDoc::GetMkInfo()
 	else
 		WorkingInfo.LastJob.bDispContRun = FALSE;
 
+	if (0 < ::GetPrivateProfileString(_T("Signal"), _T("DispLotEnd"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.LastJob.bDispLotEnd = (_ttoi(szData) > 0) ? TRUE : FALSE;
+	else
+		WorkingInfo.LastJob.bDispLotEnd = FALSE;
+
 	if (0 < ::GetPrivateProfileString(_T("Signal"), _T("Use Dual AOI"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.bDualTest = (_ttoi(szData) > 0) ? TRUE : FALSE;
 
@@ -11072,10 +11103,18 @@ BOOL CGvisR2R_PunchDoc::GetItsSerialInfo(int nItsSerial, BOOL &bDualTest, CStrin
 	TCHAR szData[512];
 	CString str, sName, sPath, Path[3];
 
-	Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-	Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
-	//Path[1] = pDoc->m_sEngModel;
-	Path[2] = pDoc->m_sItsCode;
+	if (GetTestMode() == MODE_OUTER && WorkingInfo.System.bUseItsJob)
+	{
+		Path[0] = GetPathInnerItsFile();
+	}
+	else
+	{
+		Path[0] = WorkingInfo.System.sPathItsFile;
+	}
+
+	Path[1] = WorkingInfo.LastJob.sModelUp;
+	//Path[1] = m_sEngModel;
+	Path[2] = m_sItsCode;
 
 	sName.Format(_T("%s.txt"), pDoc->m_sItsCode);
 	sPath.Format(_T("%s%s\\%s\\%s"), Path[0], Path[1], Path[2], sName); // ITS_Code.txt
@@ -11087,7 +11126,7 @@ BOOL CGvisR2R_PunchDoc::GetItsSerialInfo(int nItsSerial, BOOL &bDualTest, CStrin
 	CFileFind finder;
 	if (finder.FindFile(sPath) == FALSE)
 	{
-		Path[1] = pDoc->m_sEngModel;
+		Path[1] = m_sEngModel;
 		sPath.Format(_T("%s%s\\%s\\%s"), Path[0], Path[1], Path[2], sName); // ITS_Code.txt
 		if (finder.FindFile(sPath) == FALSE)
 		{
@@ -11211,7 +11250,14 @@ BOOL CGvisR2R_PunchDoc::GetInnerFolderPath(int nItsSerial, CString  &sUp, CStrin
 	CString  Path[5];
 	CString sPath = _T("");
 
-	Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
+	if (GetTestMode() == MODE_OUTER && WorkingInfo.System.bUseItsJob)
+	{
+		Path[0] = GetPathInnerPcrFile();
+	}
+	else
+	{
+		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
+	}
 	Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
 	Path[2] = sLot;
 	Path[3] = sLayerUp;
@@ -13243,4 +13289,150 @@ void CGvisR2R_PunchDoc::DelItsAll(CString strPath)
 	{
 		m_pFile->DelItsAll(strPath);
 	}
+}
+
+void CGvisR2R_PunchDoc::UpdateItsJobFile()
+{
+	if (!WorkingInfo.System.bUseItsJob)
+		return;
+
+	CString sPath = _T(""), sMsg = _T("");
+	CString sBase = _T(""), sFolder = _T(""), sFile = _T("");
+	CString sRemainPath = WorkingInfo.System.sPathItsJob;
+	CString sIpThisMachine = WorkingInfo.System.sIpPathMk;
+	int nPos = -1;
+
+	nPos = sIpThisMachine.ReverseFind('\\');
+	if (nPos == -1)
+	{
+		sMsg.Format(_T("sIpThisMachine이 존재하지 않습니다.\r\n%s"), sIpThisMachine);
+		AfxMessageBox(sMsg);
+		return;
+	}
+
+	nPos = sRemainPath.ReverseFind('\\');
+	if (nPos != -1)
+	{
+		sFile = sRemainPath.Right(sRemainPath.GetLength() - nPos - 1);
+		sRemainPath.Delete(nPos, sPath.GetLength() - nPos);
+		nPos = sRemainPath.ReverseFind('\\');
+		if (nPos != -1)
+		{
+			sFolder = sRemainPath.Right(sRemainPath.GetLength() - nPos - 1);
+			sRemainPath.Delete(nPos, sPath.GetLength() - nPos);
+			nPos = sRemainPath.ReverseFind('\\');
+			if (nPos != -1)
+			{
+				sBase = sRemainPath;
+			}
+			else
+			{
+				sMsg.Format(_T("ItsJobBase가 존재하지 않습니다.\r\n%s"), sRemainPath);
+				AfxMessageBox(sMsg);
+				return;
+			}
+		}
+		else
+		{
+			sMsg.Format(_T("ItsJobFolder가 존재하지 않습니다.\r\n%s"), sRemainPath);
+			AfxMessageBox(sMsg);
+			return;
+		}
+	}
+	else
+	{
+		sMsg.Format(_T("ItsJobFile이 존재하지 않습니다.\r\n%s"), sRemainPath);
+		AfxMessageBox(sMsg);
+		return;
+	}
+
+	sPath.Format(_T("%s\\%s"), sBase, sFolder);
+	if (!DirectoryExists(sPath))
+		CreateDirectory(sPath, NULL);
+
+	sPath.Format(_T("%s\\%s\\%s"), sBase, sFolder, sFile);
+	if (GetTestMode() == MODE_INNER)
+	{
+		::WritePrivateProfileString(pDoc->m_sItsCode, _T("Inner Path"), sIpThisMachine, sPath);
+	}
+	else if (pDoc->GetTestMode() == MODE_OUTER)
+	{
+		::WritePrivateProfileString(pDoc->m_sItsCode, _T("Outer Path"), sIpThisMachine, sPath);
+	}
+}
+
+CString CGvisR2R_PunchDoc::GetPathInnerItsFile()
+{
+	CString sPath, sBase, sWFolderW, sMsg;
+	CString sRemainPath = WorkingInfo.System.sPathItsFile;
+	CString sInfoFilePath = WorkingInfo.System.sPathItsJob;
+
+	if (!WorkingInfo.System.bUseItsJob)
+		return sRemainPath;
+
+	int nPos = -1;
+
+	TCHAR szData[MAX_PATH];
+
+	if (0 < ::GetPrivateProfileString(pDoc->m_sItsCode, _T("Inner Path"), NULL, szData, sizeof(szData), sInfoFilePath))
+		sBase = CString(szData);
+	else
+	{
+		sMsg.Format(_T("Inner Path가 존재하지 않습니다.\r\n%s"), sInfoFilePath);
+		AfxMessageBox(sMsg);
+		return sRemainPath;
+	}
+
+	nPos = sRemainPath.ReverseFind(':');
+	if (nPos != -1)
+	{
+		sWFolderW = sRemainPath.Right(sRemainPath.GetLength() - nPos - 1);
+		sPath.Format(_T("%s%s"), sBase, sWFolderW);
+	}
+	else
+	{
+		sMsg.Format(_T("sPathItsFile이 존재하지 않습니다.\r\n%s"), sRemainPath);
+		AfxMessageBox(sMsg);
+		return sRemainPath;
+	}
+
+	return sPath;
+}
+
+CString CGvisR2R_PunchDoc::GetPathInnerPcrFile()
+{
+	CString sPath, sBase, sWFolderW, sMsg;
+	CString sRemainPath = WorkingInfo.System.sPathOldFile;
+	CString sInfoFilePath = WorkingInfo.System.sPathItsJob;
+
+	if (!WorkingInfo.System.bUseItsJob)
+		return sRemainPath;
+
+	int nPos = -1;
+
+	TCHAR szData[MAX_PATH];
+
+	if (0 < ::GetPrivateProfileString(pDoc->m_sItsCode, _T("Inner Path"), NULL, szData, sizeof(szData), sInfoFilePath))
+		sBase = CString(szData);
+	else
+	{
+		sMsg.Format(_T("Inner Path가 존재하지 않습니다.\r\n%s"), sInfoFilePath);
+		AfxMessageBox(sMsg);
+		return sRemainPath;
+	}
+
+	nPos = sRemainPath.ReverseFind(':');
+	if (nPos != -1)
+	{
+		sWFolderW = sRemainPath.Right(sRemainPath.GetLength() - nPos - 1);
+		sPath.Format(_T("%s%s"), sBase, sWFolderW);
+	}
+	else
+	{
+		sMsg.Format(_T("sPathOldFile이 존재하지 않습니다.\r\n%s"), sRemainPath);
+		AfxMessageBox(sMsg);
+		return sRemainPath;
+	}
+
+	return sPath;
 }

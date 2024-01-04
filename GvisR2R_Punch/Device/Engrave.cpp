@@ -478,6 +478,7 @@ void CEngrave::GetSysSignal(SOCKET_DATA SockData)
 	GetSignalMyMsg(SockData);
 
 	GetSignal2dEng(SockData);
+	GetSignalPlcEng(SockData);
 }
 
 void CEngrave::GetSignalDisp(SOCKET_DATA SockData)
@@ -4202,6 +4203,19 @@ void CEngrave::SetDispContRun()
 
 	SocketData.nMsgID = _SigInx::_DispContRun;
 	SocketData.nData1 = pDoc->WorkingInfo.LastJob.bDispContRun ? 1 : 0;
+	SendCommand(SocketData);
+}
+
+void CEngrave::SetDispLotEnd()
+{
+	if (!pDoc)
+		return;
+
+	SOCKET_DATA SocketData;
+	SocketData.nCmdCode = _SetSig;
+
+	SocketData.nMsgID = _SigInx::_DispLotEnd;
+	SocketData.nData1 = pDoc->WorkingInfo.LastJob.bDispLotEnd ? 1 : 0;
 	SendCommand(SocketData);
 }
 
@@ -9016,6 +9030,33 @@ void CEngrave::GetSignal2dEng(SOCKET_DATA SockData)
 //					pView->m_pMpe->Write(_T("MB44013F"), 1); // 각인부, 검사부, 마킹부 offset 이송 ON(PC가 On시키고, PLC가 확인하고 Off시킴)
 //#endif
 			}
+			break;
+		}
+	}
+}
+
+void CEngrave::GetSignalPlcEng(SOCKET_DATA SockData)
+{
+	int nCmdCode = SockData.nCmdCode;
+	int nMsgId = SockData.nMsgID;
+	CString sVal;
+	long lData;
+
+	if (nCmdCode == _SetSig)
+	{
+		switch (nMsgId)
+		{
+		case _SigInx::_Buzzer:
+			pView->m_bRcvSig[_SigInx::_Buzzer] = TRUE;
+			pView->Buzzer(SockData.nData1 ? TRUE : FALSE, SockData.nData2);
+			break;
+		case _SigInx::_TowerLamp:
+			pView->m_bRcvSig[_SigInx::_TowerLamp] = TRUE;
+			pView->TowerLamp((COLORREF)SockData.nData1, SockData.nData2 ? TRUE : FALSE, SockData.nData3 ? TRUE : FALSE);
+			break;
+		case _SigInx::_ErrorRead2dCode:
+			pView->m_nParamErrorRead2dCode = SockData.nData1;
+			pView->m_bRcvSig[_SigInx::_ErrorRead2dCode] = TRUE;
 			break;
 		}
 	}
