@@ -3718,7 +3718,9 @@ BOOL CGvisR2R_PunchView::SortingInUp(CString sPath, int nIndex)
 
 		nSerial = _tstoi(sSerial);
 
-		t = localtime(&buf.st_mtime);
+		t = localtime(&buf.st_ctime);
+		//t = localtime(&buf.st_mtime);
+
 		//sFileName.Format(_T("%04d%02d%02d%02d%02d%02d%04d"), t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, 
 		//														t->tm_hour, t->tm_min, t->tm_sec, nSerial);
 		//m_nBufSerialSorting[0][nIndex] = _tstoi(sFileName);
@@ -3910,7 +3912,9 @@ BOOL CGvisR2R_PunchView::SortingInDn(CString sPath, int nIndex)
 
 		nSerial = _tstoi(sSerial);
 
-		t = localtime(&buf.st_mtime);
+		t = localtime(&buf.st_ctime);
+		//t = localtime(&buf.st_mtime);
+
 		//sFileName.Format(_T("%04d%02d%02d%02d%02d%02d%04d"), t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, 
 		//														t->tm_hour, t->tm_min, t->tm_sec, nSerial);
 		//m_nBufSerialSorting[1][nIndex] = _tstoi(sFileName);
@@ -10902,6 +10906,9 @@ BOOL CGvisR2R_PunchView::SetSerialMkInfo(int nSerial, BOOL bDumy)
 
 void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 {
+	if (!pDoc->WorkingInfo.LastJob.bSampleTest)
+		::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+
 	m_sAoiUpAlarmReStartMsg = GetAoiUpAlarmRestartMsg();
 	m_sAoiDnAlarmReStartMsg = GetAoiDnAlarmRestartMsg();
 	m_sAoiUpAlarmReTestMsg = GetAoiUpAlarmReTestMsg();

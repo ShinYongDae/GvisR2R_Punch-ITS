@@ -13,8 +13,8 @@
 
 #define MAX_MENU01_STC_DEFINFO		12
 
-#define MAX_MENU01_STC_TITLE		70
-#define MAX_MENU01_STC_DATA			87
+#define MAX_MENU01_STC_TITLE		75
+#define MAX_MENU01_STC_DATA			91
 #define MAX_MENU01_BTN				23
 
 #define TIM_DISP_DEF_IMG			100
@@ -267,6 +267,10 @@ public:
 	//afx_msg void OnDoubleclickedChkMk4();
 	//afx_msg void OnBnClickedChkTpStop();
 	afx_msg void OnStnClickedStcLotSrl();
+	afx_msg void OnStnClickedStcTqDisp1ValL();
+	afx_msg void OnStnClickedStcTqDisp1ValR();
+	afx_msg void OnStnClickedStcTqDisp2ValL();
+	afx_msg void OnStnClickedStcTqDisp2ValR();
 };
 
 //{{AFX_INSERT_LOCATION}}

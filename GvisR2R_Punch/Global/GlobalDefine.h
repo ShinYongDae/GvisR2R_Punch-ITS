@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 
-//#define TEST_MODE		1
+#define TEST_MODE		1
 
 #ifndef MAX_STRIP
 	#define MAX_STRIP				4
@@ -932,6 +932,7 @@ struct stMarking
 	CString sMarkingToqOffset;
 	CString sMeasurePosX[4], sMeasurePosY[4];
 	CString sAverDist;
+	CString sMarkingDisp1Toq, sMarkingDisp2Toq;
 	int nMkCnt;
 	int nMkLimit;
 
@@ -946,6 +947,8 @@ struct stMarking
 		sMarkingAcc = _T("");
 		sMarkingToq = _T("");
 		sMarkingToqOffset = _T("");
+		sMarkingDisp1Toq = _T("");
+		sMarkingDisp2Toq = _T("");
 
 		for (int i = 0; i < 4; i++)
 		{

@@ -142,6 +142,10 @@ BEGIN_MESSAGE_MAP(CDlgMenu01, CDialog)
 	ON_MESSAGE(WM_MYBTN_DOWN, OnMyBtnDown)
 	ON_MESSAGE(WM_MYBTN_UP, OnMyBtnUp)
 	ON_STN_CLICKED(IDC_STC_LOT_SRL, &CDlgMenu01::OnStnClickedStcLotSrl)
+	ON_STN_CLICKED(IDC_STC_TQ_DISP1_VAL_L, &CDlgMenu01::OnStnClickedStcTqDisp1ValL)
+	ON_STN_CLICKED(IDC_STC_TQ_DISP1_VAL_R, &CDlgMenu01::OnStnClickedStcTqDisp1ValR)
+	ON_STN_CLICKED(IDC_STC_TQ_DISP2_VAL_L, &CDlgMenu01::OnStnClickedStcTqDisp2ValL)
+	ON_STN_CLICKED(IDC_STC_TQ_DISP2_VAL_R, &CDlgMenu01::OnStnClickedStcTqDisp2ValR)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -329,6 +333,11 @@ BOOL CDlgMenu01::OnInitDialog()
 
 	m_bTIM_DISP_MK_CNT = TRUE;
 	SetTimer(TIM_DISP_MK_CNT, 300, NULL);
+
+	myStcData[87].SetText(pDoc->WorkingInfo.Marking[0].sMarkingDisp1Toq); // IDC_STC_TQ_DISP1_VAL_L
+	myStcData[88].SetText(pDoc->WorkingInfo.Marking[1].sMarkingDisp1Toq); // IDC_STC_TQ_DISP1_VAL_R
+	myStcData[89].SetText(pDoc->WorkingInfo.Marking[0].sMarkingDisp2Toq); // IDC_STC_TQ_DISP2_VAL_L
+	myStcData[90].SetText(pDoc->WorkingInfo.Marking[1].sMarkingDisp2Toq); // IDC_STC_TQ_DISP2_VAL_R
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -2264,6 +2273,12 @@ void CDlgMenu01::InitStcData()
 	myStcData[85].SubclassDlgItem(IDC_STC_TQ_VAL_L, this);
 	myStcData[86].SubclassDlgItem(IDC_STC_TQ_VAL_R, this);
 
+	myStcData[87].SubclassDlgItem(IDC_STC_TQ_DISP1_VAL_L, this);
+	myStcData[88].SubclassDlgItem(IDC_STC_TQ_DISP1_VAL_R, this);
+	myStcData[89].SubclassDlgItem(IDC_STC_TQ_DISP2_VAL_L, this);
+	myStcData[90].SubclassDlgItem(IDC_STC_TQ_DISP2_VAL_R, this);
+
+
 	for(int i=0; i<MAX_MENU01_STC_DATA; i++)
 	{
 		myStcData[i].SetFontName(_T("Arial"));
@@ -2476,6 +2491,12 @@ void CDlgMenu01::InitStcTitle()
 
 	myStcTitle[69].SubclassDlgItem(IDC_STC_380mm, this);
 
+	myStcTitle[70].SubclassDlgItem(IDC_STC_TQ_DSIP, this);
+	myStcTitle[71].SubclassDlgItem(IDC_STC_TQ_DSIP_L, this);
+	myStcTitle[72].SubclassDlgItem(IDC_STC_TQ_DSIP_R, this);
+	myStcTitle[73].SubclassDlgItem(IDC_STC_TQ_DSIP1, this);
+	myStcTitle[74].SubclassDlgItem(IDC_STC_TQ_DSIP2, this);
+
 	for(i=65; i<MAX_MENU01_STC_TITLE; i++)
 	{
 		myStcTitle[i].SetFontName(_T("Arial"));
@@ -2486,10 +2507,22 @@ void CDlgMenu01::InitStcTitle()
 			myStcTitle[i].SetTextColor(RGB_YELLOW);
 			myStcTitle[i].SetBkColor(RGB_RED);
 		}
+		else if (i == 71 || i == 72)
+		{
+			myStcTitle[i].SetTextColor(RGB_WHITE);
+			myStcTitle[i].SetBkColor(RGB_DARKGREEN);
+			myStcTitle[i].SetFontBold(TRUE);
+		}
+		else if (i == 73 || i == 74)
+		{
+			myStcTitle[i].SetTextColor(RGB_NAVY);
+			myStcTitle[i].SetBkColor(RGB_LTGRAY);
+			myStcTitle[i].SetFontBold(FALSE);
+		}
 		else
 		{
 			myStcTitle[i].SetFontBold(FALSE);
-			myStcTitle[i].SetTextColor(RGB_BLACK);
+			myStcTitle[i].SetTextColor(RGB_NAVY);
 			myStcTitle[i].SetBkColor(RGB_LTDKORANGE);
 		}
 	}
@@ -4307,6 +4340,9 @@ void CDlgMenu01::OnChkEjectBuffer()
 	{
 		pDoc->m_nEjectBufferLastShot = _ttoi(sLastShot);
 		pView->SetLotEnd(pDoc->m_nEjectBufferLastShot);
+
+		::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), sLastShot, pDoc->WorkingInfo.System.sPathMkCurrInfo);
+		::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("1"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 	}
 	else
 		pDoc->m_nEjectBufferLastShot = -1;
@@ -4692,6 +4728,7 @@ void CDlgMenu01::DispTqVal()
 	//pDoc->SetMkMenu01(_T("Data"), _T("MkNumRt"), str);
 
 }
+
 void CDlgMenu01::ChkMkLimit()
 {
 	int nCurrL = pDoc->GetMkCntL();
@@ -6254,4 +6291,92 @@ void CDlgMenu01::DispReelmapDisp()
 		myStcReelmap.Refresh();
 		this->MoveWindow(m_pRect, TRUE);
 	}
+}
+
+
+void CDlgMenu01::OnStnClickedStcTqDisp1ValL()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	myStcData[87].SetBkColor(RGB_RED);
+	myStcData[87].RedrawWindow();
+
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_TQ_DISP1_VAL_L)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_TQ_DISP1_VAL_L, pt, TO_BOTTOM | TO_RIGHT);
+
+	myStcData[87].SetBkColor(RGB_WHITE);
+	myStcData[87].RedrawWindow();
+
+	CString sData;
+	GetDlgItem(IDC_STC_TQ_DISP1_VAL_L)->GetWindowText(sData);
+
+	pDoc->WorkingInfo.Marking[0].sMarkingDisp1Toq = sData;
+	::WritePrivateProfileString(_T("Marking0"), _T("MARKING_DISP1_TOQ"), sData, PATH_WORKING_INFO);
+}
+
+
+void CDlgMenu01::OnStnClickedStcTqDisp1ValR()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	myStcData[88].SetBkColor(RGB_RED);
+	myStcData[88].RedrawWindow();
+
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_TQ_DISP1_VAL_R)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_TQ_DISP1_VAL_R, pt, TO_BOTTOM | TO_RIGHT);
+
+	myStcData[88].SetBkColor(RGB_WHITE);
+	myStcData[88].RedrawWindow();
+
+	CString sData;
+	GetDlgItem(IDC_STC_TQ_DISP1_VAL_R)->GetWindowText(sData);
+
+	pDoc->WorkingInfo.Marking[1].sMarkingDisp1Toq = sData;
+	::WritePrivateProfileString(_T("Marking1"), _T("MARKING_DISP1_TOQ"), sData, PATH_WORKING_INFO);
+}
+
+
+void CDlgMenu01::OnStnClickedStcTqDisp2ValL()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	myStcData[89].SetBkColor(RGB_RED);
+	myStcData[89].RedrawWindow();
+
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_TQ_DISP2_VAL_L)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_TQ_DISP2_VAL_L, pt, TO_BOTTOM | TO_RIGHT);
+
+	myStcData[89].SetBkColor(RGB_WHITE);
+	myStcData[89].RedrawWindow();
+
+	CString sData;
+	GetDlgItem(IDC_STC_TQ_DISP2_VAL_L)->GetWindowText(sData);
+
+	pDoc->WorkingInfo.Marking[0].sMarkingDisp2Toq = sData;
+	::WritePrivateProfileString(_T("Marking0"), _T("MARKING_DISP2_TOQ"), sData, PATH_WORKING_INFO);
+}
+
+
+void CDlgMenu01::OnStnClickedStcTqDisp2ValR()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	myStcData[90].SetBkColor(RGB_RED);
+	myStcData[90].RedrawWindow();
+
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_TQ_DISP2_VAL_R)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_TQ_DISP2_VAL_R, pt, TO_BOTTOM | TO_RIGHT);
+
+	myStcData[90].SetBkColor(RGB_WHITE);
+	myStcData[90].RedrawWindow();
+
+	CString sData;
+	GetDlgItem(IDC_STC_TQ_DISP2_VAL_R)->GetWindowText(sData);
+
+	pDoc->WorkingInfo.Marking[1].sMarkingDisp2Toq = sData;
+	::WritePrivateProfileString(_T("Marking1"), _T("MARKING_DISP2_TOQ"), sData, PATH_WORKING_INFO);
 }

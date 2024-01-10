@@ -193,7 +193,9 @@ BOOL CDlgInfo::OnInitDialog()
  	GetDlgItem(IDC_CHK_009)->ShowWindow(SW_HIDE);
 // 	GetDlgItem(IDC_STC_0046)->ShowWindow(SW_HIDE);
 // 	GetDlgItem(IDC_CHK_011)->ShowWindow(SW_HIDE);
-	
+
+	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -1546,6 +1548,9 @@ void CDlgInfo::SetDualTest(BOOL bOn)
 	if(pView->m_pEngrave)
 		::WritePrivateProfileString(_T("Last Job"), _T("Use Dual AOI"), sData, PATH_WORKING_INFO);
 
+	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
+
 	if(bOn)
 	{
 		sData = _T("6");
@@ -1639,6 +1644,8 @@ void CDlgInfo::OnChkUseAoiInner()
 	bOn[0] = myBtn[23].GetCheck();
 	bOn[1] = myBtn[24].GetCheck();
 
+	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
+
 	if (bOn[0] && bOn[1])
 	{
 		myBtn[24].SetCheck(FALSE);
@@ -1658,6 +1665,8 @@ void CDlgInfo::OnChkUseAoiOuter()
 	BOOL bOn[2];
 	bOn[0] = myBtn[23].GetCheck();
 	bOn[1] = myBtn[24].GetCheck();
+
+	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
 	if (bOn[0] && bOn[1])
 	{
@@ -1693,6 +1702,9 @@ void CDlgInfo::OnChkSampleTest()
 	CString sData = bOn ? _T("1") : _T("0");
 	::WritePrivateProfileString(_T("Last Job"), _T("Sample Test On"), sData, PATH_WORKING_INFO);
 	pDoc->SetMkInfo(_T("Signal"), _T("Sample Test On"), bOn);
+
+	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), sData, pDoc->WorkingInfo.System.sPathMkCurrInfo);
+	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
 #ifdef USE_MPE
 	pView->m_pMpe->Write(_T("MB44017B"), (pDoc->WorkingInfo.LastJob.bSampleTest)?1:0);		// Sample 검사 On
@@ -1731,6 +1743,10 @@ void CDlgInfo::OnChkOneMetal()
 	}
 	pDoc->SetMkInfo(_T("Signal"), _T("RecoilerCcw"), bOn);
 
+	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
+
+
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
 		pView->m_pEngrave->SetRecoilerCcw();	//_stSigInx::_RecoilerCcw
@@ -1764,6 +1780,9 @@ void CDlgInfo::OnChkTwoMetal()
 	}
 	pDoc->SetMkInfo(_T("Signal"), _T("UncoilerCcw"), bOn);
 
+	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
+
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
 		pView->m_pEngrave->SetUncoilerCcw();	//_stSigInx::_UncoilerCcw
@@ -1788,7 +1807,9 @@ void CDlgInfo::OnStc181()
 	GetDlgItem(IDC_STC_181)->GetWindowText(sVal);
 	pDoc->WorkingInfo.LastJob.sSampleTestShotNum = sVal;
 	::WritePrivateProfileString(_T("Last Job"), _T("Sample Test Shot Num"), sVal, PATH_WORKING_INFO);
-	
+
+	::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), sVal, pDoc->WorkingInfo.System.sPathMkCurrInfo);
+
 	long lData = (long)_tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);//atoi
 #ifdef USE_MPE
 	pView->m_pMpe->Write(_T("ML45126"), lData);	// 샘플검사 Shot수

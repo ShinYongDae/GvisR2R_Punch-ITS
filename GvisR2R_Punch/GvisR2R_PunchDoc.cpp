@@ -1139,7 +1139,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	else
 	{
 		AfxMessageBox(_T("AoiUpStatusInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.System.sPathMkCurrInfo = CString(_T("C:\\AOIWork\\Statusini"));
+		WorkingInfo.System.sPathAoiUpStatusInfo = CString(_T("C:\\AOIWork\\Statusini"));
 	}
 
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("AoiDnStatusInfoPath"), NULL, szData, sizeof(szData), sPath))
@@ -1147,7 +1147,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	else
 	{
 		AfxMessageBox(_T("AoiDnStatusInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.System.sPathMkCurrInfo = CString(_T("C:\\AOIWork\\Statusini"));
+		WorkingInfo.System.sPathAoiDnStatusInfo = CString(_T("C:\\AOIWork\\Statusini"));
 	}
 
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("MkWorkPath"), NULL, szData, sizeof(szData), sPath))
@@ -3185,6 +3185,16 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	else
 		WorkingInfo.Marking[0].sMarkingToq = CString(_T(""));
 
+	if (0 < ::GetPrivateProfileString(_T("Marking0"), _T("MARKING_DISP1_TOQ"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.Marking[0].sMarkingDisp1Toq = CString(szData);
+	else
+		WorkingInfo.Marking[0].sMarkingDisp1Toq = CString(_T(""));
+
+	if (0 < ::GetPrivateProfileString(_T("Marking0"), _T("MARKING_DISP2_TOQ"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.Marking[0].sMarkingDisp2Toq = CString(szData);
+	else
+		WorkingInfo.Marking[0].sMarkingDisp2Toq = CString(_T(""));
+
 	if (0 < ::GetPrivateProfileString(_T("Marking0"), _T("MARKING_MARKING_TOQ_OFFSET"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.Marking[0].sMarkingToqOffset = CString(szData);
 	else
@@ -3283,6 +3293,16 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Marking[1].sMarkingToq = CString(szData);
 	else
 		WorkingInfo.Marking[1].sMarkingToq = CString(_T(""));
+
+	if (0 < ::GetPrivateProfileString(_T("Marking1"), _T("MARKING_DISP1_TOQ"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.Marking[1].sMarkingDisp1Toq = CString(szData);
+	else
+		WorkingInfo.Marking[1].sMarkingDisp1Toq = CString(_T(""));
+
+	if (0 < ::GetPrivateProfileString(_T("Marking1"), _T("MARKING_DISP2_TOQ"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.Marking[1].sMarkingDisp2Toq = CString(szData);
+	else
+		WorkingInfo.Marking[1].sMarkingDisp2Toq = CString(_T(""));
 
 	if (0 < ::GetPrivateProfileString(_T("Marking1"), _T("MARKING_MARKING_TOQ_OFFSET"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.Marking[1].sMarkingToqOffset = CString(szData);
@@ -9938,6 +9958,9 @@ void CGvisR2R_PunchDoc::SetTestMode(int nMode)
 		return;
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Test Mode"), sData, sPath);
+
+	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), sPath);
+
 	UpdateItsJobFile();
 
 #ifdef USE_MPE	
@@ -11292,7 +11315,19 @@ CString CGvisR2R_PunchDoc::GetItsFolderPath()
 	//Path[2] = pDoc->m_sItsCode;
 
 	if (Path[0].IsEmpty() || Path[1].IsEmpty() || Path[2].IsEmpty())
-		return sPath;
+	{
+		if (Path[2].IsEmpty())
+		{
+			if (pDoc->GetCurrentInfoEng())
+			{
+				pDoc->WorkingInfo.LastJob.sEngItsCode = m_sItsCode;
+				Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
+			}
+		}
+
+		if (Path[0].IsEmpty() || Path[1].IsEmpty() || Path[2].IsEmpty())
+			return sPath;
+	}
 
 	sPath.Format(_T("%s%s\\%s"), Path[0], Path[1], Path[2]); // ITS Folder Path
 
