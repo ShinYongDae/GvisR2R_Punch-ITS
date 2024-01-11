@@ -1549,6 +1549,7 @@ void CDlgInfo::SetDualTest(BOOL bOn)
 		::WritePrivateProfileString(_T("Last Job"), _T("Use Dual AOI"), sData, PATH_WORKING_INFO);
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+	::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
 	if(bOn)
@@ -1704,6 +1705,9 @@ void CDlgInfo::OnChkSampleTest()
 	pDoc->SetMkInfo(_T("Signal"), _T("Sample Test On"), bOn);
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), sData, pDoc->WorkingInfo.System.sPathMkCurrInfo);
+	if (!bOn)
+		::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
 #ifdef USE_MPE
@@ -1744,6 +1748,7 @@ void CDlgInfo::OnChkOneMetal()
 	pDoc->SetMkInfo(_T("Signal"), _T("RecoilerCcw"), bOn);
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+	::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
 
@@ -1781,6 +1786,8 @@ void CDlgInfo::OnChkTwoMetal()
 	pDoc->SetMkInfo(_T("Signal"), _T("UncoilerCcw"), bOn);
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+	::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
 #ifdef USE_ENGRAVE

@@ -3612,7 +3612,12 @@ void CGvisR2R_PunchView::ChkShareUp()
 		{
 			str2.Format(_T("PCR파일 Received - US: %d"), nSerial);
 			pDoc->LogAuto(str2);
-			pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
+
+			if (IsVs())
+				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial + 4);	// 검사한 Panel의 AOI 상 Serial
+			else
+				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
+
 			m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
 		}
 	}
@@ -3645,7 +3650,12 @@ void CGvisR2R_PunchView::ChkShareDn()
 		{
 			str2.Format(_T("PCR파일 Received - DS: %d"), nSerial);
 			pDoc->LogAuto(str2);
-			pView->m_pMpe->Write(_T("ML45114"), (long)nSerial);	// 검사한 Panel의 AOI 하 Serial
+
+			if (IsVs())
+				pView->m_pMpe->Write(_T("ML45114"), (long)nSerial + 4);	// 검사한 Panel의 AOI 하 Serial
+			else
+				pView->m_pMpe->Write(_T("ML45114"), (long)nSerial);	// 검사한 Panel의 AOI 하 Serial
+
 			m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
 		}
 	}
@@ -8941,22 +8951,22 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 			m_bLoadShare[1] = TRUE;
 			pDoc->m_ListBuf[1].Push(m_nShareDnS);
 
-			//if(m_bChkLastProcVs)
-			{
-				//if(m_nShareDnS == GetLotEndSerial()-3)
-				if (m_nShareDnS == m_nAoiLastSerial[0] - 3 && m_nAoiLastSerial[0] > 0)
-				{
-					if (IsVsDn())
-					{
-						SetDummyDn();
-						Sleep(30);
-						SetDummyDn();
-						Sleep(30);
-						SetDummyDn();
-						Sleep(30);
-					}
-				}
-			}
+			////if(m_bChkLastProcVs)
+			//{
+			//	//if(m_nShareDnS == GetLotEndSerial()-3)
+			//	if (m_nShareDnS == m_nAoiLastSerial[0] - 3 && m_nAoiLastSerial[0] > 0)
+			//	{
+			//		if (IsVsDn())
+			//		{
+			//			SetDummyDn();
+			//			Sleep(30);
+			//			SetDummyDn();
+			//			Sleep(30);
+			//			SetDummyDn();
+			//			Sleep(30);
+			//		}
+			//	}
+			//}
 		}
 	}
 
@@ -10907,7 +10917,10 @@ BOOL CGvisR2R_PunchView::SetSerialMkInfo(int nSerial, BOOL bDumy)
 void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 {
 	if (!pDoc->WorkingInfo.LastJob.bSampleTest)
+	{
 		::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+		::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
+	}
 
 	m_sAoiUpAlarmReStartMsg = GetAoiUpAlarmRestartMsg();
 	m_sAoiDnAlarmReStartMsg = GetAoiDnAlarmRestartMsg();
@@ -18606,16 +18619,16 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					m_bLastProc = TRUE;
 					nSerial = GetShareUp();
 
-					if (IsVs())
-					{
-						if (m_nAoiLastSerial[0] < 1)
-							m_nAoiLastSerial[0] = nSerial;
+					//if (IsVs())
+					//{
+					//	if (m_nAoiLastSerial[0] < 1)
+					//		m_nAoiLastSerial[0] = nSerial;
 
-						m_nPrevStepAuto = m_nStepAuto;
-						m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
-						break;
-					}
-					else
+					//	m_nPrevStepAuto = m_nStepAuto;
+					//	m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
+					//	break;
+					//}
+					//else
 					{
 						if (bDualTest)
 						{
@@ -18921,16 +18934,16 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					m_nLastProcAuto = LAST_PROC;
 					m_bLastProc = TRUE;
 
-					if (IsVs())
-					{
-						if (m_nAoiLastSerial[0] < 1)
-							m_nAoiLastSerial[0] = m_nShareUpS;
+					//if (IsVs())
+					//{
+					//	if (m_nAoiLastSerial[0] < 1)
+					//		m_nAoiLastSerial[0] = m_nShareUpS;
 
-						m_nPrevStepAuto = m_nStepAuto;
-						m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
-						break;
-					}
-					else
+					//	m_nPrevStepAuto = m_nStepAuto;
+					//	m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
+					//	break;
+					//}
+					//else
 					{
 						if (bDualTest)
 						{
@@ -19097,16 +19110,16 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					m_nLastProcAuto = LAST_PROC;
 					m_bLastProc = TRUE;
 
-					if (IsVs())
-					{
-						if (m_nAoiLastSerial[0] < 1)
-							m_nAoiLastSerial[0] = m_nShareDnS;
+					//if (IsVs())
+					//{
+					//	if (m_nAoiLastSerial[0] < 1)
+					//		m_nAoiLastSerial[0] = m_nShareDnS;
 
-						m_nPrevStepAuto = m_nStepAuto;
-						m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
-						break;
-					}
-					else
+					//	m_nPrevStepAuto = m_nStepAuto;
+					//	m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
+					//	break;
+					//}
+					//else
 					{
 						if (ChkLastProcFromEng())
 							nSerial = pDoc->GetCurrentInfoEngShotNum();

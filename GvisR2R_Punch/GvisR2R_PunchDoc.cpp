@@ -9960,6 +9960,7 @@ void CGvisR2R_PunchDoc::SetTestMode(int nMode)
 	::WritePrivateProfileString(_T("Infomation"), _T("Test Mode"), sData, sPath);
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), sPath);
+	::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 
 	UpdateItsJobFile();
 
