@@ -11316,6 +11316,7 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 		pView->m_nDebugStep = 29; pView->DispThreadTick();
 		RestoreReelmap();
 	}
+
 	pView->m_nDebugStep = 30; pView->DispThreadTick();
 
 }
@@ -14537,7 +14538,9 @@ void CGvisR2R_PunchView::SetLotEnd(int nSerial)
 		AfxMessageBox(_T("Serial Error.61"));
 		return;
 	}
+
 	m_nLotEndSerial = nSerial;
+	m_nAoiLastSerial[0] = nSerial;
 
 	CString str;
 	str.Format(_T("%d"), m_nLotEndSerial);
@@ -18633,25 +18636,50 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 						if (bDualTest)
 						{
 							if (ChkLastProcFromEng())
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
+								else
 								nSerial = pDoc->GetCurrentInfoEngShotNum();
+							}
 							else if (ChkLastProcFromUp())
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
+								else
 								nSerial = pDoc->m_ListBuf[0].GetLast();
+							}
+							else
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
 							else
 								nSerial = pDoc->m_ListBuf[1].GetLast();
+						}
 						}
 						else
 						{
 							if (ChkLastProcFromEng())
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
+								else
 								nSerial = pDoc->GetCurrentInfoEngShotNum();
+							}
+							else
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
 							else
 								nSerial = pDoc->m_ListBuf[0].GetLast();
+						}
 						}
 
 						if (!IsSetLotEnd()) // 20160810
 						{
 							SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
 						//if (m_nAoiLastSerial[0] < 1)
-							m_nAoiLastSerial[0] = nSerial;
+							//m_nAoiLastSerial[0] = nSerial;
 						}
 
 						m_nStepAuto++;
@@ -18662,6 +18690,9 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			{
 				if (ChkLastProcFromEng())
 				{
+					if (IsSetLotEnd())
+						nSerial = GetLotEndSerial();
+					else
 					nSerial = pDoc->GetCurrentInfoEngShotNum();
 
 					//if (m_nLotEndSerial != nSerial)
@@ -18669,7 +18700,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					{
 						SetLotEnd(nSerial);
 						//if (m_nAoiLastSerial[0] < 1)
-						m_nAoiLastSerial[0] = nSerial;
+						//m_nAoiLastSerial[0] = nSerial;
 					}
 				}
 
@@ -18680,6 +18711,9 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			
 			if (MODE_INNER == pDoc->GetTestMode())
 			{
+				if (IsSetLotEnd())
+					nSerial = GetLotEndSerial();
+				else
 				nSerial = pDoc->GetCurrentInfoEngShotNum();
 				//SetLastSerialEng(nSerial);
 
@@ -18914,21 +18948,22 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 			if (!m_bLastProc)
 			{
-				if (!IsSetLotEnd())
-				{
-					if (ChkLotEndUp(m_nShareUpS))// 파일의 내용 중에 Lot End (-2) 잔량처리를 체크함. (연속 3Pnl:-2) -> 로트완료 
-					{
-						SetLotEnd(m_nShareUpS - pDoc->AoiDummyShot[0]);
-						if (m_nAoiLastSerial[0] < 1)
-							m_nAoiLastSerial[0] = m_nShareUpS;
+				//if (!IsSetLotEnd())
+				//{
+				//	if (ChkLotEndUp(m_nShareUpS))// 파일의 내용 중에 Lot End (-2) 잔량처리를 체크함. (연속 3Pnl:-2) -> 로트완료 
+				//	{
+				//		SetLotEnd(m_nShareUpS - pDoc->AoiDummyShot[0]);
+				//		if (m_nAoiLastSerial[0] < 1)
+				//			m_nAoiLastSerial[0] = m_nShareUpS;
 
-						if (!bDualTest)
-						{
-							m_bLastProc = TRUE;
-							m_nLastProcAuto = LAST_PROC;
-						}
-					}
-				}
+				//		if (!bDualTest)
+				//		{
+				//			m_bLastProc = TRUE;
+				//			m_nLastProcAuto = LAST_PROC;
+				//		}
+				//	}
+				//}
+
 				if (ChkLastProc())
 				{
 					m_nLastProcAuto = LAST_PROC;
@@ -18948,25 +18983,50 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 						if (bDualTest)
 						{
 							if (ChkLastProcFromEng())
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
+								else
 								nSerial = pDoc->GetCurrentInfoEngShotNum();
+							}
 							else if (ChkLastProcFromUp())
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
+								else
 								nSerial = pDoc->m_ListBuf[0].GetLast();
+							}
+							else
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
 							else
 								nSerial = pDoc->m_ListBuf[1].GetLast();
+						}
 						}
 						else
 						{
 							if (ChkLastProcFromEng())
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
+								else
 								nSerial = pDoc->GetCurrentInfoEngShotNum();
+							}
+							else
+							{
+								if (IsSetLotEnd())
+									nSerial = GetLotEndSerial();
 							else
 								nSerial = pDoc->m_ListBuf[0].GetLast();
+						}
 						}
 
 						if (!IsSetLotEnd()) // 20160810
 						{
 							SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
 							//if (m_nAoiLastSerial[0] < 1)
-							m_nAoiLastSerial[0] = nSerial;
+							//m_nAoiLastSerial[0] = nSerial;
 						}
 					}
 				}
@@ -18975,6 +19035,9 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			{
 				if (ChkLastProcFromEng())
 				{
+					if (IsSetLotEnd())
+						nSerial = GetLotEndSerial();
+					else
 					nSerial = pDoc->GetCurrentInfoEngShotNum();
 
 					//if (m_nLotEndSerial != nSerial)
@@ -18982,7 +19045,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					{
 						SetLotEnd(nSerial);
 						//if (m_nAoiLastSerial[0] < 1)
-						m_nAoiLastSerial[0] = nSerial;
+						//m_nAoiLastSerial[0] = nSerial;
 					}
 				}
 			}
@@ -19090,21 +19153,22 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 			if (!m_bLastProc)
 			{
-				if (!IsSetLotEnd())
-				{
-					if (ChkLotEndDn(m_nShareDnS))// 파일의 내용 중에 Lot End (-2) 잔량처리를 체크함. (연속 3Pnl:-2) -> 로트완료 
-					{
-						if (!IsSetLotEnd())
-							SetLotEnd(m_nShareDnS - pDoc->AoiDummyShot[1]);
-						if (m_nAoiLastSerial[0] < 1)
-							m_nAoiLastSerial[0] = m_nShareDnS;
-						if (bDualTest)
-						{
-							m_bLastProc = TRUE;
-							m_nLastProcAuto = LAST_PROC;
-						}
-					}
-				}
+				//if (!IsSetLotEnd())
+				//{
+				//	if (ChkLotEndDn(m_nShareDnS))// 파일의 내용 중에 Lot End (-2) 잔량처리를 체크함. (연속 3Pnl:-2) -> 로트완료 
+				//	{
+				//		if (!IsSetLotEnd())
+				//			SetLotEnd(m_nShareDnS - pDoc->AoiDummyShot[1]);
+				//		if (m_nAoiLastSerial[0] < 1)
+				//			m_nAoiLastSerial[0] = m_nShareDnS;
+				//		if (bDualTest)
+				//		{
+				//			m_bLastProc = TRUE;
+				//			m_nLastProcAuto = LAST_PROC;
+				//		}
+				//	}
+				//}
+
 				if (ChkLastProc())
 				{
 					m_nLastProcAuto = LAST_PROC;
@@ -19122,17 +19186,32 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					//else
 					{
 						if (ChkLastProcFromEng())
+						{
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
+							else
 							nSerial = pDoc->GetCurrentInfoEngShotNum();
+						}
 						else if (ChkLastProcFromUp())
+						{
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
+							else
 							nSerial = pDoc->m_ListBuf[0].GetLast();
+						}
+						else
+						{
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
 						else
 							nSerial = pDoc->m_ListBuf[1].GetLast();
+						}
 
 						if (!IsSetLotEnd()) // 20160810
 						{
 							SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
 						//if (m_nAoiLastSerial[0] < 1)
-							m_nAoiLastSerial[0] = nSerial;
+						//m_nAoiLastSerial[0] = nSerial;
 						}
 					}
 				}
@@ -19141,6 +19220,9 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			{
 				if (ChkLastProcFromEng())
 				{
+					if (IsSetLotEnd())
+						nSerial = GetLotEndSerial();
+					else
 					nSerial = pDoc->GetCurrentInfoEngShotNum();
 
 					//if (m_nLotEndSerial != nSerial)
@@ -19148,7 +19230,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					{
 						SetLotEnd(nSerial);
 						//if (m_nAoiLastSerial[0] < 1)
-						m_nAoiLastSerial[0] = nSerial;
+						//m_nAoiLastSerial[0] = nSerial;
 					}
 				}
 			}
