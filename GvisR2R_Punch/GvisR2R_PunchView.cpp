@@ -1517,7 +1517,7 @@ void CGvisR2R_PunchView::DispStsBar()
 	//DispThreadTick(); // 5, 6
 	DispTime(); // 7
 	ChkShare(); // 2, 4
-	if (!m_bShift2Mk && !m_bTHREAD_SHIFT2MK && (m_nMkStAuto < MK_ST + (Mk2PtIdx::DoneMk) || m_nMkStAuto > MK_ST + (Mk2PtIdx::DoneMk) + 5 || m_bTIM_INIT_VIEW))
+	if (!m_bShift2Mk && !m_bTHREAD_SHIFT2MK)// && (m_nMkStAuto < MK_ST + (Mk2PtIdx::DoneMk) || m_nMkStAuto > MK_ST + (Mk2PtIdx::DoneMk) + 5 || m_bTIM_INIT_VIEW))
 	{
 		ChkBuf(); // 1, 3
 		if (m_bTIM_INIT_VIEW)
@@ -3614,7 +3614,28 @@ void CGvisR2R_PunchView::ChkShareUp()
 			pDoc->LogAuto(str2);
 
 			if (IsVs())
-				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial + 4);	// 검사한 Panel의 AOI 상 Serial
+			{
+				if (IsSetLotEnd())
+				{
+					if ((long)GetAoiUpAutoSerial() - 1 <= GetLotEndSerial())
+						pView->m_pMpe->Write(_T("ML45112"), (long)GetAoiUpAutoSerial() - 1);	// 검사한 Panel의 AOI 상 Serial
+				}
+				else
+					pView->m_pMpe->Write(_T("ML45112"), (long)GetAoiUpAutoSerial() - 1);	// 검사한 Panel의 AOI 상 Serial
+
+
+				//if(m_bLastProcFromEng)
+				//	pView->m_pMpe->Write(_T("ML45112"), (long)nSerial + 3);	// 검사한 Panel의 AOI 상 Serial
+				//else
+
+				//if (IsSetLotEnd())
+				//{
+				//	if ((long)nSerial + 3 <= GetLotEndSerial())
+				//		pView->m_pMpe->Write(_T("ML45112"), (long)nSerial + 3);	// 검사한 Panel의 AOI 상 Serial
+				//}
+				//else
+				//	pView->m_pMpe->Write(_T("ML45112"), (long)nSerial + 3);	// 검사한 Panel의 AOI 상 Serial
+			}
 			else
 				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
 
@@ -3652,7 +3673,28 @@ void CGvisR2R_PunchView::ChkShareDn()
 			pDoc->LogAuto(str2);
 
 			if (IsVs())
-				pView->m_pMpe->Write(_T("ML45114"), (long)nSerial + 4);	// 검사한 Panel의 AOI 하 Serial
+			{
+				if (IsSetLotEnd())
+				{
+					if ((long)GetAoiDnAutoSerial() - 1 <= GetLotEndSerial())
+						pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
+				}
+				else
+					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
+
+
+				//if (m_bLastProcFromEng)
+				//	pView->m_pMpe->Write(_T("ML45114"), (long)nSerial + 3);	// 검사한 Panel의 AOI 하 Serial
+				//else
+
+				//if (IsSetLotEnd())
+				//{
+				//	if ((long)nSerial + 4 <= GetLotEndSerial())
+				//		pView->m_pMpe->Write(_T("ML45114"), (long)nSerial + 4);	// 검사한 Panel의 AOI 하 Serial
+				//}
+				//else
+				//	pView->m_pMpe->Write(_T("ML45114"), (long)nSerial + 4);	// 검사한 Panel의 AOI 하 Serial
+			}
 			else
 				pView->m_pMpe->Write(_T("ML45114"), (long)nSerial);	// 검사한 Panel의 AOI 하 Serial
 
@@ -15282,18 +15324,32 @@ BOOL CGvisR2R_PunchView::MakeDummyDn(int nErr) // AOI 상면 기준.
 
 void CGvisR2R_PunchView::SetAoiDummyShot(int nAoi, int nDummy)
 {
-	pDoc->AoiDummyShot[nAoi] = nDummy;
+	pDoc->AoiDummyShot[nAoi] = 0;
 	switch (nAoi)
 	{
 	case 0:
 		if (m_pMpe)
-			m_pMpe->Write(_T("ML45068"), (long)nDummy);	// 검사부 (상) 작업종료 더미 Shot수 - 20141104
+			m_pMpe->Write(_T("ML45068"), (long)0);	// 검사부 (상) 작업종료 더미 Shot수 - 20141104
 		break;
 	case 1:
 		if (m_pMpe)
-			m_pMpe->Write(_T("ML45070"), (long)nDummy);	// 검사부 (하) 작업종료 더미 Shot수 - 20141104
+			m_pMpe->Write(_T("ML45070"), (long)0);	// 검사부 (하) 작업종료 더미 Shot수 - 20141104
 		break;
 	}
+	return;
+
+	//pDoc->AoiDummyShot[nAoi] = nDummy;
+	//switch (nAoi)
+	//{
+	//case 0:
+	//	if (m_pMpe)
+	//		m_pMpe->Write(_T("ML45068"), (long)nDummy);	// 검사부 (상) 작업종료 더미 Shot수 - 20141104
+	//	break;
+	//case 1:
+	//	if (m_pMpe)
+	//		m_pMpe->Write(_T("ML45070"), (long)nDummy);	// 검사부 (하) 작업종료 더미 Shot수 - 20141104
+	//	break;
+	//}
 }
 
 int CGvisR2R_PunchView::GetAoiUpDummyShot()
@@ -19076,16 +19132,17 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 		m_nStepAuto++;
 
-		if (m_bChkLastProcVs)
-		{
-			if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
-				break;
-		}
-		else
+		//if (m_bChkLastProcVs)
+		//{
+		//	if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
+		//		break;
+		//}
+		//else
 		{
 			if (IsSetLotEnd())
 			{
-				if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
+				//if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
+				if (m_nShareDnS > GetLotEndSerial())
 					break;
 			}
 		}
@@ -19248,16 +19305,17 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		{
 			if (m_nShareDnS > 0)
 			{
-				if (m_bChkLastProcVs)
-				{
-					if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
-						break;
-				}
-				else
+				//if (m_bChkLastProcVs)
+				//{
+				//	if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
+				//		break;
+				//}
+				//else
 				{
 					if (IsSetLotEnd())
 					{
-						if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
+						//if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
+						if (m_nShareDnS > GetLotEndSerial())
 							break;
 					}
 				}
@@ -22912,6 +22970,15 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 			break;
 
 		case MK_ST + (Mk4PtIdx::DoneMk) + 2:
+			if (IsVs() && bDualTest)
+			{
+				if (m_nBufTot[1] < 4 && m_pBufSerial[1][m_nBufTot[1] - 1] < GetLotEndSerial())
+				{
+					Sleep(300);
+					break;
+				}
+			}
+
 			m_pMpe->Write(_T("MB440150"), 0);	// 마킹부 마킹중 ON (PC가 ON, OFF)
 			m_pMpe->Write(_T("MB440170"), 1);	// 마킹완료(PLC가 확인하고 Reset시킴.)-20141029
 			pDoc->LogAuto(_T("PC: 마킹완료(PLC가 확인하고 Reset시킴.)"));

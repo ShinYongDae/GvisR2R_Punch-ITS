@@ -4176,7 +4176,7 @@ void CDlgMenu01::OnChkEjectBuffer()
 	CString sLastShot = _T("");
 	BOOL bOn = myBtn[3].GetCheck();
 
-	if(bOn && !m_bLastProc && pView->IsBufferUp())
+	if(bOn && !m_bLastProc)// && pView->IsBufferUp())
 	{
 		if(IDNO == pView->MsgBox(_T("잔량처리를 하시겠습니까?"), 0, MB_YESNO))
 			myBtn[3].SetCheck(FALSE);
