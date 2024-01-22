@@ -203,6 +203,7 @@
 #define IDC_STC_TOT_REEL                1045
 #define IDC_STC_PROC                    1045
 #define IDC_STC_WK_RA                   1046
+#define IDC_STC_ITS                     1046
 #define IDC_STC_LT_RA                   1047
 #define IDC_STC_TOT_SPD                 1048
 #define IDC_STC_CY_SPD                  1049
@@ -368,6 +369,7 @@
 #define IDC_STC_DEF_UDEF1               1136
 #define IDC_STC_ALIGN_SCR               1136
 #define IDC_STC_04                      1136
+#define IDC_STC_11                      1136
 #define IDC_STC_0004                    1137
 #define IDC_STC_DEF_NRW                 1137
 #define IDC_BTN_ALIGN_MOVE              1137
@@ -1196,6 +1198,7 @@
 #define IDC_STC_SIG3                    1363
 #define IDC_BTN_SAVE4                   1363
 #define IDC_STC_2_1                     1364
+#define IDC_BTN_SAVE5                   1364
 #define IDC_STC_2_2                     1365
 #define IDC_STC_SIG5                    1365
 #define IDC_STC_2_3                     1366

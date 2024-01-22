@@ -33,7 +33,7 @@ class CDlgMenu05 : public CDialog
 	int m_nEntireAddedDefect[MAX_DEF];
 // 	int m_nArrayDefNum[MAX_DEF][MAX_DEF];
 
-	CMyStatic myStcLot, myStcSerialSt, myStcSerialEd, myStcFromTo, myStcProc;
+	CMyStatic myStcLot, myStcSerialSt, myStcSerialEd, myStcFromTo, myStcProc, myStcIts;
 	CString m_sEditRst;//, m_sRmapPath; 
 	int m_nSerialSt, m_nSerialEd, m_nMarkedShot, m_nCompletedShot;
 	int m_nNodeX, m_nNodeY;
@@ -41,6 +41,7 @@ class CDlgMenu05 : public CDialog
 	CDlgUtil01 *m_pDlgUtil01;
 	CMyLabel myLabel[MAX_MENU05_LABEL];
 	BOOL m_bLoadImg;
+	CString m_sLayerUp, m_sLayerDn;
 
 	void InitLabel();
 	void LoadImg();
@@ -64,6 +65,8 @@ class CDlgMenu05 : public CDialog
 	BOOL ReloadReelmap();
 	void InsertLine(CString sPath);
 	void DispProcCode(CString sPath);
+	void DispItsCode();
+	CString GetItsCode();
 	CString GetProcCode(CString sPath);
 	void Print(HWND hWndMain);
 	void PrintData(HDC hPrtdc, int xpage, int ypage);
@@ -135,6 +138,9 @@ protected:
 	afx_msg void OnCheck1();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedBtnSave5();
+	afx_msg void OnStnClickedStcIts();
 };
 
 //{{AFX_INSERT_LOCATION}}

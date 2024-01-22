@@ -33,6 +33,7 @@ CReelMap::CReelMap(int nLayer, int nPnl, int nPcs, int nDir)
 	nTotPnl = nPnl;
 	nTotPcs = nPcs;
 	nDir = ROT_NONE;
+	m_nBeforeSerial = 0;
 
 	m_dTotLen = 0.0;
 	m_bUseLotSep = FALSE;
@@ -1021,6 +1022,7 @@ BOOL CReelMap::Write(int nSerial)
 	}
 
 	CString strData, strTemp;
+	int nTotVerifyed = 0;
 
 	for (i = 0; i < nTotDefPcs; i++)
 	{
@@ -1065,6 +1067,10 @@ BOOL CReelMap::Write(int nSerial)
 				if (m_pPnlBuf)
 					m_pPnlBuf[nSerial - 1][nR][nC] = pPnlBuf[nR][nC]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 			}
+			else
+			{
+				nTotVerifyed++;
+			}
 		}
 		else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
 		{
@@ -1107,6 +1113,10 @@ BOOL CReelMap::Write(int nSerial)
 				if (m_pPnlBuf)
 					m_pPnlBuf[nSerial - 1][nR][nC] = pPnlBuf[nR][nC]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 			}
+			else
+			{
+				nTotVerifyed++;
+			}
 		}
 		else if (m_nLayer == RMAP_ITS)
 		{
@@ -1147,6 +1157,10 @@ BOOL CReelMap::Write(int nSerial)
 				if (m_pPnlBuf)
 					m_pPnlBuf[nSerial - 1][nR][nC] = pPnlBuf[nR][nC]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 			}
+			else
+			{
+				nTotVerifyed++;
+			}
 		}
 		else
 			return 0;
@@ -1155,7 +1169,7 @@ BOOL CReelMap::Write(int nSerial)
 	CString sPnl, sRow;
 	i = 0;
 	sPnl.Format(_T("%d"), nSerial);
-	strData.Format(_T("%d"), nTotDefPcs);
+	strData.Format(_T("%d"), nTotDefPcs - nTotVerifyed);
 	::WritePrivateProfileString(sPnl, _T("Total Defects"), strData, sPath);
 	//::WritePrivateProfileString(sPnl, _T("Total Defects"), strData, m_sPathShare);
 
@@ -2088,6 +2102,16 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 									else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
 									{
 										nActionCode = pDoc->m_MasterInner[0].MasterInfo.nActionCode;
+
+										// 내층 릴맵 Display 좌우반전 시킴....
+										if(nActionCode == 0)
+											nActionCode = 1;
+										else if(nActionCode == 1)
+											nActionCode = 0;
+										else if(nActionCode == 2)
+											nActionCode = 3;
+										else if (nActionCode == 3)
+											nActionCode = 2;
 									}
 									else if (m_nLayer == RMAP_ITS)
 									{
@@ -2706,6 +2730,8 @@ CString CReelMap::GetYieldPath(int nRmap)
 
 void CReelMap::ResetYield()
 {
+	m_nBeforeSerial = 0;
+
 	m_stYield.nTot = 0; m_stYield.nGood = 0; m_stYield.nDef = 0;
 	m_stYield.nTotSriptOut = 0;
 	m_stYield.nDefStrip[0] = 0; m_stYield.nDefStrip[1] = 0; m_stYield.nDefStrip[2] = 0; m_stYield.nDefStrip[3] = 0;
@@ -2870,7 +2896,7 @@ BOOL CReelMap::UpdateYield(int nSerial)
 	if (findfile.FindFile(sPath))
 		bExist = TRUE;
 
-	int nPnl = nSerial - 1;
+	int nPnl = m_nBeforeSerial;//nSerial - 1;
 
 	if (bExist && nPnl) // After first shot
 	{
@@ -2896,6 +2922,9 @@ BOOL CReelMap::UpdateYield(int nSerial)
 
 BOOL CReelMap::UpdateReelmapYield()
 {
+	//ReloadReelmap()에서 UpdateReelmapYield()를 수행함.
+	//return TRUE;
+
 	int k, i;
 	CString strMenu, strItem, sCode, sDefNum, strData;
 
@@ -5962,6 +5991,8 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 
 BOOL CReelMap::WriteYield(int nSerial, CString sPath)
 {
+	m_nBeforeSerial = nSerial;
+
 	int dwStart = GetTickCount();
 	int nNodeX = 0, nNodeY = 0;
 #ifndef TEST_MODE
@@ -6515,6 +6546,7 @@ BOOL CReelMap::WriteIts(int nItsSerial)
 	}
 
 	CString strData, strTemp;
+	int nTotVerifyed = 0;
 
 	for (i = 0; i < nTotDefPcs; i++)
 	{
@@ -6555,12 +6587,16 @@ BOOL CReelMap::WriteIts(int nItsSerial)
 			if (m_pPnlBuf)
 				m_pPnlBuf[nItsSerial - 1][nR][nC] = pPnlBuf[nR][nC];   // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용. #define PNL_TOT
 		}
+		else
+		{
+			nTotVerifyed++;
+		}
 	}
 
 	CString sPnl, sRow;
 	i = 0;
 	sPnl.Format(_T("%d"), nItsSerial);
-	strData.Format(_T("%d"), nTotDefPcs);
+	strData.Format(_T("%d"), nTotDefPcs - nTotVerifyed);
 	::WritePrivateProfileString(sPnl, _T("Total Defects"), strData, sPath);
 
 	for (int nRow = 0; nRow < nNodeX; nRow++)
@@ -7046,11 +7082,16 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		break;
 	}
 
-	str.Format(_T("%d,%s,%04d\n"), nTotDefPcs, sItsCode, nSerial);
-	sItsData = str;
 
 	int nR, nRow, nCol, nDefCode;
-	int nTotStrip = 0;
+	int nTotStrip[4] = { 0 }, nPcsId;
+
+	int nTotVerifyed = 0;
+	int nPcrLineNum;
+	CString sStripA = _T("");
+	CString sStripB = _T("");
+	CString sStripC = _T("");
+	CString sStripD = _T("");
 
 	// Strip A
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -7058,22 +7099,25 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		nR = nRow;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			if (nPcrLineNum > -1)
+			{
+
 			nDefCode = m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 			if (nDefCode > 0)
 			{
-				nTotStrip++;
+					nTotStrip[0]++;
 				str.Format(_T("%s,%04d,%s,A,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
-				sTemp += str;
+					sStripA += str;
+				}
+			}
+			else
+			{
+				nTotVerifyed++;
 			}
 		}
 	}
-	str.Format(_T("%d,%s,%04d,%s,A\n"), nTotStrip, sItsCode, nSerial, sSide);
-	sItsData += str;
-	sItsData += sTemp;
-	str.Format(_T("%s,%04d,%s,A,EOS\n"), sItsCode, nSerial, sSide);
-	sItsData += str;
-	sTemp = _T("");
-	nTotStrip = 0;
+
 
 	// Strip B
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -7081,22 +7125,26 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		nR = nRow + nStripY;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			if (nPcrLineNum > -1)
+			{
+				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
+				{
 			nDefCode = m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 			if (nDefCode > 0)
 			{
-				nTotStrip++;
+						nTotStrip[1]++;
 				str.Format(_T("%s,%04d,%s,B,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
-				sTemp += str;
+						sStripB += str;
+					}
+				}
+				else
+				{
+					nTotVerifyed++;
+				}
 			}
 		}
 	}
-	str.Format(_T("%d,%s,%04d,%s,B\n"), nTotStrip, sItsCode, nSerial, sSide);
-	sItsData += str;
-	sItsData += sTemp;
-	str.Format(_T("%s,%04d,%s,B,EOS\n"), sItsCode, nSerial, sSide);
-	sItsData += str;
-	sTemp = _T("");
-	nTotStrip = 0;
 
 	// Strip C
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -7104,22 +7152,26 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		nR = nRow + nStripY * 2;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			if (nPcrLineNum > -1)
+			{
+				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
+				{
 			nDefCode = m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 			if (nDefCode > 0)
 			{
-				nTotStrip++;
+						nTotStrip[2]++;
 				str.Format(_T("%s,%04d,%s,B,%d,%d,C%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
-				sTemp += str;
+						sStripC += str;
+					}
+					else
+					{
+						nTotVerifyed++;
+					}
+				}
 			}
 		}
 	}
-	str.Format(_T("%d,%s,%04d,%s,C\n"), nTotStrip, sItsCode, nSerial, sSide);
-	sItsData += str;
-	sItsData += sTemp;
-	str.Format(_T("%s,%04d,%s,C,EOS\n"), sItsCode, nSerial, sSide);
-	sItsData += str;
-	sTemp = _T("");
-	nTotStrip = 0;
 
 	// Strip D
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -7127,18 +7179,54 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		nR = nRow + nStripY * 3;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			if (nPcrLineNum > -1)
+			{
+				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
+				{
 			nDefCode = m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 			if (nDefCode > 0)
 			{
-				nTotStrip++;
+						nTotStrip[3]++;
 				str.Format(_T("%s,%04d,%s,B,%d,%d,D%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
-				sTemp += str;
+						sStripD += str;
+					}
+					else
+					{
+						nTotVerifyed++;
+					}
 			}
 		}
 	}
-	str.Format(_T("%d,%s,%04d,%s,D\n"), nTotStrip, sItsCode, nSerial, sSide);
+	}
+
+	// Strip A
+	str.Format(_T("%d,%s,%04d\n"), nTotDefPcs - nTotVerifyed, sItsCode, nSerial);
+	sItsData = str;
+	str.Format(_T("%d,%s,%04d,%s,A\n"), nTotStrip[0], sItsCode, nSerial, sSide);
 	sItsData += str;
-	sItsData += sTemp;
+	sItsData += sStripA;
+	str.Format(_T("%s,%04d,%s,A,EOS\n"), sItsCode, nSerial, sSide);
+	sItsData += str;
+
+	// Strip B
+	str.Format(_T("%d,%s,%04d,%s,B\n"), nTotStrip[1], sItsCode, nSerial, sSide);
+	sItsData += str;
+	sItsData += sStripB;
+	str.Format(_T("%s,%04d,%s,B,EOS\n"), sItsCode, nSerial, sSide);
+	sItsData += str;
+
+	// Strip C
+	str.Format(_T("%d,%s,%04d,%s,C\n"), nTotStrip[2], sItsCode, nSerial, sSide);
+	sItsData += str;
+	sItsData += sStripC;
+	str.Format(_T("%s,%04d,%s,C,EOS\n"), sItsCode, nSerial, sSide);
+	sItsData += str;
+
+	// Strip D
+	str.Format(_T("%d,%s,%04d,%s,D\n"), nTotStrip[3], sItsCode, nSerial, sSide);
+	sItsData += str;
+	sItsData += sStripD;
 	str.Format(_T("%s,%04d,%s,D,EOS\n"), sItsCode, nSerial, sSide);
 	sItsData += str;
 	str.Format(_T("%s,%04d,%s,EOP\n"), sItsCode, nSerial, sSide);

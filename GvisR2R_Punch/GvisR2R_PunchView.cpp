@@ -61,6 +61,11 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	// TODO: 여기에 생성 코드를 추가합니다.
 	pView = this;
 
+	m_nAoiUpAutoSerial = 0;
+	m_nAoiUpAutoSerialPrev = 0;
+	m_nAoiDnAutoSerial = 0;
+	m_nAoiDnAutoSerialPrev = 0;
+
 	int i = 0;
 	for (i = 0; i < _SigInx::_EndIdx; i++)
 	{
@@ -3602,7 +3607,26 @@ void CGvisR2R_PunchView::ChkShare()
 void CGvisR2R_PunchView::ChkShareUp()
 {
 	CString str, str2;
-	int nSerial;
+	int nSerial, nAoiUpAutoSerial;
+
+	if (IsVs() && IsSetLotEnd())
+	{
+		nAoiUpAutoSerial = GetAoiUpAutoSerial() - 1;
+
+		if (nAoiUpAutoSerial > 0)
+		{
+			if (m_nAoiUpAutoSerial != nAoiUpAutoSerial)
+			{
+				m_nAoiUpAutoSerial = nAoiUpAutoSerial;
+
+				if (nAoiUpAutoSerial <= GetLotEndSerial())
+					pView->m_pMpe->Write(_T("ML45112"), nAoiUpAutoSerial);	// 검사한 Panel의 AOI 상 Serial
+	
+				m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
+			}
+		}
+	}
+
 	if (ChkShareUp(nSerial))
 	{
 		str.Format(_T("US: %d"), nSerial);
@@ -3615,32 +3639,18 @@ void CGvisR2R_PunchView::ChkShareUp()
 
 			if (IsVs())
 			{
-				if (IsSetLotEnd())
+				if (!IsSetLotEnd())
 				{
-					if ((long)GetAoiUpAutoSerial() - 1 <= GetLotEndSerial())
 						pView->m_pMpe->Write(_T("ML45112"), (long)GetAoiUpAutoSerial() - 1);	// 검사한 Panel의 AOI 상 Serial
+					m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
 				}
-				else
-					pView->m_pMpe->Write(_T("ML45112"), (long)GetAoiUpAutoSerial() - 1);	// 검사한 Panel의 AOI 상 Serial
-
-
-				//if(m_bLastProcFromEng)
-				//	pView->m_pMpe->Write(_T("ML45112"), (long)nSerial + 3);	// 검사한 Panel의 AOI 상 Serial
-				//else
-
-				//if (IsSetLotEnd())
-				//{
-				//	if ((long)nSerial + 3 <= GetLotEndSerial())
-				//		pView->m_pMpe->Write(_T("ML45112"), (long)nSerial + 3);	// 검사한 Panel의 AOI 상 Serial
-				//}
-				//else
-				//	pView->m_pMpe->Write(_T("ML45112"), (long)nSerial + 3);	// 검사한 Panel의 AOI 상 Serial
 			}
 			else
+			{
 				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
-
 			m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
 		}
+	}
 	}
 	else
 	{
@@ -3661,7 +3671,26 @@ void CGvisR2R_PunchView::ChkShareUp()
 void CGvisR2R_PunchView::ChkShareDn()
 {
 	CString str, str2;
-	int nSerial;
+	int nSerial, nAoiDnAutoSerial;
+
+	if (IsVs() && IsSetLotEnd())
+	{
+		nAoiDnAutoSerial = GetAoiDnAutoSerial() - 1;
+
+		if (nAoiDnAutoSerial > 0)
+		{
+			if (m_nAoiDnAutoSerial != nAoiDnAutoSerial)
+			{
+				m_nAoiDnAutoSerial = nAoiDnAutoSerial;
+
+				if (nAoiDnAutoSerial <= GetLotEndSerial())
+					pView->m_pMpe->Write(_T("ML45114"), nAoiDnAutoSerial);	// 검사한 Panel의 AOI 하 Serial
+
+				m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
+			}
+		}
+	}
+
 	if (ChkShareDn(nSerial))
 	{
 		str.Format(_T("DS: %d"), nSerial);
@@ -3674,32 +3703,18 @@ void CGvisR2R_PunchView::ChkShareDn()
 
 			if (IsVs())
 			{
-				if (IsSetLotEnd())
+				if (!IsSetLotEnd())
 				{
-					if ((long)GetAoiDnAutoSerial() - 1 <= GetLotEndSerial())
 						pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
+					m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
 				}
-				else
-					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
-
-
-				//if (m_bLastProcFromEng)
-				//	pView->m_pMpe->Write(_T("ML45114"), (long)nSerial + 3);	// 검사한 Panel의 AOI 하 Serial
-				//else
-
-				//if (IsSetLotEnd())
-				//{
-				//	if ((long)nSerial + 4 <= GetLotEndSerial())
-				//		pView->m_pMpe->Write(_T("ML45114"), (long)nSerial + 4);	// 검사한 Panel의 AOI 하 Serial
-				//}
-				//else
-				//	pView->m_pMpe->Write(_T("ML45114"), (long)nSerial + 4);	// 검사한 Panel의 AOI 하 Serial
 			}
 			else
+			{
 				pView->m_pMpe->Write(_T("ML45114"), (long)nSerial);	// 검사한 Panel의 AOI 하 Serial
-
 			m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
 		}
+	}
 	}
 	else
 	{
@@ -10974,6 +10989,11 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 
 	m_nSerialRmapInnerUpdate = -1;
 
+	m_nAoiUpAutoSerial = 0;
+	m_nAoiUpAutoSerialPrev = 0;
+	m_nAoiDnAutoSerial = 0;
+	m_nAoiDnAutoSerialPrev = 0;
+
 	pView->m_nDebugStep = 10; pView->DispThreadTick();
 	int nCam, nPoint, kk, a, b;
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
@@ -14484,6 +14504,7 @@ void CGvisR2R_PunchView::LotEnd()
 	m_bCont = FALSE;
 	SetLotEd();
 
+	//ReloadReelmap();
 	MakeResultMDS();
 
 	if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
@@ -23522,6 +23543,7 @@ BOOL CGvisR2R_PunchView::ReloadReelmapInner()
 	if (pDoc->m_pReelMapIts)
 		bRtn[2] = pDoc->m_pReelMapIts->ReloadReelmap();
 
+	bRtn[3] = TRUE;
 
 	if (bDualTest)
 	{
@@ -31713,13 +31735,13 @@ void CGvisR2R_PunchView::MakeResultMDS()
 	MakeResultIts();	// Result.txt
 	MakeSapp3();		// GetSapp3Txt()
 
-	RemakeReelmap();
+	RemakeReelmap();	// MDS(해성DS) Style의 릴맵으로 재생성
 
 	if (pDoc->GetTestMode() == MODE_OUTER)
 		RemakeReelmapInner();
 }
 
-BOOL CGvisR2R_PunchView:: RemakeReelmap()
+BOOL CGvisR2R_PunchView::RemakeReelmap()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	CString sReelmapSrc, str;
@@ -33136,4 +33158,274 @@ void CGvisR2R_PunchView::ChkRcvSig()
 void CGvisR2R_PunchView::UpdateItsJobFile()
 {
 	pDoc->UpdateItsJobFile();
+}
+
+
+BOOL CGvisR2R_PunchView::RemakeReelmapFromPcr(CString sModel, CString sLot, CString sLayerUp, CString sLayerDn)
+{
+	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+	CString sReelmapSrc, str, sMsg;
+
+	//if (pDoc->m_pReelMapUp)
+	//	pDoc->m_pReelMapUp->StartThreadRemakeReelmapFromPcr();
+
+	//if (bDualTest)
+	//{
+	//	if (pDoc->m_pReelMapDn)
+	//		pDoc->m_pReelMapDn->StartThreadRemakeReelmapFromPcr();
+
+	//	if (pDoc->m_pReelMapAllUp)
+	//		pDoc->m_pReelMapAllUp->StartThreadRemakeReelmapFromPcr();
+	//}
+
+	if (!pDoc->m_pReelMapUp)
+	{
+		sMsg.Format(_T("m_pReelMapUp이 Create되지않았습니다.\r\n%s"));
+		pView->MsgBox(sMsg);
+		return FALSE;
+	}
+
+
+	pDoc->WorkingInfo.LastJob.sModelUp = sModel;
+	pDoc->WorkingInfo.LastJob.sLotUp = pDoc->WorkingInfo.LastJob.sLotDn = sLot;
+	pDoc->WorkingInfo.LastJob.sLayerUp = sLayerUp;
+	pDoc->WorkingInfo.LastJob.sLayerDn = sLayerDn;
+
+	CString sPath = pDoc->m_pReelMapUp->GetRmapPath(RMAP_UP);
+
+	FILE *fp = NULL;
+	char FileName[MAX_PATH];
+	CString strFileName, strPathName;
+	CFileFind findfile;
+	int nStripNumY, nPieceNumPerStrip;
+
+	int i, nLastShot, nPnl, nRow, nCol, nDefCode, nCompletedShot;
+	CString sPnl, sRow, sVal;
+	TCHAR sep[] = { _T(",/;\r\n\t") };
+	TCHAR szData[MAX_PATH];
+
+	if (!findfile.FindFile(sPath))
+	{
+		sMsg.Format(_T("Reelmap이 존재하지 않습니다.\r\n%s"), sPath);
+		pView->MsgBox(sMsg);
+		return FALSE;
+	}
+
+	CString sProcessCode, sEntireSpeed, sLotRun, sLotEnd;
+	
+	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Completed Shot"), NULL, szData, sizeof(szData), sPath))
+		nCompletedShot = _tstoi(szData);
+	else
+		nCompletedShot = 0; // Failed.
+	
+	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Marked Shot"), NULL, szData, sizeof(szData), sPath))
+		nLastShot = _tstoi(szData);
+	else
+	{
+		nLastShot = 0; // Failed.
+		pView->MsgBox(_T("릴맵에 Marked Shot 정보가 없습니다."));
+		return FALSE;
+	}
+
+	// 공종코드
+	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Process Code"), NULL, szData, sizeof(szData), sPath))
+		sProcessCode = CString(szData);
+	else
+		sProcessCode = _T("");
+
+	// 속도
+	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Entire Speed"), NULL, szData, sizeof(szData), sPath))
+		sEntireSpeed = CString(szData);
+	else
+		sEntireSpeed = _T("0.0");
+
+	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Lot Run"), NULL, szData, sizeof(szData), sPath))
+		sLotRun = CString(szData);
+	else
+		sLotRun = _T("");
+
+	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Lot End"), NULL, szData, sizeof(szData), sPath))
+		sLotEnd = CString(szData);
+	else
+		sLotEnd = _T("");
+
+
+	CString sFile = _T(""), sUpPath = _T(""), sDnPath = _T(""), sRmapUpPath = sPath, sRmapDnPath;
+
+	int nPos = sRmapUpPath.ReverseFind('\\');
+	if (nPos != -1)
+	{
+		sFile = sRmapUpPath.Right(sRmapUpPath.GetLength() - nPos - 1);
+		sRmapUpPath.Delete(nPos, sRmapUpPath.GetLength() - nPos);
+	}
+
+
+	DeleteFile(sPath);
+	sPath = pDoc->m_pReelMapUp->GetYieldPath(RMAP_UP);
+	DeleteFile(sPath);
+	
+	sPath = pDoc->m_pReelMapUp->GetRmapPath(RMAP_DN);
+	if (findfile.FindFile(sPath))
+	{
+		bDualTest = TRUE;
+		sRmapDnPath = sPath;
+
+		DeleteFile(sPath);
+		sPath = pDoc->m_pReelMapUp->GetYieldPath(RMAP_DN);
+		DeleteFile(sPath);
+
+		sPath = pDoc->m_pReelMapUp->GetRmapPath(RMAP_ALLUP);
+		if (findfile.FindFile(sPath))
+		{
+			DeleteFile(sPath);
+			sPath = pDoc->m_pReelMapUp->GetYieldPath(RMAP_ALLUP);
+			DeleteFile(sPath);
+		}
+
+		sPath = pDoc->m_pReelMapUp->GetRmapPath(RMAP_ALLDN);
+		if (findfile.FindFile(sPath))
+		{
+			DeleteFile(sPath);
+			sPath = pDoc->m_pReelMapUp->GetYieldPath(RMAP_ALLDN);
+			DeleteFile(sPath);
+		}
+
+		nPos = sRmapDnPath.ReverseFind('\\');
+		if (nPos != -1)
+		{
+			sFile = sRmapDnPath.Right(sRmapDnPath.GetLength() - nPos - 1);
+			sRmapDnPath.Delete(nPos, sRmapDnPath.GetLength() - nPos);
+		}
+
+
+		ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
+	}
+	else
+	{
+		ResetMkInfo(0); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
+		bDualTest = FALSE;
+	}
+
+	ClrDispMsg();
+	double dProgressRatio = 0.0;
+	int nProgress = 0, nSerial = 0;
+	CDlgProgress dlg;
+	sVal.Format(_T("On Remaking Reelmap from PCR."));
+	dlg.Create(sVal);
+	dlg.SetRange(0, 100);
+	dlg.SetPos(1);
+
+	for (nPnl = 0; nPnl < nLastShot; nPnl++)
+	{
+		dProgressRatio = double(nPnl + 1) / double(nLastShot) * 100.0;
+		nProgress = int(dProgressRatio);
+		dlg.SetPos(nProgress);
+
+		nSerial = nPnl + 1;
+		sUpPath.Format(_T("%s\\%04d.pcr"), sRmapUpPath, nSerial);
+
+		if (findfile.FindFile(sUpPath))
+		{
+			pDoc->LoadPcrUp(sUpPath);
+
+			if (bDualTest)
+			{
+				sDnPath.Format(_T("%s\\%04d.pcr"), sRmapDnPath, nSerial);
+				if (findfile.FindFile(sDnPath))
+				{
+					pDoc->LoadPcrDn(sDnPath);
+					pDoc->LoadPcrAllUp(sDnPath);
+					//pDoc->LoadPcrAllDn(sDnPath);
+
+					// 시리얼파일의 정보로 릴맵을 만듬 
+					if (pDoc->m_pReelMapUp)
+						pDoc->m_pReelMapUp->Write(nSerial); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+					if (pDoc->m_pReelMapDn)
+						pDoc->m_pReelMapDn->Write(nSerial); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+					if (pDoc->m_pReelMapAllUp)
+						pDoc->m_pReelMapAllUp->Write(nSerial); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+					//if (pDoc->m_pReelMapAllDn)
+					//	pDoc->m_pReelMapAllDn->Write(nSerial); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+
+					pDoc->SetLastSerial(nSerial);
+
+					// 수율은 릴맵의 Shot별 불량을 읽어서 산출함.(시리얼이 연속이 아닐 수 있으므로)
+					//pDoc->UpdateYieldUp(nSerial);
+					//pDoc->UpdateYieldDn(nSerial);
+					//pDoc->UpdateYieldAllUp(nSerial);
+					//pDoc->UpdateYieldAllDn(nSerial);
+
+					//UpdateReelmapYieldUp();
+					//UpdateReelmapYieldDn();
+					//UpdateReelmapYieldAllUp();
+					//UpdateReelmapYieldAllDn();
+				}
+				else
+				{
+					sMsg.Format(_T("하면의 PCR파일이 존재하지 않습니다.\r\n%s"), sDnPath);
+					pView->MsgBox(sMsg);
+					return FALSE;
+				}
+			}
+			else
+			{
+				//UpdateReelmap(nSerial); // 시리얼파일의 정보로 릴맵을 만듬 
+				if (pDoc->m_pReelMapUp)
+					pDoc->m_pReelMapUp->Write(nSerial); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+
+				pDoc->SetLastSerial(nSerial);
+
+				//pDoc->UpdateYieldUp(nSerial);
+			}
+		}
+	}
+
+	sPath = pDoc->m_pReelMapUp->GetRmapPath(RMAP_UP);
+	::WritePrivateProfileString(_T("Info"), _T("Process Code"), sProcessCode, sPath);
+	::WritePrivateProfileString(_T("Info"), _T("Entire Speed"), sEntireSpeed, sPath);
+	::WritePrivateProfileString(_T("Info"), _T("Lot Run"), sLotRun, sPath);
+	::WritePrivateProfileString(_T("Info"), _T("Lot End"), sLotEnd, sPath);
+	sVal.Format(_T("%d"), nLastShot);
+	::WritePrivateProfileString(_T("Info"), _T("End Serial"), sVal, sPath);
+
+	if (bDualTest)
+	{
+		sPath = pDoc->m_pReelMapUp->GetRmapPath(RMAP_DN);
+		::WritePrivateProfileString(_T("Info"), _T("Process Code"), sProcessCode, sPath);
+		::WritePrivateProfileString(_T("Info"), _T("Entire Speed"), sEntireSpeed, sPath);
+		::WritePrivateProfileString(_T("Info"), _T("Lot Run"), sLotRun, sPath);
+		::WritePrivateProfileString(_T("Info"), _T("Lot End"), sLotEnd, sPath);
+		sVal.Format(_T("%d"), nLastShot);
+		::WritePrivateProfileString(_T("Info"), _T("End Serial"), sVal, sPath);
+
+		sPath = pDoc->m_pReelMapUp->GetRmapPath(RMAP_ALLUP);
+		::WritePrivateProfileString(_T("Info"), _T("Process Code"), sProcessCode, sPath);
+		::WritePrivateProfileString(_T("Info"), _T("Entire Speed"), sEntireSpeed, sPath);
+		::WritePrivateProfileString(_T("Info"), _T("Lot Run"), sLotRun, sPath);
+		::WritePrivateProfileString(_T("Info"), _T("Lot End"), sLotEnd, sPath);
+		sVal.Format(_T("%d"), nLastShot);
+		::WritePrivateProfileString(_T("Info"), _T("End Serial"), sVal, sPath);
+
+		sPath = pDoc->m_pReelMapUp->GetRmapPath(RMAP_ALLDN);
+		::WritePrivateProfileString(_T("Info"), _T("Process Code"), sProcessCode, sPath);
+		::WritePrivateProfileString(_T("Info"), _T("Entire Speed"), sEntireSpeed, sPath);
+		::WritePrivateProfileString(_T("Info"), _T("Lot Run"), sLotRun, sPath);
+		::WritePrivateProfileString(_T("Info"), _T("Lot End"), sLotEnd, sPath);
+		sVal.Format(_T("%d"), nLastShot);
+		::WritePrivateProfileString(_T("Info"), _T("End Serial"), sVal, sPath);
+	}
+
+	dlg.SetPos(100);
+	dlg.DestroyWindow();
+
+	if (m_pDlgMenu05)
+	{
+		int nIndex = m_pDlgMenu05->GetIdxTopLayer();
+		if (nIndex > -1)
+		{
+			m_pDlgMenu05->SelchangeComboLayer(nIndex);
+		}
+	}
+
+	return TRUE;
 }

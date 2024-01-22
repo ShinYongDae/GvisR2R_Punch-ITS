@@ -512,6 +512,11 @@ public:
 
 	void DestroyDoc();
 
+	int LoadPcrUp(CString sPath);	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
+	int LoadPcrDn(CString sPath);	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
+	int LoadPcrAllUp(CString sPath);	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
+	int LoadPcrAllDn (CString sPath);	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
+
 // 재정의입니다.
 public:
 	virtual BOOL OnNewDocument();

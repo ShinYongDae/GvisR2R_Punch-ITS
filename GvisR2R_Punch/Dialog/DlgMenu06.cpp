@@ -1899,8 +1899,16 @@ void CDlgMenu06::ShowDefInfoUp(int nIdx) // nIdx : 0 ~ 11 (12ea)
 #else
  	int nPcrIdx = pDoc->GetPcrIdx0(m_nSerial);
 // 	int nSelMkPnl = pDoc->m_pReelMapInner->m_nSelMarkingPnl;
-	if(pDoc->m_pPcrInner[0][nPcrIdx]->m_pMk[m_nIdxDef[0]] == -2) // -2 (NoMarking)
+	if (MODE_OUTER != pDoc->GetTestMode())
+	{
+		if (pDoc->m_pPcrInner[0][nPcrIdx]->m_pMk[m_nIdxDef[0]] == -2) // -2 (NoMarking)
 		return;
+	}
+	else
+	{
+		if (pDoc->m_pPcrInner[0][nPcrIdx]->m_pMk[m_nIdxDef[0]] == -2) // -2 (NoMarking)
+			return;
+	}
 	int nPcsIdx = pDoc->m_pPcrInner[0][nPcrIdx]->m_pDefPcs[m_nIdxDef[0]]; //m_pImg[m_nIdxDef];
 	nDefCode = pDoc->m_pPcrInner[0][nPcrIdx]->m_pDefType[m_nIdxDef[0]];
 // 	nDefCode = pDoc->m_pReelMapInner->pPcsDef[nSelMkPnl][nPcsIdx];
@@ -1951,8 +1959,16 @@ void CDlgMenu06::ShowDefInfoDn(int nIdx) // nIdx : 0 ~ 11 (12ea)
 #else
  	int nPcrIdx = pDoc->GetPcrIdx1(m_nSerial);
 // 	int nSelMkPnl = pDoc->m_pReelMapInner->m_nSelMarkingPnl;
-	if(pDoc->m_pPcrInner[1][nPcrIdx]->m_pMk[m_nIdxDef[1]] == -2) // -2 (NoMarking)
+	if (MODE_OUTER != pDoc->GetTestMode())
+	{
+		if (pDoc->m_pPcrInner[1][nPcrIdx]->m_pMk[m_nIdxDef[1]] == -2) // -2 (NoMarking)
+			return;
+	}
+	else
+	{
+		if (pDoc->m_pPcrInner[1][nPcrIdx]->m_pMk[m_nIdxDef[1]] == -2) // -2 (NoMarking)
 		return;
+	}
 	int nPcsIdx = pDoc->m_pPcrInner[1][nPcrIdx]->m_pDefPcs[m_nIdxDef[1]]; //m_pImg[m_nIdxDef];
 	nDefCode = pDoc->m_pPcrInner[1][nPcrIdx]->m_pDefType[m_nIdxDef[1]];
 // 	nDefCode = pDoc->m_pReelMapInner->pPcsDef[nSelMkPnl][nPcsIdx];

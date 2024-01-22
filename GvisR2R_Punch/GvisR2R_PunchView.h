@@ -408,6 +408,9 @@ public:
 
 	BOOL m_bProbDn[2]; // 좌/우 .
 
+	BOOL m_nAoiUpAutoSerial, m_nAoiUpAutoSerialPrev;
+	BOOL m_nAoiDnAutoSerial, m_nAoiDnAutoSerialPrev;
+
 	// Auto Sequence
 	BOOL m_bAuto, m_bManual, m_bOneCycle;
 	BOOL m_bMkTmpStop, m_bAoiLdRun, m_bAoiLdRunF;
@@ -1038,7 +1041,8 @@ public:
 	BOOL ChkContShotNum();
 	void SetFixPcs(int nSerial);
 
-	BOOL RemakeReelmap();
+	BOOL RemakeReelmap();	// MDS(해성DS) Style의 릴맵으로 재생성
+	BOOL RemakeReelmapFromPcr(CString sModel, CString sLot, CString sLayerUp, CString sLayerDn);
 	BOOL IsDoneRemakeReelmap();
 	BOOL RemakeReelmapInner();
 	BOOL IsDoneRemakeReelmapInner();

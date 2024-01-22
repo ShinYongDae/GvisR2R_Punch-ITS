@@ -1717,8 +1717,16 @@ void CDlgMenu01::ShowDefInfoUp(int nIdx) // nIdx : 0 ~ 11 (12ea)
 #else
  	int nPcrIdx = pDoc->GetPcrIdx0(m_nSerial);
 // 	int nSelMkPnl = pDoc->m_pReelMap->m_nSelMarkingPnl;
-	if(pDoc->m_pPcr[0][nPcrIdx]->m_pMk[m_nIdxDef[0]] == -2) // -2 (NoMarking)
+	if (MODE_OUTER != pDoc->GetTestMode())
+	{
+		if (pDoc->m_pPcr[0][nPcrIdx]->m_pMk[m_nIdxDef[0]] == -2) // -2 (NoMarking)
+			return;
+	}
+	else
+	{
+		if (pDoc->m_pPcr[0][nPcrIdx]->m_pMk[m_nIdxDef[0]] == -2) // -2 (NoMarking)
 		return;
+	}
 	int nPcsIdx = pDoc->m_pPcr[0][nPcrIdx]->m_pDefPcs[m_nIdxDef[0]]; //m_pImg[m_nIdxDef];
 	nDefCode = pDoc->m_pPcr[0][nPcrIdx]->m_pDefType[m_nIdxDef[0]];
 // 	nDefCode = pDoc->m_pReelMap->pPcsDef[nSelMkPnl][nPcsIdx];
@@ -1769,8 +1777,16 @@ void CDlgMenu01::ShowDefInfoDn(int nIdx) // nIdx : 0 ~ 11 (12ea)
 #else
  	int nPcrIdx = pDoc->GetPcrIdx1(m_nSerial);
 // 	int nSelMkPnl = pDoc->m_pReelMap->m_nSelMarkingPnl;
-	if(pDoc->m_pPcr[1][nPcrIdx]->m_pMk[m_nIdxDef[1]] == -2) // -2 (NoMarking)
+	if (MODE_OUTER != pDoc->GetTestMode())
+	{
+		if (pDoc->m_pPcr[1][nPcrIdx]->m_pMk[m_nIdxDef[1]] == -2) // -2 (NoMarking)
+			return;
+	}
+	else
+	{
+		if (pDoc->m_pPcr[1][nPcrIdx]->m_pMk[m_nIdxDef[1]] == -2) // -2 (NoMarking)
 		return;
+	}
 	int nPcsIdx = pDoc->m_pPcr[1][nPcrIdx]->m_pDefPcs[m_nIdxDef[1]]; //m_pImg[m_nIdxDef];
 	nDefCode = pDoc->m_pPcr[1][nPcrIdx]->m_pDefType[m_nIdxDef[1]];
 // 	nDefCode = pDoc->m_pReelMap->pPcsDef[nSelMkPnl][nPcsIdx];
@@ -2278,7 +2294,6 @@ void CDlgMenu01::InitStcData()
 	myStcData[89].SubclassDlgItem(IDC_STC_TQ_DISP2_VAL_L, this);
 	myStcData[90].SubclassDlgItem(IDC_STC_TQ_DISP2_VAL_R, this);
 
-
 	for(int i=0; i<MAX_MENU01_STC_DATA; i++)
 	{
 		myStcData[i].SetFontName(_T("Arial"));
@@ -2497,7 +2512,7 @@ void CDlgMenu01::InitStcTitle()
 	myStcTitle[73].SubclassDlgItem(IDC_STC_TQ_DSIP1, this);
 	myStcTitle[74].SubclassDlgItem(IDC_STC_TQ_DSIP2, this);
 
-	for(i=65; i<MAX_MENU01_STC_TITLE; i++)
+	for (i = 65; i < MAX_MENU01_STC_TITLE; i++)
 	{
 		myStcTitle[i].SetFontName(_T("Arial"));
 		myStcTitle[i].SetFontSize(12);
@@ -4324,7 +4339,7 @@ void CDlgMenu01::OnChkEjectBuffer()
 	}
 	else
 	{
-		if(m_bLastProc && pView->IsBuffer())
+		if(m_bLastProc)// && pView->IsBuffer())
 		{
 			if(IDYES == pView->MsgBox(_T("잔량처리를 해제 하시겠습니까?"), 0, MB_YESNO))
 			{

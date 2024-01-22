@@ -86,6 +86,7 @@ class CReelMap : public CWnd
 	int m_nIdxDefInfo;	// MAX_DEFINFO에 들어가는 정보의 Index.
 	int m_nWritedSerial; // In Share folder Serial.
 	BOOL m_bContFixDef;
+	int m_nBeforeSerial;
 
 	//int m_nCntFixPcs;
 
