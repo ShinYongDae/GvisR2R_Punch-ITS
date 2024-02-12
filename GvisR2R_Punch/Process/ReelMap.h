@@ -104,7 +104,6 @@ class CReelMap : public CWnd
 	
 	BOOL ReadYield(int nSerial, CString sPath);
 	BOOL WriteYield(int nSerial, CString sPath);
-	void ResetYield();
 	
 	BOOL LoadDefectTableIni();
 	BOOL LoadDefectTableDB();
@@ -264,6 +263,8 @@ public:
 	CString GetPath();
 	CString GetIpPath();
 
+	void ResetYield();
+
 	//short ***m_pPnlBufIts;		// DefCode 3D Array : [nSerial-1][nRow][nCol] on File -> [nSerial-1][NodeX][NodeY] : Rotated Cw 90 
 	//int m_nPnlBufIts;			// 메모리에 할당된 총 Shot수
 	//int m_nTotPcsIts, m_nGoodPcsIts, m_nBadPcsIts, m_nDefIts[MAX_DEF];	// [DefCode] : Total Num.
@@ -283,6 +284,23 @@ public:
 	//BOOL InitRstIts();
 	//void CloseRstIts();
 
+	//int m_nProgressRemakeReelmapFromPcr, m_nTotalProgressRemakeReelmapFromPcr;
+	//BOOL m_bThreadAliveRemakeReelmapFromPcr, m_bRtnThreadRemakeReelmapFromPcr, m_bDoneRemakeReelmapFromPcr;
+	//CThreadTask m_ThreadTaskRemakeReelmapFromPcr; // CThreadTask class, handles the threading code
+	//BOOL RemakeReelmapFromPcrWithThread();
+	//BOOL RemakeReelmapFromPcr();
+	//void StartThreadRemakeReelmapFromPcr();
+	//static BOOL ThreadProcRemakeReelmapFromPcr(LPVOID lpContext);
+	//void StopThreadRemakeReelmapFromPcr();
+	//int GetProgressRemakeReelmapFromPcr();
+	//BOOL IsDoneRemakeReelmapFromPcr();
+
+	void SetLastSerialOnOffline(int nSerial);
+	CString GetRmapPathOnOffline(int nRmap);
+	BOOL WriteOnOffline(int nSerial);
+	BOOL WriteLastRmapInfoOnOffline();
+	int GetFirstShotFromPcr();
+	int GetLastShotFromPcr();
 
 // Overrides
 	// ClassWizard generated virtual function overrides

@@ -517,6 +517,8 @@ public:
 	int LoadPcrAllUp(CString sPath);	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
 	int LoadPcrAllDn (CString sPath);	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
 
+	int IsOfflineFolder(); // 0 : Not exist, 1 : Exist only Up, 2 : Exist only Dn, 3 : Exist Up and Dn
+
 // 재정의입니다.
 public:
 	virtual BOOL OnNewDocument();

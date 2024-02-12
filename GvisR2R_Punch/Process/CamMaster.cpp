@@ -502,7 +502,7 @@ CString CCamMaster::GetCamPxlRes()
 {
  	CString sRes=_T("");
  	CString sPath;
-#ifdef TEST_MODE
+#ifndef USE_CAM_MASTER
 	sPath = PATH_PIN_IMG_;
 #else
 	if (m_sPathCamSpecDir.Right(1) != "\\")
@@ -608,7 +608,7 @@ BOOL CCamMaster::LoadPcsRgnFromCam() // ±‚¡∏ RTR
 	double fData1,fData2,fData3,fData4;
 
 	CString sPath;
-#ifdef TEST_MODE
+#ifndef USE_CAM_MASTER
 	sPath = PATH_CELL_RGN;
 #else
 	if (MasterInfo.strMasterLocation.Right(1) != "\\")

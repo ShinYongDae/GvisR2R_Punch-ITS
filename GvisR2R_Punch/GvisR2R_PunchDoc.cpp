@@ -11324,12 +11324,20 @@ BOOL CGvisR2R_PunchDoc::GetInnerFolderPath(int nItsSerial, CString  &sUp, CStrin
 	if (Path[0].IsEmpty() || Path[1].IsEmpty() || Path[2].IsEmpty() || Path[3].IsEmpty())
 		return FALSE;
 
-	sUp.Format(_T("%s%s\\%s\\%s\\"), Path[0], Path[1], Path[2], Path[3]); // ITS Inner Dn Folder Path
+	int nOffline = IsOfflineFolder(); // 0 : Not exist, 1 : Exist only Up, 2 : Exist only Dn, 3 : Exist Up and Dn
+
+	if (nOffline & 0x01)
+		sUp.Format(_T("%s%s\\%s\\%s\\OFFLINE\\"), Path[0], Path[1], Path[2], Path[3]); // ITS Inner Up Folder Path
+	else
+		sUp.Format(_T("%s%s\\%s\\%s\\"), Path[0], Path[1], Path[2], Path[3]); // ITS Inner Up Folder Path
+
 	if (bDualTest)
 	{
 		if (Path[4].IsEmpty())
 			return FALSE;
-
+		if (nOffline & 0x02)
+			sDn.Format(_T("%s%s\\%s\\%s\\OFFLINE\\"), Path[0], Path[1], Path[2], Path[4]); // ITS Inner Dn Folder Path
+		else
 		sDn.Format(_T("%s%s\\%s\\%s\\"), Path[0], Path[1], Path[2], Path[4]); // ITS Inner Dn Folder Path
 	}
 	else
@@ -14610,3 +14618,40 @@ int CGvisR2R_PunchDoc::LoadPcrAllDn(CString sPath)	// return : 2(Failed), 1(정상
 	return (1); // 1(정상)
 }
 
+int CGvisR2R_PunchDoc::IsOfflineFolder() // 0 : Not exist, 1 : Exist only Up, 2 : Exist only Dn, 3 : Exist Up and Dn
+{
+	int nRtn = 0;
+	CString sPath, str;
+	BOOL bWorking;
+
+	//검색 클래스
+	CFileFind finder;
+
+	str = _T("OFFLINE");
+	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
+		pDoc->WorkingInfo.LastJob.sModelUp,
+		pDoc->WorkingInfo.LastJob.sLotUp,
+		pDoc->WorkingInfo.LastJob.sLayerUp,
+		str);
+
+	//CFileFind는 파일, 디렉터리가 존재하면 TRUE 를 반환함 
+	bWorking = finder.FindFile(sPath);
+
+	if (bWorking)
+		nRtn |= 0x01;
+
+	str = _T("OFFLINE");
+	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
+		pDoc->WorkingInfo.LastJob.sModelUp,
+		pDoc->WorkingInfo.LastJob.sLotUp,
+		pDoc->WorkingInfo.LastJob.sLayerDn,
+		str);
+
+	//CFileFind는 파일, 디렉터리가 존재하면 TRUE 를 반환함 
+	bWorking = finder.FindFile(sPath);
+
+	if (bWorking)
+		nRtn |= 0x02;
+
+	return nRtn;
+}

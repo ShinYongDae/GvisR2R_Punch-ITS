@@ -726,13 +726,54 @@ BOOL CDlgMenu05::GetResult() // TRUE: Make Result, FALSE: Load Result or Failed.
 		pView->MsgBox(_T("로트 정보가 없습니다."));
 		//AfxMessageBox(_T("로트 정보가 없습니다."));
 
-	strPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile, 
-								   m_sModel, m_sLot, m_sLayer);
-	
-	if(bDualTest)
-		strAddedDefectFP.Format(_T("%s\\ReelMapDataAll.txt"), strPath);
+	CFileFind cFile;
+	CString sPathPcr;
+
+	strPath.Format(_T("%s%s\\%s\\%s\\OFFLINE\\ReelMapDataAll.txt"), pDoc->WorkingInfo.System.sPathOldFile,
+		m_sModel, m_sLot, m_sLayerUp);
+
+	BOOL bExist = cFile.FindFile(strPath);
+	if (bExist)
+	{
+		bDualTest = TRUE;
+		strAddedDefectFP = strPath;
+	}
 	else
-		strAddedDefectFP.Format(_T("%s\\ReelMapDataUp.txt"), strPath);
+	{
+		strPath.Format(_T("%s%s\\%s\\%s\\OFFLINE\\ReelMapDataUp.txt"), pDoc->WorkingInfo.System.sPathOldFile,
+			m_sModel, m_sLot, m_sLayerUp);
+		bExist = cFile.FindFile(strPath);
+		if (bExist)
+		{
+			bDualTest = FALSE;
+			strAddedDefectFP = strPath;
+		}
+		else
+		{
+			strPath.Format(_T("%s%s\\%s\\%s\\ReelMapDataAll.txt"), pDoc->WorkingInfo.System.sPathOldFile,
+				m_sModel, m_sLot, m_sLayerUp);
+			bExist = cFile.FindFile(strPath);
+			if (bExist)
+			{
+				bDualTest = TRUE;
+				strAddedDefectFP = strPath;
+			}
+			else
+			{
+				strPath.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"), pDoc->WorkingInfo.System.sPathOldFile,
+					m_sModel, m_sLot, m_sLayerUp);
+				bExist = cFile.FindFile(strPath);
+				if (bExist)
+				{
+					bDualTest = FALSE;
+					strAddedDefectFP = strPath;
+				}
+	else
+					return FALSE; // pcr파일이 존재하지 않음.
+			}
+		}
+	}
+	
 
 	if(!findfile.FindFile(strAddedDefectFP)) // Can not find file.
 	{
@@ -1856,7 +1897,9 @@ void CDlgMenu05::SelchangeComboLayer(int nIndex)
 {
 	// TODO: Add your control notification handler code here
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-	//int nIndex = m_nCurSelLayerIdx = ((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->GetCurSel();
+
+	CFileFind findfile;
+		
 	m_nCurSelLayerIdx = nIndex;
 	((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->SetCurSel(nIndex);
 
@@ -1920,10 +1963,27 @@ void CDlgMenu05::SelchangeComboLayer(int nIndex)
 		sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
 			m_sModel, m_sLot, m_sLayerUp);
 
+		m_sRmapPath.Format(_T("%s\\OFFLINE\\ReelMapDataAll.txt"), sPath);
+		if (!findfile.FindFile(m_sRmapPath))
+		{
+			m_sRmapPath.Format(_T("%s\\OFFLINE\\ReelMapDataUp.txt"), sPath);
+			if (!findfile.FindFile(m_sRmapPath))
+			{
 		if (bDualTest)
 			m_sRmapPath.Format(_T("%s\\ReelMapDataAll.txt"), sPath);
 		else
 			m_sRmapPath.Format(_T("%s\\ReelMapDataUp.txt"), sPath);
+			}
+			else
+			{
+				bDualTest = FALSE;
+			}
+		}
+		else
+		{
+			bDualTest = TRUE;
+		}
+		
 
 		//char szData[MAX_PATH];
 		TCHAR szData[MAX_PATH];
@@ -2027,7 +2087,7 @@ void CDlgMenu05::OnSelchangeComboLayer()
 		{
 			m_sLayerDn = m_sLayer;
 			sRemain = m_sLayer;
-			nPos = m_sLayerUp.ReverseFind(_T('-'));
+			nPos = m_sLayerDn.ReverseFind(_T('-'));
 			if (nPos >= 0)
 			{
 				sRes = sRemain.Right(sRemain.GetLength() - nPos - 1);
@@ -2136,13 +2196,36 @@ void CDlgMenu05::OnBtnSave()
 		return;
 	
 	// File Save......
-	CString strDestPath;
+	CString strDestPath, strPath;
+
+	CFileFind findfile;
+
+	if (pDoc->m_pReelMapUp)
+	{
+		strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_ALLUP);
+		if (!findfile.FindFile(strPath))
+		{
+			strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
+			if (!findfile.FindFile(strPath))
+			{
+				strDestPath.Format(_T("%s%s\\%s\\%s.txt"), pDoc->WorkingInfo.System.sPathOldFile,
+					m_sModel, m_sLot, _T("Result"));
+			}
+			else
+			{
+				strDestPath.Format(_T("%s%s\\%s\\%s.txt"), pDoc->WorkingInfo.System.sPathOldFile,
+					m_sModel, m_sLot, _T("Result_VS"));
+			}
+		}
+		else
+		{
+			strDestPath.Format(_T("%s%s\\%s\\%s.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
+												   m_sModel, m_sLot, _T("Result_VS"));
+		}
+	}
+	else
 	strDestPath.Format(_T("%s%s\\%s\\%s.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
 												   m_sModel, m_sLot, _T("Result"));
-// 	strDestPath.Format(_T("%s%s\\%s\\%s.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
-// 												   m_sModel, m_sLot, m_sLot);
-// 	strDestPath.Format(_T("%s%s\\%s\\%s\\%s.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
-// 												   m_sModel, m_sLot, m_sLayer, m_sLot);
 
 	CFileFind cFile;
 	if(cFile.FindFile(strDestPath))
@@ -2296,19 +2379,36 @@ CString CDlgMenu05::TxtDataMDS()
 BOOL CDlgMenu05::ReloadReelmap()
 {
 	int nFirstShot, nLastShot;
-	CFileFind FF;
+	CFileFind findfile;
 	CString sPath, sRmapPath, sMsg;
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
 	sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile, 
-								 m_sModel, m_sLot, m_sLayer);
-	
-	if(bDualTest)
-		sRmapPath.Format(_T("%s\\ReelMapDataAll.txt"), sPath);
-	else
-		sRmapPath.Format(_T("%s\\ReelMapDataUp.txt"), sPath);
+								 m_sModel, m_sLot, m_sLayerUp);
 
-	BOOL bExist = FF.FindFile(sRmapPath);
+	m_sRmapPath.Format(_T("%s\\OFFLINE\\ReelMapDataAll.txt"), sPath);
+	if (!findfile.FindFile(m_sRmapPath))
+	{
+		m_sRmapPath.Format(_T("%s\\OFFLINE\\ReelMapDataUp.txt"), sPath);
+		if (!findfile.FindFile(m_sRmapPath))
+		{
+			if (bDualTest)
+				m_sRmapPath.Format(_T("%s\\ReelMapDataAll.txt"), sPath);
+			else
+				m_sRmapPath.Format(_T("%s\\ReelMapDataUp.txt"), sPath);
+		}
+	else
+		{
+			bDualTest = FALSE;
+		}
+	}
+	else
+	{
+		bDualTest = TRUE;
+	}
+
+	sRmapPath = m_sRmapPath;
+	BOOL bExist = findfile.FindFile(sRmapPath);
 
 	if(!bExist) // Can not find file.
 	{
@@ -2390,24 +2490,6 @@ BOOL CDlgMenu05::ReloadReelmap()
 	//char sep[] = {",/;\r\n\t"};
 	TCHAR sep[] = { _T(",/;\r\n\t") };
 	int nTotPcs, nGoodPcs, nBadPcs, nDef[MAX_DEF];	// [DefCode] : Total Num.
-
-// 	char szData[MAX_PATH];
-// 	int ***pPnlBuf;	// DefCode 3D Array : [nSerial][nRow][nCol]
-// 	int nPnl, nRow, nPnlBuf;
-// 	int TotPnl = 5000;
-// 	int nDumyPnl = 20;
-// 	int nNdX = 100;
-// 	int nNdY = 100;
-
-// 	nPnlBuf = TotPnl+nDumyPnl;
-// 
-// 	pPnlBuf = new int**[nPnlBuf];
-// 	for(nPnl=0; nPnl<nPnlBuf; nPnl++)
-// 	{
-// 		pPnlBuf[nPnl] = new int*[nNdY];
-// 		for(nRow=0; nRow<nNdY; nRow++)
-// 			pPnlBuf[nPnl][nRow] = new int[nNdX];
-// 	}
 
 	nTotPcs = 0;
 	nGoodPcs = 0;
@@ -2493,14 +2575,6 @@ BOOL CDlgMenu05::ReloadReelmap()
 	}
 
 	dlg.DestroyWindow();
-
-// 	for(nPnl=0; nPnl<nPnlBuf; nPnl++)
-// 	{
-// 		for(nRow=0; nRow<nNdY; nRow++)
-// 			delete[] pPnlBuf[nPnl][nRow];
-// 		delete[] m_pPnlBuf[nPnl];
-// 	}
-// 	delete[] pPnlBuf;
 
 
 	// 수율 데이타를 갱신함.
@@ -2708,46 +2782,99 @@ void CDlgMenu05::MakeIts()
 	if (!pDoc->DirectoryExists(sItsPath))
 		CreateDirectory(sItsPath, NULL);
 
+	CFileFind cFile;
 	CString sPathPcr;
-	sPathPcr.Format(_T("%s%s\\%s\\%s\\*.pcr"), 
+
+	sPathPcr.Format(_T("%s%s\\%s\\%s\\OFFLINE\\*.pcr"), 
 		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
 
-	CFileFind cFile;
 	BOOL bExist = cFile.FindFile(sPathPcr);
 	if (!bExist)
 	{
+		sPathPcr.Format(_T("%s%s\\%s\\%s\\*.pcr"),
+			pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+
+		bExist = cFile.FindFile(sPathPcr);
+		if (!bExist)
+		{
 		return; // pcr파일이 존재하지 않음.
 	}
-
-	CString sPathReelmapUp, sPathReelmapDn;
-	sPathReelmapUp.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"),
-		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
-	sPathReelmapDn.Format(_T("%s%s\\%s\\%s\\ReelMapDataDn.txt"),
-		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+	}
 
 	int nLayer = -1; // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
-	CFileFind cFile2;
-	bExist = cFile2.FindFile(sPathReelmapUp);
-	if (bExist)
+	if (m_sLayer == m_sLayerUp)
 	{
 		if (pDoc->GetTestMode() == MODE_INNER)
 			nLayer = RMAP_INNER_UP;
 		else
 			nLayer = RMAP_UP;
 	}
-	else
-	{
-		bExist = cFile2.FindFile(sPathReelmapDn);
-		if (bExist)
+	else if (m_sLayer == m_sLayerDn)
 		{
 			if (pDoc->GetTestMode() == MODE_INNER)
 				nLayer = RMAP_INNER_DN;
 			else
 				nLayer = RMAP_DN;
 		}
-		else
-			return; // Layer속성의 릴맵이 존재하지 않음.
-	}
+
+	//CString sPathReelmapUp=_T(""), sPathReelmapDn=_T("");
+	//CString strPath;
+
+	//if (pDoc->m_pReelMapUp)
+	//{
+	//	strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_ALLUP);
+	//	if (!cFile.FindFile(strPath))
+	//	{
+	//		strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
+	//		if (!cFile.FindFile(strPath))
+	//		{
+	//			sPathReelmapUp.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"),
+	//				pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+	//			sPathReelmapDn.Format(_T("%s%s\\%s\\%s\\ReelMapDataDn.txt"),
+	//				pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+	//		}
+	//		else
+	//		{
+	//			sPathReelmapUp = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
+	//		}
+	//	}
+	//	else
+	//	{
+	//		sPathReelmapUp = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
+	//		sPathReelmapDn = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_DN);
+	//	}
+	//}
+	//else
+	//{
+	//	sPathReelmapUp.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"),
+	//		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+	//	sPathReelmapDn.Format(_T("%s%s\\%s\\%s\\ReelMapDataDn.txt"),
+	//		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+	//}
+
+	//int nLayer = -1; // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
+	//CFileFind cFile2;
+	//bExist = cFile2.FindFile(sPathReelmapUp);
+	//if (bExist)
+	//{
+	//	if (pDoc->GetTestMode() == MODE_INNER)
+	//		nLayer = RMAP_INNER_UP;
+	//	else
+	//		nLayer = RMAP_UP;
+	//}
+	//else
+	//{
+	//	bExist = cFile2.FindFile(sPathReelmapDn);
+	//	if (bExist)
+	//	{
+	//		if (pDoc->GetTestMode() == MODE_INNER)
+	//			nLayer = RMAP_INNER_DN;
+	//		else
+	//			nLayer = RMAP_DN;
+	//	}
+	//	else
+	//		return; // Layer속성의 릴맵이 존재하지 않음.
+	//}
 
 
 	pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir, m_sModel, m_sLayer);
@@ -2971,6 +3098,7 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 				str.Format(_T("%s,%04d,%s,C,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
 						sStripC += str;
 					}
+				}
 					else
 					{
 						nTotVerifyed++;
@@ -2978,7 +3106,6 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 				}
 			}
 		}
-	}
 
 	// Strip D
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -2998,6 +3125,7 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 				str.Format(_T("%s,%04d,%s,D,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
 						sStripD += str;
 					}
+				}
 					else
 					{
 						nTotVerifyed++;
@@ -3005,7 +3133,6 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 				}
 			}
 		}
-	}
 	// Strip A
 	str.Format(_T("%d,%s,%04d\n"), nTotDefPcs - nTotVerifyed, sItsCode, nSerial);
 	sItsData = str;
@@ -3062,7 +3189,17 @@ void CDlgMenu05::MakeSapp3() // With ReelmapDataAll.txt파일에서 정보를 취합함.
 	//char FileName[MAX_PATH];
 	TCHAR FileName[MAX_PATH];
 	CString sPath;
+	TCHAR szData[MAX_PATH];
 
+	if (m_sProcessNum.IsEmpty())
+	{
+		// 공종코드
+		if (0 < ::GetPrivateProfileString(_T("Info"), _T("Process Code"), NULL, szData, sizeof(szData), m_sRmapPath))
+			m_sProcessNum = CString(szData);
+		else
+			m_sProcessNum = _T("");
+
+	}
 	sPath.Format(_T("%s%9s_%4s_%5s.txt"), pDoc->WorkingInfo.System.sPathSapp3, m_sLot, m_sProcessNum, pDoc->WorkingInfo.System.sMcName);
 	//strcpy(FileName, sPath);
 	_stprintf(FileName, _T("%s"), sPath);
@@ -3093,9 +3230,22 @@ CString CDlgMenu05::Sapp3Data()
 	CFileFind findfile;
 	double dEntireSpeed;
 
+	if (pDoc->m_pReelMapUp)
+	{
+		strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_ALLUP);
+		if (!findfile.FindFile(strPath))
+		{
+			strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
+			if (!findfile.FindFile(strPath))
+			{
+				strPath = m_sRmapPath;
+			}
+		}
+	}
+	else
+		strPath = m_sRmapPath;
 
 	// 공종코드를 AOI에서 받아옴.
-	strPath = m_sRmapPath;
 	if(findfile.FindFile(strPath)) //find file.
 	{
 		// 공종코드
@@ -4163,9 +4313,21 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	int nIdx;
 	nIdx = pDoc->GetPcrIdx0(nSerial);
 
-	CString sPath;
+	CString sPath, strPath;
+	CFileFind findfile;
+
+	sPath.Format(_T("%s%s\\%s\\%s\\OFFLINE\\%04d.pcr"),
+		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer, nSerial);
+
+	if (!findfile.FindFile(sPath))
+	{
 	sPath.Format(_T("%s%s\\%s\\%s\\%04d.pcr"),
 		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer, nSerial);
+		if (!findfile.FindFile(sPath))
+		{
+			return(2);
+		}
+	}
 
 	//strcpy(FileD, sPath);
 	//_tcscpy(FileD, sPath);
@@ -4275,65 +4437,6 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			pDoc->m_sItsCode = sItsCode;
 	}
 
-	//BOOL bUpdate = FALSE;
-
-	//if (pDoc->WorkingInfo.LastJob.sLotUp != strLot || pDoc->WorkingInfo.LastJob.sEngItsCode != sItsCode)
-	//{
-	//	bUpdate = TRUE;
-	//	pDoc->WorkingInfo.LastJob.sLotUp = strLot;
-	//	pDoc->m_sItsCode = pDoc->WorkingInfo.LastJob.sEngItsCode = sItsCode;
-	//}
-
-	//if (pDoc->WorkingInfo.LastJob.sModelUp != strModel || pDoc->WorkingInfo.LastJob.sLayerUp != strLayer)
-	//{
-	//	bUpdate = TRUE;
-	//	pDoc->WorkingInfo.LastJob.sModelUp = strModel;
-	//	pDoc->WorkingInfo.LastJob.sLayerUp = strLayer;
-
-	//	//if (!WorkingInfo.LastJob.bDualTest)
-	//	{
-	//		pView->ResetMkInfo(0); // CAD 데이터 리로딩   0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//	}
-	//}
-
-	//if (bUpdate)
-	//{
-	//	WriteChangedModel();
-
-	//	if (pView->m_pDlgMenu01)
-	//		pView->m_pDlgMenu01->UpdateData();
-
-	//	if (GetTestMode() == MODE_OUTER)
-	//	{
-	//		BOOL bDualTestInner;
-	//		CString sLot, sLayerUp, sLayerDn, str;
-	//		if (!pDoc->GetItsSerialInfo(nSerial, bDualTestInner, sLot, sLayerUp, sLayerDn))
-	//		{
-	//			str.Format(_T("It is trouble to read GetItsSerialInfo()."));
-	//			pView->MsgBox(str);
-	//			return FALSE; // TRUE: CHANGED, FALSE: NO CHANGED 
-	//		}
-
-	//		if (m_pReelMapInnerUp)
-	//			m_pReelMapInnerUp->ResetReelmapPath();
-
-	//		if (m_pReelMapIts)
-	//			m_pReelMapIts->ResetReelmapPath();
-
-	//		if (bDualTestInner)
-	//		{
-	//			if (m_pReelMapInnerDn)
-	//				m_pReelMapInnerDn->ResetReelmapPath();
-	//			if (m_pReelMapInnerAllUp)
-	//				m_pReelMapInnerAllUp->ResetReelmapPath();
-	//			if (m_pReelMapInnerAllDn)
-	//				m_pReelMapInnerAllDn->ResetReelmapPath();
-	//		}
-	//	}
-
-	//	CString sPath = m_pReelMap->GetIpPath();
-	//	SetMkMenu01(_T("DispDefImg"), _T("ReelmapPath"), sPath);
-	//}
 
 	int nTotDef = _tstoi(strTotalBadPieceNum);
 
@@ -4477,9 +4580,21 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	int nIdx;
 	nIdx = pDoc->GetPcrIdx1(nSerial);
 
-	CString sPath;
+	CString sPath, strPath;
+	CFileFind findfile;
+
+	sPath.Format(_T("%s%s\\%s\\%s\\OFFLINE\\%04d.pcr"),
+		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer, nSerial);
+
+	if (!findfile.FindFile(sPath))
+	{
 	sPath.Format(_T("%s%s\\%s\\%s\\%04d.pcr"),
 		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer, nSerial);
+		if (!findfile.FindFile(strPath))
+		{
+			return(2);
+		}
+	}
 
 	//strcpy(FileD, sPath);
 	//_tcscpy(FileD, sPath);
@@ -4592,62 +4707,6 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 		if (pDoc->WorkingInfo.System.bUseITS)
 			pDoc->m_sItsCode = sItsCode;
 	}
-
-	//BOOL bUpdate = FALSE;
-
-	//if (WorkingInfo.LastJob.sLotDn != strLot || WorkingInfo.LastJob.sEngItsCode != sItsCode)
-	//{
-	//	bUpdate = TRUE;
-	//	WorkingInfo.LastJob.sLotDn = strLot;
-	//	m_sItsCode = WorkingInfo.LastJob.sEngItsCode = sItsCode;
-	//}
-
-	//if (WorkingInfo.LastJob.sModelDn != strModel || WorkingInfo.LastJob.sLayerDn != strLayer)
-	//{
-	//	bUpdate = TRUE;
-	//	WorkingInfo.LastJob.sModelDn = strModel;
-	//	WorkingInfo.LastJob.sLayerDn = strLayer;
-
-	//	//if (WorkingInfo.LastJob.bDualTest)
-	//	//{
-	//	//	pView->ResetMkInfo(0); // CAD 데이터 리로딩 --->  0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//	//}
-	//}
-
-	//if (bUpdate)
-	//{
-	//	WriteChangedModel();
-
-	//	if (pView->m_pDlgMenu01)
-	//		pView->m_pDlgMenu01->UpdateData();
-	//}
-
-	//if (!strModel.IsEmpty() && !strLot.IsEmpty() && !strLayer.IsEmpty())
-	//{
-	//	if (WorkingInfo.LastJob.sModelDn.IsEmpty() || WorkingInfo.LastJob.sLotDn.IsEmpty() || WorkingInfo.LastJob.sLayerDn.IsEmpty())
-	//	{
-	//		WorkingInfo.LastJob.sModelDn = strModel;
-	//		WorkingInfo.LastJob.sLotDn = strLot;
-	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
-	//		if (WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//	else if (WorkingInfo.LastJob.sModelDn != strModel || WorkingInfo.LastJob.sLayerDn != strLayer /*|| WorkingInfo.LastJob.sLotDn != strLot*/)
-	//	{
-	//		WorkingInfo.LastJob.sModelDn = strModel;
-	//		WorkingInfo.LastJob.sLotDn = strLot;
-	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
-	//		if (WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//}
-
 
 	int nTotDef = _tstoi(strTotalBadPieceNum);
 
