@@ -1110,14 +1110,6 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathEngSignalInfo = CString(_T(""));
 	}
 
-	if (0 < ::GetPrivateProfileString(_T("System"), _T("PunchingPath"), NULL, szData, sizeof(szData), sPath))
-		WorkingInfo.System.sIpPathMk = CString(szData);
-	else
-	{
-		AfxMessageBox(_T("PunchingPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.System.sIpPathMk = CString(_T(""));
-	}
-
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("PunchingCurrentInfoPath"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.System.sPathMkCurrInfo = CString(szData);
 	else
@@ -1408,23 +1400,6 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	{
 		AfxMessageBox(_T("ItsFileDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathIts = CString(_T(""));
-	}
-
-	if (0 < ::GetPrivateProfileString(_T("System"), _T("UseItsJobFilePath"), NULL, szData, sizeof(szData), sPath))
-		WorkingInfo.System.bUseItsJob = _ttoi(szData) > 0 ? TRUE : FALSE;
-	else
-	{
-		//AfxMessageBox(_T("UseItsJobFilePath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.System.bUseItsJob = FALSE;
-	}
-
-	if (0 < ::GetPrivateProfileString(_T("System"), _T("ItsJobFilePath"), NULL, szData, sizeof(szData), sPath))
-		WorkingInfo.System.sPathItsJob = CString(szData);
-	else
-	{
-		if(WorkingInfo.System.bUseItsJob)
-			AfxMessageBox(_T("ItsJobFilePath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.System.sPathItsJob = CString(_T(""));
 	}
 
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("VrsOldFileDirIpPath"), NULL, szData, sizeof(szData), sPath))
@@ -5399,10 +5374,10 @@ int CGvisR2R_PunchDoc::LoadPCRAllUp(int nSerial, BOOL bFromShare)	// return : 2(
 	{
 		if (m_pPcr[1][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcr[1][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// Up+Dn				// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxDn = i; // Dn					// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcr[1][nIdx]->m_pDefPcs[i];			// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// Up+Dn			// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxDn = i; // Dn				// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[1]++;
@@ -5412,10 +5387,10 @@ int CGvisR2R_PunchDoc::LoadPCRAllUp(int nSerial, BOOL bFromShare)	// return : 2(
 	{
 		if (m_pPcr[0][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcr[0][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// Up+Dn				// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxUp = i;	// Up					// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcr[0][nIdx]->m_pDefPcs[i];			// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// Up+Dn			// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxUp = i;	// Up				// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[0]++;
@@ -5591,10 +5566,10 @@ int CGvisR2R_PunchDoc::LoadPCRAllDn(int nSerial, BOOL bFromShare)	// return : 2(
 	{
 		if (m_pPcr[0][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcr[0][nIdx]->m_pDefPcs[i];
-		pPcrMgr[nPcsId].nIdx = i;
-		pPcrMgr[nPcsId].nIdxUp = i;	// Up
-	}
+			nPcsId = m_pPcr[0][nIdx]->m_pDefPcs[i];
+			pPcrMgr[nPcsId].nIdx = i;
+			pPcrMgr[nPcsId].nIdxUp = i;	// Up
+		}
 		else
 		{
 			nTotVerifyed[0]++;
@@ -5604,10 +5579,10 @@ int CGvisR2R_PunchDoc::LoadPCRAllDn(int nSerial, BOOL bFromShare)	// return : 2(
 	{
 		if (m_pPcr[1][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcr[1][nIdx]->m_pDefPcs[i];
-		pPcrMgr[nPcsId].nIdx = i;
-		pPcrMgr[nPcsId].nIdxDn = i; // Dn
-	}
+			nPcsId = m_pPcr[1][nIdx]->m_pDefPcs[i];
+			pPcrMgr[nPcsId].nIdx = i;
+			pPcrMgr[nPcsId].nIdxDn = i; // Dn
+		}
 		else
 		{
 			nTotVerifyed[1]++;
@@ -6710,9 +6685,6 @@ BOOL CGvisR2R_PunchDoc::CopyDefImgUp(int nSerial, CString sNewLot)
 					continue;
 				}
 			}
-
-
-
 		}
 	}
 
@@ -7038,8 +7010,6 @@ BOOL CGvisR2R_PunchDoc::CopyDefImgDn(int nSerial, CString sNewLot)
 					continue;
 				}
 			}
-
-
 		}
 	}
 
@@ -9996,8 +9966,6 @@ void CGvisR2R_PunchDoc::SetTestMode(int nMode)
 	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), sPath);
 	::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 
-	UpdateItsJobFile();
-
 #ifdef USE_MPE	
 	if (pView && pView->m_pMpe)
 	{
@@ -10128,9 +10096,14 @@ BOOL CGvisR2R_PunchDoc::GetCurrentInfoEng()
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	CString sPath = WorkingInfo.System.sPathEngCurrInfo;
 	TCHAR szData[512];
+	BOOL bRtn = FALSE;
+
+#ifdef TEST_MODE
+	return bRtn;
+#endif
 
 	if (sPath.IsEmpty() || (GetTestMode() != MODE_INNER && GetTestMode() != MODE_OUTER))
-		return FALSE;
+		return bRtn;
 
 	if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Dual Test"), NULL, szData, sizeof(szData), sPath))
 		m_bEngDualTest = _ttoi(szData) > 0 ? TRUE : FALSE;
@@ -10166,6 +10139,9 @@ BOOL CGvisR2R_PunchDoc::GetCurrentInfoEng()
 		//WorkingInfo.LastJob.sLayerDn = CString(szData);
 	}
 
+	if (m_sItsCode.IsEmpty() || m_sEngLotNum.IsEmpty() || m_sEngModel.IsEmpty() || m_sEngLayerUp.IsEmpty())
+		return bRtn;
+
 	return TRUE;
 }
 
@@ -10173,6 +10149,9 @@ int CGvisR2R_PunchDoc::GetCurrentInfoEngShotNum()
 {
 	CString sPath = WorkingInfo.System.sPathEngCurrInfo;
 	TCHAR szData[512];
+#ifdef TEST_MODE
+	return 0;
+#endif
 
 	if (sPath.IsEmpty())
 		return 0;
@@ -10822,7 +10801,7 @@ void CGvisR2R_PunchDoc::SetMkInfo(CString sMenu, CString sItem, CString sData)
 
 int CGvisR2R_PunchDoc::MirrorLR(int nPcsId) // 좌우 미러링
 {
-#ifdef TEST_MODE
+#ifndef USE_CAM_MASTER
 	return 0;
 #endif
 
@@ -10848,7 +10827,7 @@ int CGvisR2R_PunchDoc::MirrorLR(int nPcsId) // 좌우 미러링
 
 int CGvisR2R_PunchDoc::MirrorUD(int nPcsId) // 상하 미러링
 {
-#ifdef TEST_MODE
+#ifndef USE_CAM_MASTER
 	return 0;
 #endif
 
@@ -10874,7 +10853,7 @@ int CGvisR2R_PunchDoc::MirrorUD(int nPcsId) // 상하 미러링
 
 int CGvisR2R_PunchDoc::Rotate180(int nPcsId) // 180도 회전
 {
-#ifdef TEST_MODE
+#ifndef USE_CAM_MASTER
 	return 0;
 #endif
 
@@ -11161,15 +11140,7 @@ BOOL CGvisR2R_PunchDoc::GetItsSerialInfo(int nItsSerial, BOOL &bDualTest, CStrin
 	TCHAR szData[512];
 	CString str, sName, sPath, Path[3];
 
-	if (GetTestMode() == MODE_OUTER && WorkingInfo.System.bUseItsJob)
-	{
-		Path[0] = GetPathInnerItsFile();
-	}
-	else
-	{
-		Path[0] = WorkingInfo.System.sPathItsFile;
-	}
-
+	Path[0] = WorkingInfo.System.sPathItsFile;
 	Path[1] = WorkingInfo.LastJob.sModelUp;
 	//Path[1] = m_sEngModel;
 	Path[2] = m_sItsCode;
@@ -11308,14 +11279,7 @@ BOOL CGvisR2R_PunchDoc::GetInnerFolderPath(int nItsSerial, CString  &sUp, CStrin
 	CString  Path[5];
 	CString sPath = _T("");
 
-	if (GetTestMode() == MODE_OUTER && WorkingInfo.System.bUseItsJob)
-	{
-		Path[0] = GetPathInnerPcrFile();
-	}
-	else
-	{
-		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-	}
+	Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
 	Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
 	Path[2] = sLot;
 	Path[3] = sLayerUp;
@@ -11338,7 +11302,7 @@ BOOL CGvisR2R_PunchDoc::GetInnerFolderPath(int nItsSerial, CString  &sUp, CStrin
 		if (nOffline & 0x02)
 			sDn.Format(_T("%s%s\\%s\\%s\\OFFLINE\\"), Path[0], Path[1], Path[2], Path[4]); // ITS Inner Dn Folder Path
 		else
-		sDn.Format(_T("%s%s\\%s\\%s\\"), Path[0], Path[1], Path[2], Path[4]); // ITS Inner Dn Folder Path
+			sDn.Format(_T("%s%s\\%s\\%s\\"), Path[0], Path[1], Path[2], Path[4]); // ITS Inner Dn Folder Path
 	}
 	else
 		sDn = _T("");	
@@ -11416,7 +11380,7 @@ CString CGvisR2R_PunchDoc::GetItsReelmapPath()
 
 int CGvisR2R_PunchDoc::LoadPCRAllUpInner(int nSerial, BOOL bFromShare)	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
 {
-#ifdef TEST_MODE
+#ifndef USE_CAM_MASTER
 	return 0;
 #endif
 	BOOL bDualTest;
@@ -11505,10 +11469,10 @@ int CGvisR2R_PunchDoc::LoadPCRAllUpInner(int nSerial, BOOL bFromShare)	// return
 	{
 		if (m_pPcrInner[1][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcrInner[1][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// Up+Dn				// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxDn = i; // Dn					// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcrInner[1][nIdx]->m_pDefPcs[i];		// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// Up+Dn				// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxDn = i; // Dn					// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[1]++;
@@ -11518,10 +11482,10 @@ int CGvisR2R_PunchDoc::LoadPCRAllUpInner(int nSerial, BOOL bFromShare)	// return
 	{
 		if (m_pPcrInner[0][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcrInner[0][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// Up+Dn				// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxUp = i;	// Up					// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcrInner[0][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// Up+Dn				// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxUp = i;	// Up					// 상하면 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[0]++;
@@ -11816,7 +11780,7 @@ int CGvisR2R_PunchDoc::LoadPCRUpInner(int nSerial, BOOL bFromShare)	// return : 
 		//AfxMessageBox(strFileData);
 		return(2);
 	}
-#ifdef TEST_MODE
+#ifndef USE_CAM_MASTER
 	sPath = PATH_PCR;	// for Test
 #else
 	//if (bFromShare)
@@ -12094,7 +12058,7 @@ int CGvisR2R_PunchDoc::LoadPCRDnInner(int nSerial, BOOL bFromShare)	// return : 
 		return(2);
 	}
 
-#ifdef TEST_MODE
+#ifndef USE_CAM_MASTER
 	sPath = PATH_PCR;	// for Test
 #else
 	//if (bFromShare)
@@ -12327,7 +12291,7 @@ int CGvisR2R_PunchDoc::GetLastItsSerial()
 
 int CGvisR2R_PunchDoc::LoadPCRIts(int nSerial, BOOL bFromShare)	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
 {
-#ifdef TEST_MODE
+#ifndef USE_CAM_MASTER
 	return 0;
 #endif
 	if (nSerial <= 0)
@@ -12422,10 +12386,10 @@ void CGvisR2R_PunchDoc::LoadPCRIts11(int nSerial) // 11 -> 외층 : 양면, 내층 : �
 	{
 		if (m_pPcrInner[2][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcrInner[2][nIdx]->m_pDefPcs[i];		// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxDn = i; // 내층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcrInner[2][nIdx]->m_pDefPcs[i];		// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxDn = i; // 내층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[1]++;
@@ -12435,10 +12399,10 @@ void CGvisR2R_PunchDoc::LoadPCRIts11(int nSerial) // 11 -> 외층 : 양면, 내층 : �
 	{
 		if (m_pPcr[2][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcr[2][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxUp = i;	// 외층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcr[2][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxUp = i;	// 외층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[0]++;
@@ -12573,10 +12537,10 @@ void CGvisR2R_PunchDoc::LoadPCRIts10(int nSerial) // 10 -> 외층 : 양면, 내층 : �
 	{
 		if (m_pPcrInner[0][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcrInner[0][nIdx]->m_pDefPcs[i];		// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxDn = i; // 내층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcrInner[0][nIdx]->m_pDefPcs[i];		// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxDn = i; // 내층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[1]++;
@@ -12586,10 +12550,10 @@ void CGvisR2R_PunchDoc::LoadPCRIts10(int nSerial) // 10 -> 외층 : 양면, 내층 : �
 	{
 		if (m_pPcr[2][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcr[2][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxUp = i;	// 외층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcr[2][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxUp = i;	// 외층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[0]++;
@@ -12724,10 +12688,10 @@ void CGvisR2R_PunchDoc::LoadPCRIts01(int nSerial) // 11 -> 외층 : 단면, 내층 : �
 	{
 		if (m_pPcrInner[2][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcrInner[2][nIdx]->m_pDefPcs[i];		// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxDn = i; // 내층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcrInner[2][nIdx]->m_pDefPcs[i];		// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxDn = i; // 내층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[1]++;
@@ -12737,10 +12701,10 @@ void CGvisR2R_PunchDoc::LoadPCRIts01(int nSerial) // 11 -> 외층 : 단면, 내층 : �
 	{
 		if (m_pPcr[0][nIdx]->m_pMk[i] != -2)				// -2 (NoMarking)
 		{
-		nPcsId = m_pPcr[0][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
-		pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
-		pPcrMgr[nPcsId].nIdxUp = i;	// 외층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
-	}
+			nPcsId = m_pPcr[0][nIdx]->m_pDefPcs[i];				// nPcsId : CamMaster Pcs Index
+			pPcrMgr[nPcsId].nIdx = i;	// 외층+내층			// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdx (0~)는 불량표시순서임.
+			pPcrMgr[nPcsId].nIdxUp = i;	// 외층					// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서임.
+		}
 		else
 		{
 			nTotVerifyed[0]++;
@@ -13431,152 +13395,6 @@ void CGvisR2R_PunchDoc::DelItsAll(CString strPath)
 	{
 		m_pFile->DelItsAll(strPath);
 	}
-}
-
-void CGvisR2R_PunchDoc::UpdateItsJobFile()
-{
-	if (!WorkingInfo.System.bUseItsJob)
-		return;
-
-	CString sPath = _T(""), sMsg = _T("");
-	CString sBase = _T(""), sFolder = _T(""), sFile = _T("");
-	CString sRemainPath = WorkingInfo.System.sPathItsJob;
-	CString sIpThisMachine = WorkingInfo.System.sIpPathMk;
-	int nPos = -1;
-
-	nPos = sIpThisMachine.ReverseFind('\\');
-	if (nPos == -1)
-	{
-		sMsg.Format(_T("sIpThisMachine이 존재하지 않습니다.\r\n%s"), sIpThisMachine);
-		AfxMessageBox(sMsg);
-		return;
-	}
-
-	nPos = sRemainPath.ReverseFind('\\');
-	if (nPos != -1)
-	{
-		sFile = sRemainPath.Right(sRemainPath.GetLength() - nPos - 1);
-		sRemainPath.Delete(nPos, sPath.GetLength() - nPos);
-		nPos = sRemainPath.ReverseFind('\\');
-		if (nPos != -1)
-		{
-			sFolder = sRemainPath.Right(sRemainPath.GetLength() - nPos - 1);
-			sRemainPath.Delete(nPos, sPath.GetLength() - nPos);
-			nPos = sRemainPath.ReverseFind('\\');
-			if (nPos != -1)
-			{
-				sBase = sRemainPath;
-			}
-			else
-			{
-				sMsg.Format(_T("ItsJobBase가 존재하지 않습니다.\r\n%s"), sRemainPath);
-				AfxMessageBox(sMsg);
-				return;
-			}
-		}
-		else
-		{
-			sMsg.Format(_T("ItsJobFolder가 존재하지 않습니다.\r\n%s"), sRemainPath);
-			AfxMessageBox(sMsg);
-			return;
-		}
-	}
-	else
-	{
-		sMsg.Format(_T("ItsJobFile이 존재하지 않습니다.\r\n%s"), sRemainPath);
-		AfxMessageBox(sMsg);
-		return;
-	}
-
-	sPath.Format(_T("%s\\%s"), sBase, sFolder);
-	if (!DirectoryExists(sPath))
-		CreateDirectory(sPath, NULL);
-
-	sPath.Format(_T("%s\\%s\\%s"), sBase, sFolder, sFile);
-	if (GetTestMode() == MODE_INNER)
-	{
-		::WritePrivateProfileString(pDoc->m_sItsCode, _T("Inner Path"), sIpThisMachine, sPath);
-	}
-	else if (pDoc->GetTestMode() == MODE_OUTER)
-	{
-		::WritePrivateProfileString(pDoc->m_sItsCode, _T("Outer Path"), sIpThisMachine, sPath);
-	}
-}
-
-CString CGvisR2R_PunchDoc::GetPathInnerItsFile()
-{
-	CString sPath, sBase, sWFolderW, sMsg;
-	CString sRemainPath = WorkingInfo.System.sPathItsFile;
-	CString sInfoFilePath = WorkingInfo.System.sPathItsJob;
-
-	if (!WorkingInfo.System.bUseItsJob)
-		return sRemainPath;
-
-	int nPos = -1;
-
-	TCHAR szData[MAX_PATH];
-
-	if (0 < ::GetPrivateProfileString(pDoc->m_sItsCode, _T("Inner Path"), NULL, szData, sizeof(szData), sInfoFilePath))
-		sBase = CString(szData);
-	else
-	{
-		sMsg.Format(_T("Inner Path가 존재하지 않습니다.\r\n%s"), sInfoFilePath);
-		AfxMessageBox(sMsg);
-		return sRemainPath;
-	}
-
-	nPos = sRemainPath.ReverseFind(':');
-	if (nPos != -1)
-	{
-		sWFolderW = sRemainPath.Right(sRemainPath.GetLength() - nPos - 1);
-		sPath.Format(_T("%s%s"), sBase, sWFolderW);
-	}
-	else
-	{
-		sMsg.Format(_T("sPathItsFile이 존재하지 않습니다.\r\n%s"), sRemainPath);
-		AfxMessageBox(sMsg);
-		return sRemainPath;
-	}
-
-	return sPath;
-}
-
-CString CGvisR2R_PunchDoc::GetPathInnerPcrFile()
-{
-	CString sPath, sBase, sWFolderW, sMsg;
-	CString sRemainPath = WorkingInfo.System.sPathOldFile;
-	CString sInfoFilePath = WorkingInfo.System.sPathItsJob;
-
-	if (!WorkingInfo.System.bUseItsJob)
-		return sRemainPath;
-
-	int nPos = -1;
-
-	TCHAR szData[MAX_PATH];
-
-	if (0 < ::GetPrivateProfileString(pDoc->m_sItsCode, _T("Inner Path"), NULL, szData, sizeof(szData), sInfoFilePath))
-		sBase = CString(szData);
-	else
-	{
-		sMsg.Format(_T("Inner Path가 존재하지 않습니다.\r\n%s"), sInfoFilePath);
-		AfxMessageBox(sMsg);
-		return sRemainPath;
-	}
-
-	nPos = sRemainPath.ReverseFind(':');
-	if (nPos != -1)
-	{
-		sWFolderW = sRemainPath.Right(sRemainPath.GetLength() - nPos - 1);
-		sPath.Format(_T("%s%s"), sBase, sWFolderW);
-	}
-	else
-	{
-		sMsg.Format(_T("sPathOldFile이 존재하지 않습니다.\r\n%s"), sRemainPath);
-		AfxMessageBox(sMsg);
-		return sRemainPath;
-	}
-
-	return sPath;
 }
 
 

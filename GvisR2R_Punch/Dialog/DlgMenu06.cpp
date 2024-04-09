@@ -1902,7 +1902,7 @@ void CDlgMenu06::ShowDefInfoUp(int nIdx) // nIdx : 0 ~ 11 (12ea)
 	if (MODE_OUTER != pDoc->GetTestMode())
 	{
 		if (pDoc->m_pPcrInner[0][nPcrIdx]->m_pMk[m_nIdxDef[0]] == -2) // -2 (NoMarking)
-		return;
+			return;
 	}
 	else
 	{
@@ -1967,7 +1967,7 @@ void CDlgMenu06::ShowDefInfoDn(int nIdx) // nIdx : 0 ~ 11 (12ea)
 	else
 	{
 		if (pDoc->m_pPcrInner[1][nPcrIdx]->m_pMk[m_nIdxDef[1]] == -2) // -2 (NoMarking)
-		return;
+			return;
 	}
 	int nPcsIdx = pDoc->m_pPcrInner[1][nPcrIdx]->m_pDefPcs[m_nIdxDef[1]]; //m_pImg[m_nIdxDef];
 	nDefCode = pDoc->m_pPcrInner[1][nPcrIdx]->m_pDefType[m_nIdxDef[1]];

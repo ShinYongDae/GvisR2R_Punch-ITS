@@ -2801,21 +2801,22 @@ void CDlgMenu05::MakeIts()
 	}
 	}
 
-	int nLayer = -1; // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
-	if (m_sLayer == m_sLayerUp)
-	{
-		if (pDoc->GetTestMode() == MODE_INNER)
-			nLayer = RMAP_INNER_UP;
-		else
-			nLayer = RMAP_UP;
-	}
-	else if (m_sLayer == m_sLayerDn)
-		{
-			if (pDoc->GetTestMode() == MODE_INNER)
-				nLayer = RMAP_INNER_DN;
-			else
-				nLayer = RMAP_DN;
-		}
+	int nLayer = GetLayer(m_sLayer);
+	//int nLayer = -1; // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
+	//if (m_sLayer == m_sLayerUp)
+	//{
+	//	if (pDoc->GetTestMode() == MODE_INNER)
+	//		nLayer = RMAP_INNER_UP;
+	//	else
+	//		nLayer = RMAP_UP;
+	//}
+	//else if (m_sLayer == m_sLayerDn)
+	//	{
+	//		if (pDoc->GetTestMode() == MODE_INNER)
+	//			nLayer = RMAP_INNER_DN;
+	//		else
+	//			nLayer = RMAP_DN;
+	//	}
 
 	//CString sPathReelmapUp=_T(""), sPathReelmapDn=_T("");
 	//CString strPath;
@@ -3037,11 +3038,11 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 			{
 				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
 				{
-			nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
-			if (nDefCode > 0)
-			{
+					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					if (nDefCode > 0)
+					{
 						nTotStrip[0]++;
-				str.Format(_T("%s,%04d,%s,A,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
+						str.Format(_T("%s,%04d,%s,A,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
 						sStripA += str;
 					}
 				}
@@ -3064,11 +3065,11 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 			{
 				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
 				{
-			nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
-			if (nDefCode > 0)
-			{
+					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					if (nDefCode > 0)
+					{
 						nTotStrip[1]++;
-				str.Format(_T("%s,%04d,%s,B,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
+						str.Format(_T("%s,%04d,%s,B,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
 						sStripB += str;
 					}
 				}
@@ -3091,21 +3092,21 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 			{
 				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
 				{
-			nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
-			if (nDefCode > 0)
-			{
+					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					if (nDefCode > 0)
+					{
 						nTotStrip[2]++;
-				str.Format(_T("%s,%04d,%s,C,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
+						str.Format(_T("%s,%04d,%s,C,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
 						sStripC += str;
 					}
 				}
-					else
-					{
-						nTotVerifyed++;
-					}
+				else
+				{
+					nTotVerifyed++;
 				}
 			}
 		}
+	}
 
 	// Strip D
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -3118,11 +3119,11 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 			{
 				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
 				{
-			nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
-			if (nDefCode > 0)
-			{
+					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					if (nDefCode > 0)
+					{
 						nTotStrip[3]++;
-				str.Format(_T("%s,%04d,%s,D,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
+						str.Format(_T("%s,%04d,%s,D,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
 						sStripD += str;
 					}
 				}
@@ -4485,7 +4486,7 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 
 			pDoc->m_pPcr[0][nIdx]->m_pLayer[i] = 0; // Up
 
-											  // BadPointPosX
+			// BadPointPosX
 			nTemp = strFileData.Find(',', 0);
 			strBadPointPosX = strFileData.Left(nTemp);
 			strFileData.Delete(0, nTemp + 1);
@@ -4565,7 +4566,7 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	{
 		strFileData.Format(_T("PCR파일이 설정되지 않았습니다."));
 		pView->MsgBox(strFileData);
-		// 		AfxMessageBox(strFileData);
+		//AfxMessageBox(strFileData);
 		return(2);
 	}
 
@@ -4573,7 +4574,7 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	{
 		strFileData.Format(_T("PCR[1]관련 메모리가 할당되지 않았습니다."));
 		pView->MsgBox(strFileData);
-		// 		AfxMessageBox(strFileData);
+		//AfxMessageBox(strFileData);
 		return(2);
 	}
 
@@ -4588,9 +4589,9 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 
 	if (!findfile.FindFile(sPath))
 	{
-	sPath.Format(_T("%s%s\\%s\\%s\\%04d.pcr"),
+		sPath.Format(_T("%s%s\\%s\\%s\\%04d.pcr"),
 		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer, nSerial);
-		if (!findfile.FindFile(strPath))
+		if (!findfile.FindFile(sPath))
 		{
 			return(2);
 		}
@@ -4886,7 +4887,9 @@ void CDlgMenu05::OnStnClickedStcIts()
 		if (IDYES == pView->MsgBox(sMsg, 0, MB_YESNO))
 		{
 			pDoc->m_sItsCode = sData;
+#ifndef TEST_MODE
 			::WritePrivateProfileString(_T("Infomation"), _T("Its Code"), pDoc->m_sItsCode, sPath);
+#endif
 		}
 		else
 			myStcIts.SetText(pDoc->m_sItsCode);
@@ -4900,6 +4903,7 @@ void CDlgMenu05::DispItsCode()
 
 CString CDlgMenu05::GetItsCode()
 {
+#ifndef TEST_MODE
 	CString str;
 	//char szData[MAX_PATH];
 	TCHAR szData[MAX_PATH];
@@ -4910,4 +4914,64 @@ CString CDlgMenu05::GetItsCode()
 		str = _T("");
 
 	return str;
+#else
+	return (_T(""));
+#endif
+}
+
+int CDlgMenu05::GetLayer(CString strLayer) // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
+{
+	CString sRes, sLayer, sRemain;
+	int nPos;
+
+	if (strLayer.Find(_T("TOP")) >= 0)
+	{
+		sRemain = strLayer;
+		nPos = sRemain.ReverseFind(_T('-'));
+		if (nPos >= 0)
+		{
+			sRes = sRemain.Right(sRemain.GetLength() - nPos - 1);
+			sRemain.Delete(nPos, sRemain.GetLength() - nPos);
+
+			nPos = sRemain.ReverseFind(_T('-'));
+			if (nPos >= 0)
+			{
+				sLayer = sRemain.Right(sRemain.GetLength() - nPos - 1);
+				sRemain.Delete(nPos, sRemain.GetLength() - nPos);
+			}
+
+			if (sLayer == _T("1"))
+				return RMAP_INNER_UP;
+			else if(sLayer == _T("3"))
+				return RMAP_UP;
+			else
+				return RMAP_UP;
+		}
+	}
+	else if (strLayer.Find(_T("BOTTOM")) >= 0)
+	{
+		sRemain = strLayer;
+		nPos = sRemain.ReverseFind(_T('-'));
+		if (nPos >= 0)
+		{
+			sRes = sRemain.Right(sRemain.GetLength() - nPos - 1);
+			sRemain.Delete(nPos, sRemain.GetLength() - nPos);
+
+			nPos = sRemain.ReverseFind(_T('-'));
+			if (nPos >= 0)
+			{
+				sLayer = sRemain.Right(sRemain.GetLength() - nPos - 1);
+				sRemain.Delete(nPos, sRemain.GetLength() - nPos);
+			}
+
+			if (sLayer == _T("2"))
+				return RMAP_INNER_DN;
+			else if (sLayer == _T("4"))
+				return RMAP_DN;
+			else
+				return RMAP_DN;
+		}
+	}
+
+	return RMAP_NONE;
 }

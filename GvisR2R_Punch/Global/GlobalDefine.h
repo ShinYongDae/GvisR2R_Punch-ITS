@@ -52,11 +52,11 @@
 
 	#define	USE_MIL
 	#define	USE_VISION
-	#define	USE_TCPIP
-	#define USE_ENGRAVE
-	#define USE_DTS
+	//#define USE_TCPIP
+	//#define USE_ENGRAVE
+	//#define USE_DTS
 
-	//#define USE_CAM_MASTER
+	#define USE_CAM_MASTER
 	//#define	USE_NMC
 	//#define	USE_MPE
 	//#define	USE_IRAYPLE
@@ -653,12 +653,12 @@ struct stSystem
 	CString sPathVrsShareDn, sPathVrsBufDn;
 	CString sPathVsShareDn;
 
-	CString sPathEng, sPathEngCurrInfo, sPathEngOffset, sIpPathMk, sPathMkCurrInfo, sPathMkCurrInfoBuf;
+	CString sPathEng, sPathEngCurrInfo, sPathEngOffset, sPathMkCurrInfo, sPathMkCurrInfoBuf;
 	CString sPathMkSignalInfo, sPathEngSignalInfo, sPathAoiUpStatusInfo, sPathAoiDnStatusInfo;
 	CString sPathMkMenu01, sPathMkMenu03, sPathMkInfo, sPathMonDispMain;
 	CString sPathMkWork;
 
-	CString sPathOldFile, sPathItsFile, sPathIts, sPathItsJob;
+	CString sPathOldFile, sPathItsFile, sPathIts;
 	CString sIpPathOldFile, sIpPathItsFile, sIpPathIts;
 	CString sPathSapp3;
 	BOOL bSaveLog;
@@ -674,7 +674,7 @@ struct stSystem
 	CString sPort[3];		// ID_SR1000W, ID_MDX2500, ID_ENGRAVE(ID_PUNCH)
 	BOOL bSaveMkImg, bSaveGrabImg;
 	BOOL bStripPcsRgnBin;
-	BOOL bUseDTS, bUseITS, bUseItsJob;
+	BOOL bUseDTS, bUseITS;
 
 	stSystem()
 	{
@@ -692,7 +692,7 @@ struct stSystem
 		sPathVrsShareDn = _T(""); sPathVrsBufDn = _T("");
 		sPathVsShareDn = _T("");
 
-		sPathEng = _T(""); sPathEngCurrInfo = _T(""); sPathEngOffset = _T(""); sIpPathMk = _T(""); sPathMkCurrInfo = _T("");
+		sPathEng = _T(""); sPathEngCurrInfo = _T(""); sPathEngOffset = _T(""); sPathMkCurrInfo = _T("");
 		sPathMkSignalInfo = _T(""); sPathEngSignalInfo = _T("");
 		sPathAoiUpStatusInfo = _T(""); sPathAoiDnStatusInfo = _T("");
 		sPathMkCurrInfoBuf = _T(""); sPathMkMenu01 = _T(""); sPathMkMenu03 = _T(""); sPathMkInfo = _T(""); sPathMonDispMain = _T("");
@@ -700,7 +700,6 @@ struct stSystem
 
 		sPathOldFile = _T("");
 		sPathItsFile = _T("");
-		sPathItsJob = _T("");
 		sPathIts = _T("");
 		sIpPathOldFile = _T("");
 		sIpPathItsFile = _T("");
@@ -723,7 +722,6 @@ struct stSystem
 		bStripPcsRgnBin = FALSE;
 		bUseDTS = FALSE;
 		bUseITS = FALSE;
-		bUseItsJob = FALSE;
 	}
 };
 

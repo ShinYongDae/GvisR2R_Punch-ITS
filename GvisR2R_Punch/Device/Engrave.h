@@ -92,7 +92,6 @@ public:
 	void GetSignalEngraveAutoSequence(SOCKET_DATA SockData);
 	void GetSignalMyMsg(SOCKET_DATA SockData);
 	void GetSignal2dEng(SOCKET_DATA SockData);
-	void GetSignalPlcEng(SOCKET_DATA SockData);
 
 	// GetSysData
 	void GetSysData(SOCKET_DATA SockData);

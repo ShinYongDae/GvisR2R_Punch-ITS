@@ -359,7 +359,6 @@ public:
 
 	int m_nDebugStep; 	void DispThreadTick();
 
-	int m_nParamErrorRead2dCode;
 	BOOL m_bRcvSig[_SigInx::_EndIdx];
 	stRcvSig m_stRcvSig;
 	CMpDevice* m_pMpe;
@@ -541,7 +540,8 @@ public:
 	int m_nSerialRmapUpdate;
 
 	//CString m_sPathRmapInnerUpdate[4];
-	int m_nSerialRmapInnerUpdate;
+	//int m_nSerialRmapInnerUpdate;
+	int m_nSerialMakeItsFile;
 
 	BOOL m_bIsBuf[2]; // [0]: AOI-Up , [1]: AOI-Dn
 
@@ -687,10 +687,12 @@ public:
 	void UpdateRMapDn();
 	void UpdateRMapAllDn();
 
-	void UpdateRMapInnerUp();
-	void UpdateRMapInnerAllUp();
-	void UpdateRMapInnerDn();
-	void UpdateRMapInnerAllDn();
+	void MakeItsFileUp(int nSerial);
+	void MakeItsFileDn(int nSerial);
+	//void UpdateRMapInnerUp();
+	//void UpdateRMapInnerAllUp();
+	//void UpdateRMapInnerDn();
+	//void UpdateRMapInnerAllDn();
 
 
 	// Auto Sequence
@@ -839,7 +841,8 @@ public:
 	BOOL IsMoveDone1();
 	void Ink(BOOL bOn = TRUE);
 	BOOL UpdateReelmap(int nSerial);
-	BOOL UpdateReelmapInner(int nSerial);
+	//BOOL UpdateReelmapInner(int nSerial);
+	BOOL MakeItsFile(int nSerial);
 
 	// 	void LoadMstInfo();
 	void InitInfo();
@@ -952,7 +955,6 @@ public:
 	BOOL IsDoneDispMkInfo();
 	BOOL IsSetLotEnd();
 	void ChkRcvSig();
-	void UpdateItsJobFile();
 
 	afx_msg LRESULT OnBufThreadDone(WPARAM wPara, LPARAM lPara);
 	int ChkSerial(); // 0: Continue, -: Previous, +:Discontinue
@@ -1144,8 +1146,9 @@ public:
 
 	BOOL m_bEscape;
 	// ITS
-	BOOL m_bTHREAD_UPDATE_REELMAP_INNER_UP, m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP;
-	BOOL m_bTHREAD_UPDATE_REELMAP_INNER_DN, m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN;
+	BOOL m_bTHREAD_MAKE_ITS_FILE_UP, m_bTHREAD_MAKE_ITS_FILE_DN;
+	//BOOL m_bTHREAD_UPDATE_REELMAP_INOUTER_UP;// , m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP;
+	//BOOL m_bTHREAD_UPDATE_REELMAP_INOUTER_DN;// , m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN;
 	BOOL m_bTHREAD_UPDATE_REELMAP_ITS;
 	BOOL WriteReelmapIts();
 

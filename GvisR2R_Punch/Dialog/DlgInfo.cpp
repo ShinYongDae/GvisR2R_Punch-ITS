@@ -195,7 +195,7 @@ BOOL CDlgInfo::OnInitDialog()
 // 	GetDlgItem(IDC_CHK_011)->ShowWindow(SW_HIDE);
 
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
-
+	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -1644,7 +1644,6 @@ void CDlgInfo::OnChkUseAoiInner()
 	BOOL bOn[2];
 	bOn[0] = myBtn[23].GetCheck();
 	bOn[1] = myBtn[24].GetCheck();
-
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
 	if (bOn[0] && bOn[1])
@@ -1666,7 +1665,6 @@ void CDlgInfo::OnChkUseAoiOuter()
 	BOOL bOn[2];
 	bOn[0] = myBtn[23].GetCheck();
 	bOn[1] = myBtn[24].GetCheck();
-
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
 	if (bOn[0] && bOn[1])
@@ -1705,11 +1703,10 @@ void CDlgInfo::OnChkSampleTest()
 	pDoc->SetMkInfo(_T("Signal"), _T("Sample Test On"), bOn);
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), sData, pDoc->WorkingInfo.System.sPathMkCurrInfo);
-	if (!bOn)
+	if(!bOn)
 		::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
-
 #ifdef USE_MPE
 	pView->m_pMpe->Write(_T("MB44017B"), (pDoc->WorkingInfo.LastJob.bSampleTest)?1:0);		// Sample 검사 On
 #endif
@@ -1750,7 +1747,6 @@ void CDlgInfo::OnChkOneMetal()
 	::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 	::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
-
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1816,7 +1812,7 @@ void CDlgInfo::OnStc181()
 	::WritePrivateProfileString(_T("Last Job"), _T("Sample Test Shot Num"), sVal, PATH_WORKING_INFO);
 
 	::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), sVal, pDoc->WorkingInfo.System.sPathMkCurrInfo);
-
+	
 	long lData = (long)_tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);//atoi
 #ifdef USE_MPE
 	pView->m_pMpe->Write(_T("ML45126"), lData);	// 샘플검사 Shot수

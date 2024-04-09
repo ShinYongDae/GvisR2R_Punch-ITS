@@ -488,9 +488,6 @@ public:
 	void LoadPCRIts01(int nSerial); // 11 -> ¿ÜÃþ : ´Ü¸é, ³»Ãþ : ¾ç¸é
 	void LoadPCRIts00(int nSerial); // 10 -> ¿ÜÃþ : ´Ü¸é, ³»Ãþ : ´Ü¸é
 	void DelItsAll(CString strPath);
-	void UpdateItsJobFile();
-	CString GetPathInnerItsFile();
-	CString GetPathInnerPcrFile();
 
 	BOOL InitReelmapInner();
 	BOOL InitReelmapInnerUp();

@@ -668,7 +668,7 @@ void CDlgCammasterinfoStrpcs::OnBnClickedButton1()
 	CString sData = _T("");
 	CFileFind	find;
 	//sPath = _T("\\\\GM-STORAGE2\\MasterData-PCB\\C1iNRefer\\TOP\\1TS_TEST-025\\strpcs.bin");
-	sPath = _T("\\\\gm-storage2\\MasterData-PCB\\C1INRefer\\BTM\\1BS-TEST-025\\strpcs.bin");
+	//sPath = _T("\\\\gm-storage2\\MasterData-PCB\\C1INRefer\\BTM\\1BS-TEST-025\\strpcs.bin");
 	if (!find.FindFile(sPath))
 	{
 		AfxMessageBox(_T("캠마스터에 피스정보가 설정되지 않았습니다."));

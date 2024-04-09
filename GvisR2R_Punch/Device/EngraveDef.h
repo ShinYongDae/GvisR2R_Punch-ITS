@@ -181,7 +181,7 @@ typedef enum _stSigInx {
 	_DispDualSample, _DispDualTest, _DispSingleSample, _DispSingleTest, _DispInitRun, _DispRun, _DispStop, _DispReady,
 	// Dlg Info 
 	_DualTest, _SampleTest, _TestMode, _RecoilerCcw, _UncoilerCcw, _AlignMethode,
-	_DoorRecoiler, _DoorAoiUp, _DoorAoiDn, _DoorMk, _DoorEngrave, _DoorUncoiler, _SaftyMk, _CleannerAoiUp, _CleannerAoiDn,
+	_DoorRecoiler, _DoorAoiUp, _DoorAoiDn, _DoorMk, _DoorEngrave, _DoorUncoiler, _SaftyMk, _CleannerAoiUp, _CleannerAoiDn, 
 	_UltraSonicAoiDn, _UltraSonicEngrave, _FixDef, _Use380mm, _DispContRun, _DispLotEnd,
 	// Menu01
 	_TempStop, _TempPause, _LotCut, _MkPosMv, _MkVerify, _ReelmapUp, _ReelmapDn, _ReelmapTot,

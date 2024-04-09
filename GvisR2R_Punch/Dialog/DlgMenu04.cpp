@@ -2649,3 +2649,5 @@ void CDlgMenu04::EngBuffInitPosSave()
 	pView->SetEngBufInitPos(dBufEnc);								// ML44054	,	각인부 버퍼 관련 설정 롤러 초기위치(단위 mm * 1000)
 #endif
 }
+
+
