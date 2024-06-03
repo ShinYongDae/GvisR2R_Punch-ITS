@@ -2,6 +2,9 @@
 #include "TcpIpClient.h"
 #include "../Global/GlobalDefine.h"
 
+#include "../GvisR2R_PunchView.h"
+extern CGvisR2R_PunchView* pView;
+
 CTcpIpClient::CTcpIpClient(CWnd* pParent/*=NULL*/)
 {
 	::InitializeCriticalSection(&m_sc);
@@ -129,7 +132,7 @@ void CTcpIpClient::WaitUntilThreadEnd(HANDLE hThread) // Worker Thread 구동관
 		if (GetTickCount() >= (dwStartTick + dwTimeOut))
 		{
 			//pView->MsgBox("WaitUntilThreadEnd() Time Out!!!");
-			AfxMessageBox(_T("WaitUntilThreadEnd() Time Out!!!", NULL, MB_OK | MB_ICONSTOP));
+			pView->ClrDispMsg(); AfxMessageBox(_T("WaitUntilThreadEnd() Time Out!!!", NULL, MB_OK | MB_ICONSTOP));
 			return;
 		}
 		if (::PeekMessage(&message, NULL, 0, 0, PM_REMOVE))

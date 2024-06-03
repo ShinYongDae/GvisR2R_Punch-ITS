@@ -264,7 +264,7 @@ void CSr1000w::WaitUntilThreadEnd(HANDLE hThread) // Worker Thread 구동관련 Step
 		if (GetTickCount() >= (dwStartTick + dwTimeOut))
 		{
 			//pView->MsgBox("WaitUntilThreadEnd() Time Out!!!");
-			AfxMessageBox(_T("WaitUntilThreadEnd() Time Out!!!", NULL, MB_OK | MB_ICONSTOP));
+			pView->ClrDispMsg(); AfxMessageBox(_T("WaitUntilThreadEnd() Time Out!!!", NULL, MB_OK | MB_ICONSTOP));
 			return;
 		}
 		if (::PeekMessage(&message, NULL, 0, 0, PM_REMOVE))

@@ -421,6 +421,8 @@ void CDlgCammasterinfoPch::OnBnClickedButton1()
 
 	CString sData = _T("");
 	if (!LoadPchFromCam(sPath, sData))
-		AfxMessageBox(_T("LoadPchFromCam failed!"));
+	{
+		pView->ClrDispMsg(); AfxMessageBox(_T("LoadPchFromCam failed!"));
+	}
 	GetDlgItem(IDC_EDIT1)->SetWindowText(sData);
 }

@@ -72,6 +72,7 @@ void CSmac::Init()
 		CString sMsg;
 		sMsg.Format(_T("보이스코일이 초기화되지 않았습니다.(COM%d)"), m_Rs232.m_nPort);
 //		pView->MsgBox(_T("보이스코일이 초기화되지 않았습니다.");
+		pView->ClrDispMsg();
 		AfxMessageBox(sMsg);
 	}
 #endif
@@ -139,8 +140,11 @@ void CSmac::SearchHomeSmac(int nCamNum)
 		SendStringToFirstCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 // 		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("HOME_OK")))
-		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
+		if (!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("Fail Homming First Smac."));
+		}
 	
 //		dPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
 	}
@@ -153,8 +157,11 @@ void CSmac::SearchHomeSmac(int nCamNum)
 		SendStringToSecondCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 // 		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("HOME_OK")))
-		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
+		if (!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("Fail Homming Second Smac."));
+		}
 //		dPos = GetSmacPosition(VOICE_COIL_SECOND_CAM);
 	}
 	
@@ -289,7 +296,7 @@ double CSmac::GetSmacPosition(int nCamNum)
 //		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T(":GET_POS_OK;")))
 		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
 		{
-			AfxMessageBox(_T("Fail GetPosition First Smac."));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail GetPosition First Smac."));
 //			dGetSmacPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
 			return 0.0;
 		}
@@ -322,7 +329,7 @@ double CSmac::GetSmacPosition(int nCamNum)
 //		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T(":GET_POS_OK;")))
 		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
 		{
-			AfxMessageBox(_T("Fail GetPosition Second Smac."));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail GetPosition Second Smac."));
 //			dGetSmacPos = GetSmacPosition(VOICE_COIL_SECOND_CAM);
 			return 0.0;
 		}
@@ -363,8 +370,10 @@ void CSmac::MoveSmacShiftPos(int nCamNum)
 		SendStringToFirstCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 //		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("START_POS_OK")))
-		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Moving Shift Position - First Smac."));
+		if (!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Moving Shift Position - First Smac."));
+		}
 	
 //		dPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
 		Sleep(30);
@@ -377,8 +386,10 @@ void CSmac::MoveSmacShiftPos(int nCamNum)
 		SendStringToSecondCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 //		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("START_POS_OK")))
-		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Moving Shift Position - Second Smac."));
+		if (!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Moving Shift Position - Second Smac."));
+		}
 
 //		dPos = GetSmacPosition(VOICE_COIL_SECOND_CAM);
 		Sleep(30);
@@ -497,8 +508,10 @@ void CSmac::MoveSmacFinalPos(int nCamNum)
 		SendStringToFirstCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 //		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("END_POS_OK"))
-		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Moving Final Position - First Smac."));
+		if (!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Moving Final Position - First Smac."));
+		}
 	
 		dPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
 	}
@@ -510,8 +523,11 @@ void CSmac::MoveSmacFinalPos(int nCamNum)
 		SendStringToSecondCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 //		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("END_POS_OK")))
-		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
+		if (!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg();			
 			AfxMessageBox(_T("Fail Moving Final Position - Second Smac."));
+		}
 
 		dPos = GetSmacPosition(VOICE_COIL_SECOND_CAM);
 	}
@@ -535,8 +551,11 @@ void CSmac::MoveSmacMeasPos(int nCamNum)
 		SendStringToFirstCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 		//		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("END_POS_OK")))
-		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
+		if (!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("Fail Moving Final Position - First Smac."));
+		}
 		
 		dPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
 	}
@@ -548,8 +567,10 @@ void CSmac::MoveSmacMeasPos(int nCamNum)
 		SendStringToSecondCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 		//		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("END_POS_OK")))
-		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Moving Final Position - Second Smac."));
+		if (!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Moving Final Position - Second Smac."));
+		}
 		
 		dPos = GetSmacPosition(VOICE_COIL_SECOND_CAM);
 	}
@@ -602,7 +623,7 @@ CString CSmac::GetSmacStatus(int nCamNum)
 //		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("_OK;")))
 		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
 		{
-			AfxMessageBox(_T("Fail GetStatus First Smac."));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail GetStatus First Smac."));
 //			dGetSmacPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
 			return _T("NG");
 		}
@@ -631,7 +652,7 @@ CString CSmac::GetSmacStatus(int nCamNum)
 //		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("_OK;"))
 		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
 		{
-			AfxMessageBox(_T("Fail GetStatus Second Smac."));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail GetStatus Second Smac."));
 //			dGetSmacPos = GetSmacPosition(VOICE_COIL_SECOND_CAM);
 			return _T("NG");
 		}
@@ -678,7 +699,7 @@ double CSmac::GetSmacMeasureOfSurface(int nCamNum)
 //		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T(":CHECK_END_POS_OK;")))
 		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
 		{
-			AfxMessageBox(_T("Fail Measuring Surface First Smac."));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Measuring Surface First Smac."));
 			dPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
 			return 0.0;
 		}
@@ -709,7 +730,7 @@ double CSmac::GetSmacMeasureOfSurface(int nCamNum)
 //		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T(":CHECK_END_POS_OK;")))
 		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
 		{
-			AfxMessageBox(_T("Fail Measuring Surface Second Smac."));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Measuring Surface Second Smac."));
 			dPos = GetSmacPosition(VOICE_COIL_SECOND_CAM);
 			return dPos;
 		}
@@ -922,7 +943,7 @@ BOOL CSmac::WaitSmacCmdEnd(int nCamNum, CString strEndCmd)
 			}
 			else
 			{
-				AfxMessageBox(_T("Error, Wait First Smac Cmd End."));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error, Wait First Smac Cmd End."));
 				return FALSE;
 			}
 		}
@@ -961,7 +982,7 @@ BOOL CSmac::WaitSmacCmdEnd(int nCamNum, CString strEndCmd)
 			}
 			else
 			{
-				AfxMessageBox(_T("Error, Wait Second Smac Cmd End."));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error, Wait Second Smac Cmd End."));
 				return FALSE;
 			}
 		}
@@ -1099,7 +1120,7 @@ CString CSmac::DisplaySmacErrorList(int nErrCode)
 	}
 
 	strVal.Format(_T("SMAC Error code is %s ."), strError);
-	AfxMessageBox(strVal);
+	pView->ClrDispMsg(); AfxMessageBox(strVal);
 
 	return strError;
 }
@@ -1267,9 +1288,11 @@ void CSmac::SetMarking(int nCamNum)
 		Sleep(30);
 		SendStringToFirstCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
-		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("PUNCHING_OK")))
-			//		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Punching First Smac."));
+		//if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("PUNCHING_OK")))
+		if (!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Punching First Smac."));
+		}
 		Sleep(30);
 	}
 	else if(nCamNum == VOICE_COIL_SECOND_CAM)
@@ -1279,9 +1302,11 @@ void CSmac::SetMarking(int nCamNum)
 		Sleep(30);
 		SendStringToSecondCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
-		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("PUNCHING_OK")))
-			//		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Punching Second Smac."));
+		//if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("PUNCHING_OK")))
+		if (!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg();			AfxMessageBox(_T("Fail Punching Second Smac."));
+		}
 		Sleep(30);
 	}
 	
@@ -1627,8 +1652,10 @@ void CSmac::SetProbing(int nCamNum)
 		Sleep(30);
 		SendStringToFirstCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
-		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Punching First Smac."));
+		if (!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Punching First Smac."));
+		}
 		Sleep(30);
 	}
 	else if(nCamNum == VOICE_COIL_SECOND_CAM)
@@ -1638,8 +1665,10 @@ void CSmac::SetProbing(int nCamNum)
 		Sleep(30);
 		SendStringToSecondCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
-		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Punching Second Smac."));
+		if (!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Punching Second Smac."));
+		}
 		Sleep(30);
 	}
 	
@@ -1672,8 +1701,10 @@ void CSmac::MoveProbFinalPos(int nCamNum)
 		SendStringToFirstCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 		//		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("START_POS_OK")))
-		if(!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Moving Shift Position - First Smac."));
+		if (!WaitSmacCmdEnd(VOICE_COIL_FIRST_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Moving Shift Position - First Smac."));
+		}
 		
 		//		dPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
 		Sleep(30);
@@ -1686,8 +1717,10 @@ void CSmac::MoveProbFinalPos(int nCamNum)
 		SendStringToSecondCamVoiceCoil(_T("\r\n"));
 		Sleep(100);
 		//		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("START_POS_OK")))
-		if(!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
-			AfxMessageBox(_T("Fail Moving Shift Position - Second Smac."));
+		if (!WaitSmacCmdEnd(VOICE_COIL_SECOND_CAM, _T("OK")))
+		{
+			pView->ClrDispMsg(); AfxMessageBox(_T("Fail Moving Shift Position - Second Smac."));
+		}
 		
 		//		dPos = GetSmacPosition(VOICE_COIL_SECOND_CAM);
 		Sleep(30);

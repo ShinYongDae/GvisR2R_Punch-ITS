@@ -518,6 +518,117 @@ void CDlgMyPassword::OnButtonSym11()
 		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x7D,0);	
 }
 
+void CDlgMyPassword::OnButtonNum1() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x31,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x31,0);
+}
+
+void CDlgMyPassword::OnButtonNum2() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x32,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x32,0);
+}
+
+void CDlgMyPassword::OnButtonNum3() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x33,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x33,0);
+}
+
+void CDlgMyPassword::OnButtonNum4() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x34,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x34,0);
+}
+
+void CDlgMyPassword::OnButtonNum5() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x35,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x35,0);
+}
+
+void CDlgMyPassword::OnButtonNum6() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x36,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x36,0);
+}
+
+void CDlgMyPassword::OnButtonNum7() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x37,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x37,0);
+}
+
+void CDlgMyPassword::OnButtonNum8() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x38,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x38,0);
+}
+
+void CDlgMyPassword::OnButtonNum9() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x39,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x39,0);
+}
+
+void CDlgMyPassword::OnButtonNum0() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x30,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x30,0);
+}
+
+void CDlgMyPassword::OnButtonMinus() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x2D,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x2D,0);
+}
+
+
 void CDlgMyPassword::OnButtonEqual() 
 {
 	// TODO: Add your control notification handler code here
@@ -726,6 +837,12 @@ void CDlgMyPassword::OnButtonCharP()
 		else
 			SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x50,0);		
 	}
+}
+
+void CDlgMyPassword::OnButtonEsc() 
+{
+	// TODO: Add your control notification handler code here
+//	OnOK();
 }
 
 void CDlgMyPassword::OnButtonCharA() 
@@ -1058,46 +1175,6 @@ void CDlgMyPassword::OnButtonComma()
 		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x2C,0);	
 }
 
-void CDlgMyPassword::OnButtonClear() 
-{
-	// TODO: Add your control notification handler code here
-	if(m_nSel == 0)
-		GetDlgItem(IDC_EDIT_11)->SetWindowText(_T(""));
-	else if(m_nSel == 1)
-		GetDlgItem(IDC_EDIT_21)->SetWindowText(_T(""));
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-}
-
-void CDlgMyPassword::OnButtonSpace() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x20,0);	
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x20,0);	
-}
-
-void CDlgMyPassword::OnButtonBs() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,VK_BACK,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,VK_BACK,0);
-}
-
-void CDlgMyPassword::OnButtonDel() 
-{
-	// TODO: Add your control notification handler code here
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_KEYDOWN,VK_DELETE,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_KEYDOWN,VK_DELETE,0);
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-}
-
 void CDlgMyPassword::OnButtonDot() 
 {
 	// TODO: Add your control notification handler code here
@@ -1124,6 +1201,26 @@ void CDlgMyPassword::OnButtonEnter()
 // 	}
 }
 
+void CDlgMyPassword::OnButtonClear() 
+{
+	// TODO: Add your control notification handler code here
+	if(m_nSel == 0)
+		GetDlgItem(IDC_EDIT_11)->SetWindowText(_T(""));
+	else if(m_nSel == 1)
+		GetDlgItem(IDC_EDIT_21)->SetWindowText(_T(""));
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+}
+
+void CDlgMyPassword::OnButtonSpace() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x20,0);	
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x20,0);	
+}
+
 void CDlgMyPassword::OnButtonLeft() 
 {
 	// TODO: Add your control notification handler code here
@@ -1132,116 +1229,6 @@ void CDlgMyPassword::OnButtonLeft()
 		SendDlgItemMessage(IDC_EDIT_11,WM_KEYDOWN,VK_LEFT,0);
 	else if(m_nSel == 1)
 		SendDlgItemMessage(IDC_EDIT_21,WM_KEYDOWN,VK_LEFT,0);
-}
-
-void CDlgMyPassword::OnButtonMinus() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x2D,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x2D,0);
-}
-
-void CDlgMyPassword::OnButtonNum0() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x30,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x30,0);
-}
-
-void CDlgMyPassword::OnButtonNum1() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x31,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x31,0);
-}
-
-void CDlgMyPassword::OnButtonNum2() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x32,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x32,0);
-}
-
-void CDlgMyPassword::OnButtonNum3() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x33,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x33,0);
-}
-
-void CDlgMyPassword::OnButtonNum4() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x34,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x34,0);
-}
-
-void CDlgMyPassword::OnButtonNum5() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x35,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x35,0);
-}
-
-void CDlgMyPassword::OnButtonNum6() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x36,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x36,0);
-}
-
-void CDlgMyPassword::OnButtonNum7() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x37,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x37,0);
-}
-
-void CDlgMyPassword::OnButtonNum8() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x38,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x38,0);
-}
-
-void CDlgMyPassword::OnButtonNum9() 
-{
-	// TODO: Add your control notification handler code here
-	// GetDlgItem(IDC_EDIT_11)->SetFocus();
-	if(m_nSel == 0)
-		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,0x39,0);
-	else if(m_nSel == 1)
-		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,0x39,0);
 }
 
 void CDlgMyPassword::OnButtonRight() 
@@ -1254,6 +1241,26 @@ void CDlgMyPassword::OnButtonRight()
 		SendDlgItemMessage(IDC_EDIT_21,WM_KEYDOWN,VK_RIGHT,0);
 }
 
+void CDlgMyPassword::OnButtonBs() 
+{
+	// TODO: Add your control notification handler code here
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_CHAR,VK_BACK,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_CHAR,VK_BACK,0);
+}
+
+void CDlgMyPassword::OnButtonDel() 
+{
+	// TODO: Add your control notification handler code here
+	if(m_nSel == 0)
+		SendDlgItemMessage(IDC_EDIT_11,WM_KEYDOWN,VK_DELETE,0);
+	else if(m_nSel == 1)
+		SendDlgItemMessage(IDC_EDIT_21,WM_KEYDOWN,VK_DELETE,0);
+	// GetDlgItem(IDC_EDIT_11)->SetFocus();
+}
+
 void CDlgMyPassword::OnSetfocusEdit11() 
 {
 	// TODO: Add your control notification handler code here
@@ -1264,12 +1271,6 @@ void CDlgMyPassword::OnSetfocusEdit21()
 {
 	// TODO: Add your control notification handler code here
 	m_nSel = 1;	
-}
-
-void CDlgMyPassword::OnButtonEsc() 
-{
-	// TODO: Add your control notification handler code here
-//	OnOK();
 }
 
 void CDlgMyPassword::OnBtn00() 

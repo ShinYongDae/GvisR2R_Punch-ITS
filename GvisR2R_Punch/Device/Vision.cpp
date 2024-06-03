@@ -3187,7 +3187,7 @@ double CVision::CalcCameraPixelSize()
 			{
 				pView->ClrDispMsg();
 				AfxMessageBox(_T("Move XY Error..."));
-		}
+			}
 		}
 		else
 		{
@@ -3201,9 +3201,9 @@ double CVision::CalcCameraPixelSize()
 				{
 					pView->ClrDispMsg();
 					AfxMessageBox(_T("Move XY Error..."));
+				}
 			}
 		}
-	}
 	}
 	else if(m_nIdx==1)
 	{
@@ -3216,7 +3216,7 @@ double CVision::CalcCameraPixelSize()
 			{
 				pView->ClrDispMsg();
 				AfxMessageBox(_T("Move XY Error..."));
-		}
+			}
 		}
 		else
 		{

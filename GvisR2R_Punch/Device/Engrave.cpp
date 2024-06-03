@@ -296,7 +296,7 @@ void CEngrave::WaitUntilThreadEnd(HANDLE hThread) // Worker Thread 구동관련 Step
 		// Time Out Check
 		if (GetTickCount() >= (dwStartTick + dwTimeOut))
 		{
-			//pView->MsgBox("WaitUntilThreadEnd() Time Out!!!");
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("WaitUntilThreadEnd() Time Out!!!", NULL, MB_OK | MB_ICONSTOP));
 			return;
 		}
@@ -3886,55 +3886,82 @@ void CEngrave::SetDef()
 		if (pDoc->m_pReelMapUp)
 			pReelMap = pDoc->m_pReelMapUp;
 		else
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("m_pReelMapUp is NULL."));
+		}
 		break;
 	case RMAP_DN:
 		if (pDoc->m_pReelMapDn)
 			pReelMap = pDoc->m_pReelMapDn;
 		else
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("m_pReelMapDn is NULL."));
+		}
 		break;
 	case RMAP_ALLUP:
 		if (pDoc->m_pReelMapAllUp)
 			pReelMap = pDoc->m_pReelMapAllUp;
 		else
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("m_pReelMapAllUp is NULL."));
+		}
 		break;
 	case RMAP_ALLDN:
 		if (pDoc->m_pReelMapAllDn)
 			pReelMap = pDoc->m_pReelMapAllDn;
 		else
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("m_pReelMapAllDn is NULL."));
+		}
 		break;
 	case RMAP_INNER_UP:
 		if (pDoc->m_pReelMapInnerUp)
 			pReelMap = pDoc->m_pReelMapInnerUp;
 		else
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("m_pReelMapInnerUp is NULL."));
+		}
 		break;
 	case RMAP_INNER_DN:
 		if (pDoc->m_pReelMapInnerDn)
 			pReelMap = pDoc->m_pReelMapInnerDn;
 		else
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("m_pReelMapInnerDn is NULL."));
+		}
 		break;
 	case RMAP_INNER_ALLUP:
 		if (pDoc->m_pReelMapInnerAllUp)
 			pReelMap = pDoc->m_pReelMapInnerAllUp;
 		else
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("m_pReelMapInnerAllUp is NULL."));
+		}
 		break;
 	case RMAP_INNER_ALLDN:
 		if (pDoc->m_pReelMapInnerAllDn)
 			pReelMap = pDoc->m_pReelMapInnerAllDn;
 		else
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("m_pReelMapInnerAllDn is NULL."));
+		}
 		break;
 	case RMAP_ITS:
 		if (pDoc->m_pReelMapIts)
 			pReelMap = pDoc->m_pReelMapIts;
 		else
+		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("m_pReelMapIts is NULL."));
+		}
 		break;
 	}
 

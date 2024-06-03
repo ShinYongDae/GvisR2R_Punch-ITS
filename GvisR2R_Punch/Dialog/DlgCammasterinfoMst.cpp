@@ -280,7 +280,7 @@ BOOL CDlgCammasterinfoMst::LoadStripRgnFromCam(CString sPath, CString& sData)
 
 	if (Rsize != SizeI)
 	{
-		AfxMessageBox(_T("MST File is incorrected."), MB_ICONSTOP | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("MST File is incorrected."), MB_ICONSTOP | MB_OK);
 		return(FALSE);
 	}
 
@@ -349,7 +349,7 @@ BOOL CDlgCammasterinfoMst::LoadStripRgnFromCam(CString sPath, CString& sData)
 
 	if (RsizeStPosX != SizeI && RsizeStPosY != SizeI && RsizeEdPosX != SizeI && RsizeEdPosY != SizeI && RsizeXSwathPixPos != SizeIXSwathPixPos)
 	{
-		AfxMessageBox(_T("MST File is incorrected."),MB_ICONSTOP|MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("MST File is incorrected."),MB_ICONSTOP|MB_OK);
 		return(FALSE);
 	}
 	for (i = 0; i < pCellRgn->nMSwath; i++)
@@ -379,7 +379,9 @@ void CDlgCammasterinfoMst::OnBnClickedButton1()
 	GetDlgItem(IDC_STATIC_PATH)->SetWindowText(sPath);
 
 	CString sData;
-	if(!LoadStripRgnFromCam(sPath, sData))
-		AfxMessageBox(_T("LoadStripRgnFromCam failed!"));
+	if (!LoadStripRgnFromCam(sPath, sData))
+	{
+		pView->ClrDispMsg(); AfxMessageBox(_T("LoadStripRgnFromCam failed!"));
+	}
 	GetDlgItem(IDC_EDIT1)->SetWindowText(sData);
 }

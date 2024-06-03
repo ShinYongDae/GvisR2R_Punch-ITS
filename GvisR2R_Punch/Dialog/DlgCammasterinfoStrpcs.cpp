@@ -323,7 +323,7 @@ BOOL CDlgCammasterinfoStrpcs::LoadStrpcsFromCam(CString& sPath, CString& sData)
 
 	if (!find.FindFile(sPath))
 	{
-		AfxMessageBox(_T("StrPcs.bin파일을 찾지못했습니다."));
+		pView->ClrDispMsg(); AfxMessageBox(_T("StrPcs.bin파일을 찾지못했습니다."));
 		return(FALSE);
 	}
 
@@ -338,7 +338,7 @@ BOOL CDlgCammasterinfoStrpcs::LoadStrpcsFromCam(CString& sPath, CString& sData)
 	{
 		if (!file.Open(FileNLoc, CFile::modeRead))
 		{
-			AfxMessageBox(_T("캠마스터에 피스정보파일을 Open하지 못했습니다."));
+			pView->ClrDispMsg(); AfxMessageBox(_T("캠마스터에 피스정보파일을 Open하지 못했습니다."));
 			return(FALSE);
 		}
 	}
@@ -421,7 +421,7 @@ BOOL CDlgCammasterinfoStrpcs::LoadStrpcsFromCam(CString& sPath, CString& sData)
 	if (PieceRgnNum > MAX_PIECE_RGN_NUM)
 	{
 		file.Close();
-		AfxMessageBox(_T("캠마스터에서 설정한 피스 갯수가 최대치를 초과했습니다."));
+		pView->ClrDispMsg(); AfxMessageBox(_T("캠마스터에서 설정한 피스 갯수가 최대치를 초과했습니다."));
 		return FALSE;
 	}
 
@@ -593,7 +593,7 @@ BOOL CDlgCammasterinfoStrpcs::LoadStrpcsFromCam(CString& sPath, CString& sData)
 		Size = 0;
 		FreePolygonRgnData(PolygonPoints);
 
-		AfxMessageBox(_T("캠마스터에서 설정한 피스 갯수가 없습니다."));
+		pView->ClrDispMsg(); AfxMessageBox(_T("캠마스터에서 설정한 피스 갯수가 없습니다."));
 		return(FALSE);
 	}
 
@@ -671,12 +671,14 @@ void CDlgCammasterinfoStrpcs::OnBnClickedButton1()
 	//sPath = _T("\\\\gm-storage2\\MasterData-PCB\\C1INRefer\\BTM\\1BS-TEST-025\\strpcs.bin");
 	if (!find.FindFile(sPath))
 	{
-		AfxMessageBox(_T("캠마스터에 피스정보가 설정되지 않았습니다."));
+		pView->ClrDispMsg(); AfxMessageBox(_T("캠마스터에 피스정보가 설정되지 않았습니다."));
 		return;
 	}
 
 	if (!LoadStrpcsFromCam(sPath, sData))
-		AfxMessageBox(_T("LoadStripRgnFromCam failed!"));
+	{
+		pView->ClrDispMsg(); AfxMessageBox(_T("LoadStripRgnFromCam failed!"));
+	}
 	GetDlgItem(IDC_EDIT1)->SetWindowText(sData);
 
 	SetMasterPanelInfo();

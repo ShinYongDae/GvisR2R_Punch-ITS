@@ -2225,16 +2225,16 @@ void CDlgMenu03::SwMpeBtn(int nCtrlID, long lData)
 		// Marking
 	case IDC_CHK_9:			// 마킹부 연동 온/오프 스위치
 		pView->m_pMpe->Write(_T("MB005801"), 1);		// 리코일러 연동 온/오프 스위치
-		pView->m_pMpe->Write(_T("MB005511"), 1);		// 마킹부 연동 온/오프 스위치
-		pView->m_pMpe->Write(_T("MB005701"), 1);		// 검사부 하 연동 온/오프 스위치
-		pView->m_pMpe->Write(_T("MB005601"), 1);		// 검사부 상 연동 온/오프 스위치
-		pView->m_pMpe->Write(_T("MB005401"), 1);		// 언코일러 연동 온/오프 스위치
+		//pView->m_pMpe->Write(_T("MB005511"), 1);		// 마킹부 연동 온/오프 스위치
+		//pView->m_pMpe->Write(_T("MB005701"), 1);		// 검사부 하 연동 온/오프 스위치
+		//pView->m_pMpe->Write(_T("MB005601"), 1);		// 검사부 상 연동 온/오프 스위치
+		//pView->m_pMpe->Write(_T("MB005401"), 1);		// 언코일러 연동 온/오프 스위치
 		Sleep(300);
 		pView->m_pMpe->Write(_T("MB005801"), 0);		// 리코일러 연동 온/오프 스위치
-		pView->m_pMpe->Write(_T("MB005511"), 0);		// 마킹부 연동 온/오프 스위치
-		pView->m_pMpe->Write(_T("MB005701"), 0);		// 검사부 하 연동 온/오프 스위치
-		pView->m_pMpe->Write(_T("MB005601"), 0);		// 검사부 상 연동 온/오프 스위치
-		pView->m_pMpe->Write(_T("MB005401"), 0);		// 언코일러 연동 온/오프 스위치
+		//pView->m_pMpe->Write(_T("MB005511"), 0);		// 마킹부 연동 온/오프 스위치
+		//pView->m_pMpe->Write(_T("MB005701"), 0);		// 검사부 하 연동 온/오프 스위치
+		//pView->m_pMpe->Write(_T("MB005601"), 0);		// 검사부 상 연동 온/오프 스위치
+		//pView->m_pMpe->Write(_T("MB005401"), 0);		// 언코일러 연동 온/오프 스위치
 														
 		//pView->m_pMpe->Write(_T("MB005801"), lData);		// 리코일러 연동 온/오프 스위치
 		//pView->m_pMpe->Write(_T("MB005511"), lData);		// 마킹부 연동 온/오프 스위치

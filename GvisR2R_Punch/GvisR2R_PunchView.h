@@ -360,7 +360,7 @@ public:
 	int m_nDebugStep; 	void DispThreadTick();
 
 	BOOL m_bRcvSig[_SigInx::_EndIdx];
-	stRcvSig m_stRcvSig;
+	//stRcvSig m_stRcvSig;
 	CMpDevice* m_pMpe;
 	CPtAlign m_Align[2];	// [0] : LeftCam , [1] : RightCam
 #ifdef USE_VISION

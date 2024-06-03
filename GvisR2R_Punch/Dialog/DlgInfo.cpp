@@ -194,7 +194,7 @@ BOOL CDlgInfo::OnInitDialog()
 // 	GetDlgItem(IDC_STC_0046)->ShowWindow(SW_HIDE);
 // 	GetDlgItem(IDC_CHK_011)->ShowWindow(SW_HIDE);
 
-	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
+	GetDlgItem(IDC_STC_181)->SetWindowText(_T("")); // 샘플검사 Shot수
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -278,12 +278,12 @@ void CDlgInfo::InitBtn()
 	myBtn[18].SetHwnd(this->GetSafeHwnd(), IDC_CHK_4_POINT_ALIGN);
 	myBtn[18].SetBtnType(BTN_TYPE_CHECK);
 
-	myBtn[19].SubclassDlgItem(IDC_CHK_1185, this); //하면AOI 클린롤러 
-	myBtn[19].SetHwnd(this->GetSafeHwnd(), IDC_CHK_1185);
+	myBtn[19].SubclassDlgItem(IDC_CHK_85, this); //하면AOI 클린롤러 
+	myBtn[19].SetHwnd(this->GetSafeHwnd(), IDC_CHK_85);
 	myBtn[19].SetBtnType(BTN_TYPE_CHECK);
 
-	myBtn[20].SubclassDlgItem(IDC_CHK_1186, this); //상면AOI 클린롤러 
-	myBtn[20].SetHwnd(this->GetSafeHwnd(), IDC_CHK_1186);
+	myBtn[20].SubclassDlgItem(IDC_CHK_86, this); //상면AOI 클린롤러 
+	myBtn[20].SetHwnd(this->GetSafeHwnd(), IDC_CHK_86);
 	myBtn[20].SetBtnType(BTN_TYPE_CHECK);
 
 	myBtn[21].SubclassDlgItem(IDC_CHK_1187, this); //AOI초음파세정기

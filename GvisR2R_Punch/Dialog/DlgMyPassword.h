@@ -63,7 +63,6 @@ public:
 	int m_nRtnVal;
 
 	BOOL Create();
-	void HideSubDlg(int nDlgID);
 	void SetMsg(CString strMsg, int nCtrlId=0);
 	afx_msg LRESULT  OnMyPw(WPARAM wPara, LPARAM lPara);
 

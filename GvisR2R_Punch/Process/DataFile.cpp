@@ -11,6 +11,9 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+#include "../GvisR2R_PunchView.h"
+extern CGvisR2R_PunchView* pView;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -351,7 +354,7 @@ CString CDataFile::GetLineString(UINT nLine)
 	// 읽고자 하는 라인번호가 적당한지를 조사한다.
 	if (nLine > nMaxLine || nLine < 1)
 	{
-		AfxMessageBox(_T("Line string read error"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Line string read error"));
 		return CString("");
 	}
 
@@ -427,7 +430,7 @@ CString CDataFile::GetLineString(int nStart, int nEnd)
 	// 읽고자 하는 라인번호가 적당한지를 조사한다.
 	if (nStart < 1 || nEnd > nMaxLine || nStart > nEnd)
 	{
-		AfxMessageBox(_T("Multi line string read error"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Multi line string read error"));
 		return CString("");
 	}
 
@@ -514,7 +517,7 @@ LONG CDataFile::InsertLine(UINT nLine, LPCTSTR strInsert)
 		// 삽입하고자 하는 라인번호가 적당한지를 조사한다.
 		if (nLine < 1)
 		{
-			AfxMessageBox(_T("Line string insert error"));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Line string insert error"));
 			return -1;
 		}
 
@@ -567,12 +570,12 @@ LONG CDataFile::DeleteLine(UINT nLine)
 	// 지우고자 하는 라인번호가 적당한지를 조사한다.
 	if (nLine < 1)
 	{
-		AfxMessageBox(_T("Line string Delete error"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Line string Delete error"));
 		return -1;
 	}
 	if ((int)nLine > nMaxLine)
 	{
-		AfxMessageBox(_T("Delete Line Number mismatched"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Delete Line Number mismatched"));
 		return -1;
 	}
 	
@@ -610,7 +613,7 @@ LONG CDataFile::ReplaceLine(UINT nLine,LPCTSTR lpszNew)
 	// 변경 하고자 하는 라인번호가 적당한지를 조사한다.
 	if (nLine < 1 || nLine > nMaxLine)
 	{
-		AfxMessageBox(_T("Line string Replace Error"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Line string Replace Error"));
 		return -1;
 	}
 	
@@ -631,7 +634,7 @@ LONG CDataFile::ReplaceLineString(UINT nLine,LPCTSTR lpszOld,LPCTSTR lpszNew)
 	// 변경 하고자 하는 라인번호가 적당한지를 조사한다.
 	if (nLine < 1 || nLine > nMaxLine)
 	{
-		AfxMessageBox(_T("Line string Replace Error"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Line string Replace Error"));
 		return -1;
 	}
 	CString strLine = GetLineString(nLine);
@@ -653,7 +656,7 @@ BOOL CDataFile::MoveLine(int nSrcLine, int nDestLine)
 	// 이동 하고자 하는 라인번호가 적당한지를 조사한다.
 	if (nSrcLine < 1 || nDestLine < 1 || nSrcLine > nMaxLine || nDestLine > nMaxLine)
 	{
-		AfxMessageBox(_T("Line string move error"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Line string move error"));
 		return FALSE;
 	}
 
@@ -678,7 +681,7 @@ BOOL CDataFile::ReadData(CString strDataGroup, CString strDescription,int nTh,do
 	if(nStartRow < 0)
 	{
 		strLine.Format(_T("None Exist Group Name in %s file"),m_FilePath);
-		AfxMessageBox(strLine,MB_ICONSTOP|MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(strLine,MB_ICONSTOP|MB_OK);
 		return FALSE;
 	}
 	nStartRow++;
@@ -687,7 +690,7 @@ BOOL CDataFile::ReadData(CString strDataGroup, CString strDescription,int nTh,do
 	if(nLine < 0)
 	{
 		strLine.Format(_T("None Exist Data Descriptor in %s file"),m_FilePath);
-		AfxMessageBox(strLine,MB_ICONSTOP|MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(strLine,MB_ICONSTOP|MB_OK);
 		return FALSE;
 	}
 	// 파일로 부터 데이타 문자열을 읽는다.
@@ -699,7 +702,7 @@ BOOL CDataFile::ReadData(CString strDataGroup, CString strDescription,int nTh,do
 
 	if(nTh <= 0)
 	{
-		AfxMessageBox(_T("Data Index Muse be more than 0"),MB_ICONSTOP|MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Data Index Muse be more than 0"),MB_ICONSTOP|MB_OK);
 		return FALSE;
 	}
 	

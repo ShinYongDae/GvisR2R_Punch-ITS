@@ -14,6 +14,9 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 
+#include "../GvisR2R_PunchView.h"
+extern CGvisR2R_PunchView* pView;
+
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -78,6 +81,7 @@ BOOL CAdoConnection::Open(LPCTSTR szConnection)
 	catch( _com_error e )
 	{
 		DumpError ( e );
+		pView->ClrDispMsg();
 		AfxMessageBox((LPCTSTR)e.Description());
 
 		fRet = FALSE;
@@ -116,6 +120,7 @@ BOOL CAdoConnection::IsOpen()
 	}
 	catch( _com_error e )
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox((LPCTSTR)e.Description());
 
 		DumpError( e );
@@ -227,6 +232,7 @@ AdoNS::_RecordsetPtr CAdoConnection::Execute(LPCTSTR szQuery)
 	}
 	catch(_com_error e)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox((LPCTSTR)e.Description()); // khc
 		DumpError(e,szQuery);
 		return NULL;

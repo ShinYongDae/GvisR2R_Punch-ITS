@@ -79,6 +79,7 @@ BOOL CNmcAxis::IsAmpFault()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &Status);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-IsAmpFault"));
 		return TRUE;
 	}
@@ -97,6 +98,7 @@ double CNmcAxis::GetState()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &Status);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-GetState"));
 		return MPIStateERROR;
 	}
@@ -154,6 +156,7 @@ BOOL CNmcAxis::ClearStatus()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &state);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-MC_ReadAxisStatus()"));
 		return FALSE;
 	}
@@ -185,6 +188,7 @@ BOOL CNmcAxis::ClearStatus()
 		ms = MC_Power(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, TRUE);
 		if (ms != MC_OK)
 		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("Error-SetAmpEnable()"));
 			return FALSE;
 		}
@@ -204,6 +208,7 @@ BOOL CNmcAxis::CheckMotionDone()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &state);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-MC_ReadAxisStatus()"));
 		return FALSE;
 	}
@@ -235,6 +240,7 @@ double CNmcAxis::GetActualPosition()
 	ms =  MC_ReadActualPosition(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &dPos);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-GetActualPosition()"));
 		return 0.0;
 	}
@@ -254,6 +260,7 @@ double CNmcAxis::GetCommandPosition()
 
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-GetCommandPosition()"));
 		return 0.0;
 	}
@@ -356,6 +363,7 @@ int CNmcAxis::CheckError(INT nErrCode)
 			CString strMsg;
 			strMsg.Format(_T("error code : %d , message : "), nErrCode);
 			strMsg += strErrMsg;
+			pView->ClrDispMsg();
 			AfxMessageBox(strMsg);
 		}
 	}
@@ -389,6 +397,7 @@ BOOL CNmcAxis::GetAmpEnable()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &Status);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-GetAmpEnable()"));
 		return FALSE;
 	}
@@ -404,6 +413,7 @@ BOOL CNmcAxis::IsAmpReady()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &Status);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-IsAmpReady()"));
 		return FALSE;
 	}
@@ -423,6 +433,7 @@ BOOL CNmcAxis::IsGroupMotion()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &Status);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-IsAmpReady()"));
 		return FALSE;
 	}
@@ -441,6 +452,7 @@ BOOL CNmcAxis::IsMotionDone()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &state);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-IsMotionDone()"));
 		return FALSE; 
 	}
@@ -461,6 +473,7 @@ BOOL CNmcAxis::IsStandStill()
 	ms = MC_ReadStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &state);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-IsStandStill()"));
 		return FALSE;
 	}
@@ -478,6 +491,7 @@ BOOL CNmcAxis::IsAxisDone()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &state);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-IsMotionDone()"));
 		return FALSE;
 	}
@@ -496,6 +510,7 @@ BOOL CNmcAxis::IsStopping()
 	ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &state);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-IsStopping()"));
 		return FALSE;
 	}
@@ -880,6 +895,7 @@ BOOL CNmcAxis::StartVelocityMove(double fVel, double fAcc)
 
 	if (fabs(fVel) > m_stParam.Speed.fMaxVel)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Exceed Maximum Speed"));
 		return FALSE;
 	}
@@ -961,6 +977,7 @@ INT CNmcAxis::GetNegLimitAction()
 	ms = MC_ReadBoolParameter(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, mcpEnableHWLimitNeg, &Value);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-GetNegLimitAction()"));
 		return nAction;
 	}
@@ -988,6 +1005,7 @@ INT CNmcAxis::GetPosLimitAction()
 	ms = MC_ReadBoolParameter(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, mcpEnableHWLimitPos, &Value);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-GetNegLimitAction()"));
 		return nAction;
 	}
@@ -1053,6 +1071,7 @@ BOOL CNmcAxis::StartPtPMotion(double fPos, double fVel, double fAcc, double fDec
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error(001) - MC_MoveAbsolute :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -1064,6 +1083,7 @@ BOOL CNmcAxis::StartPtPMotion(double fPos, double fVel, double fAcc, double fDec
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error(002) - MC_MoveAbsolute :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -1082,6 +1102,7 @@ BOOL CNmcAxis::StartPtPMotion(double fPos, double fVel, double fAcc, double fDec
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error - MC_MoveRelative :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -1093,6 +1114,7 @@ BOOL CNmcAxis::StartPtPMotion(double fPos, double fVel, double fAcc, double fDec
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error - MC_MoveRelative :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -1146,6 +1168,7 @@ BOOL CNmcAxis::SetAmpEnable(BOOL bOn)
 	ms = MC_Power(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, bOn);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-SetAmpEnable()"));
 		return FALSE;
 	}
@@ -1201,6 +1224,7 @@ BOOL CNmcAxis::SetAmpEnable(BOOL bOn)
 			ms = MC_Power(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, bOn);
 			if (ms != MC_OK)
 			{
+				pView->ClrDispMsg();
 				AfxMessageBox(_T("Error-SetAmpEnable()"));
 				return FALSE;
 			}
@@ -1298,12 +1322,14 @@ BOOL CNmcAxis::SetAmpEnable(BOOL bOn)
 		ms = MC_ReadAxisStatus(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, &state);
 		if (ms != MC_OK)
 		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("Error-MC_ReadAxisStatus()"));
 			return FALSE;
 		}
 
 		if (state & mcDriveFault)
 		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("Failed Amp Enable - mcDriveFault !!!"));
 			return FALSE;
 		}
@@ -1313,6 +1339,7 @@ BOOL CNmcAxis::SetAmpEnable(BOOL bOn)
 			Sleep(1000);
 			if (!IsAmpReady())
 			{
+				pView->ClrDispMsg();
 				AfxMessageBox(_T("Error-IsAmpReady()"));
 			}
 		}
@@ -1667,9 +1694,15 @@ UINT CZmpMotion::ThreadProc( LPVOID lpContext )
 				CController::m_pController->AlarmCall(ALARM_SEARCH_HOME_FAIL, 1);
 
 				if (CGvisAORDoc::m_pAORMasterDoc->m_nCurrentLang == LanguageType::KOREAN)
+				{
+					pView->ClrDispMsg();
 					AfxMessageBox(_T("원점 복귀 실패!! ") + pThread->m_pObjectAxis[nMotorID].m_AxisParam.sName);
+				}
 				else
+				{
+					pView->ClrDispMsg();
 					AfxMessageBox(_T("Axis homming failed") + pThread->m_pObjectAxis[nMotorID].m_AxisParam.sName);
+				}
 
 				pThread->m_pParent->WriteBitSegment(EQ_SHK_ERROR, 1, LD_OUTSEGMENT);
 				return 0;
@@ -1685,9 +1718,15 @@ UINT CZmpMotion::ThreadProc( LPVOID lpContext )
 				CController::m_pController->AlarmCall(ALARM_SEARCH_HOME_TIME_OUT, 1);
 
 				if (CGvisAORDoc::m_pAORMasterDoc->m_nCurrentLang == LanguageType::KOREAN)
+				{
+					pView->ClrDispMsg();
 					AfxMessageBox(_T("원점 복귀 대기 시간 초과!! ") + pThread->m_pObjectAxis[nMotorID].m_AxisParam.sName);
+				}
 				else
+				{
+					pView->ClrDispMsg();
 					AfxMessageBox(_T("Equipment door open detection alarm ") + pThread->m_pObjectAxis[nMotorID].m_AxisParam.sName);
+				}
 
 				pThread->m_pParent->WriteBitSegment(EQ_SHK_ERROR, 1, LD_OUTSEGMENT);
 				return 0;
@@ -1701,6 +1740,7 @@ UINT CZmpMotion::ThreadProc( LPVOID lpContext )
 				pThread->EStop();
 				CController::m_pController->AlarmCall(ALARM_DOOR_OPEN, 1);
 
+				pView->ClrDispMsg();
 				if (CGvisAORDoc::m_pAORMasterDoc->m_nCurrentLang == LanguageType::KOREAN)
 					AfxMessageBox(_T("설비 도어 열림 감지 알람"));
 				else
@@ -1719,6 +1759,7 @@ UINT CZmpMotion::ThreadProc( LPVOID lpContext )
 				pThread->EStop();
 				CController::m_pController->AlarmCall(ALARM_TABLE_LOCK, 1);
 
+				pView->ClrDispMsg();
 				if (CGvisAORDoc::m_pAORMasterDoc->m_nCurrentLang == LanguageType::KOREAN)
 					AfxMessageBox(_T("테이블 잠금 상태입니다. 로더/언로더 이동 후 다시 시도하십시오."));
 				else
@@ -4594,12 +4635,14 @@ BOOL CNmcAxis::EscapeHomeDirLimitSens()
 				if (!StartVelocityMove(m_stParam.Home.f1stSpd*(-m_stParam.Home.nDir), m_stParam.Home.fAcc))
 				{
 					Sleep(30);
+					pView->ClrDispMsg();
 					AfxMessageBox(_T("SearchHomePos Fail : StartVelocityMove Fail axisdone"));
 					return FALSE;
 				}
 			}
 			else
 			{
+				pView->ClrDispMsg();
 				AfxMessageBox(_T("SearchHomePos Fail : StartVelocityMove Fail"));
 				return FALSE;
 			}
@@ -4869,12 +4912,14 @@ BOOL CNmcAxis::SecondMoveToHomeDirSens()
 
 			if (!StartVelocityMove(m_stParam.Home.f2ndSpd*m_stParam.Home.nDir, m_stParam.Home.fAcc))
 			{
+				pView->ClrDispMsg();
 				AfxMessageBox(_T("SearchHomePos Fail : StartVelocityMove Fail axisdone f2ndSpd"));
 				return FALSE;
 			}
 		}
 		else
 		{
+			pView->ClrDispMsg();
 			AfxMessageBox(_T("SearchHomePos Fail : StartVelocityMove Fail f2ndSpd"));
 			return FALSE;
 		}
@@ -5062,6 +5107,7 @@ BOOL CNmcAxis::Stop(int nRate)	//For iRate * 10 msec, Stopping.
 	}
 	if (CurTimer - StartTimer >= 1000.)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error Motion Done On Axis Stop\nFor 1000msec!!!"));
 	}
 
@@ -5075,6 +5121,7 @@ BOOL CNmcAxis::Stop(int nRate)	//For iRate * 10 msec, Stopping.
 	if (ms != MC_OK)
 	{
 		_stprintf(msg, _T("Error - MC_GetErrorMessage :: 0x%08X, %hs"), ms, cstrErrorMsg);
+		pView->ClrDispMsg();
 		AfxMessageBox(msg);
 		return FALSE;
 	}
@@ -5103,6 +5150,7 @@ double CNmcAxis::GetInposition()
 	ms = MC_ReadParameter(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, mcpInPositionWindowSize, &Length);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-GetInposition()"));
 		return 0.0;
 	}
@@ -5159,6 +5207,7 @@ BOOL CNmcAxis::StartSCurveMove(double fPos, double fVel, double fAcc, double fJe
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error(003) - MC_MoveAbsolute :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -5170,6 +5219,7 @@ BOOL CNmcAxis::StartSCurveMove(double fPos, double fVel, double fAcc, double fJe
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error(004) - MC_MoveAbsolute :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -5187,6 +5237,7 @@ BOOL CNmcAxis::StartSCurveMove(double fPos, double fVel, double fAcc, double fJe
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error - MC_MoveRelative :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -5198,6 +5249,7 @@ BOOL CNmcAxis::StartSCurveMove(double fPos, double fVel, double fAcc, double fJe
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error - MC_MoveRelative :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -5266,6 +5318,7 @@ BOOL CNmcAxis::StartSCurveMove(double fPos, double fVelRatio, BOOL bAbs, BOOL bW
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error(005) - MC_MoveAbsolute :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -5277,6 +5330,7 @@ BOOL CNmcAxis::StartSCurveMove(double fPos, double fVelRatio, BOOL bAbs, BOOL bW
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error(006) - MC_MoveAbsolute :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -5294,6 +5348,7 @@ BOOL CNmcAxis::StartSCurveMove(double fPos, double fVelRatio, BOOL bAbs, BOOL bW
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error - MC_MoveRelative :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -5305,6 +5360,7 @@ BOOL CNmcAxis::StartSCurveMove(double fPos, double fVelRatio, BOOL bAbs, BOOL bW
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error - MC_MoveRelative :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 				return FALSE;
 			}
@@ -5365,6 +5421,7 @@ void CNmcAxis::SetNegSoftwareLimit(double fLimitVal, INT nAction)
 	ms = MC_WriteParameter(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, mcpSWLimitNeg, dPos);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-SetNegSoftwareLimit()"));
 		return;
 	}
@@ -5372,6 +5429,7 @@ void CNmcAxis::SetNegSoftwareLimit(double fLimitVal, INT nAction)
 	ms = MC_WriteBoolParameter(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, mcpEnableLimitNeg, enable);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-SetNegSoftwareLimit()"));
 		return;
 	}
@@ -5425,6 +5483,7 @@ void CNmcAxis::SetPosSoftwareLimit(double fLimitVal, INT nAction)
 	ms = MC_WriteParameter(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, mcpSWLimitPos, dPos);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-SetPosSoftwareLimit()"));
 		return;
 	}
@@ -5432,6 +5491,7 @@ void CNmcAxis::SetPosSoftwareLimit(double fLimitVal, INT nAction)
 	ms = MC_WriteBoolParameter(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, mcpEnableLimitPos, enable);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-SetPosSoftwareLimit()"));
 		return;
 	}
@@ -5477,6 +5537,7 @@ BOOL CNmcAxis::SetVelocity(double fVelocity)
 	ms = MC_WriteParameter(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, mcpCommandedVelocity, dPulse);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-SetVelocity()"));
 		return FALSE;
 	}
@@ -5485,6 +5546,7 @@ BOOL CNmcAxis::SetVelocity(double fVelocity)
 	ms = MC_WriteParameter(m_nBoardId, m_stParam.Motor.nAxisID + m_nOffsetAxisID, mcpActualVelocity, dPulse);
 	if (ms != MC_OK)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-SetVelocity()"));
 		return FALSE;
 	}
@@ -5563,6 +5625,7 @@ BOOL CNmcAxis::StartPtPMove(double fPos, double fVel, double fAcc, double fDec, 
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error(007) - MC_MoveAbsolute :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 
 				return FALSE;
@@ -5575,6 +5638,7 @@ BOOL CNmcAxis::StartPtPMove(double fPos, double fVel, double fAcc, double fDec, 
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error(008) - MC_MoveAbsolute :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 
 				return FALSE;
@@ -5595,6 +5659,7 @@ BOOL CNmcAxis::StartPtPMove(double fPos, double fVel, double fAcc, double fDec, 
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error - MC_MoveRelative :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 
 				return FALSE;
@@ -5607,6 +5672,7 @@ BOOL CNmcAxis::StartPtPMove(double fPos, double fVel, double fAcc, double fDec, 
 			{
 				MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 				msg.Format(_T("Error - MC_MoveRelative :: 0x%08X, %s"), ms, cstrErrorMsg);
+				pView->ClrDispMsg();
 				AfxMessageBox(msg);
 
 				return FALSE;
@@ -5872,6 +5938,7 @@ BOOL CNmcAxis::IsMotionDoneGantrySlave()
 		SetEStop();
 		MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 		msg.Format(_T("Error - MC_GantryReadStatus :: 0x%08X, %s"), ms, cstrErrorMsg);
+		pView->ClrDispMsg();
 		AfxMessageBox(msg);
 
 		return FALSE;
@@ -5913,8 +5980,9 @@ BOOL CNmcAxis::StartGantrySlaveMove(BOOL bAbs, double fPos, double fVel, double 
 	ms = MC_GantryReadStatus(m_nBoardId, 0, &Status);
 	if (ms != MC_OK)
 	{
-	AfxMessageBox(_T("Error-MC_GantryStatus"));
-	return FALSE;
+		pView->ClrDispMsg();
+		AfxMessageBox(_T("Error-MC_GantryStatus"));
+		return FALSE;
 	}
 
 	if ((Status & mcGantry_MotionCompleted) && (Status & mcGantry_YawStable))
@@ -5967,6 +6035,7 @@ BOOL CNmcAxis::StartGantrySlaveMove(BOOL bAbs, double fPos, double fVel, double 
 		SetEStop();
 		MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 		msg.Format(_T("Error - MC_ChangeGantryAlign :: 0x%08X, %s"), ms, cstrErrorMsg);
+		pView->ClrDispMsg();
 		AfxMessageBox(msg);
 
 		return FALSE;
@@ -5984,6 +6053,7 @@ BOOL CNmcAxis::SetOriginPos()
 	bRtn = SetPosition(m_stParam.Home.fOffset);
 	if (!bRtn)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error-SetOriginPos()"));
 	}
 
@@ -6008,6 +6078,7 @@ void CNmcAxis::EnableSensorStop(int nSensorIndex, BOOL bEnable) // nSensorIndex 
 
 	if (nSensorIndex > 4 || nSensorIndex < 0)
 	{
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error - Sensor index is out of range. (0 ~ 4)"));
 		return;
 	}
@@ -6038,6 +6109,7 @@ void CNmcAxis::EnableSensorStop(int nSensorIndex, BOOL bEnable) // nSensorIndex 
 		SetEStop();
 		MC_GetErrorMessage(ms, MAX_ERR_LEN, cstrErrorMsg);
 		msg.Format(_T("Error - MC_WriteBoolParameter :: 0x%08X, %s"), ms, cstrErrorMsg);
+		pView->ClrDispMsg();
 		AfxMessageBox(msg);
 	}
 }
@@ -6089,23 +6161,23 @@ int CNmcAxis::StartRsaHoming(BOOL bWait, int nMode, int nDir)
 	else
 	{
 		ms = MC_WriteIntParameter(m_nBoardId, vAxisID, mcpHomingType, (UINT32)nMode);
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(01)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(01)")); return ms; }
 		ms = MC_WriteIntParameter(m_nBoardId, vAxisID, mcpHomingDir, (UINT32)nDir);
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(02)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(02)")); return ms; }
 		ms = MC_WriteParameter(m_nBoardId, vAxisID, mcpHomingVelocity, dVel);				// 1st Speed
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(03)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(03)")); return ms; }
 		ms = MC_WriteParameter(m_nBoardId, vAxisID, mcpHomingAcceleration, dAcc);
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(04)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(04)")); return ms; }
 		ms = MC_WriteParameter(m_nBoardId, vAxisID, mcpHomingDeceleration, dAcc);
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(05)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(05)")); return ms; }
 		ms = MC_WriteParameter(m_nBoardId, vAxisID, mcpHomingJerk, dJerk);
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(06)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(06)")); return ms; }
 		ms = MC_WriteParameter(m_nBoardId, vAxisID, mcpHomingCreepVelocity, dVel2);			// 2nd Speed
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(07)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(07)")); return ms; }
 		ms = MC_WriteParameter(m_nBoardId, vAxisID, mcpHomePositionOffset, dOffset);
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(08)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(08)")); return ms; }
 		ms = MC_WriteIntParameter(m_nBoardId, vAxisID, mcpHomeCompleteFlagHandle, HOMING_CLEAR);
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(09)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(09)")); return ms; }
 
 		Sleep(100);
 
@@ -6113,14 +6185,15 @@ int CNmcAxis::StartRsaHoming(BOOL bWait, int nMode, int nDir)
 	}
 	if (ms != MC_OK) 
 	{ 
-		AfxMessageBox(_T("Error-StartRsaHoming(10)")); 
+		pView->ClrDispMsg();
+		AfxMessageBox(_T("Error-StartRsaHoming(10)"));
 		return ms; 
 	}
 
 	if (bWait)
 	{
 		ms = MC_ReadAxisStatus(m_nBoardId, vAxisID, &state);
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(11)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(11)")); return ms; }
 
 		nTick = GetTickCount();
 		while (!(state & mcHoming))
@@ -6128,18 +6201,18 @@ int CNmcAxis::StartRsaHoming(BOOL bWait, int nMode, int nDir)
 			if (GetTickCount() - nTick >= 3000)	break;
 			Sleep(100);
 			ms = MC_ReadAxisStatus(m_nBoardId, vAxisID, &state);
-			if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(12)")); return ms; }
+			if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(12)")); return ms; }
 		}
 
 		ms = MC_ReadAxisStatus(m_nBoardId, vAxisID, &state);
-		if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(13)")); return ms; }
+		if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(13)")); return ms; }
 
 		while (!(state & mcIsHomed))
 		{
-			if (GetTickCount() - nTick >= 600000) { AfxMessageBox(_T("Error-StartRsaHoming(14)")); return ms; }
+			if (GetTickCount() - nTick >= 600000) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(14)")); return ms; }
 			Sleep(100);
 			ms = MC_ReadAxisStatus(m_nBoardId, vAxisID, &state);
-			if (ms != MC_OK) { AfxMessageBox(_T("Error-StartRsaHoming(15)")); return ms; }
+			if (ms != MC_OK) { pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(15)")); return ms; }
 		}
 
 		ClearStatus();
@@ -6214,7 +6287,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 		{
 			pThread->m_bHomeThreadAlive = FALSE;
 			pThread->m_bRsaHomeThreadAlive = FALSE;
-			AfxMessageBox(_T("Error-StartRsaHoming(200)"));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(200)"));
 			return 0;
 		}
 
@@ -6225,7 +6298,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 			{
 				pThread->m_bHomeThreadAlive = FALSE;
 				pThread->m_bRsaHomeThreadAlive = FALSE;
-				AfxMessageBox(_T("Error-StartRsaHoming(201)"));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(201)"));
 				return 0;
 			}
 			Sleep(pThread->m_nSamplingTimeMsec);
@@ -6235,7 +6308,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 			{
 				pThread->m_bHomeThreadAlive = FALSE;
 				pThread->m_bRsaHomeThreadAlive = FALSE;
-				AfxMessageBox(_T("Error-StartRsaHoming(202)"));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(202)"));
 				return 0;
 			}
 		}
@@ -6245,7 +6318,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 		{
 			pThread->m_bHomeThreadAlive = FALSE;
 			pThread->m_bRsaHomeThreadAlive = FALSE;
-			AfxMessageBox(_T("Error-StartRsaHoming(203)"));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(203)"));
 			return 0;
 		}
 
@@ -6255,7 +6328,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 			{
 				pThread->m_bHomeThreadAlive = FALSE;
 				pThread->m_bRsaHomeThreadAlive = FALSE;
-				AfxMessageBox(_T("Error-StartRsaHoming(204)"));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(204)"));
 				return 0;
 			}
 			Sleep(pThread->m_nSamplingTimeMsec);
@@ -6265,7 +6338,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 			{
 				pThread->m_bHomeThreadAlive = FALSE;
 				pThread->m_bRsaHomeThreadAlive = FALSE;
-				AfxMessageBox(_T("Error-StartRsaHoming(205)"));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(205)"));
 				return 0;
 			}
 		}
@@ -6278,7 +6351,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 		{
 			pThread->m_bHomeThreadAlive = FALSE;
 			pThread->m_bRsaHomeThreadAlive = FALSE;
-			AfxMessageBox(_T("Error-StartRsaHoming(100)"));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(100)"));
 			return 0;
 		}
 
@@ -6289,7 +6362,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 			{
 				pThread->m_bHomeThreadAlive = FALSE;
 				pThread->m_bRsaHomeThreadAlive = FALSE;
-				AfxMessageBox(_T("Error-StartRsaHoming(101)"));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(101)"));
 				return 0;
 			}
 			Sleep(pThread->m_nSamplingTimeMsec);
@@ -6299,7 +6372,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 			{
 				pThread->m_bHomeThreadAlive = FALSE;
 				pThread->m_bRsaHomeThreadAlive = FALSE;
-				AfxMessageBox(_T("Error-StartRsaHoming(102)"));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(102)"));
 				return 0;
 			}
 		}
@@ -6309,7 +6382,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 		{
 			pThread->m_bHomeThreadAlive = FALSE;
 			pThread->m_bRsaHomeThreadAlive = FALSE;
-			AfxMessageBox(_T("Error-StartRsaHoming(103)"));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(103)"));
 			return 0;
 		}
 
@@ -6319,7 +6392,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 			{
 				pThread->m_bHomeThreadAlive = FALSE;
 				pThread->m_bRsaHomeThreadAlive = FALSE;
-				AfxMessageBox(_T("Error-StartRsaHoming(104)"));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(104)"));
 				return 0;
 			}
 			Sleep(pThread->m_nSamplingTimeMsec);
@@ -6329,7 +6402,7 @@ UINT CNmcAxis::RsaHomeThreadProc(LPVOID lpContext)
 			{
 				pThread->m_bHomeThreadAlive = FALSE;
 				pThread->m_bRsaHomeThreadAlive = FALSE;
-				AfxMessageBox(_T("Error-StartRsaHoming(105)"));
+				pView->ClrDispMsg(); AfxMessageBox(_T("Error-StartRsaHoming(105)"));
 				return 0;
 			}
 		}

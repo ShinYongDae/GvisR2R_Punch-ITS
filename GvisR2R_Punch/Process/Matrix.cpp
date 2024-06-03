@@ -12,6 +12,9 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+#include "../GvisR2R_PunchView.h"
+extern CGvisR2R_PunchView* pView;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -411,7 +414,7 @@ double CMatrix::matrix_det(matrix* m)
 	}
 	else
 	{
-		AfxMessageBox(_T("Matrix must be square"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Matrix must be square"));
 	}
 	return dDet;
 
@@ -438,7 +441,7 @@ matrix* CMatrix::matrix_minor(matrix* m,int row, int col)
 	}
 	else
 	{
-		AfxMessageBox(_T("Index for minor out of range"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Index for minor out of range"));
 	}
 
 	return minor;
@@ -1041,7 +1044,7 @@ matrix* CMatrix::affine_matrix( double* x, double* y, double* _x, double* _y)
 		{
 			matrix_free(b);
 			matrix_free(a);
-			AfxMessageBox(_T("Not found inverse matrix"));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Not found inverse matrix"));
 			return NULL;
 		}
 	}
@@ -1148,7 +1151,7 @@ matrix* CMatrix::projection_matrix( double* x, double* y, double* _x, double* _y
 		{
 			matrix_free(b);
 			matrix_free(a);
-			AfxMessageBox(_T("Not found inverse matrix"));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Not found inverse matrix"));
 			return NULL;
 		}
 	}

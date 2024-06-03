@@ -11,6 +11,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#include "../GvisR2R_PunchView.h"
+extern CGvisR2R_PunchView* pView;
+
 /////////////////////////////////////////////////////////////////////////////
 // CMyFileErrMap
 
@@ -231,6 +234,7 @@ BOOL CMyFileErrMap::LoadX(int nRow, int nIdx, CString sPath)
 			nIdx++;
 		}
 
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error - Open FileErrMap X!!!"));
 
 		return FALSE;
@@ -289,6 +293,7 @@ BOOL CMyFileErrMap::LoadY(int nRow, int nIdx, CString sPath)
 			nIdx++;
 		}
 
+		pView->ClrDispMsg();
 		AfxMessageBox(_T("Error - Open FileErrMap Y!!!"));
 
 		return FALSE;

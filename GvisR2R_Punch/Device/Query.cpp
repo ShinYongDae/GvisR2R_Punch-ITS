@@ -7,6 +7,9 @@
 #include "SafeLock.h"
 CCriticalSection g_LogLockQuery;
 
+#include "../GvisR2R_PunchView.h"
+extern CGvisR2R_PunchView* pView;
+
 CQuery::CQuery()
 {
 	m_bInitDB = FALSE;
@@ -79,7 +82,7 @@ BOOL CQuery::Execute(CString sQuery, CStringArray& sArrayData, int& nTotalRow, i
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetCustomerNameList()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -145,7 +148,7 @@ int CQuery::GetCustomerNameList(CStringArray &strCustomerName)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetCustomerNameList()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return 0;
 	}
 
@@ -187,7 +190,7 @@ BOOL CQuery::FindCustomerCode(CString strCustomerName, CString &strCustomerCode)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at FindCustomerCode()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -237,7 +240,7 @@ int CQuery::GetUserInfo(CStringArray &sUserID, CStringArray &sPW, CStringArray &
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetUserInfoFromDBForVrs()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return 0;
 	}
 
@@ -362,7 +365,7 @@ int CQuery::GetUserNameList(CStringArray &strUserName)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetUserNameList()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -406,7 +409,7 @@ int CQuery::GetUserList(CUser* pList, int& nUserCount)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetUserNameList()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -488,7 +491,7 @@ BOOL CQuery::GetUserName(int nIndex, CString &strUserName)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetUserName()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -532,7 +535,7 @@ BOOL CQuery::FindUserCode(CString strUserName, CString &strUserCode)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at FindUserCode()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -587,7 +590,7 @@ int CQuery::GetEquipmentNameList(CStringArray &strEquipName)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at FindCustomerCode()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return 0;
 	}
 
@@ -629,7 +632,7 @@ BOOL CQuery::GetEquipmentName(int nIndex, CString &strEquipName)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetEquipmentName()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -670,7 +673,7 @@ BOOL CQuery::FindEquipCode(CString strEquipName, CString &strEquipCode)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at FindEquipCode()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -742,7 +745,7 @@ double CQuery::GetCamInfoResolution(CString strModelName, CString strLayerName)
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetCamInfoResolution()\r\n%s"), m_dataSource.GetLastError());
 		Log(strMsg);
-		AfxMessageBox(strMsg, MB_ICONSTOP);
+		pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return dRes;
 	}
 
@@ -793,7 +796,7 @@ CString CQuery::GetCamInfoData(CString strModelName, CString strLayerCode, CStri
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetCamInfoData()\r\n%s"), m_dataSource.GetLastError());
 		Log(strMsg);
-		AfxMessageBox(strMsg, MB_ICONSTOP);
+		pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return _T("");
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -841,7 +844,7 @@ BOOL CQuery::LoadMasterSpec(CString sModelN, CString sLayerN, double& dRes, CStr
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at LoadMasterSpec()\r\n%s"), m_dataSource.GetLastError());
 		Log(strMsg);
-		AfxMessageBox(strMsg, MB_ICONSTOP);
+		pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -896,7 +899,7 @@ CString CQuery::GetCamSpecDirFromRSTH(CString strLotCode, CString strLayerCode, 
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetCamSpecDirFromRSTH()\r\n%s"), m_dataSource.GetLastError());
 		Log(strMsg);
-		AfxMessageBox(strMsg, MB_ICONSTOP);
+		pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return _T("");
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -939,7 +942,7 @@ BOOL CQuery::GetInspectionRegionByModel(CString strModelName, double &fWidth, do
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetInspectionRegionByModel()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -977,7 +980,7 @@ BOOL CQuery::GetModelCode(CString strModelName, CString &strModelCode)
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetModelCode()\r\n%s"), m_dataSource.GetLastError());
 		Log(strMsg);
-		AfxMessageBox(strMsg, MB_ICONSTOP);
+		pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -1003,7 +1006,7 @@ BOOL CQuery::GetModelCode(CString strModelName, CString &strModelCode)
 
 	CString strMsg;
 	strMsg.Format(_T("Not found model code for this model name:%s"), strModelName);
-	AfxMessageBox(strMsg);
+	pView->ClrDispMsg(); AfxMessageBox(strMsg);
 	Log(strMsg);
 
 	return FALSE;
@@ -1023,7 +1026,7 @@ int CQuery::GetLotSize(CString strModelName)
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetLotSize()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		}
 		else
 			lMaxRows = m_dataSource.m_pRS->RecordCount;
@@ -1057,7 +1060,7 @@ int CQuery::GetLotNameList(CStringArray &strLotArray, CString strModelName, CStr
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetLotNameList()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg);	AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg);	pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -1099,7 +1102,7 @@ BOOL CQuery::GetLotName(int nIndex, CString strModelName, CString &strLotName)
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetLotName()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -1124,7 +1127,7 @@ BOOL CQuery::GetLotName(int nIndex, CString strModelName, CString &strLotName)
 	}
 	CString strMsg;
 	strMsg.Format(_T("Not found lot name for this model and lot index:%s/%d"), strModelName, nIndex);
-	AfxMessageBox(strMsg);
+	pView->ClrDispMsg(); AfxMessageBox(strMsg);
 	Log(strMsg);
 	return FALSE;
 }
@@ -1144,7 +1147,7 @@ BOOL CQuery::GetLotCode(CString strModelName, CString strLotName, CString &strLo
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetLotCode()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -1174,7 +1177,7 @@ BOOL CQuery::GetLotCode(CString strModelName, CString strLotName, CString &strLo
 	}
 	CString strMsg;
 	strMsg.Format(_T("Not found lot code for this model and lot name:%s/%s"), strModelName, strLotName);
-	AfxMessageBox(strMsg);
+	pView->ClrDispMsg(); AfxMessageBox(strMsg);
 	Log(strMsg);
 	return FALSE;
 }
@@ -1194,7 +1197,7 @@ BOOL CQuery::GetLayerCode(CString strModelName, CString strLayerName, CString &s
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetLayerCodeFromCamInfo()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -1220,7 +1223,7 @@ BOOL CQuery::GetLayerCode(CString strModelName, CString strLayerName, CString &s
 
 	CString strMsg;
 	strMsg.Format(_T("Not found layer code for this model and layer name:%s/%s"), strModelName, strLayerName);
-	AfxMessageBox(strMsg);
+	pView->ClrDispMsg(); AfxMessageBox(strMsg);
 	Log(strMsg);
 	//	MessageBoxTimeout(NULL, (strMsg),_T("Warnning"), MB_OK | MB_SETFOREGROUND | MB_APPLMODAL | MB_ICONSTOP, 0, 500);
 	return FALSE;
@@ -1246,7 +1249,7 @@ int CQuery::GetLayerNameList(CString strModelName, CStringArray &strLayerName)
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetLayerNameList()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return 0;
 		}
 
@@ -1311,7 +1314,7 @@ int  CQuery::GetLayerCodeList(CString strModelName, CStringArray &strLayerCode)
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetLayerCodeList()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return 0;
 		}
 
@@ -1357,7 +1360,7 @@ BOOL CQuery::GetLayerCodeFromCamInfo(CString strModelName, CString strLayerName,
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetLayerCodeFromCamInfo()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -1383,7 +1386,7 @@ BOOL CQuery::GetLayerCodeFromCamInfo(CString strModelName, CString strLayerName,
 
 	CString strMsg;
 	strMsg.Format(_T("Not found layer code for this model and layer name:%s/%s"), strModelName, strLayerName);
-	AfxMessageBox(strMsg);
+	pView->ClrDispMsg(); AfxMessageBox(strMsg);
 	Log(strMsg);
 	//	MessageBoxTimeout(NULL, (strMsg),_T("Warnning"), MB_OK | MB_SETFOREGROUND | MB_APPLMODAL | MB_ICONSTOP, 0, 500);
 	return FALSE;
@@ -1403,7 +1406,7 @@ BOOL CQuery::GetLayerCodeFromLayer(CString strModelName, CString strLayerName, C
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetLayerCodeFromLayer()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -1428,7 +1431,7 @@ BOOL CQuery::GetLayerCodeFromLayer(CString strModelName, CString strLayerName, C
 	}
 	CString strMsg;
 	strMsg.Format(_T("Not found layer code for this model and layer name:%s/%s"), strModelName, strLayerName);
-	AfxMessageBox(strMsg);
+	pView->ClrDispMsg(); AfxMessageBox(strMsg);
 	Log(strMsg);
 	return FALSE;
 }
@@ -1505,7 +1508,7 @@ int CQuery::GetSerialNameList(CString strModelName, CString strLayerName, CStrin
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetSerialNameList()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return 0;
 		}
 
@@ -1555,7 +1558,7 @@ BOOL CQuery::GetSerialName(int nIndex, CString strModelName, CString strlayerNam
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetSerialName()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -1581,7 +1584,7 @@ BOOL CQuery::GetSerialName(int nIndex, CString strModelName, CString strlayerNam
 
 	CString strMsg;
 	strMsg.Format(_T("Not found serial name for this model , layer, lot and serial index:%s/%s/%s/%d"), strModelName, strlayerName, strLotName, nIndex);
-	AfxMessageBox(strMsg);
+	pView->ClrDispMsg(); AfxMessageBox(strMsg);
 	Log(strMsg);
 	return FALSE;
 }
@@ -1601,7 +1604,7 @@ BOOL CQuery::GetSerialCode(CString strModelName, CString strlayerName, CString s
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetSerialCode()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -1631,7 +1634,7 @@ BOOL CQuery::GetSerialCode(CString strModelName, CString strlayerName, CString s
 
 	CString strMsg;
 	strMsg.Format(_T("Not found serial code for this model , layer, lot and serial name:%s/%s/%s/%s"), strModelName, strlayerName, strLotName, strSerialName);
-	AfxMessageBox(strMsg);
+	pView->ClrDispMsg(); AfxMessageBox(strMsg);
 	Log(strMsg);
 	return FALSE;
 }
@@ -1659,7 +1662,7 @@ BOOL CQuery::LoadStripExtentBySTRIP(CString strModelCode, int nNumOfRegion, vect
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at LoadStripExtentBySTRIP()\r\n%s"), m_dataSource.GetLastError());
-		AfxMessageBox(strMsg, MB_ICONSTOP);
+		pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -1741,7 +1744,7 @@ BOOL CQuery::GetNumberOfStripRegionFromMODEL(CString strModelCode, int &nNumOfRe
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetPieceSize()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 	}
 
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -1782,7 +1785,7 @@ int CQuery::GetStripRegionPosByModel(CString strModelName, CStringArray &strStri
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetStripRegionByModel()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -1826,7 +1829,7 @@ BOOL CQuery::GetStripRegionByLot(CString strLotCode, CStringArray &strStripRegio
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetStripRegionByLot()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -1867,7 +1870,7 @@ int  CQuery::GetStripNameList(CString strModelName, CStringArray &strStripName)
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetStripNameList()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -1911,7 +1914,7 @@ BOOL CQuery::GetStripName(int nIndex, CString strModelName, CString &strStripNam
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetStripName()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -1953,7 +1956,7 @@ BOOL CQuery::GetStripCode(CString strModelName, CString strStripName, CString &s
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetStripCode()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -2002,7 +2005,7 @@ BOOL CQuery::GetNumberOfPieceRegionFromMODEL(CString strModelCode, int &nNumOfRe
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetPieceSize()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 	}
 
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -2053,7 +2056,7 @@ BOOL CQuery::LoadPieceExtentByPIECE(CString strModelCode, int nNumOfRegion, vect
 	{
 
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at LoadPieceExtentByPIECE()\r\n%s"), m_dataSource.GetLastError());
-		AfxMessageBox(strMsg, MB_ICONSTOP);
+		pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -2149,7 +2152,7 @@ int CQuery::GetPieceCenterposByModel(CString strModelName, float *fCenterx, floa
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetPieceRegionByModel()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return 0;
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -2232,7 +2235,7 @@ int CQuery::GetPieceRegionPosByModel(CString strModelName, CStringArray &strPiec
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetPieceRegionByModel()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return 0;
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -2275,7 +2278,7 @@ BOOL CQuery::GetPieceRegionByLot(CString strLotCode, CStringArray &strPieceRegio
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetPieceRegionByLot()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -2317,7 +2320,7 @@ int  CQuery::GetPieceNameList(CString strModelName, CStringArray &strPieceName)
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetPieceNameList()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return 0;
 		}
 
@@ -2359,7 +2362,7 @@ BOOL CQuery::LoadDefectTable(int* pDefCode, COLORREF* pDefColor, CString* pKorN,
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at NotifyVMSEnd()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -2436,7 +2439,7 @@ int CQuery::GetDefectSize(CString strLotCode, CString strLayerCode, CString strS
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetRSTData()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return 0;
 	}
 	lMaxCols = m_dataSource.m_pRS->Fields->Count;
@@ -2474,7 +2477,7 @@ BOOL CQuery::GetRotateCode(CString strModelName, CString strLotName, CString str
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetRotateCode()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -2528,7 +2531,7 @@ int CQuery::GetMirrorTypeNameList(CStringArray &strMirrorName)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetMirrorTypeNameList()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -2568,7 +2571,7 @@ BOOL CQuery::GetMirrorTypeName(int nIndex, CString &strMirrorName)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetMirrorTypeName()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -2626,7 +2629,7 @@ BOOL CQuery::GetMirrorTypeCode(CString strModelName, CString strLotName, CString
 		{
 			CString strMsg;
 			strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at GetMirrorTypeCode()\r\n%s"), m_dataSource.GetLastError());
-			Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+			Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 			return FALSE;
 		}
 
@@ -2678,7 +2681,7 @@ BOOL CQuery::FindMirrorTypeCode(CString strMirrorName, CString &strMirrorCode)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at FindMirrorTypeCode()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -2810,7 +2813,7 @@ BOOL CQuery::LoadPieceOut(CString strLotName, int nSerial, int* pPieceOutIndex, 
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at LoadPieceOut()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 
@@ -2852,7 +2855,7 @@ BOOL CQuery::GetCurrentDBName(CString &sName)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at LoadPieceOut()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); AfxMessageBox(strMsg, MB_ICONSTOP);
+		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
 		return FALSE;
 	}
 

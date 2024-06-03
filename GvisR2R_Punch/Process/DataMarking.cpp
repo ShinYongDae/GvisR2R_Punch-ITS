@@ -11,6 +11,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#include "../GvisR2R_PunchView.h"
+extern CGvisR2R_PunchView* pView;
+
 /////////////////////////////////////////////////////////////////////////////
 // CDataMarking
 
@@ -111,7 +114,7 @@ void CDataMarking::Init(int nSerial, int nTot) // m_nIdx : From 0 to nTot.....
 
 	if(nSerial <= 0)
 	{
-		AfxMessageBox(_T("Serial Error.1"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Serial Error.1"));
 		return;
 	}
 
