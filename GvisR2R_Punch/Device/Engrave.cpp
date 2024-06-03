@@ -438,12 +438,8 @@ void CEngrave::OnTimer(UINT_PTR nIDEvent)
 			else
 			{
 #ifdef USE_ENGRAVE
-				if (pView && pView->m_pEngrave)
-				{
-					pView->m_pEngrave->Set2DOffsetInitPosMove(FALSE);	//_stSigInx::_2DOffsetInitPosMove
-				}
+				pView->m_pEngrave->Set2DOffsetInitPosMove(FALSE);	//_stSigInx::_2DOffsetInitPosMove
 #endif
-
 				m_bTIM_MPE_OFFSET_INITPOS_MOVE = FALSE;
 			}
 #endif

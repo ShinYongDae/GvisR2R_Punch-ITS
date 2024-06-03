@@ -3767,7 +3767,6 @@ BOOL CGvisR2R_PunchView::SortingInUp(CString sPath, int nIndex)
 	if (_stat(filename, &buf) != 0)
 	{
 		sMsg.Format(_T("일시정지 - Failed getting information."));
-		//MsgBox(sMsg);
 		pView->ClrDispMsg();
 		AfxMessageBox(sMsg);
 		return FALSE;
@@ -3785,11 +3784,6 @@ BOOL CGvisR2R_PunchView::SortingInUp(CString sPath, int nIndex)
 		nSerial = _tstoi(sSerial);
 
 		t = localtime(&buf.st_ctime);
-		//t = localtime(&buf.st_mtime);
-
-		//sFileName.Format(_T("%04d%02d%02d%02d%02d%02d%04d"), t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, 
-		//														t->tm_hour, t->tm_min, t->tm_sec, nSerial);
-		//m_nBufSerialSorting[0][nIndex] = _tstoi(sFileName);
 
 		CString sYear, sMonth, sDay, sHour, sMin, sSec;
 		sYear.Format(_T("%04d"), t->tm_year + 1900);
@@ -3979,12 +3973,6 @@ BOOL CGvisR2R_PunchView::SortingInDn(CString sPath, int nIndex)
 		nSerial = _tstoi(sSerial);
 
 		t = localtime(&buf.st_ctime);
-		//t = localtime(&buf.st_mtime);
-
-		//sFileName.Format(_T("%04d%02d%02d%02d%02d%02d%04d"), t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, 
-		//														t->tm_hour, t->tm_min, t->tm_sec, nSerial);
-		//m_nBufSerialSorting[1][nIndex] = _tstoi(sFileName);
-
 
 		CString sYear, sMonth, sDay, sHour, sMin, sSec;
 		sYear.Format(_T("%04d"), t->tm_year + 1900);

@@ -436,7 +436,7 @@ public:
 
 	CString GetMonDispMain();
 	void SetMonDispMain(CString sDisp);
-	void GetMkMenu01();
+	//void GetMkMenu01();
 	void SetMkMenu01(CString sMenu, CString sItem, CString sData);
 	//void GetMkMenu03();
 	//void GetMkMenu03Main();

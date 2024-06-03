@@ -5829,7 +5829,8 @@ int CGvisR2R_PunchDoc::LoadPCRUp(int nSerial, BOOL bFromShare)	// return : 2(Fai
 		if (WorkingInfo.LastJob.sLotUp != strLot)
 		{
 			WorkingInfo.LastJob.sLotUp = strLot;
-			pView->m_pEngrave->SetLotUpName();
+			if(pView->m_pEngrave)
+				pView->m_pEngrave->SetLotUpName();
 		}
 		bUpdate = TRUE;
 		m_sItsCode = WorkingInfo.LastJob.sEngItsCode = sItsCode;
@@ -5840,12 +5841,14 @@ int CGvisR2R_PunchDoc::LoadPCRUp(int nSerial, BOOL bFromShare)	// return : 2(Fai
 		if (WorkingInfo.LastJob.sModelUp != strModel)
 		{
 			WorkingInfo.LastJob.sModelUp = strModel;
-			pView->m_pEngrave->SetModelUpName();
+			if (pView->m_pEngrave)
+				pView->m_pEngrave->SetModelUpName();
 		}
 		if (WorkingInfo.LastJob.sLayerUp != strLayer)
 		{
 			WorkingInfo.LastJob.sLayerUp = strLayer;
-			pView->m_pEngrave->SetLayerUpName();
+			if (pView->m_pEngrave)
+				pView->m_pEngrave->SetLayerUpName();
 		}
 
 		bUpdate = TRUE;
@@ -6171,7 +6174,8 @@ int CGvisR2R_PunchDoc::LoadPCRDn(int nSerial, BOOL bFromShare)	// return : 2(Fai
 		if (WorkingInfo.LastJob.sLotDn != strLot)
 		{
 			WorkingInfo.LastJob.sLotDn = strLot;
-			pView->m_pEngrave->SetLotDnName();
+			if (pView->m_pEngrave)
+				pView->m_pEngrave->SetLotDnName();
 		}
 		bUpdate = TRUE;
 		m_sItsCode = WorkingInfo.LastJob.sEngItsCode = sItsCode;
@@ -6182,12 +6186,14 @@ int CGvisR2R_PunchDoc::LoadPCRDn(int nSerial, BOOL bFromShare)	// return : 2(Fai
 		if (WorkingInfo.LastJob.sModelDn != strModel)
 		{
 			WorkingInfo.LastJob.sModelDn = strModel;
-			pView->m_pEngrave->SetModelUpName();
+			if (pView->m_pEngrave)
+				pView->m_pEngrave->SetModelUpName();
 		}
 		if (WorkingInfo.LastJob.sLayerDn != strLayer)
 		{
 			WorkingInfo.LastJob.sLayerDn = strLayer;
-			pView->m_pEngrave->SetLayerDnName();
+			if (pView->m_pEngrave)
+				pView->m_pEngrave->SetLayerDnName();
 		}
 		bUpdate = TRUE;
 
@@ -10254,118 +10260,118 @@ void CGvisR2R_PunchDoc::SetMonDispMain(CString sDisp)
 	::WritePrivateProfileString(_T("Info"), _T("Disp"), sDisp, sPath);
 }
 
-void CGvisR2R_PunchDoc::GetMkMenu01()
-{
-	CString sPath = WorkingInfo.System.sPathMkMenu01;
-	TCHAR szData[512];
-
-	if (sPath.IsEmpty())
-		return;
-
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Operator"), NULL, szData, sizeof(szData), sPath))
-		pDoc->WorkingInfo.LastJob.sSelUserName = pDoc->Menu01Status.Info.sOperator = CString(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Model"), NULL, szData, sizeof(szData), sPath))
-		pDoc->WorkingInfo.LastJob.sModelUp = pDoc->Menu01Status.Info.sModel = CString(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Lot"), NULL, szData, sizeof(szData), sPath))
-		pDoc->WorkingInfo.LastJob.sLotUp = pDoc->Menu01Status.Info.sLot = CString(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("LayerUp"), NULL, szData, sizeof(szData), sPath))
-		pDoc->WorkingInfo.LastJob.sLayerUp = pDoc->Menu01Status.Info.sLayerUp = CString(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("LayerDn"), NULL, szData, sizeof(szData), sPath))
-		pDoc->WorkingInfo.LastJob.sLayerDn = pDoc->Menu01Status.Info.sLayerDn = CString(szData);
-
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Total Shot"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.nTotShot = _ttoi(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Total Work Ratio"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.dTotWorkRto = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Lot Work Ratio"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.dLotWorkRto = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Total Speed"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.dTotSpd = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Patial Speed"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.dPartSpd = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("DoneLengthMk"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.dDoneLenMk = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("DoneLengthAoiDn"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.dDoneLengthAoiDn = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("DoneLengthAoiUp"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.dDoneLenAoiUp = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("DoneLengthEngrave"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.dDoneLengthEng = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Info"), _T("VerifyImageNum"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Info.nVerifyImgNum = _ttoi(szData);
-
-	if (0 < ::GetPrivateProfileString(_T("Total Test"), _T("Total"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.TotTest.nTotal = _ttoi(szData);
-	if (0 < ::GetPrivateProfileString(_T("Total Test"), _T("Up"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.TotTest.nUp = _ttoi(szData);
-	if (0 < ::GetPrivateProfileString(_T("Total Test"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.TotTest.nDn = _ttoi(szData);
-
-	if (0 < ::GetPrivateProfileString(_T("Good Ratio"), _T("Up"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.GoodRto.dUp = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Good Ratio"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.GoodRto.dDn = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Good Ratio"), _T("Total"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.GoodRto.dTotal = _ttof(szData);
-
-	if (0 < ::GetPrivateProfileString(_T("Good"), _T("Up"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Good.nUp = _ttoi(szData);
-	if (0 < ::GetPrivateProfileString(_T("Good"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Good.nDn = _ttoi(szData);
-	if (0 < ::GetPrivateProfileString(_T("Good"), _T("Total"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Good.nTotal = _ttoi(szData);
-
-	if (0 < ::GetPrivateProfileString(_T("Bed Ratio"), _T("Up"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.BedRto.dUp = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Bed Ratio"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.BedRto.dDn = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Bed Ratio"), _T("Total"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.BedRto.dTotal = _ttof(szData);
-
-	if (0 < ::GetPrivateProfileString(_T("Bed"), _T("Up"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Bed.nUp = _ttoi(szData);
-	if (0 < ::GetPrivateProfileString(_T("Bed"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Bed.nDn = _ttoi(szData);
-	if (0 < ::GetPrivateProfileString(_T("Bed"), _T("Total"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Bed.nTotal = _ttoi(szData);
-
-	if (0 < ::GetPrivateProfileString(_T("Yield Total"), _T("Up"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.YieldTot.dUp = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Yield Total"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.YieldTot.dDn = _ttof(szData);
-	if (0 < ::GetPrivateProfileString(_T("Yield Total"), _T("Total"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.YieldTot.dTotal = _ttof(szData);
-
-	int i; CString sItem;
-	for (i = 0; i < MAX_STRIP; i++)
-	{
-		sItem.Format(_T("Yield Strip%d"), i);
-		if (0 < ::GetPrivateProfileString(sItem, _T("Up"), NULL, szData, sizeof(szData), sPath))
-			pDoc->Menu01Status.YieldStrip[i].dUp = _ttof(szData);
-		if (0 < ::GetPrivateProfileString(sItem, _T("Dn"), NULL, szData, sizeof(szData), sPath))
-			pDoc->Menu01Status.YieldStrip[i].dDn = _ttof(szData);
-		if (0 < ::GetPrivateProfileString(sItem, _T("Total"), NULL, szData, sizeof(szData), sPath))
-			pDoc->Menu01Status.YieldStrip[i].dTotal = _ttof(szData);
-	}
-
-	for (i = 1; i < MAX_DEF; i++)
-	{
-		sItem.Format(_T("%d"), i);
-		if (0 < ::GetPrivateProfileString(_T("Defect"), sItem, NULL, szData, sizeof(szData), sPath))
-			pDoc->Menu01Status.Defect.nDefNum[i] = _ttoi(szData);
-	}
-
-	if (0 < ::GetPrivateProfileString(_T("Data"), _T("MkNumLf"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Data.nMkNumLf = _ttoi(szData);
-	if (0 < ::GetPrivateProfileString(_T("Data"), _T("MkNumRt"), NULL, szData, sizeof(szData), sPath))
-		pDoc->Menu01Status.Data.nMkNumRt = _ttoi(szData);
-	if (0 < ::GetPrivateProfileString(_T("Data"), _T("VerifyLen"), NULL, szData, sizeof(szData), sPath))
-	{
-		pDoc->Menu01Status.Data.dVerifyLen = _ttof(szData);
-		pDoc->WorkingInfo.LastJob.sVerifyLen.Format(_T("%.3f"), pDoc->Menu01Status.Data.dVerifyLen);
-	}
-
-}
+//void CGvisR2R_PunchDoc::GetMkMenu01()
+//{
+//	CString sPath = WorkingInfo.System.sPathMkMenu01;
+//	TCHAR szData[512];
+//
+//	if (sPath.IsEmpty())
+//		return;
+//
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Operator"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->WorkingInfo.LastJob.sSelUserName = pDoc->Menu01Status.Info.sOperator = CString(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Model"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->WorkingInfo.LastJob.sModelUp = pDoc->Menu01Status.Info.sModel = CString(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Lot"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->WorkingInfo.LastJob.sLotUp = pDoc->Menu01Status.Info.sLot = CString(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("LayerUp"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->WorkingInfo.LastJob.sLayerUp = pDoc->Menu01Status.Info.sLayerUp = CString(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("LayerDn"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->WorkingInfo.LastJob.sLayerDn = pDoc->Menu01Status.Info.sLayerDn = CString(szData);
+//
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Total Shot"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.nTotShot = _ttoi(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Total Work Ratio"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.dTotWorkRto = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Lot Work Ratio"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.dLotWorkRto = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Total Speed"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.dTotSpd = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Patial Speed"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.dPartSpd = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("DoneLengthMk"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.dDoneLenMk = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("DoneLengthAoiDn"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.dDoneLengthAoiDn = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("DoneLengthAoiUp"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.dDoneLenAoiUp = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("DoneLengthEngrave"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.dDoneLengthEng = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Info"), _T("VerifyImageNum"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Info.nVerifyImgNum = _ttoi(szData);
+//
+//	if (0 < ::GetPrivateProfileString(_T("Total Test"), _T("Total"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.TotTest.nTotal = _ttoi(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Total Test"), _T("Up"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.TotTest.nUp = _ttoi(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Total Test"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.TotTest.nDn = _ttoi(szData);
+//
+//	if (0 < ::GetPrivateProfileString(_T("Good Ratio"), _T("Up"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.GoodRto.dUp = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Good Ratio"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.GoodRto.dDn = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Good Ratio"), _T("Total"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.GoodRto.dTotal = _ttof(szData);
+//
+//	if (0 < ::GetPrivateProfileString(_T("Good"), _T("Up"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Good.nUp = _ttoi(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Good"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Good.nDn = _ttoi(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Good"), _T("Total"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Good.nTotal = _ttoi(szData);
+//
+//	if (0 < ::GetPrivateProfileString(_T("Bed Ratio"), _T("Up"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.BedRto.dUp = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Bed Ratio"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.BedRto.dDn = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Bed Ratio"), _T("Total"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.BedRto.dTotal = _ttof(szData);
+//
+//	if (0 < ::GetPrivateProfileString(_T("Bed"), _T("Up"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Bed.nUp = _ttoi(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Bed"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Bed.nDn = _ttoi(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Bed"), _T("Total"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Bed.nTotal = _ttoi(szData);
+//
+//	if (0 < ::GetPrivateProfileString(_T("Yield Total"), _T("Up"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.YieldTot.dUp = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Yield Total"), _T("Dn"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.YieldTot.dDn = _ttof(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Yield Total"), _T("Total"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.YieldTot.dTotal = _ttof(szData);
+//
+//	int i; CString sItem;
+//	for (i = 0; i < MAX_STRIP; i++)
+//	{
+//		sItem.Format(_T("Yield Strip%d"), i);
+//		if (0 < ::GetPrivateProfileString(sItem, _T("Up"), NULL, szData, sizeof(szData), sPath))
+//			pDoc->Menu01Status.YieldStrip[i].dUp = _ttof(szData);
+//		if (0 < ::GetPrivateProfileString(sItem, _T("Dn"), NULL, szData, sizeof(szData), sPath))
+//			pDoc->Menu01Status.YieldStrip[i].dDn = _ttof(szData);
+//		if (0 < ::GetPrivateProfileString(sItem, _T("Total"), NULL, szData, sizeof(szData), sPath))
+//			pDoc->Menu01Status.YieldStrip[i].dTotal = _ttof(szData);
+//	}
+//
+//	for (i = 1; i < MAX_DEF; i++)
+//	{
+//		sItem.Format(_T("%d"), i);
+//		if (0 < ::GetPrivateProfileString(_T("Defect"), sItem, NULL, szData, sizeof(szData), sPath))
+//			pDoc->Menu01Status.Defect.nDefNum[i] = _ttoi(szData);
+//	}
+//
+//	if (0 < ::GetPrivateProfileString(_T("Data"), _T("MkNumLf"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Data.nMkNumLf = _ttoi(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Data"), _T("MkNumRt"), NULL, szData, sizeof(szData), sPath))
+//		pDoc->Menu01Status.Data.nMkNumRt = _ttoi(szData);
+//	if (0 < ::GetPrivateProfileString(_T("Data"), _T("VerifyLen"), NULL, szData, sizeof(szData), sPath))
+//	{
+//		pDoc->Menu01Status.Data.dVerifyLen = _ttof(szData);
+//		pDoc->WorkingInfo.LastJob.sVerifyLen.Format(_T("%.3f"), pDoc->Menu01Status.Data.dVerifyLen);
+//	}
+//
+//}
 
 void CGvisR2R_PunchDoc::SetMkMenu01(CString sMenu, CString sItem, CString sData)
 {
