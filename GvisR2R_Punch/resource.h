@@ -1299,6 +1299,8 @@
 #define IDC_STC_DEF_12                  1429
 #define IDC_CHK_USE_AOI_OUTER           1429
 #define IDC_STC_DEF_13                  1430
+#define IDC_CHK_USE_AOI_OUTER2          1430
+#define IDC_CHK_USE_AOI_MIDDLE          1430
 #define IDC_STC_DEF_14                  1431
 #define IDC_STC_DEF_15                  1432
 #define IDC_STC_DEF_16                  1433
