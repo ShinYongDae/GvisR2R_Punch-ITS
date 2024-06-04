@@ -12,7 +12,7 @@
 
 #define MAX_INFO_STC				67
 #define MAX_INFO_STC_DATA			21
-#define MAX_INFO_BTN				25
+#define MAX_INFO_BTN				26
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgInfo dialog
@@ -122,6 +122,7 @@ public:
 	afx_msg void OnStnClickedStc43();
 	afx_msg void OnStnClickedStc82();
 	afx_msg void OnStnClickedStc83();
+	afx_msg void OnBnClickedChkUseAoiMiddle();
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -105,6 +105,7 @@ BEGIN_MESSAGE_MAP(CDlgInfo, CDialog)
 	ON_STN_CLICKED(IDC_STC_43, &CDlgInfo::OnStnClickedStc43)
 	ON_STN_CLICKED(IDC_STC_82, &CDlgInfo::OnStnClickedStc82)
 	ON_STN_CLICKED(IDC_STC_83, &CDlgInfo::OnStnClickedStc83)
+	ON_BN_CLICKED(IDC_CHK_USE_AOI_MIDDLE, &CDlgInfo::OnBnClickedChkUseAoiMiddle)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -302,24 +303,26 @@ void CDlgInfo::InitBtn()
 	myBtn[24].SetHwnd(this->GetSafeHwnd(), IDC_CHK_USE_AOI_OUTER);
 	myBtn[24].SetBtnType(BTN_TYPE_CHECK);
 
+	myBtn[25].SubclassDlgItem(IDC_CHK_USE_AOI_MIDDLE, this); //WORK_MODE : MODE_MIDDLE
+	myBtn[25].SetHwnd(this->GetSafeHwnd(), IDC_CHK_USE_AOI_MIDDLE);
+	myBtn[25].SetBtnType(BTN_TYPE_CHECK);
+
 
 	int i;
 	for(i=0; i<MAX_INFO_BTN; i++)
 	{
-		if(0 == i || 12 == i || 13 == i || 14 == i || 23 == i || 24 == i )
+		if(0 == i || 12 == i || 13 == i || 14 == i || 23 == i || 24 == i || 25 == i)
 		{
 			myBtn[i].SetFont(_T("굴림체"),16,TRUE);
 			myBtn[i].SetTextColor(RGB_BLACK);
-			//myBtn[i].SetBtnType(BTN_TYPE_CHECK);
 		}
 
 		if (15 == i || 16 == i)
 		{
 			myBtn[i].SetFont(_T("돋움체"),22,TRUE);
-			//myBtn[i].SetBtnType(BTN_TYPE_CHECK);
 		}
 
-		if (0 != i && 12 != i && 13 != i && 14 != i && 15 != i && 16 != i && 23 != i && 24 != i)
+		if (0 != i && 12 != i && 13 != i && 14 != i && 15 != i && 16 != i && 23 != i && 24 != i && 25 != i)
 		{
 			myBtn[i].SetFont(_T("굴림체"),16,TRUE);
 			myBtn[i].SetTextColor(RGB_BLACK);
@@ -712,14 +715,23 @@ void CDlgInfo::Disp()
 	case MODE_INNER:	// 1 
 		myBtn[23].SetCheck(TRUE); // IDC_CHK_USE_AOI_INNER
 		myBtn[24].SetCheck(FALSE); // IDC_CHK_USE_AOI_OUTER
+		myBtn[25].SetCheck(FALSE); // IDC_CHK_USE_AOI_MIDDLE
 		if (pView->m_pDlgMenu01)
 			pView->m_pDlgMenu01->EnableItsMode(FALSE);
 		break;
 	case MODE_OUTER:	// 2 
 		myBtn[23].SetCheck(FALSE); // IDC_CHK_USE_AOI_INNER
 		myBtn[24].SetCheck(TRUE); // IDC_CHK_USE_AOI_OUTER
+		myBtn[25].SetCheck(FALSE); // IDC_CHK_USE_AOI_MIDDLE
 		if(pView->m_pDlgMenu01)
 			pView->m_pDlgMenu01->EnableItsMode();
+		break;
+	case MODE_MIDDLE:	// 3 
+		myBtn[23].SetCheck(FALSE); // IDC_CHK_USE_AOI_INNER
+		myBtn[24].SetCheck(TRUE); // IDC_CHK_USE_AOI_OUTER
+		myBtn[25].SetCheck(TRUE); // IDC_CHK_USE_AOI_MIDDLE
+		if (pView->m_pDlgMenu01)
+			pView->m_pDlgMenu01->EnableItsMode(FALSE);
 		break;
 	}
 
@@ -1641,19 +1653,23 @@ void CDlgInfo::SetTwoMetal(BOOL bOn)
 void CDlgInfo::OnChkUseAoiInner() 
 {
 	// TODO: Add your control notification handler code here
-	BOOL bOn[2];
+	BOOL bOn[3];
 	bOn[0] = myBtn[23].GetCheck();
 	bOn[1] = myBtn[24].GetCheck();
+	bOn[2] = myBtn[25].GetCheck();
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
-	if (bOn[0] && bOn[1])
+	if (bOn[0] && ( bOn[1] || bOn[2] ))
 	{
 		myBtn[24].SetCheck(FALSE);
+		myBtn[25].SetCheck(FALSE);
 		SetTestMode(MODE_INNER);
 	}
-	else if (bOn[0] && !bOn[1])
+	else if (bOn[0] && !(bOn[1] || bOn[2]))
 		SetTestMode(MODE_INNER);
-	else if (!bOn[0] && bOn[1])
+	else if (!bOn[0] && bOn[1] && bOn[2])
+		SetTestMode(MODE_MIDDLE);
+	else if (!bOn[0] && bOn[1] && !bOn[2])
 		SetTestMode(MODE_OUTER);
 	else
 		SetTestMode(MODE_NONE);
@@ -1670,11 +1686,14 @@ void CDlgInfo::OnChkUseAoiOuter()
 	if (bOn[0] && bOn[1])
 	{
 		myBtn[23].SetCheck(FALSE);
+		myBtn[25].SetCheck(FALSE);
 		SetTestMode(MODE_OUTER);
 	}
-	else if (bOn[0] && !bOn[1])
+	else if (bOn[0] && !(bOn[1] || bOn[2]))
 		SetTestMode(MODE_INNER);
-	else if (!bOn[0] && bOn[1])
+	else if (!bOn[0] && bOn[1] && bOn[2])
+		SetTestMode(MODE_MIDDLE);
+	else if (!bOn[0] && bOn[1] && !bOn[2])
 		SetTestMode(MODE_OUTER);
 	else
 		SetTestMode(MODE_NONE);
@@ -2163,4 +2182,30 @@ void CDlgInfo::OnStnClickedStc83()
 #ifdef USE_MPE
 	pView->m_pMpe->Write(_T("ML44044"), _ttoi(sData)); // 마킹부 재작업 알람 시간 [초]
 #endif
+}
+
+
+void CDlgInfo::OnBnClickedChkUseAoiMiddle()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	BOOL bOn[3];
+	bOn[0] = myBtn[23].GetCheck();
+	bOn[1] = myBtn[24].GetCheck();
+	bOn[2] = myBtn[25].GetCheck();
+	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
+
+	if (bOn[0] && bOn[2])
+	{
+		myBtn[23].SetCheck(FALSE);
+		myBtn[24].SetCheck(TRUE);
+		SetTestMode(MODE_MIDDLE);
+	}
+	else if (bOn[0] && !(bOn[1] || bOn[2]))
+		SetTestMode(MODE_INNER);
+	else if (!bOn[0] && bOn[1] && bOn[2])
+		SetTestMode(MODE_MIDDLE);
+	else if (!bOn[0] && bOn[1] && !bOn[2])
+		SetTestMode(MODE_OUTER);
+	else
+		SetTestMode(MODE_NONE);
 }

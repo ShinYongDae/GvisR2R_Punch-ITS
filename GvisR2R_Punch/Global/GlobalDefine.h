@@ -635,7 +635,7 @@ enum MAIN_BTN { MN_RST=0, MN_RDY=1, MN_STOP=2, MN_RUN=3 };
 enum IMG_KIND { CAD_IMG=0, DEF_IMG=1 };
 enum ALIGN_METHODE { ONE_POINT = 1, TWO_POINT, THREE_POINT, FOUR_POINT };
 
-enum WORK_MODE { MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2 };
+enum WORK_MODE { MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2, MODE_MIDDLE = 3 };
 
 
 
@@ -647,11 +647,11 @@ struct stSystem
 	CString sPathAoiUp, sPathAoiUpDts, sPathAoiUpCurrInfo, sPathAoiUpVrsData, sPathAoiUpOffset, sPathAoiUpDefImg;
 	CString sPathAoiUpLocalSpec, sPathAoiUpCamInfo;
 	CString sPathVrsShareUp, sPathVrsBufUp;
-	CString sPathVsShareUp;
+	CString sPathVsShareUp, sPathVsBufUp;
 	CString sPathAoiDn, sPathAoiDnDts, sPathAoiDnCurrInfo, sPathAoiDnVrsData, sPathAoiDnOffset, sPathAoiDnDefImg;
 	CString sPathAoiDnLocalSpec, sPathAoiDnCamInfo;
 	CString sPathVrsShareDn, sPathVrsBufDn;
-	CString sPathVsShareDn;
+	CString sPathVsShareDn, sPathVsBufDn;
 
 	CString sPathEng, sPathEngCurrInfo, sPathEngOffset, sPathMkCurrInfo, sPathMkCurrInfoBuf;
 	CString sPathMkSignalInfo, sPathEngSignalInfo, sPathAoiUpStatusInfo, sPathAoiDnStatusInfo;
@@ -685,12 +685,12 @@ struct stSystem
 		sPathAoiUpOffset = _T(""); sPathAoiUpVrsData = _T(""); sPathAoiUpCamInfo = _T("");
 		sPathAoiUpLocalSpec = _T("");
 		sPathVrsShareUp = _T(""); sPathVrsBufUp = _T("");
-		sPathVsShareUp = _T("");
+		sPathVsShareUp = _T(""); sPathVsBufUp = _T("");
 		sPathAoiDn = _T(""); sPathAoiDnDts = _T(""); sPathAoiDnCurrInfo = _T(""); sPathAoiDnDefImg = _T("");
 		sPathAoiDnOffset = _T(""); sPathAoiDnVrsData = _T(""); sPathAoiDnCamInfo = _T("");
 		sPathAoiDnLocalSpec = _T("");
 		sPathVrsShareDn = _T(""); sPathVrsBufDn = _T("");
-		sPathVsShareDn = _T("");
+		sPathVsShareDn = _T(""); sPathVsBufDn = _T("");
 
 		sPathEng = _T(""); sPathEngCurrInfo = _T(""); sPathEngOffset = _T(""); sPathMkCurrInfo = _T("");
 		sPathMkSignalInfo = _T(""); sPathEngSignalInfo = _T("");

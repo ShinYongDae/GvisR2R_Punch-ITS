@@ -290,6 +290,7 @@ class CGvisR2R_PunchView : public CFormView
 	void DoAutoMarking();
 	void DoAutoMarkingEngrave();
 	void DoAutoChkShareFolder(); // 20170727-잔량처리 시 계속적으로 반복해서 이함수가 호출됨으로 좌우 마킹 인덱스 동일 현상 발생.(case AT_LP + 8:)	
+	void DoAutoChkShareVsFolder(); // 잔량처리 시 계속적으로 반복해서 이함수가 호출됨으로 좌우 마킹 인덱스 동일 현상 발생.(case AT_LP + 8:)	
 	void DoAutoDispMsg();
 	void DoAutoChkCycleStop();
 	void DoAutoSetFdOffset();
@@ -606,9 +607,9 @@ public:
 	BOOL SaveMk1Img(int nMkPcsIdx);
 
 	// 	void SetSynqIO();
-	BOOL ChkVsShare(int &nSerial);
-	BOOL ChkVsShareUp(int &nSerial);
-	BOOL ChkVsShareDn(int &nSerial);
+	//BOOL ChkVsShare(int &nSerial);
+	//BOOL ChkVsShareUp(int &nSerial);
+	//BOOL ChkVsShareDn(int &nSerial);
 	void ChkShare();
 	void ChkShareUp();
 	void ChkShareDn();
@@ -767,7 +768,7 @@ public:
 	BOOL IsShareUp();
 	BOOL IsShareDn();
 	// 	BOOL IsRst();
-	BOOL IsVsShare();
+	//BOOL IsVsShare();
 	// 	int GetShare();
 	int GetShareUp();
 	int GetShareDn();
@@ -946,8 +947,8 @@ public:
 	BOOL IsVsDn();
 	void SetDummyUp();
 	void SetDummyDn();
-	BOOL MakeDummyUp(int nErr);
-	BOOL MakeDummyDn(int nErr);
+	//BOOL MakeDummyUp(int nErr);
+	//BOOL MakeDummyDn(int nErr);
 	int GetAoiUpSerial();
 	int GetAoiDnSerial();
 	BOOL GetAoiUpVsStatus();

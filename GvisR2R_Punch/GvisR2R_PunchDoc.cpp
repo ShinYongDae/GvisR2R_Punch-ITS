@@ -1361,21 +1361,54 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	}
 
 
-	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsUp Data Folder"), NULL, szData, sizeof(szData), sPath))
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsShareUpDirPath"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.System.sPathVsShareUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VSUp Share 폴더가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		AfxMessageBox(_T("VsShareUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathVsShareUp = CString(_T(""));
 	}
 
-	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsDn Data Folder"), NULL, szData, sizeof(szData), sPath))
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsBufferUpDirPath"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.sPathVsBufUp = CString(szData);
+	else
+	{
+		AfxMessageBox(_T("VsBufferUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.sPathVsBufUp = CString(_T(""));
+	}
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsShareDnDirPath"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.System.sPathVsShareDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VSDn Share 폴더가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		AfxMessageBox(_T("VsShareDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathVsShareDn = CString(_T(""));
 	}
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsBufferDnDirPath"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.sPathVsBufDn = CString(szData);
+	else
+	{
+		AfxMessageBox(_T("VsBufferDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.sPathVsBufDn = CString(_T(""));
+	}
+
+
+	//if (0 < ::GetPrivateProfileString(_T("System"), _T("VsUp Data Folder"), NULL, szData, sizeof(szData), sPath))
+	//	WorkingInfo.System.sPathVsShareUp = CString(szData);
+	//else
+	//{
+	//	AfxMessageBox(_T("VSUp Share 폴더가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+	//	WorkingInfo.System.sPathVsShareUp = CString(_T(""));
+	//}
+	//
+	//if (0 < ::GetPrivateProfileString(_T("System"), _T("VsDn Data Folder"), NULL, szData, sizeof(szData), sPath))
+	//	WorkingInfo.System.sPathVsShareDn = CString(szData);
+	//else
+	//{
+	//	AfxMessageBox(_T("VSDn Share 폴더가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+	//	WorkingInfo.System.sPathVsShareDn = CString(_T(""));
+	//}
 
 
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("VrsOldFileDirPath"), NULL, szData, sizeof(szData), sPath))
@@ -4729,20 +4762,6 @@ BOOL CGvisR2R_PunchDoc::GetAoiUpInfo(int nSerial, int *pNewLot, BOOL bFromBuf) /
 	if (Info0)
 		return TRUE;
 
-	// 	double dCurPosMkFd = (double)m_pMpeData[0][0];	// 마킹부 Feeding 엔코더 값(단위 mm )
-	// 	double dTgtFd = _tstof(WorkingInfo.Motion.sFdAoiAoiDistShot) * _tstof(WorkingInfo.Motion.sAoiFdDist);
-	// 	if(dCurPosMkFd < dTgtFd-_tstof(WorkingInfo.Motion.sAoiFdDist) + 10.0)
-	// 	{
-	// 		if(Info0)
-	// 			return TRUE;
-	// 	}
-	// 	else
-	// 	{
-	// 		Info1 = GetAoiInfoDn(nSerial);
-	// 		if(Info0 && Info1)
-	// 			return TRUE;
-	// 	}
-
 	return FALSE;
 }
 
@@ -4780,7 +4799,7 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 	size_t nFileSize, nRSize;
 	char *FileData;
 	CString strFileData;
-	int nTemp;// , i;
+	int nTemp;
 	CString strHeaderErrorInfo, strModel, strLayer, strLot, sItsCode, strTotalBadPieceNum;
 	CString strCamID, strPieceID, strBadPointPosX, strBadPointPosY, strBadName,
 		strCellNum, strImageSize, strImageNum, strMarkingCode;
@@ -4789,7 +4808,6 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 	{
 		strFileData.Format(_T("PCR파일이 설정되지 않았습니다."));
 		pView->MsgBox(strFileData);
-		// 		AfxMessageBox(strFileData);
 		return(FALSE);
 	}
 
@@ -4798,14 +4816,9 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 #ifdef TEST_MODE
 	sPath = PATH_PCR;	// for Test
 #else
-	//	if(bFromBuf)
 	sPath.Format(_T("%s%04d.pcr"), WorkingInfo.System.sPathVrsBufUp, nSerial);
-	// 	else
-	// 		sPath.Format(_T("%s%04d.pcr"), WorkingInfo.System.sPathVrsShareUp, nSerial);
 #endif
 
-	//strcpy(FileD, sPath);
-	//_tcscpy(FileD, sPath);
 	StringToChar(sPath, FileD);
 
 	if ((fp = fopen(FileD, "r")) != NULL)
@@ -4815,11 +4828,9 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		fseek(fp, 0, SEEK_SET);
 
 		/* Allocate space for a path name */
-		//FileData = (char*)malloc( nFileSize );
 		FileData = (char*)calloc(nFileSize + 1, sizeof(char));
 
 		nRSize = fread(FileData, sizeof(char), nFileSize, fp);
-		//strFileData.Format(_T("%s"), CharToString(FileData));
 		strFileData = CharToString(FileData);
 		fclose(fp);
 		free(FileData);
@@ -4836,7 +4847,6 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 	strHeaderErrorInfo = strFileData.Left(nTemp);
 	strFileData.Delete(0, nTemp + 1);
 	nFileSize = nFileSize - nTemp - 1;
-	// 	m_pPcr[nIdx]->m_nErrPnl = _tstoi(strHeaderErrorInfo);
 
 	// Model
 	nTemp = strFileData.Find(',', 0);
