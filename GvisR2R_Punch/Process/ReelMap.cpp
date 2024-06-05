@@ -2888,7 +2888,7 @@ BOOL CReelMap::UpdateYield(int nSerial)
 {
 	if (nSerial <= 0)
 	{
-		AfxMessageBox(_T("Serial Error.68"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Serial Error.68"));
 		return 0;
 	}
 
@@ -5066,7 +5066,7 @@ BOOL CReelMap::ReloadReelmap(int nTo)
 {
 	if(!m_pPnlBuf)
 	{
-		AfxMessageBox(_T("Memory is not allocated.- PnlBuf"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Memory is not allocated.- PnlBuf"));
 		m_bDoneReloadReelmap = TRUE;
 		return FALSE;
 	}
@@ -5097,7 +5097,7 @@ BOOL CReelMap::ReloadReelmap(int nTo)
 	{
 		if (!m_bThreadAliveReloadReelmap)
 		{
-			AfxMessageBox(_T("Thread is stopped on reloading reelmap.- PnlBuf"));
+			pView->ClrDispMsg(); AfxMessageBox(_T("Thread is stopped on reloading reelmap.- PnlBuf"));
 			m_bDoneReloadReelmap = TRUE;
 			return FALSE;
 		}
@@ -5862,7 +5862,7 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 		else
 		{
 			sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Total Pcs\r\n%s"), nSerial, sPath);
-			AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+			pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
 			return FALSE;
 		}
 	}
@@ -5880,7 +5880,7 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 		else
 		{
 			sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Good Pcs\r\n%s"), nSerial, sPath);
-			AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+			pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
 			return FALSE;
 		}
 	}
@@ -5898,7 +5898,7 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 		else
 		{
 			sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Bad Pcs\r\n%s"), nSerial, sPath);
-			AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+			pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
 			return FALSE;
 		}
 	}
@@ -5919,7 +5919,7 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 			else
 			{
 				sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Strip%d\r\n%s"), nSerial, k, sPath);
-				AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+				pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
 				return FALSE;
 			}
 		}
@@ -5938,7 +5938,7 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 			else
 			{
 				sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-StripOut_%d\r\n%s"), nSerial, k, sPath);
-				AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+				pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
 				return FALSE;
 			}
 		}
@@ -5959,7 +5959,7 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 				else
 				{
 					sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Strip%d_%d\r\n%s"), nSerial, k, i, sPath);
-					AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+					pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
 					return FALSE;
 				}
 			}
@@ -5979,7 +5979,7 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 		else
 		{
 			sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-StripOut_Total\r\n%s"), nSerial, sPath);
-			AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+			pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
 			return FALSE;
 		}
 	}

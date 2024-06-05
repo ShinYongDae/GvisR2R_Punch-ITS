@@ -125,6 +125,13 @@ namespace Mk4PtIdx
 	};
 }
 
+namespace AtLpVsIdx
+{
+	typedef enum Index {
+		ChkShare = 0, ChkShareVs = 4, UpdateReelmap = 8, MakeItsFile = 12, ResetShare = 14
+	};
+}
+
 typedef struct _DispMain
 {
 	CString strMsg;
@@ -153,6 +160,8 @@ typedef CArray<stDispMain, stDispMain> CArDispMain;
 
 class CGvisR2R_PunchView : public CFormView
 {
+	BOOL bPcrInShare[2], bPcrInShareVs[2];
+
 	CString m_sAoiUpAlarmReStartMsg, m_sAoiDnAlarmReStartMsg;
 	CString m_sAoiUpAlarmReTestMsg, m_sAoiDnAlarmReTestMsg;
 	BOOL m_bDestroyedView;
@@ -506,7 +515,8 @@ public:
 	CString m_sNewLotUp, m_sNewLotDn;
 
 	BOOL m_bAoiFdWrite[2], m_bAoiFdWriteF[2]; // [Up/Dn]
-	BOOL m_bAoiTest[2], m_bAoiTestF[2], m_bWaitPcr[2]; // [Up/Dn]
+	BOOL m_bAoiTest[2], m_bAoiTestF[2];
+	BOOL m_bWaitPcr[2]; // [Up/Dn] : FALSE -> 잔량처리시 Share 폴더에 시리얼을 기다리지 않음.
 
 	BOOL m_bEngFdWrite, m_bEngFdWriteF;
 	BOOL m_bEngTest, m_bEngTestF;
@@ -606,10 +616,15 @@ public:
 	BOOL SaveMk0Img(int nMkPcsIdx);
 	BOOL SaveMk1Img(int nMkPcsIdx);
 
-	// 	void SetSynqIO();
-	//BOOL ChkVsShare(int &nSerial);
-	//BOOL ChkVsShareUp(int &nSerial);
-	//BOOL ChkVsShareDn(int &nSerial);
+
+	void ChkShareVs();
+	void ChkShareVsUp();
+	void ChkShareVsDn();
+	BOOL ChkShareVs(int &nSerial);
+	BOOL ChkShareVsUp(int &nSerial);
+	BOOL ChkShareVsDn(int &nSerial);
+	BOOL ChkShareVsIdx(int *pBufSerial, int nBufTot, int nShareSerial);
+
 	void ChkShare();
 	void ChkShareUp();
 	void ChkShareDn();
@@ -701,6 +716,7 @@ public:
 	void DoShift2Mk();
 	void RunShift2Mk();
 	void Shift2Buf();
+	void Shift2DummyBuf();
 	void Shift2Mk();
 	void CompletedMk(int nCam); // 0: Only Cam0, 1: Only Cam1, 2: Cam0 and Cam1, 3: None
 	void SetTestSts(int nStep);
@@ -764,14 +780,18 @@ public:
 	double GetPartVel();
 	void SetCycTime();
 	int GetCycTime(); // [mSec]
+
 	BOOL IsShare();
 	BOOL IsShareUp();
 	BOOL IsShareDn();
-	// 	BOOL IsRst();
-	//BOOL IsVsShare();
-	// 	int GetShare();
 	int GetShareUp();
 	int GetShareDn();
+
+	BOOL IsShareVs();
+	BOOL IsShareVsUp();
+	BOOL IsShareVsDn();
+	int GetShareVsUp();
+	int GetShareVsDn();
 
 	BOOL IsBuffer(int nNum = 0);
 	BOOL IsBufferUp();

@@ -114,7 +114,7 @@ HRESULT CThreadTask::WaitThreadEnd(DWORD dwTimeOut)
 			// Time Out Check
 			if (GetTickCount() >= (dwStartTick + dwTimeOut))
 			{
-				AfxMessageBox(_T("WaitThreadEnd() Time Out!!!"),NULL, MB_OK|MB_ICONSTOP);
+				//AfxMessageBox(_T("WaitThreadEnd() Time Out!!!"),NULL, MB_OK|MB_ICONSTOP);
 				return E_FAIL;
 			}
 			if(::PeekMessage(&message,NULL,0,0,PM_REMOVE))

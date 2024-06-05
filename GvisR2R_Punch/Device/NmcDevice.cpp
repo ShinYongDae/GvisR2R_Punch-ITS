@@ -9,6 +9,9 @@
 #include "Motion.h"
 #include "NmcDevice.h"
 
+#include "../GvisR2R_PunchView.h"
+extern CGvisR2R_PunchView* pView;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE

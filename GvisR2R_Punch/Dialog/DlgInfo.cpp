@@ -194,6 +194,7 @@ BOOL CDlgInfo::OnInitDialog()
  	GetDlgItem(IDC_CHK_009)->ShowWindow(SW_HIDE);
 // 	GetDlgItem(IDC_STC_0046)->ShowWindow(SW_HIDE);
 // 	GetDlgItem(IDC_CHK_011)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_CHK_USE_AOI_MIDDLE)->ShowWindow(SW_HIDE);
 
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T("")); // 샘플검사 Shot수
 	

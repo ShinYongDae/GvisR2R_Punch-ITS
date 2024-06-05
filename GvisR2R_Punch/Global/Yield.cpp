@@ -7,6 +7,9 @@
 //#include "../gvisr2r_punch.h"
 #include "Yield.h"
 
+#include "../GvisR2R_PunchView.h"
+extern CGvisR2R_PunchView* pView;
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -42,7 +45,7 @@ void CYield::SetDef(int nSerial, int *pDef)	// int pDef[4];
 {
 	if(nSerial <= 0)
 	{
-		AfxMessageBox(_T("Serial Error.66"));
+		pView->ClrDispMsg(); AfxMessageBox(_T("Serial Error.66"));
 		return;
 	}
 

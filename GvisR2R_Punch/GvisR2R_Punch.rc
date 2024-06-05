@@ -166,10 +166,11 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "GvisR2R_Punch, 버전 2.0.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2024.04.09",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2024.04.09->06.05",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
     LTEXT           "자동중 ITS파일관련",IDC_STATIC,1,38,100,8
     LTEXT           "외층 작업시 내층 OffLine검색",IDC_STATIC,1,46,109,8
+    LTEXT           "VS 작업시 ShareVs폴더 공유",IDC_STATIC,1,54,109,8
 END
 
 IDD_GVISR2R_PUNCH_FORM DIALOGEX 0, 0, 630, 461

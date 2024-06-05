@@ -1073,7 +1073,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sMcName = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("설비이름이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("설비이름이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sMcName = CString(_T(""));
 	}
 
@@ -1081,7 +1081,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathCamSpecDir = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("CamMaster의 Spec디렉토리 Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("CamMaster의 Spec디렉토리 Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathCamSpecDir = CString(_T(""));
 	}
 
@@ -1090,7 +1090,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathEng = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("EngravePath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("EngravePath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathEng = CString(_T(""));
 	}
 
@@ -1098,7 +1098,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathEngCurrInfo = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("EngraveCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("EngraveCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathEngCurrInfo = CString(_T(""));
 	}
 
@@ -1106,7 +1106,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathEngSignalInfo = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("EngraveSignalInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("EngraveSignalInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathEngSignalInfo = CString(_T(""));
 	}
 
@@ -1114,7 +1114,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathMkCurrInfo = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("PunchingCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("PunchingCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathMkCurrInfo = CString(_T("C:\\PunchWork\\CurrentInfo.ini"));
 	}
 
@@ -1122,7 +1122,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathMkSignalInfo = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("PunchingSignalInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("PunchingSignalInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathMkSignalInfo = CString(_T("C:\\PunchWork\\SignalInfo.ini"));
 	}
 
@@ -1130,7 +1130,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiUpStatusInfo = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AoiUpStatusInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AoiUpStatusInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiUpStatusInfo = CString(_T("C:\\AOIWork\\Statusini"));
 	}
 
@@ -1138,7 +1138,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiDnStatusInfo = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AoiDnStatusInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AoiDnStatusInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiDnStatusInfo = CString(_T("C:\\AOIWork\\Statusini"));
 	}
 
@@ -1146,7 +1146,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathMkWork = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("MonDispMainPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("MonDispMainPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathMkWork = CString(_T("C:\\PunchWork"));
 	}
 
@@ -1154,7 +1154,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathMonDispMain = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("MonDispMainPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("MonDispMainPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathMonDispMain = CString(_T("C:\\PunchWork\\MonDispMain.ini"));
 	}
 
@@ -1162,7 +1162,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathMkMenu01 = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("MkMenu01Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("MkMenu01Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathMkMenu01 = CString(_T("C:\\PunchWork\\MkMenu01.ini"));
 	}
 
@@ -1170,7 +1170,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathMkMenu03 = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("MkMenu03Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("MkMenu03Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathMkMenu03 = CString(_T("C:\\PunchWork\\MkMenu03.ini"));
 	}
 
@@ -1178,7 +1178,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathMkInfo = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("MkInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("MkInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathMkInfo = CString(_T("C:\\PunchWork\\MkInfoPath.ini"));
 	}
 
@@ -1186,7 +1186,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathMkCurrInfoBuf = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("PunchingCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("PunchingCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathMkCurrInfoBuf = CString(_T(""));
 	}
 
@@ -1194,7 +1194,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathEngOffset = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("EngraveCurrentOffsetInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("EngraveCurrentOffsetInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathEngOffset = CString(_T(""));
 	}
 
@@ -1203,7 +1203,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOIUpPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOIUpPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiUp = CString(_T(""));
 	}
 
@@ -1219,7 +1219,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.bUseDTS = _ttoi(szData);
 	else
 	{
-		AfxMessageBox(_T("UseDTS가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("UseDTS가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.bUseDTS = FALSE;
 	}
 
@@ -1227,7 +1227,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.bUseITS = _ttoi(szData);
 	else
 	{
-		AfxMessageBox(_T("UseITS가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("UseITS가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.bUseITS = FALSE;
 	}
 
@@ -1235,7 +1235,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiUpDts = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOIUpDtsPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOIUpDtsPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiUpDts = CString(_T(""));
 	}
 
@@ -1243,7 +1243,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiUpDefImg = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOIUpDtsPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOIUpDtsPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiUpDefImg = CString(_T(""));
 	}
 
@@ -1251,7 +1251,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiUpCurrInfo = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AoiUpCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AoiUpCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiUpCurrInfo = CString(_T(""));
 	}
 
@@ -1259,7 +1259,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiUpOffset = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AoiUpCurrentOffsetInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AoiUpCurrentOffsetInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiUpOffset = CString(_T(""));
 	}
 
@@ -1267,7 +1267,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiUpVrsData = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOIUp VRSData 폴더가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOIUp VRSData 폴더가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiUpVrsData = CString(_T(""));
 	}
 
@@ -1275,7 +1275,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOIDnPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOIDnPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiDn = CString(_T(""));
 	}
 
@@ -1291,7 +1291,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiDnDts = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOIDnDtsPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOIDnDtsPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiDnDts = CString(_T(""));
 	}
 
@@ -1299,7 +1299,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiDnDefImg = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOIDnDtsPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOIDnDtsPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiDnDefImg = CString(_T(""));
 	}
 
@@ -1307,7 +1307,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiDnCurrInfo = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AoiDnCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AoiDnCurrentInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiDnCurrInfo = CString(_T(""));
 	}
 
@@ -1315,7 +1315,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiDnOffset = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AoiDnCurrentOffsetInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AoiDnCurrentOffsetInfoPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiDnOffset = CString(_T(""));
 	}
 
@@ -1323,7 +1323,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathAoiDnVrsData = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOIDn VRSData 폴더가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOIDn VRSData 폴더가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathAoiDnVrsData = CString(_T(""));
 	}
 
@@ -1332,7 +1332,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathVrsShareUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VrsShareUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("VrsShareUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathVrsShareUp = CString(_T(""));
 	}
 
@@ -1340,7 +1340,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathVrsBufUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VrsBufferUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("VrsBufferUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathVrsBufUp = CString(_T(""));
 	}
 
@@ -1348,7 +1348,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathVrsShareDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VrsShareDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("VrsShareDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathVrsShareDn = CString(_T(""));
 	}
 
@@ -1356,41 +1356,41 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathVrsBufDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VrsBufferDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("VrsBufferDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathVrsBufDn = CString(_T(""));
 	}
 
-
+	// Share folder For VS
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsShareUpDirPath"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.System.sPathVsShareUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VsShareUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("VsShareUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathVsShareUp = CString(_T(""));
 	}
 
-	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsBufferUpDirPath"), NULL, szData, sizeof(szData), sPath))
-		WorkingInfo.System.sPathVsBufUp = CString(szData);
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsBufferDummyUpDirPath"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.sPathVsDummyBufUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VsBufferUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.System.sPathVsBufUp = CString(_T(""));
+		pView->ClrDispMsg(); AfxMessageBox(_T("VsBufferUpDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.sPathVsDummyBufUp = CString(_T(""));
 	}
 
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsShareDnDirPath"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.System.sPathVsShareDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VsShareDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("VsShareDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathVsShareDn = CString(_T(""));
 	}
 
-	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsBufferDnDirPath"), NULL, szData, sizeof(szData), sPath))
-		WorkingInfo.System.sPathVsBufDn = CString(szData);
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("VsBufferDummyDnDirPath "), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.sPathVsDummyBufDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VsBufferDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.System.sPathVsBufDn = CString(_T(""));
+		pView->ClrDispMsg(); AfxMessageBox(_T("VsBufferDnDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.sPathVsDummyBufDn = CString(_T(""));
 	}
 
 
@@ -1415,7 +1415,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathOldFile = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VRS 완료 파일 Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("VRS 완료 파일 Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathOldFile = CString(_T(""));
 	}
 
@@ -1423,7 +1423,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathItsFile = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("ItsOldFileDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("ItsOldFileDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathItsFile = CString(_T(""));
 	}
 
@@ -1431,7 +1431,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathIts = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("ItsFileDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("ItsFileDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathIts = CString(_T(""));
 	}
 
@@ -1439,7 +1439,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sIpPathOldFile = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("VRS 완료 파일 IpPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("VRS 완료 파일 IpPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sIpPathOldFile = CString(_T(""));
 	}
 
@@ -1447,7 +1447,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sIpPathItsFile = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("ITS 완료 파일 ItsOldFileDirIpPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("ITS 완료 파일 ItsOldFileDirIpPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sIpPathItsFile = CString(_T(""));
 	}
 
@@ -1455,7 +1455,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sIpPathIts = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("ITS 완료 파일 ItsFileDirIpPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("ITS 완료 파일 ItsFileDirIpPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sIpPathIts = CString(_T(""));
 	}
 
@@ -1463,7 +1463,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathSapp3 = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Sapp3Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Sapp3Path가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sPathSapp3 = CString(_T(""));
 	}
 
@@ -1496,7 +1496,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sReViewMkLen = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 ReView가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 ReView가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.System.sReViewMkLen = CString(_T(""));
 	}
 
@@ -1585,14 +1585,14 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sModelUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("ModelUp이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("ModelUp이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sModelUp = CString(_T(""));
 	}
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("ModelDn Name"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.sModelDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("ModelDn이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("ModelDn이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sModelDn = CString(_T(""));
 	}
 
@@ -1600,7 +1600,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sLayerUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("LayerUp가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("LayerUp가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sLayerUp = CString(_T(""));
 	}
 
@@ -1638,7 +1638,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 			WorkingInfo.LastJob.sLayerDn = CString(szData);
 		else
 		{
-			AfxMessageBox(_T("LayerDn가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+			pView->ClrDispMsg(); AfxMessageBox(_T("LayerDn가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 			WorkingInfo.LastJob.sLayerDn = CString(_T(""));
 		}
 	}
@@ -1647,14 +1647,14 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sLotUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("LotUp가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("LotUp가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sLotUp = CString(_T(""));
 	}
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("LotDn No"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.sLotDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("LotDn가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("LotDn가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sLotDn = CString(_T(""));
 	}
 
@@ -1662,7 +1662,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sSerialUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("SerialUp이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("SerialUp이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sSerialUp = CString(_T(""));
 	}
 
@@ -1670,7 +1670,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sSerialDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("SerialDn이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("SerialDn이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sSerialDn = CString(_T(""));
 	}
 
@@ -1686,7 +1686,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sEngraveLastShot = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Engrave Last Shot이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Engrave Last Shot이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sEngraveLastShot = CString(_T(""));
 	}
 
@@ -1710,7 +1710,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sSelUserName = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("작업자가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("작업자가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sSelUserName = CString(_T(""));
 	}
 
@@ -1718,7 +1718,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sReelTotLen = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Reel 전체 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Reel 전체 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sReelTotLen = CString(_T(""));
 	}
 
@@ -1726,7 +1726,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sOnePnlLen = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("한 판넬 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("한 판넬 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sOnePnlLen = CString(_T(""));
 	}
 
@@ -1741,7 +1741,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sLotSepLen = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Lot분리 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Lot분리 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sLotSepLen = CString(_T(""));
 	}
 
@@ -1749,7 +1749,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sLotCutPosLen = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Lot절단위치 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Lot절단위치 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sLotCutPosLen = CString(_T(""));
 	}
 
@@ -1772,7 +1772,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sTempPauseLen = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("일시정지 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("일시정지 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sTempPauseLen = CString(_T(""));
 	}
 
@@ -1780,7 +1780,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sLmtTotYld = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("전체 수율 제한 범위가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("전체 수율 제한 범위가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sLmtTotYld = CString(_T(""));
 	}
 
@@ -1788,7 +1788,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sLmtPatlYld = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("부분 수율 제한 범위가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("부분 수율 제한 범위가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sLmtPatlYld = CString(_T(""));
 	}
 
@@ -1803,7 +1803,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sNumRangeFixDef = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("연속 고정불량 판정 누적 판넬수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("연속 고정불량 판정 누적 판넬수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sNumRangeFixDef = CString(_T(""));
 	}
 
@@ -1811,7 +1811,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sNumContFixDef = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("연속 고정불량 판정 발생 판넬수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("연속 고정불량 판정 발생 판넬수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sNumContFixDef = CString(_T(""));
 	}
 
@@ -2140,7 +2140,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sLmtFdAdjOffSet = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding량 보정 제한범위값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding량 보정 제한범위값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sLmtFdAdjOffSet = CString(_T(""));
 	}
 
@@ -2148,7 +2148,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sLmtFdOvrNum = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding량 보정 연속 초과횟수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding량 보정 연속 초과횟수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sLmtFdOvrNum = CString(_T(""));
 	}
 
@@ -2156,7 +2156,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sLmtFdErr = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding량 보정 Error범위값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding량 보정 Error범위값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sLmtFdErr = CString(_T(""));
 	}
 
@@ -2164,7 +2164,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkTq = CString(szData); // Tension Servo 0 Gain Torque Value. Plus Value is Feeding direction torque[Kgf].
 	else
 	{
-		AfxMessageBox(_T("마킹부 텐션서보 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 텐션서보 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkTq = CString(_T(""));
 	}
 
@@ -2172,7 +2172,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiTq = CString(szData); // Tension Servo 0 Gain Torque Value. Plus Value is Feeding direction torque[Kgf].
 	else
 	{
-		AfxMessageBox(_T("AOI 텐션서보 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI 텐션서보 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiTq = CString(_T(""));
 	}
 
@@ -2180,7 +2180,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkFdDist = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding량이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding량이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkFdDist = CString(_T(""));
 	}
 
@@ -2188,7 +2188,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkFdVel = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkFdVel = CString(_T(""));
 	}
 
@@ -2196,7 +2196,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkJogVel = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding Jog 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding Jog 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkJogVel = CString(_T(""));
 	}
 
@@ -2204,7 +2204,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkFdAcc = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkFdAcc = CString(_T(""));
 	}
 
@@ -2212,7 +2212,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkJogAcc = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding Jog 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding Jog 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkJogAcc = CString(_T(""));
 	}
 
@@ -2220,7 +2220,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkFdTotLen = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding 진행량이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding 진행량이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkFdTotLen = CString(_T(""));
 	}
 
@@ -2228,7 +2228,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkTotVel = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 전체 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 전체 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkTotVel = CString(_T(""));
 	}
 
@@ -2236,7 +2236,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkPatlVel = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 부분 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 부분 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkPatlVel = CString(_T(""));
 	}
 
@@ -2244,7 +2244,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiFdDist = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI Feeding량이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI Feeding량이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiFdDist = CString(_T(""));
 	}
 
@@ -2252,7 +2252,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiFdVel = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI Feeding 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI Feeding 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiFdVel = CString(_T(""));
 	}
 
@@ -2260,7 +2260,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiJogVel = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI Feeding Jog 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI Feeding Jog 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiJogVel = CString(_T(""));
 	}
 
@@ -2268,7 +2268,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiFdAcc = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI Feeding 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI Feeding 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiFdAcc = CString(_T(""));
 	}
 
@@ -2276,7 +2276,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiJogAcc = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI Feeding Jog 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI Feeding Jog 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiJogAcc = CString(_T(""));
 	}
 
@@ -2284,7 +2284,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiFdTotLen = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI Feeding 진행량이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI Feeding 진행량이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiFdTotLen = CString(_T(""));
 	}
 
@@ -2292,7 +2292,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiTotVel = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI 전체 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI 전체 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiTotVel = CString(_T(""));
 	}
 
@@ -2300,7 +2300,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiPatlVel = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI 부분 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI 부분 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiPatlVel = CString(_T(""));
 	}
 
@@ -2308,7 +2308,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sPinPosX[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Pin0 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Pin0 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sPinPosX[0] = CString(_T(""));
 	}
 
@@ -2316,7 +2316,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sPinPosY[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Pin0 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Pin0 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sPinPosY[0] = CString(_T(""));
 	}
 
@@ -2324,7 +2324,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sPinPosX[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Pin1 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Pin1 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sPinPosX[1] = CString(_T(""));
 	}
 
@@ -2332,7 +2332,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sPinPosY[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Pin1 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Pin1 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sPinPosY[1] = CString(_T(""));
 	}
 
@@ -2340,7 +2340,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sStPosX[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹0 초기 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹0 초기 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sStPosX[0] = CString(_T(""));
 	}
 
@@ -2348,7 +2348,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sStPosY[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹0 초기 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹0 초기 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sStPosY[0] = CString(_T(""));
 	}
 
@@ -2356,7 +2356,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sStPosX[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹1 초기 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹1 초기 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sStPosX[1] = CString(_T(""));
 	}
 
@@ -2364,7 +2364,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sStPosY[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹1 초기 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹1 초기 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sStPosY[1] = CString(_T(""));
 	}
 
@@ -2372,7 +2372,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkEdPosX[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹1 초기 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹1 초기 위치(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkEdPosX[1] = CString(_T(""));
 	}
 
@@ -2380,7 +2380,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkEdPosY[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹1 초기 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹1 초기 위치(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkEdPosY[1] = CString(_T(""));
 	}
 
@@ -2403,7 +2403,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkFdLead = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹부 Feeding 드럼의 원주가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹부 Feeding 드럼의 원주가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkFdLead = CString(_T(""));
 	}
 
@@ -2411,7 +2411,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiFdLead = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI Feeding 드럼의 원주가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI Feeding 드럼의 원주가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiFdLead = CString(_T(""));
 	}
 
@@ -2419,7 +2419,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sFdMkAoiInitDist = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI에서 마킹부까지 진행거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI에서 마킹부까지 진행거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sFdMkAoiInitDist = CString(_T(""));
 	}
 
@@ -2427,7 +2427,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sFdAoiAoiDistShot = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI(상)에서 AOI(하)까지 진행 Shot수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI(상)에서 AOI(하)까지 진행 Shot수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sFdAoiAoiDistShot = CString(_T(""));
 	}
 
@@ -2435,7 +2435,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiTq = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI 텐션 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI 텐션 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiTq = CString(_T(""));
 	}
 
@@ -2443,7 +2443,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkTq = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 텐션 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 텐션 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkTq = CString(_T(""));
 	}
 
@@ -2451,7 +2451,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiFdVacOff = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI롤러 연속 피딩 푸쉬 오프 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI롤러 연속 피딩 푸쉬 오프 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiFdVacOff = CString(_T(""));
 	}
 
@@ -2459,7 +2459,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkFdVacOff = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹롤러 연속 피딩 푸쉬 오프 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹롤러 연속 피딩 푸쉬 오프 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkFdVacOff = CString(_T(""));
 	}
 
@@ -2509,7 +2509,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sEngraveFdBarcodeOffset = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("각인위치에서 2D 코드 리더기까지 Offset거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("각인위치에서 2D 코드 리더기까지 Offset거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sEngraveFdBarcodeOffset = CString(_T(""));
 	}
 
@@ -2517,7 +2517,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sAoiFdBarcodeOffset = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("AOI 검사위치에서 2D 코드 리더기까지 Offset거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("AOI 검사위치에서 2D 코드 리더기까지 Offset거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sAoiFdBarcodeOffset = CString(_T(""));
 	}
 
@@ -2525,7 +2525,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sMkFdBarcodeOffset = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Punching 시작위치에서 2D 코드 리더기까지 Offset거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Punching 시작위치에서 2D 코드 리더기까지 Offset거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sMkFdBarcodeOffset = CString(_T(""));
 	}
 
@@ -2541,7 +2541,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sFdBarcodeOffsetVel = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("바코드 위치 이송 Feeding 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("바코드 위치 이송 Feeding 속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sFdBarcodeOffsetVel = CString(_T(""));
 	}
 
@@ -2549,7 +2549,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sFdBarcodeOffsetAcc = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("바코드 위치 이송 Feeding 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("바코드 위치 이송 Feeding 가속도가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sFdBarcodeOffsetAcc = CString(_T(""));
 	}
 
@@ -2558,7 +2558,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sEngraveLaserAdjOffSetLimitAuto = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("바코드 각인 위치 자동 보정 한계값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("바코드 각인 위치 자동 보정 한계값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sEngraveLaserAdjOffSetLimitAuto = CString(_T(""));
 	}
 
@@ -2566,7 +2566,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sEngraveLaserAdjOffSetManual = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("바코드 각인 위치 수동 보정값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("바코드 각인 위치 수동 보정값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sEngraveLaserAdjOffSetManual = CString(_T(""));
 	}
 
@@ -2574,7 +2574,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sEngraveFdLead = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("각인부 Feeding 드럼의 원주가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("각인부 Feeding 드럼의 원주가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sEngraveFdLead = CString(_T(""));
 	}
 
@@ -2582,7 +2582,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sEngraveFdVacOff = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("각인부 롤러 연속 피딩 푸쉬 오프 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("각인부 롤러 연속 피딩 푸쉬 오프 길이가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sEngraveFdVacOff = CString(_T(""));
 	}
 
@@ -2590,7 +2590,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sEngraveTq = CString(szData); // Tension Servo 0 Gain Torque Value. Plus Value is Feeding direction torque[Kgf].
 	else
 	{
-		AfxMessageBox(_T("각인기 텐션서보 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("각인기 텐션서보 토크가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sEngraveTq = CString(_T(""));
 	}
 
@@ -2601,7 +2601,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sFdEngraveAoiInitDist = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("각인부에서 마킹부까지 진행거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("각인부에서 마킹부까지 진행거리가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sFdEngraveAoiInitDist = CString(_T(""));
 	}
 
@@ -2610,7 +2610,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sEngraveLmtFdErr = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("각인부 Feeding량 보정 Error범위값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("각인부 Feeding량 보정 Error범위값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sEngraveLmtFdErr = CString(_T(""));
 	}
 
@@ -2618,7 +2618,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sEngraveLmtFdAdjOffSet = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("각인부 Feeding량 보정 제한범위값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("각인부 Feeding량 보정 제한범위값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sEngraveLmtFdAdjOffSet = CString(_T(""));
 	}
 
@@ -2626,7 +2626,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Motion.sEngraveLmtFdOvrNum = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("각인부 Feeding량 보정 연속 초과횟수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("각인부 Feeding량 보정 연속 초과횟수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Motion.sEngraveLmtFdOvrNum = CString(_T(""));
 	}
 
@@ -2642,7 +2642,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.VoiceCoil[0].sPort = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("보이스코일0 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("보이스코일0 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.VoiceCoil[0].sPort = CString(_T(""));
 	}
 
@@ -2650,7 +2650,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.VoiceCoil[0].sBaudRate = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("보이스코일0 통신  Baud Rate가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("보이스코일0 통신  Baud Rate가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.VoiceCoil[0].sBaudRate = CString(_T(""));
 	}
 
@@ -2710,7 +2710,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.VoiceCoil[1].sPort = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("보이스코일1 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("보이스코일1 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.VoiceCoil[1].sPort = CString(_T(""));
 	}
 
@@ -2718,7 +2718,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.VoiceCoil[1].sBaudRate = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("보이스코일1 통신  Baud Rate가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("보이스코일1 통신  Baud Rate가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.VoiceCoil[1].sBaudRate = CString(_T(""));
 	}
 
@@ -2778,7 +2778,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Fluck.bUse = _ttoi(szData) ? TRUE : FALSE;
 	else
 	{
-		AfxMessageBox(_T("Fluck 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Fluck 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Fluck.bUse = FALSE;
 	}
 
@@ -2786,7 +2786,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Fluck.sPort = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Fluck 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Fluck 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Fluck.sPort = CString(_T(""));
 	}
 
@@ -2794,7 +2794,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Fluck.sBaudRate = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Fluck 통신 Baud Rate가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Fluck 통신 Baud Rate가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Fluck.sBaudRate = CString(_T(""));
 	}
 
@@ -2830,7 +2830,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Light.sPort = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("조명 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("조명 포트가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Light.sPort = CString(_T(""));
 	}
 
@@ -2838,7 +2838,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Light.sBaudRate = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("조명 통신 Baud Rate가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("조명 통신 Baud Rate가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Light.sBaudRate = CString(_T(""));
 	}
 
@@ -2858,7 +2858,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Light.sCh[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("조명0의 Channel이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("조명0의 Channel이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Light.sCh[0] = CString(_T(""));
 	}
 
@@ -2866,7 +2866,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Light.sVal[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("조명0의 통신 밝기값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("조명0의 통신 밝기값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Light.sVal[0] = CString(_T(""));
 	}
 
@@ -2876,7 +2876,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Light.sCh[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("조명1의 Channel이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("조명1의 Channel이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Light.sCh[1] = CString(_T(""));
 	}
 
@@ -2884,7 +2884,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Light.sVal[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("조명1의 통신 밝기값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("조명1의 통신 밝기값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Light.sVal[1] = CString(_T(""));
 	}
 
@@ -2895,7 +2895,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sPinImgSz = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Pin 이미지 크기가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Pin 이미지 크기가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sPinImgSz = CString(_T(""));
 	}
 
@@ -2903,7 +2903,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sResX = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Vision 해상도(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Vision 해상도(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sResX = CString(_T(""));
 	}
 
@@ -2911,7 +2911,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sResY = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Vision 해상도(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Vision 해상도(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sResY = CString(_T(""));
 	}
 
@@ -2919,7 +2919,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sMkOffsetX = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 Offset(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 Offset(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sMkOffsetX = CString(_T(""));
 	}
 
@@ -2927,7 +2927,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sMkOffsetY = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 Offset(Y)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 Offset(Y)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sMkOffsetY = CString(_T(""));
 	}
 
@@ -2943,7 +2943,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sAlgnPosX[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sAlgnPosX[0] = CString(_T(""));
 	}
 
@@ -2951,7 +2951,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sAlgnPosY[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sAlgnPosY[0] = CString(_T(""));
 	}
 
@@ -2959,7 +2959,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sAlgnPosX[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sAlgnPosX[1] = CString(_T(""));
 	}
 
@@ -2967,7 +2967,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sAlgnPosY[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 첫번째 Align(Y)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 첫번째 Align(Y)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sAlgnPosY[1] = CString(_T(""));
 	}
 
@@ -2975,7 +2975,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[0].sPtMatScr = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("패턴 Matching Score가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("패턴 Matching Score가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[0].sPtMatScr = CString(_T(""));
 	}
 
@@ -2984,7 +2984,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sPinImgSz = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Pin 이미지 크기가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Pin 이미지 크기가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sPinImgSz = CString(_T(""));
 	}
 
@@ -2992,7 +2992,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sResX = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Vision 해상도(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Vision 해상도(X)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sResX = CString(_T(""));
 	}
 
@@ -3000,7 +3000,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sResY = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Vision 해상도(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("Vision 해상도(Y)가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sResY = CString(_T(""));
 	}
 
@@ -3008,7 +3008,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sMkOffsetX = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 Offset(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 Offset(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sMkOffsetX = CString(_T(""));
 	}
 
@@ -3016,7 +3016,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sMkOffsetY = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 Offset(Y)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 Offset(Y)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sMkOffsetY = CString(_T(""));
 	}
 
@@ -3032,7 +3032,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sAlgnPosX[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sAlgnPosX[0] = CString(_T(""));
 	}
 
@@ -3040,7 +3040,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sAlgnPosY[0] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sAlgnPosY[0] = CString(_T(""));
 	}
 
@@ -3048,7 +3048,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sAlgnPosX[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 첫번째 Align(X)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sAlgnPosX[1] = CString(_T(""));
 	}
 
@@ -3056,7 +3056,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sAlgnPosY[1] = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("마킹 첫번째 Align(Y)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("마킹 첫번째 Align(Y)이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sAlgnPosY[1] = CString(_T(""));
 	}
 
@@ -3064,7 +3064,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Vision[1].sPtMatScr = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("패턴 Matching Score가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		pView->ClrDispMsg(); AfxMessageBox(_T("패턴 Matching Score가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Vision[1].sPtMatScr = CString(_T(""));
 	}
 
@@ -4908,7 +4908,6 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 	if (Status.PcrShare[0].sModel.IsEmpty() || Status.PcrShare[0].sLayer.IsEmpty() || Status.PcrShare[0].sLot.IsEmpty())
 	{
 		pView->MsgBox(_T("Error - Aoi Information."));
-		// 		AfxMessageBox(_T("Error - Aoi Information."));
 		return FALSE;
 	}
 
@@ -8301,20 +8300,16 @@ double CGvisR2R_PunchDoc::GetEngraveToq()
 	return (_tstof(WorkingInfo.Motion.sEngraveTq));
 }
 
-int CGvisR2R_PunchDoc::CopyPcrAll()  // return : Serial
+int CGvisR2R_PunchDoc::CopyPcrAll()  // from share to buffer ; return : Serial
 {
 	int nS0, nS1;
 	if (pView->m_bLoadShare[0])
 	{
 		nS0 = CopyPcrUp();
-		// 		if(pView->m_pDlgFrameHigh)
-		// 			pView->m_pDlgFrameHigh->SetAoiLastShot(0, nS0);
 	}
 	if (pView->m_bLoadShare[1])
 	{
 		nS1 = CopyPcrDn();
-		// 		if(pView->m_pDlgFrameHigh)
-		// 			pView->m_pDlgFrameHigh->SetAoiLastShot(1, nS1);
 	}
 
 	if (pView->m_bLoadShare[0] && pView->m_bLoadShare[1])
@@ -8382,6 +8377,7 @@ void CGvisR2R_PunchDoc::DelSharePcr()
 			DelSharePcrDn();
 	}
 }
+
 void CGvisR2R_PunchDoc::DelSharePcrUp()
 {
 	CString sPath = WorkingInfo.System.sPathVrsShareUp;
@@ -8408,6 +8404,31 @@ void CGvisR2R_PunchDoc::DelSharePcrDn()
 	}
 }
 
+void CGvisR2R_PunchDoc::DelShareVsPcrUp()
+{
+	CString sPath = WorkingInfo.System.sPathVsShareUp;
+
+	if (m_pFile)
+	{
+		while (m_pFile->IsPcrExist(sPath))
+		{
+			m_pFile->DelPcrAll(sPath);
+			Sleep(30);
+		}
+	}
+}
+
+void CGvisR2R_PunchDoc::DelShareVsPcrDn()
+{
+	CString sPath = WorkingInfo.System.sPathVsShareDn;
+
+	while (m_pFile->IsPcrExist(sPath))
+	{
+		if (m_pFile)
+			m_pFile->DelPcrAll(sPath);
+		Sleep(30);
+	}
+}
 void CGvisR2R_PunchDoc::DelPcrAll()
 {
 	DelSharePcrUp();

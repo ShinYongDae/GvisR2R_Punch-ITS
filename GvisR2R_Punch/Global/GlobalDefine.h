@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 
-#define TEST_MODE		1
+//#define TEST_MODE		1
 
 #ifndef MAX_STRIP
 	#define MAX_STRIP				4
@@ -647,11 +647,11 @@ struct stSystem
 	CString sPathAoiUp, sPathAoiUpDts, sPathAoiUpCurrInfo, sPathAoiUpVrsData, sPathAoiUpOffset, sPathAoiUpDefImg;
 	CString sPathAoiUpLocalSpec, sPathAoiUpCamInfo;
 	CString sPathVrsShareUp, sPathVrsBufUp;
-	CString sPathVsShareUp, sPathVsBufUp;
+	CString sPathVsShareUp, sPathVsDummyBufUp;
 	CString sPathAoiDn, sPathAoiDnDts, sPathAoiDnCurrInfo, sPathAoiDnVrsData, sPathAoiDnOffset, sPathAoiDnDefImg;
 	CString sPathAoiDnLocalSpec, sPathAoiDnCamInfo;
 	CString sPathVrsShareDn, sPathVrsBufDn;
-	CString sPathVsShareDn, sPathVsBufDn;
+	CString sPathVsShareDn, sPathVsDummyBufDn;
 
 	CString sPathEng, sPathEngCurrInfo, sPathEngOffset, sPathMkCurrInfo, sPathMkCurrInfoBuf;
 	CString sPathMkSignalInfo, sPathEngSignalInfo, sPathAoiUpStatusInfo, sPathAoiDnStatusInfo;
@@ -685,12 +685,12 @@ struct stSystem
 		sPathAoiUpOffset = _T(""); sPathAoiUpVrsData = _T(""); sPathAoiUpCamInfo = _T("");
 		sPathAoiUpLocalSpec = _T("");
 		sPathVrsShareUp = _T(""); sPathVrsBufUp = _T("");
-		sPathVsShareUp = _T(""); sPathVsBufUp = _T("");
+		sPathVsShareUp = _T(""); sPathVsDummyBufUp = _T("");
 		sPathAoiDn = _T(""); sPathAoiDnDts = _T(""); sPathAoiDnCurrInfo = _T(""); sPathAoiDnDefImg = _T("");
 		sPathAoiDnOffset = _T(""); sPathAoiDnVrsData = _T(""); sPathAoiDnCamInfo = _T("");
 		sPathAoiDnLocalSpec = _T("");
 		sPathVrsShareDn = _T(""); sPathVrsBufDn = _T("");
-		sPathVsShareDn = _T(""); sPathVsBufDn = _T("");
+		sPathVsShareDn = _T(""); sPathVsDummyBufDn = _T("");
 
 		sPathEng = _T(""); sPathEngCurrInfo = _T(""); sPathEngOffset = _T(""); sPathMkCurrInfo = _T("");
 		sPathMkSignalInfo = _T(""); sPathEngSignalInfo = _T("");
@@ -1960,7 +1960,7 @@ struct stStatus
 	BOOL bDoorUcF[4], bDoorReF[5];								// 도어 센서
 	BOOL bDoorEngv[4], bDoorEngvF[4];							// 도어 센서
 
-	stPcrShare PcrShare[2];
+	stPcrShare PcrShare[2], PcrShareVs[2];
 
 	stStatus()
 	{

@@ -301,6 +301,8 @@ public:
 	void DelSharePcr();
 	void DelSharePcrUp();
 	void DelSharePcrDn();
+	void DelShareVsPcrUp();
+	void DelShareVsPcrDn();
 	BOOL MakeMkDir(stModelInfo stInfo);
 	BOOL MakeMkDir(CString sModel, CString sLot, CString sLayer);
 	BOOL MakeMkDir();
