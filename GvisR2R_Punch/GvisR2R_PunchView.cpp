@@ -19133,7 +19133,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		}
 		break;
 
-	case AT_LP + 1:
+	case AT_LP + 5:
 		if (!m_bCont) // 이어가기 아닌 경우.
 		{
 			if (!ChkStShotNum())
@@ -19144,7 +19144,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		}
 		m_nStepAuto++;
 		break;
-	case AT_LP + 2:
+	case AT_LP + 6:
 		if (IsRun())
 		{
 			m_bBufEmpty[0] = pDoc->m_bBufEmpty[0]; // Up
@@ -19152,12 +19152,12 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		}
 		break;
 
-	case AT_LP + 3:
-		Shift2Buf();			// PCR 이동(Share->Buffer)
+	case AT_LP + 7:
+		Shift2BufVs();			// PCR 이동(Share->Buffer)
 		m_nStepAuto++;
 		break;
 
-	case AT_LP + 4:
+	case AT_LP + 8:
 		if (!IsRun())
 			break;
 
