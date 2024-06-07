@@ -6387,8 +6387,7 @@ void CGvisR2R_PunchView::DoMainSw()
 		*usInF |= (0x01 << 3);								// 마킹부 운전준비 스위치
 		m_bSwStopNow = FALSE;
 		if (m_pDlgMenu03)
-			m_pDlgMenu03->
-			SwReady();
+			m_pDlgMenu03->SwReady();
 	}
 	else if (!(usIn & (0x01 << 3)) && (*usInF & (0x01 << 3)))
 	{

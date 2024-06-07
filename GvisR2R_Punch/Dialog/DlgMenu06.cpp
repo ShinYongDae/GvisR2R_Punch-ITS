@@ -2810,18 +2810,21 @@ void CDlgMenu06::DispStTime()
 
 // 	sPrev = myStcData[21].GetText();
 	GetDlgItem(IDC_STC_LOT_START)->GetWindowText(sPrev);
-	if(sPrev != str)
-		myStcData[21].SetText(str);
-
-#ifdef USE_ENGRAVE
-	if (pView)
+	if (sPrev != str)
 	{
-		if (pView->m_pEngrave)
-		{
-			pView->m_pEngrave->SetStTime();
-		}
+		myStcData[21].SetText(str);
+		pDoc->SetMkMenu01(_T("LotTime"), _T("Start"), str);
 	}
-#endif
+
+//#ifdef USE_ENGRAVE
+//	if (pView)
+//	{
+//		if (pView->m_pEngrave)
+//		{
+//			pView->m_pEngrave->SetStTime();
+//		}
+//	}
+//#endif
 }
 
 CString CDlgMenu06::GetStTime()
@@ -2912,16 +2915,17 @@ void CDlgMenu06::DispRunTime()
 		if (sPrev != str)
 		{
 			myStcData[22].SetText(str);
+			pDoc->SetMkMenu01(_T("LotTime"), _T("Run"), str);
 
-#ifdef USE_ENGRAVE
-			if (pView)
-			{
-				if (pView->m_pEngrave)
-				{
-					pView->m_pEngrave->SetRunTime();
-				}
-			}
-#endif
+//#ifdef USE_ENGRAVE
+//			if (pView)
+//			{
+//				if (pView->m_pEngrave)
+//				{
+//					pView->m_pEngrave->SetRunTime();
+//				}
+//			}
+//#endif
 		}
 	}
 }
@@ -2952,18 +2956,21 @@ void CDlgMenu06::DispEdTime()
 
 // 	sPrev = myStcData[23].GetText();
 	GetDlgItem(IDC_STC_LOT_END)->GetWindowText(sPrev);
-	if(sPrev != str)
-		myStcData[23].SetText(str);
-
-#ifdef USE_ENGRAVE
-	if (pView)
+	if (sPrev != str)
 	{
-		if (pView->m_pEngrave)
-		{
-			pView->m_pEngrave->SetEdTime();
-		}
+		myStcData[23].SetText(str);
+		pDoc->SetMkMenu01(_T("LotTime"), _T("End"), str);
 	}
-#endif
+
+//#ifdef USE_ENGRAVE
+//	if (pView)
+//	{
+//		if (pView->m_pEngrave)
+//		{
+//			pView->m_pEngrave->SetEdTime();
+//		}
+//	}
+//#endif
 }
 
 CString CDlgMenu06::GetEdTime()

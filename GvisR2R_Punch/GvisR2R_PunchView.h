@@ -328,7 +328,7 @@ class CGvisR2R_PunchView : public CFormView
 	void DoRcSens2();		// MpeIo[6]
 	void DoRcSens3();		// MpeIo[7]
 
-	void DoEngraveSens();	// MpeIo[28
+	void DoEngraveSens();	// MpeIo[28]
 
 
 	BOOL SetCollision(double dCollisionMargin);

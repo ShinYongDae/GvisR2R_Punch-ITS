@@ -2997,15 +2997,15 @@ void CDlgMenu01::DispRunTime()
 			myStcData[22].SetText(str);
 			pDoc->SetMkMenu01(_T("LotTime"), _T("Run"), str);
 
-#ifdef USE_ENGRAVE
-			if (pView)
-			{
-				if (pView->m_pEngrave)
-				{
-					pView->m_pEngrave->SetRunTime();
-				}
-			}
-#endif
+//#ifdef USE_ENGRAVE
+//			if (pView)
+//			{
+//				if (pView->m_pEngrave)
+//				{
+//					pView->m_pEngrave->SetRunTime();
+//				}
+//			}
+//#endif
 		}
 	}
 }
