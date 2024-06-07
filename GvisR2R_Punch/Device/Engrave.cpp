@@ -2483,8 +2483,8 @@ void CEngrave::GetEngInfo(SOCKET_DATA SockData)
 			pDoc->WorkingInfo.Motion.sEngraveTq = CharToString(SockData.strData);
 			break;
 		case _ItemInx::_EngAoiLen:
-			pDoc->WorkingInfo.Motion.sFdEngraveAoiInitDist = pDoc->WorkingInfo.Motion.sEngAoiLen = CharToString(SockData.strData);
-			pDoc->SetEngraveAoiDist(_tstoi(pDoc->WorkingInfo.Motion.sEngAoiLen));
+			pDoc->WorkingInfo.Motion.sFdEngraveAoiInitDist = CharToString(SockData.strData);
+			pDoc->SetEngraveAoiDist(_tstoi(pDoc->WorkingInfo.Motion.sFdEngraveAoiInitDist));
 			break;
 		case _ItemInx::_EngFdDiffMax:
 			pDoc->WorkingInfo.Motion.sEngFdDiffMax = CharToString(SockData.strData);
@@ -5448,8 +5448,7 @@ void CEngrave::SetEngAoiLen()
 	char cData[BUFFER_DATA_SIZE];
 
 	SocketData.nMsgID = _stItemInx::_EngAoiLen;
-	pDoc->WorkingInfo.Motion.sEngAoiLen = pDoc->WorkingInfo.Motion.sFdEngraveAoiInitDist;
-	StringToChar(pDoc->WorkingInfo.Motion.sEngAoiLen, cData);
+	StringToChar(pDoc->WorkingInfo.Motion.sFdEngraveAoiInitDist, cData);
 	sprintf(SocketData.strData, "%s", cData);
 	SendCommand(SocketData);
 }
