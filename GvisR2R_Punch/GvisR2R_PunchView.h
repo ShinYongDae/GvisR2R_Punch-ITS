@@ -505,7 +505,7 @@ public:
 	BOOL m_bReMark[2];			// [nCam] : TRUE(Punching 다시시작), FALSE(pass)
 
 	int m_nMonAlmF, m_nClrAlmF;
-	BOOL m_bLotEnd, m_bLastProc, m_bLastProcFromUp, m_bLastProcFromEng;
+	BOOL m_bLotEnd, m_bLotEndF, m_bLastProc, m_bLastProcFromUp, m_bLastProcFromEng;
 	BOOL m_bMkSt, m_bMkStSw;
 	BOOL m_bEngSt, m_bEngStSw;
 	BOOL m_bEng2dSt, m_bEng2dStSw;

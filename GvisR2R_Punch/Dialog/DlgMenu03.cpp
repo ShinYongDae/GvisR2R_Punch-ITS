@@ -3659,21 +3659,23 @@ BOOL CDlgMenu03::DoReset()
 
 		CFileFind cFile;
 		BOOL bExistSup, bExistBup, bExistSdn, bExistBdn;
+		BOOL bExistSVsup, bExistBVsup, bExistSVsdn, bExistBVsdn;
 
-		pView->m_nDebugStep = 6; pView->DispThreadTick();
 		bExistSup = cFile.FindFile(pDoc->WorkingInfo.System.sPathVrsShareUp + _T("*.pcr"));
-		pView->m_nDebugStep = 7; pView->DispThreadTick();
 		bExistBup = cFile.FindFile(pDoc->WorkingInfo.System.sPathVrsBufUp + _T("*.pcr"));
+		bExistSVsup = cFile.FindFile(pDoc->WorkingInfo.System.sPathVsShareUp + _T("*.pcr"));
+		bExistBVsup = cFile.FindFile(pDoc->WorkingInfo.System.sPathVsDummyBufUp + _T("*.pcr"));
 		if(bDualTest)
 		{
-			pView->m_nDebugStep = 8; pView->DispThreadTick();
 			bExistSdn = cFile.FindFile(pDoc->WorkingInfo.System.sPathVrsShareDn + _T("*.pcr"));
-			pView->m_nDebugStep = 9; pView->DispThreadTick();
 			bExistBdn = cFile.FindFile(pDoc->WorkingInfo.System.sPathVrsBufDn + _T("*.pcr"));
+			bExistSVsdn = cFile.FindFile(pDoc->WorkingInfo.System.sPathVsShareDn + _T("*.pcr"));
+			bExistBVsdn = cFile.FindFile(pDoc->WorkingInfo.System.sPathVsDummyBufDn + _T("*.pcr"));
 			if(bExistSup || bExistSdn ||
-				bExistBup || bExistBdn)
+				bExistBup || bExistBdn ||
+				bExistSVsup || bExistSVsdn ||
+				bExistBVsup || bExistBVsdn)
 			{
-				pView->m_nDebugStep = 10; pView->DispThreadTick();
 				pDoc->DelPcrAll();
 			}
 			else
@@ -3684,9 +3686,8 @@ BOOL CDlgMenu03::DoReset()
 		}
 		else
 		{
-			if(bExistSup || bExistBup)
+			if(bExistSup || bExistBup || bExistSVsup || bExistBVsup)
 			{
-				pView->m_nDebugStep = 11; pView->DispThreadTick();
 				pDoc->DelPcrAll();
 			}
 			else

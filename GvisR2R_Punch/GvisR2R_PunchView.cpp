@@ -487,6 +487,7 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	m_nEng2dStAuto = 0;
 
 	m_bLotEnd = FALSE;
+	m_bLotEndF = FALSE;
 	m_nLotEndAuto = 0;
 
 	m_bLastProc = FALSE;
@@ -3553,7 +3554,7 @@ void CGvisR2R_PunchView::ChkShareVsDn()
 	CString str, str2;
 	int nSerial, nAoiDnAutoSerial;
 
-	if (ChkShareDn(nSerial))
+	if (ChkShareVsDn(nSerial))
 	{
 		str.Format(_T("DS: %d"), nSerial);
 		pDoc->Status.PcrShareVs[1].bExist = TRUE;
@@ -4006,9 +4007,10 @@ BOOL CGvisR2R_PunchView::SortingOutUp(int* pSerial, int nTot)
 
 BOOL CGvisR2R_PunchView::ChkBufUp(int* pSerial, int &nTot)
 {
-	CFileFind cFile;
+	CFileFind cFile, cFile2;
 	BOOL bExist = cFile.FindFile(pDoc->WorkingInfo.System.sPathVrsBufUp + _T("*.pcr"));
-	if (!bExist)
+	BOOL bExist2 = cFile2.FindFile(pDoc->WorkingInfo.System.sPathVsDummyBufUp + _T("*.pcr"));
+	if (!bExist && !bExist2)
 	{
 		pDoc->m_bBufEmpty[0] = TRUE;
 		if (!pDoc->m_bBufEmptyF[0])
@@ -4053,9 +4055,10 @@ BOOL CGvisR2R_PunchView::ChkBufUp(int* pSerial, int &nTot)
 
 BOOL CGvisR2R_PunchView::ChkBufDn(int* pSerial, int &nTot)
 {
-	CFileFind cFile;
+	CFileFind cFile, cFile2;
 	BOOL bExist = cFile.FindFile(pDoc->WorkingInfo.System.sPathVrsBufDn + _T("*.pcr"));
-	if (!bExist)
+	BOOL bExist2 = cFile2.FindFile(pDoc->WorkingInfo.System.sPathVsDummyBufDn + _T("*.pcr"));
+	if (!bExist && !bExist2)
 	{
 		pDoc->m_bBufEmpty[1] = TRUE;
 		if (!pDoc->m_bBufEmptyF[1])
@@ -9167,24 +9170,46 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 		sSrc = pDoc->WorkingInfo.System.sPathVsShareUp;
 		sDest = pDoc->WorkingInfo.System.sPathVrsBufUp;
 
-		if (pDoc->m_pFile)
+		if (m_nShareUpS != m_nShareUpSprev && m_nShareUpS > 0)
 		{
-			pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
-			pDoc->m_pFile->DelPcrAll(sSrc);
-		}
-		pDoc->m_ListBuf[0].Push(m_nShareUpS);
-
-		if (bDualTest)
-		{
-			sSrc = pDoc->WorkingInfo.System.sPathVsShareDn;
-			sDest = pDoc->WorkingInfo.System.sPathVrsBufDn;
+			m_nShareUpSprev = m_nShareUpS;
 
 			if (pDoc->m_pFile)
 			{
 				pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
 				pDoc->m_pFile->DelPcrAll(sSrc);
 			}
-			pDoc->m_ListBuf[1].Push(m_nShareDnS);
+			SetListBuf();
+			//pDoc->m_ListBuf[0].Push(m_nShareUpS);
+
+			//if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
+			//{
+			//	UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬
+			//}
+		}
+
+		if (bDualTest)
+		{
+			sSrc = pDoc->WorkingInfo.System.sPathVsShareDn;
+			sDest = pDoc->WorkingInfo.System.sPathVrsBufDn;
+
+			if (m_nShareDnS != m_nShareDnSprev && m_nShareDnS > 0)
+			{
+				m_nShareDnSprev = m_nShareDnS;
+
+				if (pDoc->m_pFile)
+				{
+					pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
+					pDoc->m_pFile->DelPcrAll(sSrc);
+				}
+				SetListBuf();
+				//pDoc->m_ListBuf[1].Push(m_nShareDnS);
+
+				//if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
+				//{
+				//	UpdateReelmap(m_nShareDnS); // 시리얼파일의 정보로 릴맵을 만듬
+				//}
+			}
 		}
 	}
 	else
@@ -10717,7 +10742,38 @@ double CGvisR2R_PunchView::GetPartVel()
 BOOL CGvisR2R_PunchView::IsBuffer(int nNum)
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-	//	if(m_nBufTot[0] > 1 && m_nBufTot[1] > 1)
+
+	if (GetAoiUpVsStatus())
+	{
+		if(!m_bLotEnd)
+			nNum = 1;
+
+		if (m_bLastProc)
+		{
+			int nLastShot = GetLotEndSerial();
+			if (bDualTest)
+			{
+				if (pDoc->m_ListBuf[0].GetLast() == nLastShot && pDoc->m_ListBuf[1].GetLast() == nLastShot)
+				{
+					nNum = 0;
+					m_bLotEndF = TRUE;
+				}
+				else
+					nNum = 1;
+			}
+			else
+			{
+				if (pDoc->m_ListBuf[0].GetLast() == nLastShot)
+				{
+					nNum = 0;
+					m_bLotEndF = TRUE;
+				}
+				else
+					nNum = 1;
+			}
+		}
+	}
+
 	if (bDualTest)
 	{
 		if (m_nBufTot[0] > nNum && m_nBufTot[1] > nNum) // [0]: AOI-Up , [1]: AOI-Dn
@@ -11315,6 +11371,7 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 	m_nEng2dStAuto = 0;
 
 	m_bLotEnd = FALSE;
+	m_bLotEndF = FALSE;
 	m_nLotEndAuto = 0;
 
 	m_bLastProc = FALSE;
@@ -18108,12 +18165,24 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 
 	if (!IsBuffer(0) && m_bLastProc && m_nLotEndAuto < LOT_END)
 	{
-		m_bLotEnd = TRUE;
-		m_nLotEndAuto = LOT_END;
+		if (!GetAoiUpVsStatus())
+		{
+			m_bLotEnd = TRUE;
+			m_nLotEndAuto = LOT_END;
+		}
 	}
 	else if(!IsBuffer(0) && m_nMkStAuto > MK_ST + (Mk2PtIdx::DoneMk) + 4)
 	{
-		m_nMkStAuto = 0;
+		if (!GetAoiUpVsStatus())
+		{
+			m_nMkStAuto = 0;
+			m_bLotEnd = TRUE;
+			m_nLotEndAuto = LOT_END;
+		}
+	}
+
+	if (!IsBuffer(0) && m_bLotEndF)
+	{
 		m_bLotEnd = TRUE;
 		m_nLotEndAuto = LOT_END;
 	}
@@ -18183,7 +18252,7 @@ void CGvisR2R_PunchView::DoAtuoGetMkStSignal()
 					if (pDoc->m_pMpeSignal[0] & (0x01 << 1))	// 마킹부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)-20141030
 					{
 						pDoc->LogAuto(_T("PLC: Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)"));
-						m_pMpe->Write(_T("MB440101"), 0);		// 마킹부 Feeding완료
+						//m_pMpe->Write(_T("MB440101"), 0);		// 마킹부 Feeding완료
 					}
 
 					m_bMkSt = TRUE;
@@ -18857,7 +18926,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		m_nStepAuto++;
 		break;
 	case AT_LP + (AtLpVsIdx::ChkShare) + 2:
-		if (IsRun())
+		//if (IsRun())
 		{
 			//m_bBufEmpty[0] = pDoc->m_bBufEmpty[0]; // Up
 			m_nStepAuto++;
@@ -19078,7 +19147,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		m_nStepAuto++;
 		break;
 	case AT_LP + (AtLpVsIdx::ChkShareVs) + 2:
-		if (IsRun())
+		//if (IsRun())
 		{
 			m_bBufEmpty[0] = pDoc->m_bBufEmpty[0]; // Up
 			m_nStepAuto++;
@@ -19091,8 +19160,8 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		break;
 
 	case AT_LP + (AtLpVsIdx::UpdateReelmap):
-		if (!IsRun())
-			break;
+		//if (!IsRun())
+		//	break;
 
 		if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
 		{
@@ -19247,14 +19316,19 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 
 			LoadPcrUp(m_nShareUpS);				// Default: From Buffer, TRUE: From Share
 
-			if (!bDualTest)
+			if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
 			{
-				if (m_nShareUpS != m_nShareUpSprev)
-				{
-					m_nShareUpSprev = m_nShareUpS;
-					UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬 
-				}
+				UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬
 			}
+
+			//if (!bDualTest)
+			//{
+			//	if (m_nShareUpS != m_nShareUpSprev)
+			//	{
+			//		m_nShareUpSprev = m_nShareUpS;
+			//		UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬 
+			//	}
+			//}
 
 			if (!m_bLastProc)
 			{
@@ -19330,8 +19404,8 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		break;
 
 	case AT_LP + (AtLpVsIdx::UpdateReelmap) + 1:
-		if (!IsRun())
-			break;
+		//if (!IsRun())
+		//	break;
 
 		if (!bDualTest)
 		{
@@ -19409,14 +19483,19 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 
 			LoadPcrDn(m_nShareDnS);
 
-			if (bDualTest)
+			if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
 			{
-				if (m_nShareDnS != m_nShareDnSprev)
-				{
-					m_nShareDnSprev = m_nShareDnS;
-					UpdateReelmap(m_nShareDnS);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
-				}
+				UpdateReelmap(m_nShareDnS); // 시리얼파일의 정보로 릴맵을 만듬
 			}
+
+			//if (bDualTest)
+			//{
+			//	if (m_nShareDnS != m_nShareDnSprev)
+			//	{
+			//		m_nShareDnSprev = m_nShareDnS;
+			//		UpdateReelmap(m_nShareDnS);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
+			//	}
+			//}
 
 
 			if (!m_bLastProc)
@@ -19496,7 +19575,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		break;
 
 	case AT_LP + (AtLpVsIdx::UpdateReelmap) + 3:
-		if (IsRun())
+		//if (IsRun())
 		{
 			if (bDualTest)
 			{
@@ -19513,7 +19592,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		break;
 
 	case AT_LP + (AtLpVsIdx::MakeItsFile):
-		if (IsRun())
+		//if (IsRun())
 		{
 			if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
 			{
@@ -20636,7 +20715,7 @@ void CGvisR2R_PunchView::Mk2PtReady()
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	CString sMsg;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -20684,10 +20763,17 @@ void CGvisR2R_PunchView::Mk2PtReady()
 
 					m_nBufDnSerial[0] = pDoc->m_ListBuf[1].Pop();
 					m_nBufUpSerial[0] = m_nBufDnSerial[0];
+
+					//if (GetAoiUpVsStatus())
+					//	UpdateReelmap(m_nBufDnSerial[0]);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
+
 					if (pDoc->m_ListBuf[1].nTot > 0) // AOI-Dn
 					{
 						m_nBufDnSerial[1] = pDoc->m_ListBuf[1].Pop();
 						m_nBufUpSerial[1] = m_nBufDnSerial[1];
+
+						//if (GetAoiUpVsStatus())
+						//	UpdateReelmap(m_nBufDnSerial[1]);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
 					}
 					else
 					{
@@ -20697,8 +20783,11 @@ void CGvisR2R_PunchView::Mk2PtReady()
 				}
 				else
 				{
-					m_bLotEnd = TRUE;
-					m_nLotEndAuto = LOT_END;
+					if (!GetAoiUpVsStatus())
+					{
+						m_bLotEnd = TRUE;
+						m_nLotEndAuto = LOT_END;
+					}
 				}
 
 				if (pDoc->WorkingInfo.LastJob.bSampleTest)
@@ -20726,15 +20815,27 @@ void CGvisR2R_PunchView::Mk2PtReady()
 				{
 					m_nMkStAuto++;
 					m_nBufUpSerial[0] = pDoc->m_ListBuf[0].Pop();
+
+					//if (GetAoiUpVsStatus())
+					//	UpdateReelmap(m_nBufUpSerial[0]);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
+
 					if (pDoc->m_ListBuf[0].nTot > 0) // AOI-Up
+					{
 						m_nBufUpSerial[1] = pDoc->m_ListBuf[0].Pop();
+
+						//if (GetAoiUpVsStatus())
+						//	UpdateReelmap(m_nBufUpSerial[1]);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
+					}
 					else
 						m_nBufUpSerial[1] = 0;
 				}
 				else
 				{
-					m_bLotEnd = TRUE;
-					m_nLotEndAuto = LOT_END;
+					if (!GetAoiUpVsStatus())
+					{
+						m_bLotEnd = TRUE;
+						m_nLotEndAuto = LOT_END;
+					}
 				}
 
 				if (pDoc->WorkingInfo.LastJob.bSampleTest)
@@ -20788,7 +20889,7 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 	if (m_bTHREAD_SHIFT2MK)
 		return;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -20955,7 +21056,7 @@ void CGvisR2R_PunchView::Mk2PtInit()
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -21009,7 +21110,7 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -21316,7 +21417,7 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -21614,7 +21715,7 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 
 void CGvisR2R_PunchView::Mk2PtMoveInitPos()
 {
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -21638,7 +21739,7 @@ void CGvisR2R_PunchView::Mk2PtElecChk()
 {
 	CString sRst;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -21720,7 +21821,7 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 	CString sRst, sMsg;
 	int a, b, nSerial, nPrevSerial;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -21986,125 +22087,13 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			break;
 		case MK_ST + (Mk2PtIdx::DoneMk) + 6:
 			m_nMkStAuto++;
-			if (!IsBuffer(0))
-			{
-				m_bLotEnd = TRUE;
-				m_nLotEndAuto = LOT_END;
-			}
-			else
-			{
-				// [0]: AOI-Up , [1]: AOI-Dn
-				if (bDualTest)
-				{
-					nSerial = pDoc->m_ListBuf[0].Pop(); // Up (좌)
-					nSerial = pDoc->m_ListBuf[0].Pop(); // Up (우)
-
-					SetListBuf();
-				}
-
-				if (m_nLotEndSerial > 0)
-				{
-					nSerial = GetBufferUp(&nPrevSerial);
-
-					if (pView->m_bSerialDecrese)
-					{
-						if (nSerial < m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-						{
-							if (IsDoneDispMkInfo())
-							{
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial);
-								else
-									SetSerial(nPrevSerial - 1, TRUE);
-
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial - 1);
-								else
-									SetSerial(nPrevSerial - 2, TRUE);
-
-								//m_nStepAuto = LOT_END;
-								m_bLotEnd = TRUE;
-								m_nLotEndAuto = LOT_END;
-							}
-						}
-					}
-					else
-					{
-						if (nSerial > m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-						{
-							if (IsDoneDispMkInfo())
-							{
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial);
-								else
-									SetSerial(nPrevSerial + 1, TRUE);
-
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial + 1);
-								else
-									SetSerial(nPrevSerial + 2, TRUE);
-
-								//m_nStepAuto = LOT_END;
-								m_bLotEnd = TRUE;
-								m_nLotEndAuto = LOT_END;
-							}
-						}
-					}
-
-					if (bDualTest)
-					{
-						nSerial = GetBufferDn(&nPrevSerial);
-
-						if (pView->m_bSerialDecrese)
-						{
-							if (nSerial < m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-							{
-								if (IsDoneDispMkInfo())
-								{
-									if (IsBuffer() && nSerial > 0)
-										SetSerial(nSerial);
-									else
-										SetSerial(nPrevSerial - 1, TRUE);
-
-									if (IsBuffer() && nSerial > 0)
-										SetSerial(nSerial - 1);
-									else
-										SetSerial(nPrevSerial - 2, TRUE);
-
-									m_bLotEnd = TRUE;
-									m_nLotEndAuto = LOT_END;
-								}
-							}
-						}
-						else
-						{
-							if (nSerial > m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-							{
-								if (IsDoneDispMkInfo())
-								{
-									if (IsBuffer() && nSerial > 0)
-										SetSerial(nSerial);
-									else
-										SetSerial(nPrevSerial + 1, TRUE);
-
-									if (IsBuffer() && nSerial > 0)
-										SetSerial(nSerial + 1);
-									else
-										SetSerial(nPrevSerial + 2, TRUE);
-
-									m_bLotEnd = TRUE;
-									m_nLotEndAuto = LOT_END;
-								}
-							}
-						}
-					}
-				}
-			}
-
 			break;
 		case MK_ST + (Mk2PtIdx::DoneMk) + 7:
-			m_bMkSt = FALSE;
+			m_nMkStAuto++;
 			::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("0"), PATH_WORKING_INFO);
+			break;
+		case MK_ST + (Mk2PtIdx::DoneMk) + 8:
+			m_bMkSt = FALSE;
 			break;
 		}
 	}
@@ -22116,7 +22105,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 	CString sRst, sMsg;
 	int a, b, nSerial, nPrevSerial;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -22229,6 +22218,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 			break;
 		case MK_ST + (Mk2PtIdx::Shift2Mk) + 7:
 			m_nMkStAuto++;
+			/*
 			if (!IsBuffer(0))
 			{
 				m_bLotEnd = TRUE;
@@ -22297,11 +22287,14 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 					}
 				}
 			}
-
+*/
 			break;
 		case MK_ST + (Mk2PtIdx::Shift2Mk) + 8:
-			m_bMkSt = FALSE;
+			m_nMkStAuto++;
 			::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("0"), PATH_WORKING_INFO);
+			break;
+		case MK_ST + (Mk2PtIdx::Shift2Mk) + 9:
+			m_bMkSt = FALSE;
 			break;
 		}
 	}
@@ -22309,7 +22302,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 
 void CGvisR2R_PunchView::Mk2PtLotDiff()
 {
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -22354,7 +22347,7 @@ void CGvisR2R_PunchView::Mk2PtReject()
 {
 	int a, b;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -22465,7 +22458,7 @@ void CGvisR2R_PunchView::Mk2PtReject()
 
 void CGvisR2R_PunchView::Mk2PtErrStop()
 {
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -22540,7 +22533,7 @@ void CGvisR2R_PunchView::Mk4PtReady()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -22578,8 +22571,11 @@ void CGvisR2R_PunchView::Mk4PtReady()
 				}
 				else
 				{
-					m_bLotEnd = TRUE;
-					m_nLotEndAuto = LOT_END;
+					if (!GetAoiUpVsStatus())
+					{
+						m_bLotEnd = TRUE;
+						m_nLotEndAuto = LOT_END;
+					}
 				}
 
 				if (pDoc->WorkingInfo.LastJob.bSampleTest)
@@ -22614,8 +22610,11 @@ void CGvisR2R_PunchView::Mk4PtReady()
 				}
 				else
 				{
-					m_bLotEnd = TRUE;
-					m_nLotEndAuto = LOT_END;
+					if (!GetAoiUpVsStatus())
+					{
+						m_bLotEnd = TRUE;
+						m_nLotEndAuto = LOT_END;
+					}
 				}
 
 				if (pDoc->WorkingInfo.LastJob.bSampleTest)
@@ -22654,7 +22653,7 @@ void CGvisR2R_PunchView::Mk4PtChkSerial()
 	int nNewLot = 0;
 	double dFdEnc;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -22747,7 +22746,7 @@ void CGvisR2R_PunchView::Mk4PtInit()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -22795,7 +22794,7 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -23075,7 +23074,7 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -23346,7 +23345,7 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -23627,7 +23626,7 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -23914,7 +23913,7 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 
 void CGvisR2R_PunchView::Mk4PtMoveInitPos()
 {
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -23941,7 +23940,7 @@ void CGvisR2R_PunchView::Mk4PtElecChk()
 {
 	CString sRst;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -24018,7 +24017,7 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 	CString sRst, sMsg;
 	int a, b, nSerial, nPrevSerial;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -24176,6 +24175,7 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 			break;
 		case MK_ST + (Mk4PtIdx::DoneMk) + 6:
 			m_nMkStAuto++;
+			/*
 			if (!IsBuffer(0))
 			{
 				m_bLotEnd = TRUE;
@@ -24290,11 +24290,15 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 					}
 				}
 			}
-
+*/
 			break;
 		case MK_ST + (Mk4PtIdx::DoneMk) + 7:
-			m_bMkSt = FALSE;
+			m_nMkStAuto++;
 			::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("0"), PATH_WORKING_INFO);
+			break;
+
+		case MK_ST + (Mk4PtIdx::DoneMk) + 8:
+			m_bMkSt = FALSE;
 			break;
 		}
 	}
@@ -24302,7 +24306,7 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 
 void CGvisR2R_PunchView::Mk4PtLotDiff()
 {
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -24347,7 +24351,7 @@ void CGvisR2R_PunchView::Mk4PtReject()
 {
 	int a, b;
 
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -24458,7 +24462,7 @@ void CGvisR2R_PunchView::Mk4PtReject()
 
 void CGvisR2R_PunchView::Mk4PtErrStop()
 {
-	if (m_bMkSt)
+	if (m_bMkSt && IsBuffer())
 	{
 		switch (m_nMkStAuto)
 		{
@@ -33654,8 +33658,8 @@ void CGvisR2R_PunchView::LoadSerial()
 		}
 		else
 		{
-			m_bLotEnd = TRUE;
-			m_nLotEndAuto = LOT_END;
+			//m_bLotEnd = TRUE;
+			//m_nLotEndAuto = LOT_END;
 		}
 
 		if (pDoc->WorkingInfo.LastJob.bSampleTest)
@@ -33688,8 +33692,8 @@ void CGvisR2R_PunchView::LoadSerial()
 		}
 		else
 		{
-			m_bLotEnd = TRUE;
-			m_nLotEndAuto = LOT_END;
+			//m_bLotEnd = TRUE;
+			//m_nLotEndAuto = LOT_END;
 		}
 
 		if (pDoc->WorkingInfo.LastJob.bSampleTest)

@@ -5230,37 +5230,82 @@ int CGvisR2R_PunchDoc::LoadPCR0(int nSerial, BOOL bFromShare)	// return : 2(Fail
 		return 0;
 	}
 
-	int nRtn[2] = { 1 };
+	int nRtn[4] = { 1 };
 	nRtn[0] = LoadPCRUp(nSerial, bFromShare);
-	//nRtn[1] = LoadPCRAllUp(nSerial, bFromShare);
-
 	if (nRtn[0] != 1)
 		return nRtn[0];
-	//if (nRtn[1] != 1)
-	//	return nRtn[1];
-
-	if (GetTestMode() == MODE_OUTER)
+	if (pView->GetAoiUpVsStatus())
 	{
-		int nRtnInner[5] = { 1 };
-		nRtnInner[0] = LoadPCRUpInner(nSerial, bFromShare);
-		nRtnInner[1] = LoadPCRDnInner(nSerial, bFromShare);
-		nRtnInner[2] = LoadPCRAllUpInner(nSerial, bFromShare);
-		nRtnInner[3] = LoadPCRAllDnInner(nSerial, bFromShare);
-
-		if (nRtnInner[0] != 1)
-			return nRtnInner[0];
-		if (nRtnInner[1] != 1)
-			return nRtnInner[1];
-		if (nRtnInner[2] != 1)
-			return nRtnInner[2];
-		if (nRtnInner[3] != 1)
-			return nRtnInner[3];
-
-		if (!bDualTest)
+		if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
 		{
-			nRtnInner[4] = LoadPCRIts(nSerial, bFromShare);
-			if (nRtnInner[4] != 1)
-				return nRtnInner[4];
+			nRtn[1] = LoadPCRAllDn(nSerial, bFromShare);
+			if (nRtn[1] != 1)
+				return nRtn[1];
+
+			nRtn[2] = LoadPCRAllUp(nSerial, bFromShare);
+			if (nRtn[2] != 1)
+				return nRtn[2];
+
+			if (GetTestMode() == MODE_OUTER)
+			{
+				nRtn[3] = LoadPCRIts(nSerial, bFromShare);
+				if (nRtn[3] != 1)
+					return nRtn[3];
+			}
+		}
+		else
+		{
+			if (GetTestMode() == MODE_OUTER)
+			{
+				int nRtnInner[5] = { 1 };
+				nRtnInner[0] = LoadPCRUpInner(nSerial, bFromShare);
+				nRtnInner[1] = LoadPCRDnInner(nSerial, bFromShare);
+				nRtnInner[2] = LoadPCRAllUpInner(nSerial, bFromShare);
+				nRtnInner[3] = LoadPCRAllDnInner(nSerial, bFromShare);
+
+				if (nRtnInner[0] != 1)
+					return nRtnInner[0];
+				if (nRtnInner[1] != 1)
+					return nRtnInner[1];
+				if (nRtnInner[2] != 1)
+					return nRtnInner[2];
+				if (nRtnInner[3] != 1)
+					return nRtnInner[3];
+
+				if (!bDualTest)
+				{
+					nRtnInner[4] = LoadPCRIts(nSerial, bFromShare);
+					if (nRtnInner[4] != 1)
+						return nRtnInner[4];
+				}
+			}
+		}
+	}
+	else
+	{
+		if (GetTestMode() == MODE_OUTER)
+		{
+			int nRtnInner[5] = { 1 };
+			nRtnInner[0] = LoadPCRUpInner(nSerial, bFromShare);
+			nRtnInner[1] = LoadPCRDnInner(nSerial, bFromShare);
+			nRtnInner[2] = LoadPCRAllUpInner(nSerial, bFromShare);
+			nRtnInner[3] = LoadPCRAllDnInner(nSerial, bFromShare);
+
+			if (nRtnInner[0] != 1)
+				return nRtnInner[0];
+			if (nRtnInner[1] != 1)
+				return nRtnInner[1];
+			if (nRtnInner[2] != 1)
+				return nRtnInner[2];
+			if (nRtnInner[3] != 1)
+				return nRtnInner[3];
+
+			if (!bDualTest)
+			{
+				nRtnInner[4] = LoadPCRIts(nSerial, bFromShare);
+				if (nRtnInner[4] != 1)
+					return nRtnInner[4];
+			}
 		}
 	}
 
@@ -5282,21 +5327,65 @@ int CGvisR2R_PunchDoc::LoadPCR1(int nSerial, BOOL bFromShare)	// return : 2(Fail
 
 	int nRtn[4] = { 1 };
 	nRtn[0] = LoadPCRDn(nSerial, bFromShare);
-	nRtn[1] = LoadPCRAllDn(nSerial, bFromShare);
-	nRtn[2] = LoadPCRAllUp(nSerial, bFromShare);
-
 	if (nRtn[0] != 1)
 		return nRtn[0];
-	if (nRtn[1] != 1)
-		return nRtn[1];
-	if (nRtn[2] != 1)
-		return nRtn[2];
 
-	if (GetTestMode() == MODE_OUTER)
+	if (pView->GetAoiUpVsStatus())
 	{
-		nRtn[3] = LoadPCRIts(nSerial, bFromShare);
-		if (nRtn[3] != 1)
-			return nRtn[3];
+		if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
+		{
+			nRtn[1] = LoadPCRAllDn(nSerial, bFromShare);
+			if (nRtn[1] != 1)
+				return nRtn[1];
+
+			nRtn[2] = LoadPCRAllUp(nSerial, bFromShare);
+			if (nRtn[2] != 1)
+				return nRtn[2];
+
+			if (GetTestMode() == MODE_OUTER)
+			{
+				nRtn[3] = LoadPCRIts(nSerial, bFromShare);
+				if (nRtn[3] != 1)
+					return nRtn[3];
+			}
+		}
+		else
+		{
+			if (GetTestMode() == MODE_OUTER)
+			{
+				int nRtnInner[5] = { 1 };
+				nRtnInner[0] = LoadPCRUpInner(nSerial, bFromShare);
+				nRtnInner[1] = LoadPCRDnInner(nSerial, bFromShare);
+				nRtnInner[2] = LoadPCRAllUpInner(nSerial, bFromShare);
+				nRtnInner[3] = LoadPCRAllDnInner(nSerial, bFromShare);
+
+				if (nRtnInner[0] != 1)
+					return nRtnInner[0];
+				if (nRtnInner[1] != 1)
+					return nRtnInner[1];
+				if (nRtnInner[2] != 1)
+					return nRtnInner[2];
+				if (nRtnInner[3] != 1)
+					return nRtnInner[3];
+			}
+		}
+	}
+	else
+	{
+		nRtn[1] = LoadPCRAllDn(nSerial, bFromShare);
+		if (nRtn[1] != 1)
+			return nRtn[1];
+
+		nRtn[2] = LoadPCRAllUp(nSerial, bFromShare);
+		if (nRtn[2] != 1)
+			return nRtn[2];
+
+		if (GetTestMode() == MODE_OUTER)
+		{
+			nRtn[3] = LoadPCRIts(nSerial, bFromShare);
+			if (nRtn[3] != 1)
+				return nRtn[3];
+		}
 	}
 
 	return (1); // 1(Á¤»ó)
@@ -8433,6 +8522,8 @@ void CGvisR2R_PunchDoc::DelPcrAll()
 {
 	DelSharePcrUp();
 	DelSharePcrDn();
+	DelShareVsPcrUp();
+	DelShareVsPcrDn();
 
 	DelPcrUp();
 	DelPcrDn();
@@ -8452,6 +8543,10 @@ void CGvisR2R_PunchDoc::DelPcrUp()
 		m_pFile->DelPcrAll(sPath);
 		sPath = WorkingInfo.System.sPathVrsBufUp;
 		m_pFile->DelPcrAll(sPath);
+		sPath = WorkingInfo.System.sPathVsShareUp;
+		m_pFile->DelPcrAll(sPath);
+		sPath = WorkingInfo.System.sPathVsDummyBufUp;
+		m_pFile->DelPcrAll(sPath);
 	}
 }
 
@@ -8464,6 +8559,10 @@ void CGvisR2R_PunchDoc::DelPcrDn()
 		sPath = WorkingInfo.System.sPathVrsShareDn;
 		m_pFile->DelPcrAll(sPath);
 		sPath = WorkingInfo.System.sPathVrsBufDn;
+		m_pFile->DelPcrAll(sPath);
+		sPath = WorkingInfo.System.sPathVsShareDn;
+		m_pFile->DelPcrAll(sPath);
+		sPath = WorkingInfo.System.sPathVsDummyBufDn;
 		m_pFile->DelPcrAll(sPath);
 	}
 }

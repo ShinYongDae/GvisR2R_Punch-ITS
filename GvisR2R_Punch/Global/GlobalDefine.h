@@ -2091,7 +2091,12 @@ struct stListBuf
 	int stListBuf::GetLast()
 	{
 		if (nSerial[0] < 1 || (nTot - 1) < 0)
-			return 0;
+		{
+			if (nSerial[0] > 0)
+				return nSerial[0];
+			else
+				return 0;
+		}
 		return nSerial[nTot - 1];
 	}
 

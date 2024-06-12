@@ -127,7 +127,7 @@ BOOL CCamMaster::LoadMstInfo()
 {
 	CString sPath;
 
-	GetCamPxlRes();
+	pDoc->GetCamPxlRes();
 	LoadMasterSpec();
 	if (LoadStripRgnFromCam())
 	{
