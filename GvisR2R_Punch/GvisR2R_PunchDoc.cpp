@@ -1604,7 +1604,7 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sLayerUp = CString(_T(""));
 	}
 
-	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Test Mode"), NULL, szData, sizeof(szData), sPath))
+	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Test Mode"), NULL, szData, sizeof(szData), sPath)) // MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2
 		WorkingInfo.LastJob.nTestMode = _ttoi(szData);
 	else
 		WorkingInfo.LastJob.nTestMode = 0;

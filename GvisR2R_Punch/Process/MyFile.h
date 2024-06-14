@@ -50,7 +50,9 @@ public:
 
 	// for R2R
 	void DelPcrAll(CString strPath);
-	void DelSharePcr();
+	void DelPcr(CString strPath, int nSerial);
+	//void DelSharePcr();
+	int CopyPcr(CString sSrc, CString sDest);  // return : Serial
 	int CopyPcrAll(CString sSrc, CString sDest);  // return : Serial
 	BOOL ChkLotEnd(CString sPath);
 	BOOL IsPcrExist(CString strPath);

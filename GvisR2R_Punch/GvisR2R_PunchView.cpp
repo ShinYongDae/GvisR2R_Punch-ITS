@@ -3250,7 +3250,8 @@ void CGvisR2R_PunchView::DispThreadTick()
 		pFrm->DispStatusBar(str, 6);
 #else
 		//str.Format(_T("%d"), m_nDebugStep);
-		str.Format(_T("%d,%d,%d,%d"), m_nStepAuto, m_nMkStAuto, m_nStepMk[0], m_nStepMk[1]);//pView->m_nLotEndAuto
+		//str.Format(_T("%d,%d,%d,%d"), m_nStepAuto, m_nMkStAuto, m_nStepMk[0], m_nStepMk[1]);//pView->m_nLotEndAuto
+		str.Format(_T("%d,%d,%d,%d"), m_nStepAuto, m_nSerialRmapUpdate, m_nShareUpS, m_nShareDnS);//pView->m_nLotEndAuto
 		pFrm->DispStatusBar(str, 6);
 #endif
 	}
@@ -3721,8 +3722,8 @@ void CGvisR2R_PunchView::ChkShareUp()
 			}
 			else
 			{
-				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
-				m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
+				//pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
+				//m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
 			}
 		}
 	}
@@ -3789,8 +3790,8 @@ void CGvisR2R_PunchView::ChkShareDn()
 			}
 			else
 			{
-				pView->m_pMpe->Write(_T("ML45114"), (long)nSerial);	// 검사한 Panel의 AOI 하 Serial
-				m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
+				//pView->m_pMpe->Write(_T("ML45114"), (long)nSerial);	// 검사한 Panel의 AOI 하 Serial
+				//m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
 			}
 		}
 	}
@@ -9137,14 +9138,17 @@ void CGvisR2R_PunchView::Shift2DummyBuf()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	CString sSrc, sDest;
+	int nSerial;
 
 	sSrc = pDoc->WorkingInfo.System.sPathVrsShareUp;
 	sDest = pDoc->WorkingInfo.System.sPathVsDummyBufUp;
 
 	if (pDoc->m_pFile)
 	{
-		pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
-		pDoc->m_pFile->DelPcrAll(sSrc);
+		nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+		pDoc->m_pFile->DelPcr(sSrc, nSerial);
+		//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
+		//pDoc->m_pFile->DelPcrAll(sSrc);
 	}
 
 	if (bDualTest)
@@ -9154,8 +9158,10 @@ void CGvisR2R_PunchView::Shift2DummyBuf()
 
 		if (pDoc->m_pFile)
 		{
-			pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
-			pDoc->m_pFile->DelPcrAll(sSrc);
+			nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+			pDoc->m_pFile->DelPcr(sSrc, nSerial);
+			//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
+			//pDoc->m_pFile->DelPcrAll(sSrc);
 		}
 	}
 }
@@ -9164,28 +9170,69 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	CString sSrc, sDest;
+	int nSerial;
+
+	//if (GetAoiUpVsStatus())
+	//{
+	//	sSrc = pDoc->WorkingInfo.System.sPathVsShareUp;
+	//	sDest = pDoc->WorkingInfo.System.sPathVrsBufUp;
+	//	if (m_nShareUpS != m_nShareUpSprev && m_nShareUpS > 0)
+	//	{
+	//		m_nShareUpSprev = m_nShareUpS;
+	//		if (pDoc->m_pFile)
+	//		{
+	//			nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+	//			pDoc->m_pFile->DelPcr(sSrc, nSerial);
+	//			//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
+	//			//pDoc->m_pFile->DelPcrAll(sSrc);
+	//		}
+	//		SetListBuf();
+	//		//pDoc->m_ListBuf[0].Push(m_nShareUpS);
+	//		//if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
+	//		//{
+	//		//	UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬
+	//		//}
+	//	}
+	//	if (bDualTest)
+	//	{
+	//		sSrc = pDoc->WorkingInfo.System.sPathVsShareDn;
+	//		sDest = pDoc->WorkingInfo.System.sPathVrsBufDn;
+	//		if (m_nShareDnS != m_nShareDnSprev && m_nShareDnS > 0)
+	//		{
+	//			m_nShareDnSprev = m_nShareDnS;
+	//			if (pDoc->m_pFile)
+	//			{
+	//				nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+	//				pDoc->m_pFile->DelPcr(sSrc, nSerial);
+	//				//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
+	//				//pDoc->m_pFile->DelPcrAll(sSrc);
+	//			}
+	//			SetListBuf();
+	//			//pDoc->m_ListBuf[1].Push(m_nShareDnS);
+	//			//if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
+	//			//{
+	//			//	UpdateReelmap(m_nShareDnS); // 시리얼파일의 정보로 릴맵을 만듬
+	//			//}
+	//		}
+	//	}
+	//}
 
 	if (GetAoiUpVsStatus())
 	{
 		sSrc = pDoc->WorkingInfo.System.sPathVsShareUp;
 		sDest = pDoc->WorkingInfo.System.sPathVrsBufUp;
 
-		if (m_nShareUpS != m_nShareUpSprev && m_nShareUpS > 0)
+		if (pDoc->m_pFile)
 		{
-			m_nShareUpSprev = m_nShareUpS;
-
-			if (pDoc->m_pFile)
+			m_nShareUpS = nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+			pDoc->m_pFile->DelPcr(sSrc, nSerial);
+			//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
+			//pDoc->m_pFile->DelPcrAll(sSrc);
+			if (nSerial > 0)
 			{
-				pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
-				pDoc->m_pFile->DelPcrAll(sSrc);
+				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
+				m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
 			}
-			SetListBuf();
-			//pDoc->m_ListBuf[0].Push(m_nShareUpS);
-
-			//if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
-			//{
-			//	UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬
-			//}
 		}
 
 		if (bDualTest)
@@ -9193,24 +9240,21 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 			sSrc = pDoc->WorkingInfo.System.sPathVsShareDn;
 			sDest = pDoc->WorkingInfo.System.sPathVrsBufDn;
 
-			if (m_nShareDnS != m_nShareDnSprev && m_nShareDnS > 0)
+			if (pDoc->m_pFile)
 			{
-				m_nShareDnSprev = m_nShareDnS;
-
-				if (pDoc->m_pFile)
+				m_nShareUpS = nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+				pDoc->m_pFile->DelPcr(sSrc, nSerial);
+				//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
+				//pDoc->m_pFile->DelPcrAll(sSrc);
+				if (nSerial > 0)
 				{
-					pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
-					pDoc->m_pFile->DelPcrAll(sSrc);
+					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
+					m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
 				}
-				SetListBuf();
-				//pDoc->m_ListBuf[1].Push(m_nShareDnS);
-
-				//if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
-				//{
-				//	UpdateReelmap(m_nShareDnS); // 시리얼파일의 정보로 릴맵을 만듬
-				//}
 			}
 		}
+
+		SetListBuf();
 	}
 	else
 	{
@@ -9219,10 +9263,17 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 
 		if (pDoc->m_pFile)
 		{
-			pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
-			pDoc->m_pFile->DelPcrAll(sSrc);
+			m_nShareUpS = nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+			pDoc->m_pFile->DelPcr(sSrc, nSerial);
+			//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
+			//pDoc->m_pFile->DelPcrAll(sSrc);
+			if (nSerial > 0)
+			{
+				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
+				m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
+			}
 		}
-		pDoc->m_ListBuf[0].Push(m_nShareUpS);
+		//pDoc->m_ListBuf[0].Push(m_nShareUpS);
 
 		if (bDualTest)
 		{
@@ -9231,11 +9282,20 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 
 			if (pDoc->m_pFile)
 			{
-				pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
-				pDoc->m_pFile->DelPcrAll(sSrc);
+				m_nShareDnS = nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+				pDoc->m_pFile->DelPcr(sSrc, nSerial);
+				//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
+				//pDoc->m_pFile->DelPcrAll(sSrc);
+				if (nSerial > 0)
+				{
+					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
+					m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
+				}
 			}
-			pDoc->m_ListBuf[1].Push(m_nShareDnS);
+			//pDoc->m_ListBuf[1].Push(m_nShareDnS);
 		}
+
+		SetListBuf();
 	}
 }
 
@@ -10756,7 +10816,8 @@ BOOL CGvisR2R_PunchView::IsBuffer(int nNum)
 				if (pDoc->m_ListBuf[0].GetLast() == nLastShot && pDoc->m_ListBuf[1].GetLast() == nLastShot)
 				{
 					nNum = 0;
-					m_bLotEndF = TRUE;
+					if(!m_bLotEnd)
+						m_bLotEndF = TRUE;
 				}
 				else
 					nNum = 1;
@@ -10766,7 +10827,8 @@ BOOL CGvisR2R_PunchView::IsBuffer(int nNum)
 				if (pDoc->m_ListBuf[0].GetLast() == nLastShot)
 				{
 					nNum = 0;
-					m_bLotEndF = TRUE;
+					if (!m_bLotEnd)
+						m_bLotEndF = TRUE;
 				}
 				else
 					nNum = 1;
@@ -18183,6 +18245,7 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 
 	if (!IsBuffer(0) && m_bLotEndF)
 	{
+		m_bLotEndF = FALSE;
 		m_bLotEnd = TRUE;
 		m_nLotEndAuto = LOT_END;
 	}
@@ -19155,6 +19218,18 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		break;
 
 	case AT_LP + (AtLpVsIdx::ChkShareVs) + 3:
+		if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
+		{
+			Sleep(100);
+			break;
+		}
+
+		if (m_bTHREAD_UPDATE_YIELD_UP || m_bTHREAD_UPDATE_YIELD_DN || m_bTHREAD_UPDATE_YIELD_ALLUP || m_bTHREAD_UPDATE_YIELD_ALLDN) // Write Reelmap
+		{
+			Sleep(100);
+			break;
+		}
+
 		Shift2Buf();			// PCR 이동(Share->Buffer)
 		m_nStepAuto++;
 		break;
@@ -20032,6 +20107,18 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		break;
 
 	case AT_LP + 3:
+		if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
+		{
+			Sleep(100);
+			break;
+		}
+
+		if (m_bTHREAD_UPDATE_YIELD_UP || m_bTHREAD_UPDATE_YIELD_DN || m_bTHREAD_UPDATE_YIELD_ALLUP || m_bTHREAD_UPDATE_YIELD_ALLDN) // Write Reelmap
+		{
+			Sleep(100);
+			break;
+		}
+
 		Shift2Buf();			// PCR 이동(Share->Buffer)
 		m_nStepAuto++;
 		break;
@@ -20223,14 +20310,19 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			
 			LoadPcrUp(m_nShareUpS);				// Default: From Buffer, TRUE: From Share
 
-			if (!bDualTest)
+			if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
 			{
-				if (m_nShareUpS != m_nShareUpSprev)
-				{
-					m_nShareUpSprev = m_nShareUpS;
-					UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬 
-				}
+				UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬
 			}
+
+			//if (!bDualTest)
+			//{
+			//	if (m_nShareUpS != m_nShareUpSprev)
+			//	{
+			//		m_nShareUpSprev = m_nShareUpS;
+			//		UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬 
+			//	}
+			//}
 
 			if (!m_bLastProc)
 			{
@@ -20336,6 +20428,11 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				}
 			}
 		}
+		else
+		{
+			//ClrDispMsg();
+			//AfxMessageBox(_T("Error : m_nShareUpS <= 0"));
+		}
 		break;
 
 	case AT_LP + 5:
@@ -20428,14 +20525,19 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 			LoadPcrDn(m_nShareDnS);
 
-			if (bDualTest)
+			if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
 			{
-				if (m_nShareDnS != m_nShareDnSprev)
-				{
-					m_nShareDnSprev = m_nShareDnS;
-					UpdateReelmap(m_nShareDnS);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
-				}
+				UpdateReelmap(m_nShareDnS); // 시리얼파일의 정보로 릴맵을 만듬
 			}
+
+			//if (bDualTest)
+			//{
+			//	if (m_nShareDnS != m_nShareDnSprev)
+			//	{
+			//		m_nShareDnSprev = m_nShareDnS;
+			//		UpdateReelmap(m_nShareDnS);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
+			//	}
+			//}
 
 
 			if (!m_bLastProc)
@@ -20522,6 +20624,12 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				}
 			}
 		}
+		else
+		{
+			//ClrDispMsg();
+			//AfxMessageBox(_T("Error : m_nShareDnS <= 0"));
+		}
+
 		break;
 
 	case AT_LP + 6:
