@@ -3695,8 +3695,10 @@ void CGvisR2R_PunchView::ChkShareUp()
 				m_nAoiUpAutoSerial = nAoiUpAutoSerial;
 
 				if (nAoiUpAutoSerial <= GetLotEndSerial())
+				{
 					pView->m_pMpe->Write(_T("ML45112"), nAoiUpAutoSerial);	// °Ë»çÇÑ PanelÀÇ AOI »ó Serial
-	
+					Sleep(300);
+				}
 				m_pMpe->Write(_T("MB44012B"), 1); // AOI »ó : PCRÆÄÀÏ Received
 			}
 		}
@@ -3717,6 +3719,7 @@ void CGvisR2R_PunchView::ChkShareUp()
 				if (!IsSetLotEnd())
 				{
 					pView->m_pMpe->Write(_T("ML45112"), (long)GetAoiUpAutoSerial() - 1);	// °Ë»çÇÑ PanelÀÇ AOI »ó Serial
+					Sleep(300);
 					m_pMpe->Write(_T("MB44012B"), 1); // AOI »ó : PCRÆÄÀÏ Received
 				}
 			}
@@ -3763,7 +3766,10 @@ void CGvisR2R_PunchView::ChkShareDn()
 				m_nAoiDnAutoSerial = nAoiDnAutoSerial;
 
 				if (nAoiDnAutoSerial <= GetLotEndSerial())
+				{
 					pView->m_pMpe->Write(_T("ML45114"), nAoiDnAutoSerial);	// °Ë»çÇÑ PanelÀÇ AOI ÇÏ Serial
+					Sleep(300);
+				}
 
 				m_pMpe->Write(_T("MB44012C"), 1); // AOI ÇÏ : PCRÆÄÀÏ Received
 			}
@@ -3785,6 +3791,7 @@ void CGvisR2R_PunchView::ChkShareDn()
 				if (!IsSetLotEnd())
 				{
 					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// °Ë»çÇÑ PanelÀÇ AOI ÇÏ Serial
+					Sleep(300);
 					m_pMpe->Write(_T("MB44012C"), 1); // AOI ÇÏ : PCRÆÄÀÏ Received
 				}
 			}
@@ -9231,6 +9238,7 @@ void CGvisR2R_PunchView::Shift2Buf()	// ¹öÆÛÆú´õÀÇ ¸¶Áö¸· ½Ã¸®¾ó°ú ShareÆú´õÀÇ ½
 			if (nSerial > 0)
 			{
 				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// °Ë»çÇÑ PanelÀÇ AOI »ó Serial
+				Sleep(300);
 				m_pMpe->Write(_T("MB44012B"), 1); // AOI »ó : PCRÆÄÀÏ Received
 			}
 		}
@@ -9249,6 +9257,7 @@ void CGvisR2R_PunchView::Shift2Buf()	// ¹öÆÛÆú´õÀÇ ¸¶Áö¸· ½Ã¸®¾ó°ú ShareÆú´õÀÇ ½
 				if (nSerial > 0)
 				{
 					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// °Ë»çÇÑ PanelÀÇ AOI ÇÏ Serial
+					Sleep(300);
 					m_pMpe->Write(_T("MB44012C"), 1); // AOI ÇÏ : PCRÆÄÀÏ Received
 				}
 			}
@@ -9270,6 +9279,7 @@ void CGvisR2R_PunchView::Shift2Buf()	// ¹öÆÛÆú´õÀÇ ¸¶Áö¸· ½Ã¸®¾ó°ú ShareÆú´õÀÇ ½
 			if (nSerial > 0)
 			{
 				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// °Ë»çÇÑ PanelÀÇ AOI »ó Serial
+				Sleep(300);
 				m_pMpe->Write(_T("MB44012B"), 1); // AOI »ó : PCRÆÄÀÏ Received
 			}
 		}
@@ -9289,6 +9299,7 @@ void CGvisR2R_PunchView::Shift2Buf()	// ¹öÆÛÆú´õÀÇ ¸¶Áö¸· ½Ã¸®¾ó°ú ShareÆú´õÀÇ ½
 				if (nSerial > 0)
 				{
 					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// °Ë»çÇÑ PanelÀÇ AOI ÇÏ Serial
+					Sleep(300);
 					m_pMpe->Write(_T("MB44012C"), 1); // AOI ÇÏ : PCRÆÄÀÏ Received
 				}
 			}
@@ -18346,6 +18357,7 @@ void CGvisR2R_PunchView::DoAutoSetLastProcAtPlc()
 					{
 						pDoc->LogAuto(_T("PC: ÀÜ·®Ã³¸® AOI(»ó) ºÎÅÍ(PC°¡ On½ÃÅ°°í, PLC°¡ È®ÀÎÇÏ°í Off½ÃÅ´)"));
 						m_pMpe->Write(_T("MB440185"), 1);			// ÀÜ·®Ã³¸® AOI(»ó) ºÎÅÍ(PC°¡ On½ÃÅ°°í, PLC°¡ È®ÀÎÇÏ°í Off½ÃÅ´)-20141112
+						Sleep(300);
 						m_pMpe->Write(_T("MB44012B"), 1);			// AOI »ó : PCRÆÄÀÏ Received
 					}
 					else
@@ -18365,6 +18377,7 @@ void CGvisR2R_PunchView::DoAutoSetLastProcAtPlc()
 					{
 						pDoc->LogAuto(_T("PC: ÀÜ·®Ã³¸® AOI(»ó) ºÎÅÍ(PC°¡ On½ÃÅ°°í, PLC°¡ È®ÀÎÇÏ°í Off½ÃÅ´)"));
 						m_pMpe->Write(_T("MB440185"), 1);			// ÀÜ·®Ã³¸® AOI(»ó) ºÎÅÍ(PC°¡ On½ÃÅ°°í, PLC°¡ È®ÀÎÇÏ°í Off½ÃÅ´)-20141112
+						Sleep(300);
 						m_pMpe->Write(_T("MB44012B"), 1);			// AOI »ó : PCRÆÄÀÏ Received
 					}
 					else
