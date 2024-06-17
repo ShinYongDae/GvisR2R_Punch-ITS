@@ -3684,25 +3684,23 @@ void CGvisR2R_PunchView::ChkShareUp()
 	CString str, str2;
 	int nSerial, nAoiUpAutoSerial;
 
-	if (IsVs() && IsSetLotEnd())
-	{
-		nAoiUpAutoSerial = GetAoiUpAutoSerial() - 1;
-
-		if (nAoiUpAutoSerial > 0)
-		{
-			if (m_nAoiUpAutoSerial != nAoiUpAutoSerial)
-			{
-				m_nAoiUpAutoSerial = nAoiUpAutoSerial;
-
-				if (nAoiUpAutoSerial <= GetLotEndSerial())
-				{
-					pView->m_pMpe->Write(_T("ML45112"), nAoiUpAutoSerial);	// 검사한 Panel의 AOI 상 Serial
-					Sleep(300);
-				}
-				m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
-			}
-		}
-	}
+	//if (IsVs() && IsSetLotEnd())
+	//{
+	//	nAoiUpAutoSerial = GetAoiUpAutoSerial() - 1;
+	//	if (nAoiUpAutoSerial > 0)
+	//	{
+	//		if (m_nAoiUpAutoSerial != nAoiUpAutoSerial)
+	//		{
+	//			m_nAoiUpAutoSerial = nAoiUpAutoSerial;
+	//			if (nAoiUpAutoSerial <= GetLotEndSerial())
+	//			{
+	//				pView->m_pMpe->Write(_T("ML45112"), nAoiUpAutoSerial);	// 검사한 Panel의 AOI 상 Serial
+	//				Sleep(300);
+	//			}
+	//			m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
+	//		}
+	//	}
+	//}
 
 	if (ChkShareUp(nSerial))
 	{
@@ -3714,20 +3712,20 @@ void CGvisR2R_PunchView::ChkShareUp()
 			str2.Format(_T("PCR파일 Received - US: %d"), nSerial);
 			pDoc->LogAuto(str2);
 
-			if (IsVs())
-			{
-				if (!IsSetLotEnd())
-				{
-					pView->m_pMpe->Write(_T("ML45112"), (long)GetAoiUpAutoSerial() - 1);	// 검사한 Panel의 AOI 상 Serial
-					Sleep(300);
-					m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
-				}
-			}
-			else
-			{
-				//pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
-				//m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
-			}
+			//if (IsVs())
+			//{
+			//	if (!IsSetLotEnd())
+			//	{
+			//		pView->m_pMpe->Write(_T("ML45112"), (long)GetAoiUpAutoSerial() - 1);	// 검사한 Panel의 AOI 상 Serial
+			//		Sleep(300);
+			//		m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
+			//	}
+			//}
+			//else
+			//{
+			//	//pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
+			//	//m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
+			//}
 		}
 	}
 	else
@@ -3755,26 +3753,23 @@ void CGvisR2R_PunchView::ChkShareDn()
 	CString str, str2;
 	int nSerial, nAoiDnAutoSerial;
 
-	if (IsVs() && IsSetLotEnd())
-	{
-		nAoiDnAutoSerial = GetAoiDnAutoSerial() - 1;
-
-		if (nAoiDnAutoSerial > 0)
-		{
-			if (m_nAoiDnAutoSerial != nAoiDnAutoSerial)
-			{
-				m_nAoiDnAutoSerial = nAoiDnAutoSerial;
-
-				if (nAoiDnAutoSerial <= GetLotEndSerial())
-				{
-					pView->m_pMpe->Write(_T("ML45114"), nAoiDnAutoSerial);	// 검사한 Panel의 AOI 하 Serial
-					Sleep(300);
-				}
-
-				m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
-			}
-		}
-	}
+	//if (IsVs() && IsSetLotEnd())
+	//{
+	//	nAoiDnAutoSerial = GetAoiDnAutoSerial() - 1;
+	//	if (nAoiDnAutoSerial > 0)
+	//	{
+	//		if (m_nAoiDnAutoSerial != nAoiDnAutoSerial)
+	//		{
+	//			m_nAoiDnAutoSerial = nAoiDnAutoSerial;
+	//			if (nAoiDnAutoSerial <= GetLotEndSerial())
+	//			{
+	//				pView->m_pMpe->Write(_T("ML45114"), nAoiDnAutoSerial);	// 검사한 Panel의 AOI 하 Serial
+	//				Sleep(300);
+	//			}
+	//			m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
+	//		}
+	//	}
+	//}
 
 	if (ChkShareDn(nSerial))
 	{
@@ -3786,20 +3781,20 @@ void CGvisR2R_PunchView::ChkShareDn()
 			str2.Format(_T("PCR파일 Received - DS: %d"), nSerial);
 			pDoc->LogAuto(str2);
 
-			if (IsVs())
-			{
-				if (!IsSetLotEnd())
-				{
-					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
-					Sleep(300);
-					m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
-				}
-			}
-			else
-			{
-				//pView->m_pMpe->Write(_T("ML45114"), (long)nSerial);	// 검사한 Panel의 AOI 하 Serial
-				//m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
-			}
+			//if (IsVs())
+			//{
+			//	if (!IsSetLotEnd())
+			//	{
+			//		pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
+			//		Sleep(300);
+			//		m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
+			//	}
+			//}
+			//else
+			//{
+			//	//pView->m_pMpe->Write(_T("ML45114"), (long)nSerial);	// 검사한 Panel의 AOI 하 Serial
+			//	//m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
+			//}
 		}
 	}
 	else
@@ -9156,6 +9151,12 @@ void CGvisR2R_PunchView::Shift2DummyBuf()
 		pDoc->m_pFile->DelPcr(sSrc, nSerial);
 		//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
 		//pDoc->m_pFile->DelPcrAll(sSrc);
+		if (nSerial > 0)
+		{
+			pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
+			Sleep(300);
+			m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
+		}
 	}
 
 	if (bDualTest)
@@ -9169,6 +9170,12 @@ void CGvisR2R_PunchView::Shift2DummyBuf()
 			pDoc->m_pFile->DelPcr(sSrc, nSerial);
 			//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
 			//pDoc->m_pFile->DelPcrAll(sSrc);
+			if (nSerial > 0)
+			{
+				pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
+				Sleep(300);
+				m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
+			}
 		}
 	}
 }
@@ -9228,38 +9235,39 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 	{
 		sSrc = pDoc->WorkingInfo.System.sPathVsShareUp;
 		sDest = pDoc->WorkingInfo.System.sPathVrsBufUp;
-
 		if (pDoc->m_pFile)
 		{
-			m_nShareUpS = nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+			nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+			if (nSerial > 0)
+				m_nShareUpS = nSerial;
 			pDoc->m_pFile->DelPcr(sSrc, nSerial);
 			//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
 			//pDoc->m_pFile->DelPcrAll(sSrc);
-			if (nSerial > 0)
-			{
-				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
-				Sleep(300);
-				m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
-			}
+			//if (nSerial > 0)
+			//{
+			//	pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
+			//	Sleep(300);
+			//	m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
+			//}
 		}
-
 		if (bDualTest)
 		{
 			sSrc = pDoc->WorkingInfo.System.sPathVsShareDn;
 			sDest = pDoc->WorkingInfo.System.sPathVrsBufDn;
-
 			if (pDoc->m_pFile)
 			{
-				m_nShareUpS = nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+				nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+				if(nSerial > 0)
+					m_nShareDnS = nSerial;
 				pDoc->m_pFile->DelPcr(sSrc, nSerial);
 				//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
 				//pDoc->m_pFile->DelPcrAll(sSrc);
-				if (nSerial > 0)
-				{
-					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
-					Sleep(300);
-					m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
-				}
+				//if (nSerial > 0)
+				//{
+				//	pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
+				//	Sleep(300);
+				//	m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
+				//}
 			}
 		}
 
@@ -9272,12 +9280,13 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 
 		if (pDoc->m_pFile)
 		{
-			m_nShareUpS = nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+			nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
 			pDoc->m_pFile->DelPcr(sSrc, nSerial);
 			//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
 			//pDoc->m_pFile->DelPcrAll(sSrc);
 			if (nSerial > 0)
 			{
+				m_nShareUpS = nSerial;
 				pView->m_pMpe->Write(_T("ML45112"), (long)nSerial);	// 검사한 Panel의 AOI 상 Serial
 				Sleep(300);
 				m_pMpe->Write(_T("MB44012B"), 1); // AOI 상 : PCR파일 Received
@@ -9292,12 +9301,13 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 
 			if (pDoc->m_pFile)
 			{
-				m_nShareDnS = nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
+				nSerial = pDoc->m_pFile->CopyPcr(sSrc, sDest);
 				pDoc->m_pFile->DelPcr(sSrc, nSerial);
 				//pDoc->m_pFile->CopyPcrAll(sSrc, sDest);
 				//pDoc->m_pFile->DelPcrAll(sSrc);
 				if (nSerial > 0)
 				{
+					m_nShareDnS = nSerial;
 					pView->m_pMpe->Write(_T("ML45114"), (long)GetAoiDnAutoSerial() - 1);	// 검사한 Panel의 AOI 하 Serial
 					Sleep(300);
 					m_pMpe->Write(_T("MB44012C"), 1); // AOI 하 : PCR파일 Received
