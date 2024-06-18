@@ -2512,11 +2512,13 @@ void CDlgMenu01::InitStcTitle()
 	myStcTitle[73].SubclassDlgItem(IDC_STC_TQ_DSIP1, this);
 	myStcTitle[74].SubclassDlgItem(IDC_STC_TQ_DSIP2, this);
 
+	myStcTitle[75].SubclassDlgItem(IDC_STC_VS, this);
+
 	for (i = 65; i < MAX_MENU01_STC_TITLE; i++)
 	{
 		myStcTitle[i].SetFontName(_T("Arial"));
 		myStcTitle[i].SetFontSize(12);
-		if (i == 69)
+		if (i == 69 || i == 75)
 		{
 			myStcTitle[i].SetFontBold(TRUE);
 			myStcTitle[i].SetTextColor(RGB_YELLOW);
@@ -2759,6 +2761,12 @@ void CDlgMenu01::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 		DispTqVal();
 		ChkMkLimit();
 		ChkPartialSpd();
+
+		if (pView->GetAoiUpVsStatus() && !GetDlgItem(IDC_STC_VS)->IsWindowVisible())
+			GetDlgItem(IDC_STC_VS)->ShowWindow(SW_SHOW);
+		else if(!pView->GetAoiUpVsStatus() && GetDlgItem(IDC_STC_VS)->IsWindowVisible())
+			GetDlgItem(IDC_STC_VS)->ShowWindow(SW_HIDE);
+
 		if(m_bTIM_DISP_MK_CNT)
 			SetTimer(TIM_DISP_MK_CNT, 300, NULL);
 	}
@@ -3304,7 +3312,7 @@ void CDlgMenu01::UpdateData()
 
 	((CButton*)GetDlgItem(IDC_CHK_2LAYER))->SetCheck(pDoc->WorkingInfo.LastJob.bUse2Layer);
 
-	if(pDoc->WorkingInfo.LastJob.bUse380mm)
+	if (pDoc->WorkingInfo.LastJob.bUse380mm)
 		GetDlgItem(IDC_STC_380mm)->ShowWindow(SW_SHOW);
 	else
 		GetDlgItem(IDC_STC_380mm)->ShowWindow(SW_HIDE);

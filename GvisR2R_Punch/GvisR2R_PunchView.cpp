@@ -5545,7 +5545,6 @@ void CGvisR2R_PunchView::DoIO()
 				m_pDlgMenu01->EnableBtn(TRUE);
 		}
 	}
-
 }
 
 void CGvisR2R_PunchView::DoSens()

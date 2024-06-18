@@ -729,6 +729,7 @@
 #define IDC_CHK_MK_POS2_3               1217
 #define IDC_STC_20_                     1217
 #define IDC_STC_48                      1217
+#define IDC_STC_VS                      1217
 #define IDC_STC_0040                    1218
 #define IDC_CHK_MK_POS2_4               1218
 #define IDC_STC_30_                     1218
