@@ -315,7 +315,7 @@ public:
 	BOOL IsPinMkData();
 	BOOL IsPinData();
 
-	void UpdateYield(int nSerial);
+	//void UpdateYield(int nSerial);
 	void UpdateYieldUp(int nSerial);
 	void UpdateYieldDn(int nSerial);
 	void UpdateYieldAllUp(int nSerial);

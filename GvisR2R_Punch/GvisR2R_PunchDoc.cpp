@@ -8761,49 +8761,49 @@ void CGvisR2R_PunchDoc::UpdateYieldOnRmap()
 
 }
 
-void CGvisR2R_PunchDoc::UpdateYield(int nSerial)
-{
-	if (nSerial <= 0)
-	{
-		pView->ClrDispMsg();
-		AfxMessageBox(_T("Serial Error.66"));
-		return;
-	}
-
-	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-
-	if (m_pReelMapUp)
-		m_pReelMapUp->UpdateYield(nSerial);
-	if (bDualTest)
-	{
-		if (m_pReelMapDn)
-			m_pReelMapDn->UpdateYield(nSerial);
-		if (m_pReelMapAllUp)
-			m_pReelMapAllUp->UpdateYield(nSerial);
-		if (m_pReelMapAllDn)
-			m_pReelMapAllDn->UpdateYield(nSerial);
-	}
-
-	if (pDoc->GetTestMode() == MODE_OUTER)
-	{
-		if (m_pReelMapInnerUp)
-			m_pReelMapInnerUp->UpdateYield(nSerial);
-
-		if (m_pReelMapIts)
-			m_pReelMapIts->UpdateYield(nSerial);
-
-		if (WorkingInfo.LastJob.bDualTestInner)
-		{
-			if (m_pReelMapInnerDn)
-				m_pReelMapInnerDn->UpdateYield(nSerial);
-			if (m_pReelMapInnerAllUp)
-				m_pReelMapInnerAllUp->UpdateYield(nSerial);
-			if (m_pReelMapInnerAllDn)
-				m_pReelMapInnerAllDn->UpdateYield(nSerial);
-		}
-	}
-
-}
+//void CGvisR2R_PunchDoc::UpdateYield(int nSerial)
+//{
+//	if (nSerial <= 0)
+//	{
+//		pView->ClrDispMsg();
+//		AfxMessageBox(_T("Serial Error.66"));
+//		return;
+//	}
+//
+//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+//
+//	if (m_pReelMapUp)
+//		m_pReelMapUp->UpdateYield(nSerial);
+//	if (bDualTest)
+//	{
+//		if (m_pReelMapDn)
+//			m_pReelMapDn->UpdateYield(nSerial);
+//		if (m_pReelMapAllUp)
+//			m_pReelMapAllUp->UpdateYield(nSerial);
+//		if (m_pReelMapAllDn)
+//			m_pReelMapAllDn->UpdateYield(nSerial);
+//	}
+//
+//	if (pDoc->GetTestMode() == MODE_OUTER)
+//	{
+//		if (m_pReelMapInnerUp)
+//			m_pReelMapInnerUp->UpdateYield(nSerial);
+//
+//		if (m_pReelMapIts)
+//			m_pReelMapIts->UpdateYield(nSerial);
+//
+//		if (WorkingInfo.LastJob.bDualTestInner)
+//		{
+//			if (m_pReelMapInnerDn)
+//				m_pReelMapInnerDn->UpdateYield(nSerial);
+//			if (m_pReelMapInnerAllUp)
+//				m_pReelMapInnerAllUp->UpdateYield(nSerial);
+//			if (m_pReelMapInnerAllDn)
+//				m_pReelMapInnerAllDn->UpdateYield(nSerial);
+//		}
+//	}
+//
+//}
 
 void CGvisR2R_PunchDoc::UpdateYieldUp(int nSerial)
 {

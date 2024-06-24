@@ -3109,13 +3109,13 @@ UINT CGvisR2R_PunchView::ThreadProc3(LPVOID lpContext)	// UpdateYield()
 		pThread->m_dwThreadTick[3] = GetTickCount() - dwTick;
 		dwTick = GetTickCount();
 
-		if (pThread->m_bTHREAD_UPDATAE_YIELD[0])
+		if (pThread->m_bTHREAD_UPDATAE_YIELD[0]) // Left Punching Yield
 		{
 			pThread->UpdateYield(pThread->m_nSerialTHREAD_UPDATAE_YIELD[0]);
 			pThread->m_bTHREAD_UPDATAE_YIELD[0] = FALSE;
 			Sleep(0);
 		}
-		else if(pThread->m_bTHREAD_UPDATAE_YIELD[1] && !pThread->m_bTHREAD_UPDATE_YIELD_UP)
+		else if(pThread->m_bTHREAD_UPDATAE_YIELD[1] && !pThread->m_bTHREAD_UPDATE_YIELD_UP) // Right Punching Yield
 		{
 			if (pDoc->WorkingInfo.LastJob.bDualTest)
 			{
@@ -21970,47 +21970,49 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			break;
 
 		case MK_ST + (Mk2PtIdx::DoMk) + 1:
-			if (!m_bUpdateYield)
-			{
-				if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
-				{
-					m_bUpdateYield = TRUE;
-					UpdateYield(); // Cam[0],  Cam[1]
-					m_nMkStAuto++;
-				}
-			}
-			else
-			{
-				Sleep(100);
-				m_nMkStAuto++;
-			}
+			m_nMkStAuto++;
+			//if (!m_bUpdateYield)
+			//{
+			//	if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
+			//	{
+			//		m_bUpdateYield = TRUE;
+			//		UpdateYield(); // Cam[0],  Cam[1]
+			//		m_nMkStAuto++;
+			//	}
+			//}
+			//else
+			//{
+			//	Sleep(100);
+			//	m_nMkStAuto++;
+			//}
 			break;
 
 		case MK_ST + (Mk2PtIdx::DoMk) + 2:
-			if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
-			{
-				if (!m_bUpdateYieldOnRmap)
-				{
-					if (!m_bTHREAD_UPDATE_REELMAP_UP && !m_bTHREAD_UPDATE_REELMAP_DN && !m_bTHREAD_UPDATE_REELMAP_ALLUP && !m_bTHREAD_UPDATE_REELMAP_ALLDN)
-					{
-						if (!m_bTHREAD_UPDATE_YIELD_UP && !m_bTHREAD_UPDATE_YIELD_DN && !m_bTHREAD_UPDATE_YIELD_ALLUP && !m_bTHREAD_UPDATE_YIELD_ALLDN)
-						{
-							m_bUpdateYieldOnRmap = TRUE;
-							pDoc->UpdateYieldOnRmap(); // 20230614
-							m_nMkStAuto++;
-						}
-						else
-							Sleep(100);
-					}
-					else
-						Sleep(100);
-				}
-				else
-				{
-					Sleep(100);
-					m_nMkStAuto++; // 마킹 및 verify가 완전히 끝나지 않은 경우.
-				}
-			}
+			m_nMkStAuto++;
+			//if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
+			//{
+			//	if (!m_bUpdateYieldOnRmap)
+			//	{
+			//		if (!m_bTHREAD_UPDATE_REELMAP_UP && !m_bTHREAD_UPDATE_REELMAP_DN && !m_bTHREAD_UPDATE_REELMAP_ALLUP && !m_bTHREAD_UPDATE_REELMAP_ALLDN)
+			//		{
+			//			if (!m_bTHREAD_UPDATE_YIELD_UP && !m_bTHREAD_UPDATE_YIELD_DN && !m_bTHREAD_UPDATE_YIELD_ALLUP && !m_bTHREAD_UPDATE_YIELD_ALLDN)
+			//			{
+			//				m_bUpdateYieldOnRmap = TRUE;
+			//				pDoc->UpdateYieldOnRmap(); // 20230614
+			//				m_nMkStAuto++;
+			//			}
+			//			else
+			//				Sleep(100);
+			//		}
+			//		else
+			//			Sleep(100);
+			//	}
+			//	else
+			//	{
+			//		Sleep(100);
+			//		m_nMkStAuto++; // 마킹 및 verify가 완전히 끝나지 않은 경우.
+			//	}
+			//}
 			break;
 
 		case MK_ST + (Mk2PtIdx::Verify) :
@@ -33011,14 +33013,11 @@ void CGvisR2R_PunchView::MakeResultMDS()
 	//		pDoc->WorkingInfo.LastJob.sModelUp,
 	//		pDoc->WorkingInfo.LastJob.sLotUp,
 	//		pDoc->WorkingInfo.LastJob.sLayerUp);
-
 	//	if (bDualTest)
 	//		m_pDlgMenu05->m_sRmapPath.Format(_T("%s\\ReelMapDataAll.txt"), sPath);
 	//	else
 	//		m_pDlgMenu05->m_sRmapPath.Format(_T("%s\\ReelMapDataUp.txt"), sPath);
-
 	//	m_pDlgMenu05->GetResult();
-
 	//	MakeResult(); // Result.txt
 	//	MakeSapp3();
 	//}
@@ -33873,7 +33872,7 @@ UINT CGvisR2R_PunchView::ThreadProc30(LPVOID lpContext)	// UpdateYieldUp()
 	return 0;
 }
 
-UINT CGvisR2R_PunchView::ThreadProc31(LPVOID lpContext)	// UpdateYieldUp()
+UINT CGvisR2R_PunchView::ThreadProc31(LPVOID lpContext)	// UpdateYieldDn()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
 	CGvisR2R_PunchView* pThread = reinterpret_cast<CGvisR2R_PunchView*>(lpContext);
@@ -33905,7 +33904,7 @@ UINT CGvisR2R_PunchView::ThreadProc31(LPVOID lpContext)	// UpdateYieldUp()
 	return 0;
 }
 
-UINT CGvisR2R_PunchView::ThreadProc32(LPVOID lpContext)	// UpdateYieldUp()
+UINT CGvisR2R_PunchView::ThreadProc32(LPVOID lpContext)	// UpdateYieldAllUp()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
 	CGvisR2R_PunchView* pThread = reinterpret_cast<CGvisR2R_PunchView*>(lpContext);
@@ -33920,7 +33919,7 @@ UINT CGvisR2R_PunchView::ThreadProc32(LPVOID lpContext)	// UpdateYieldUp()
 		pThread->m_dwThreadTick[32] = GetTickCount() - dwTick;
 		dwTick = GetTickCount();
 
-		if (pThread->m_bTHREAD_UPDATE_YIELD_ALLUP)
+		if (pThread->m_bTHREAD_UPDATE_YIELD_ALLUP && !pThread->m_bTHREAD_UPDATE_YIELD_UP)
 		{
 			pThread->UpdateYieldAllUp(pThread->m_nSnTHREAD_UPDATAE_YIELD);
 			pThread->m_bTHREAD_UPDATE_YIELD_ALLUP = FALSE;
@@ -33946,7 +33945,7 @@ UINT CGvisR2R_PunchView::ThreadProc32(LPVOID lpContext)	// UpdateYieldUp()
 	return 0;
 }
 
-UINT CGvisR2R_PunchView::ThreadProc33(LPVOID lpContext)	// UpdateYieldUp()
+UINT CGvisR2R_PunchView::ThreadProc33(LPVOID lpContext)	// UpdateYieldAllDn()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
 	CGvisR2R_PunchView* pThread = reinterpret_cast<CGvisR2R_PunchView*>(lpContext);
@@ -33961,7 +33960,7 @@ UINT CGvisR2R_PunchView::ThreadProc33(LPVOID lpContext)	// UpdateYieldUp()
 		pThread->m_dwThreadTick[33] = GetTickCount() - dwTick;
 		dwTick = GetTickCount();
 
-		if (pThread->m_bTHREAD_UPDATE_YIELD_ALLDN)
+		if (pThread->m_bTHREAD_UPDATE_YIELD_ALLDN && !pThread->m_bTHREAD_UPDATE_YIELD_UP)
 		{
 			pThread->UpdateYieldAllDn(pThread->m_nSnTHREAD_UPDATAE_YIELD);
 			pThread->m_bTHREAD_UPDATE_YIELD_ALLDN = FALSE;
@@ -33976,7 +33975,7 @@ UINT CGvisR2R_PunchView::ThreadProc33(LPVOID lpContext)	// UpdateYieldUp()
 	return 0;
 }
 
-UINT CGvisR2R_PunchView::ThreadProc34(LPVOID lpContext)	// UpdateYieldUp()
+UINT CGvisR2R_PunchView::ThreadProc34(LPVOID lpContext)	// UpdateYieldInnerUp()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
 	CGvisR2R_PunchView* pThread = reinterpret_cast<CGvisR2R_PunchView*>(lpContext);
@@ -34006,7 +34005,7 @@ UINT CGvisR2R_PunchView::ThreadProc34(LPVOID lpContext)	// UpdateYieldUp()
 	return 0;
 }
 
-UINT CGvisR2R_PunchView::ThreadProc35(LPVOID lpContext)	// UpdateYieldUp()
+UINT CGvisR2R_PunchView::ThreadProc35(LPVOID lpContext)	// UpdateYieldInnerDn()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
 	CGvisR2R_PunchView* pThread = reinterpret_cast<CGvisR2R_PunchView*>(lpContext);
@@ -34038,7 +34037,7 @@ UINT CGvisR2R_PunchView::ThreadProc35(LPVOID lpContext)	// UpdateYieldUp()
 	return 0;
 }
 
-UINT CGvisR2R_PunchView::ThreadProc36(LPVOID lpContext)	// UpdateYieldUp()
+UINT CGvisR2R_PunchView::ThreadProc36(LPVOID lpContext)	// UpdateYieldInnerAllUp()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
 	CGvisR2R_PunchView* pThread = reinterpret_cast<CGvisR2R_PunchView*>(lpContext);
@@ -34068,7 +34067,7 @@ UINT CGvisR2R_PunchView::ThreadProc36(LPVOID lpContext)	// UpdateYieldUp()
 	return 0;
 }
 
-UINT CGvisR2R_PunchView::ThreadProc37(LPVOID lpContext)	// UpdateYieldUp()
+UINT CGvisR2R_PunchView::ThreadProc37(LPVOID lpContext)	// UpdateYieldInnerAllDn()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
 	CGvisR2R_PunchView* pThread = reinterpret_cast<CGvisR2R_PunchView*>(lpContext);
@@ -34098,7 +34097,7 @@ UINT CGvisR2R_PunchView::ThreadProc37(LPVOID lpContext)	// UpdateYieldUp()
 	return 0;
 }
 
-UINT CGvisR2R_PunchView::ThreadProc38(LPVOID lpContext)	// UpdateYieldUp()
+UINT CGvisR2R_PunchView::ThreadProc38(LPVOID lpContext)	// UpdateYieldIts()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
 	CGvisR2R_PunchView* pThread = reinterpret_cast<CGvisR2R_PunchView*>(lpContext);
