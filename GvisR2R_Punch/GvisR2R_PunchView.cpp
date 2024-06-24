@@ -20355,7 +20355,6 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				//		SetLotEnd(m_nShareUpS - pDoc->AoiDummyShot[0]);
 				//		if (m_nAoiLastSerial[0] < 1)
 				//			m_nAoiLastSerial[0] = m_nShareUpS;
-
 				//		if (!bDualTest)
 				//		{
 				//			m_bLastProc = TRUE;
@@ -20373,7 +20372,6 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					//{
 					//	if (m_nAoiLastSerial[0] < 1)
 					//		m_nAoiLastSerial[0] = m_nShareUpS;
-
 					//	m_nPrevStepAuto = m_nStepAuto;
 					//	m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
 					//	break;
@@ -20589,7 +20587,6 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					//{
 					//	if (m_nAoiLastSerial[0] < 1)
 					//		m_nAoiLastSerial[0] = m_nShareDnS;
-
 					//	m_nPrevStepAuto = m_nStepAuto;
 					//	m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
 					//	break;
@@ -20693,7 +20690,6 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			//{
 			//	if (m_bTHREAD_UPDATE_REELMAP_INNER_UP) // Write Reelmap
 			//		break;
-
 			//	if (pDoc->WorkingInfo.LastJob.bDualTestInner)
 			//	{
 			//		if (m_bTHREAD_UPDATE_REELMAP_INNER_DN || m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP || m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN) // Write Reelmap
