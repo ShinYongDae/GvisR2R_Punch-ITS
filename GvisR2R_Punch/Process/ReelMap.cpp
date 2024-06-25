@@ -2914,29 +2914,32 @@ BOOL CReelMap::UpdateYield(int nSerial)
 	int nPnl = m_nBeforeSerial;//nSerial - 1;
 
 
-	if (!nPnl)
-	{
-		if (pView->m_bSerialDecrese)
-		{
-			if(bExist)
-				ReadYield(nSerial + 1, sPath);
-		}
-		else 
-		{
-			if (nSerial > 1)
-			{
-				if(bExist)
-					ReadYield(nSerial - 1, sPath);
-			}
-			else
-				ResetYield();
-		}
-	}
-	else
-	{
-		if(bExist)
-			ReadYield(nPnl, sPath);
-	}
+	//if (!nPnl)
+	//{
+	//	if (pView->m_bSerialDecrese)
+	//	{
+	//		if(bExist)
+	//			ReadYield(nSerial + 1, sPath);
+	//	}
+	//	else 
+	//	{
+	//		if (nSerial > 1)
+	//		{
+	//			if(bExist)
+	//				ReadYield(nSerial - 1, sPath);
+	//		}
+	//		else
+	//			ResetYield();
+	//	}
+	//}
+	//else
+	//{
+	//	if(bExist)
+	//		ReadYield(nPnl, sPath);
+	//}
+
+	if (bExist && nPnl > 0)
+		ReadYield(nPnl, sPath);
 
 	WriteYield(nSerial, sPath);
 
