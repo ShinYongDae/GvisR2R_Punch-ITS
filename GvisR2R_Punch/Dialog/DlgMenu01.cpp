@@ -2294,6 +2294,8 @@ void CDlgMenu01::InitStcData()
 	myStcData[89].SubclassDlgItem(IDC_STC_TQ_DISP2_VAL_L, this);
 	myStcData[90].SubclassDlgItem(IDC_STC_TQ_DISP2_VAL_R, this);
 
+	myStcData[91].SubclassDlgItem(IDC_STC_ITS_CODE, this);
+
 	for(int i=0; i<MAX_MENU01_STC_DATA; i++)
 	{
 		myStcData[i].SetFontName(_T("Arial"));
@@ -2485,7 +2487,10 @@ void CDlgMenu01::InitStcTitle()
 	for(i=61; i<64; i++)
 	{
 		myStcTitle[i].SetFontName(_T("Arial"));
-		myStcTitle[i].SetFontSize(12);
+		if(i==63)
+			myStcTitle[i].SetFontSize(14);
+		else
+			myStcTitle[i].SetFontSize(12);
 		myStcTitle[i].SetFontBold(TRUE);
 		myStcTitle[i].SetTextColor(RGB_WHITE);
 		myStcTitle[i].SetBkColor(RGB_DARKBLUE);
@@ -2514,7 +2519,14 @@ void CDlgMenu01::InitStcTitle()
 
 	myStcTitle[75].SubclassDlgItem(IDC_STC_VS, this);
 
-	for (i = 65; i < MAX_MENU01_STC_TITLE; i++)
+	myStcTitle[76].SubclassDlgItem(IDC_STC_ITS_, this);
+	myStcTitle[76].SetFontName(_T("Arial"));
+	myStcTitle[76].SetFontSize(14);
+	myStcTitle[76].SetFontBold(TRUE);
+	myStcTitle[76].SetTextColor(RGB_WHITE);
+	myStcTitle[76].SetBkColor(RGB_DARKBLUE);
+
+	for (i = 65; i < MAX_MENU01_STC_TITLE - 1; i++)
 	{
 		myStcTitle[i].SetFontName(_T("Arial"));
 		myStcTitle[i].SetFontSize(12);
@@ -3235,6 +3247,10 @@ void CDlgMenu01::UpdateData()
 	{
 		myStcData[1].SetText(pDoc->WorkingInfo.LastJob.sModelUp);		// 모델
 		pDoc->SetMkMenu01(_T("Info"), _T("Model"), pDoc->WorkingInfo.LastJob.sModelUp);
+		if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
+			myStcData[91].SetText(pDoc->m_sItsCode);					// ITS CODE
+		else
+			myStcData[91].SetText(_T(""));
 		myStcData[3].SetText(pDoc->WorkingInfo.LastJob.sLotUp);			// 로트
 		pDoc->SetMkMenu01(_T("Info"), _T("Lot"), pDoc->WorkingInfo.LastJob.sLotUp);
 		myStcData[2].SetText(pDoc->WorkingInfo.LastJob.sLayerUp);		// 상면레이어
@@ -6249,6 +6265,10 @@ void CDlgMenu01::DispChangedModel()
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
 	myStcData[1].SetText(pDoc->WorkingInfo.LastJob.sModelUp);		// 모델
+	if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
+		myStcData[91].SetText(pDoc->m_sItsCode);					// ITS CODE
+	else
+		myStcData[91].SetText(_T(""));
 	myStcData[3].SetText(pDoc->WorkingInfo.LastJob.sLotUp);			// 로트
 	myStcData[2].SetText(pDoc->WorkingInfo.LastJob.sLayerUp);		// 상면레이어
 	if (bDualTest)

@@ -18273,7 +18273,10 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 
 	if (m_bLotEnd)
 	{
-		nSerial = pDoc->GetLastShotMk();
+		if (m_nLotEndSerial > 0)
+			nSerial = m_nLotEndSerial;
+		else
+			nSerial = pDoc->GetLastShotMk();
 
 		switch (m_nLotEndAuto)
 		{

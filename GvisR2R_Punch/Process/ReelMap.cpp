@@ -158,7 +158,11 @@ CReelMap::CReelMap(int nLayer, int nPnl, int nPcs, int nDir)
 	ClrPnlDefNum();
 	ClrFixPcs();
 
-	m_nStartSerial = 0;
+	TCHAR szData[MAX_PATH];
+	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Start Shot"), NULL, szData, sizeof(szData), m_sPathYield))
+		m_nStartSerial = _tstoi(szData);
+	else
+		m_nStartSerial = 0;
 
 	// ITS
 	//m_pPnlBufIts = NULL;
@@ -2900,23 +2904,57 @@ BOOL CReelMap::UpdateYield(int nSerial)
 	if (findfile.FindFile(sPath))
 		bExist = TRUE;
 
+	if (bExist)
+	{
+		TCHAR szData[MAX_PATH];
+		if (0 < ::GetPrivateProfileString(_T("Info"), _T("Start Shot"), NULL, szData, sizeof(szData), sPath))
+			m_nBeforeSerial = _tstoi(szData);
+	}
+
 	int nPnl = m_nBeforeSerial;//nSerial - 1;
 
-	if (bExist && nPnl) // After first shot
+
+	if (!nPnl)
 	{
-		if(ReadYield(nPnl, sPath))
-			WriteYield(nSerial, sPath);
-		else
+		if (pView->m_bSerialDecrese)
 		{
-			ResetYield();
-			WriteYield(nSerial, sPath);
+			if(bExist)
+				ReadYield(nSerial + 1, sPath);
+		}
+		else 
+		{
+			if (nSerial > 1)
+			{
+				if(bExist)
+					ReadYield(nSerial - 1, sPath);
+			}
+			else
+				ResetYield();
 		}
 	}
-	else // First Shot
+	else
 	{
-		ResetYield();
-		WriteYield(nSerial, sPath);
+		if(bExist)
+			ReadYield(nPnl, sPath);
 	}
+
+	WriteYield(nSerial, sPath);
+
+	//if (bExist && nPnl) // After first shot
+	//{
+	//	if(ReadYield(nPnl, sPath))
+	//		WriteYield(nSerial, sPath);
+	//	else
+	//	{
+	//		ResetYield();
+	//		WriteYield(nSerial, sPath);
+	//	}
+	//}
+	//else // First Shot
+	//{
+	//	ResetYield();
+	//	WriteYield(nSerial, sPath);
+	//}
 	Sleep(10);
 
 	return TRUE;
@@ -5836,16 +5874,17 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 		}
 		else
 		{
-			if (nSerial == 1)
-			{
-				m_stYield.nDefA[i] = 0;
-			}
-			else
-			{
-				//sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-불량(%d)\r\n%s"), nSerial, i, sPath);
-				//AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
-				return FALSE;
-			}
+			m_stYield.nDefA[i] = 0;
+			//if (nSerial == 1)
+			//{
+			//	m_stYield.nDefA[i] = 0;
+			//}
+			//else
+			//{
+			//	//sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-불량(%d)\r\n%s"), nSerial, i, sPath);
+			//	//AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+			//	return FALSE;
+			//}
 		}
 	}
 
@@ -5855,16 +5894,17 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 	}
 	else
 	{
-		if (nSerial == 1)
-		{
-			m_stYield.nTot = 0;
-		}
-		else
-		{
-			sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Total Pcs\r\n%s"), nSerial, sPath);
-			pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
-			return FALSE;
-		}
+		m_stYield.nTot = 0;
+		//if (nSerial == 1)
+		//{
+		//	m_stYield.nTot = 0;
+		//}
+		//else
+		//{
+		//	sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Total Pcs\r\n%s"), nSerial, sPath);
+		//	pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+		//	return FALSE;
+		//}
 	}
 
 	if (0 < ::GetPrivateProfileString(strMenu, _T("Good Pcs"), NULL, szData, sizeof(szData), sPath))
@@ -5873,16 +5913,17 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 	}
 	else
 	{
-		if (nSerial == 1)
-		{
-			m_stYield.nGood = 0;
-		}
-		else
-		{
-			sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Good Pcs\r\n%s"), nSerial, sPath);
-			pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
-			return FALSE;
-		}
+		m_stYield.nGood = 0;
+		//if (nSerial == 1)
+		//{
+		//	m_stYield.nGood = 0;
+		//}
+		//else
+		//{
+		//	sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Good Pcs\r\n%s"), nSerial, sPath);
+		//	pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+		//	return FALSE;
+		//}
 	}
 
 	if (0 < ::GetPrivateProfileString(strMenu, _T("Bad Pcs"), NULL, szData, sizeof(szData), sPath))
@@ -5891,16 +5932,17 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 	}
 	else
 	{
-		if (nSerial == 1)
-		{
-			m_stYield.nDef = 0;
-		}
-		else
-		{
-			sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Bad Pcs\r\n%s"), nSerial, sPath);
-			pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
-			return FALSE;
-		}
+		m_stYield.nDef = 0;
+		//if (nSerial == 1)
+		//{
+		//	m_stYield.nDef = 0;
+		//}
+		//else
+		//{
+		//	sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Bad Pcs\r\n%s"), nSerial, sPath);
+		//	pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+		//	return FALSE;
+		//}
 	}
 
 	for (k = 0; k < MAX_STRIP; k++)
@@ -5912,16 +5954,17 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 		}
 		else
 		{
-			if (nSerial == 1)
-			{
-				m_stYield.nDefStrip[k] = 0;
-			}
-			else
-			{
-				sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Strip%d\r\n%s"), nSerial, k, sPath);
-				pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
-				return FALSE;
-			}
+			m_stYield.nDefStrip[k] = 0;
+			//if (nSerial == 1)
+			//{
+			//	m_stYield.nDefStrip[k] = 0;
+			//}
+			//else
+			//{
+			//	sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Strip%d\r\n%s"), nSerial, k, sPath);
+			//	pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+			//	return FALSE;
+			//}
 		}
 
 		strItem.Format(_T("StripOut_%d"), k);
@@ -5931,16 +5974,17 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 		}
 		else
 		{
-			if (nSerial == 1)
-			{
-				m_stYield.nStripOut[k] = 0;
-			}
-			else
-			{
-				sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-StripOut_%d\r\n%s"), nSerial, k, sPath);
-				pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
-				return FALSE;
-			}
+			m_stYield.nStripOut[k] = 0;
+			//if (nSerial == 1)
+			//{
+			//	m_stYield.nStripOut[k] = 0;
+			//}
+			//else
+			//{
+			//	sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-StripOut_%d\r\n%s"), nSerial, k, sPath);
+			//	pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+			//	return FALSE;
+			//}
 		}
 
 		for (i = 1; i < MAX_DEF; i++)
@@ -5952,16 +5996,17 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 			}
 			else
 			{
-				if (nSerial == 1)
-				{
-					m_stYield.nDefPerStrip[k][i] = 0;
-				}
-				else
-				{
-					sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Strip%d_%d\r\n%s"), nSerial, k, i, sPath);
-					pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
-					return FALSE;
-				}
+				m_stYield.nDefPerStrip[k][i] = 0;
+				//if (nSerial == 1)
+				//{
+				//	m_stYield.nDefPerStrip[k][i] = 0;
+				//}
+				//else
+				//{
+				//	sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-Strip%d_%d\r\n%s"), nSerial, k, i, sPath);
+				//	pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+				//	return FALSE;
+				//}
 			}
 		}
 	}
@@ -5972,16 +6017,17 @@ BOOL CReelMap::ReadYield(int nSerial, CString sPath)
 	}
 	else
 	{
-		if (nSerial == 1)
-		{
-			m_stYield.nTotSriptOut = 0;
-		}
-		else
-		{
-			sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-StripOut_Total\r\n%s"), nSerial, sPath);
-			pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
-			return FALSE;
-		}
+		m_stYield.nTotSriptOut = 0;
+		//if (nSerial == 1)
+		//{
+		//	m_stYield.nTotSriptOut = 0;
+		//}
+		//else
+		//{
+		//	sMsg.Format(_T("이전 수율 읽기 오류 : Shot(%d)-StripOut_Total\r\n%s"), nSerial, sPath);
+		//	pView->ClrDispMsg(); AfxMessageBox(sMsg, MB_ICONWARNING | MB_OK);
+		//	return FALSE;
+		//}
 	}
 	
 	int dwEnd = GetTickCount();

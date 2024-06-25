@@ -734,10 +734,13 @@
 #define IDC_CHK_MK_POS2_4               1218
 #define IDC_STC_30_                     1218
 #define IDC_STC_49                      1218
+#define IDC_STC_ITS_T                   1218
+#define IDC_STC_ITS_                    1218
 #define IDC_STC_0041                    1219
 #define IDC_BTN_MK_POS2_MEAS            1219
 #define IDC_STC_40_                     1219
 #define IDC_STC_50                      1219
+#define IDC_STC_ITS_CODE                1219
 #define IDC_STC_0042                    1220
 #define IDC_STC_ALN4                    1220
 #define IDC_STC_12_                     1220
