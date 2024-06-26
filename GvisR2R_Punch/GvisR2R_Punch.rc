@@ -166,7 +166,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "GvisR2R_Punch, 버전 2.0.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2024.06.25",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2024.06.26",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
     LTEXT           "이어가기 수율기록 수정",IDC_STATIC,5,38,92,8
     LTEXT           "VS 작업시 버퍼 유무 처리",IDC_STATIC,5,46,98,8

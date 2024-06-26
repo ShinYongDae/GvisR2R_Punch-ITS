@@ -18283,8 +18283,18 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 		case LOT_END:
 			if (!m_bTHREAD_REELMAP_YIELD_UP && !m_bTHREAD_REELMAP_YIELD_DN && !m_bTHREAD_REELMAP_YIELD_ALLUP && !m_bTHREAD_REELMAP_YIELD_ALLDN) // Yield Reelmap
 			{
+				m_bTHREAD_RELOAD_RST_UP = FALSE;
+				m_bTHREAD_RELOAD_RST_DN = FALSE;
+				m_bTHREAD_RELOAD_RST_ALLUP = FALSE;
+				m_bTHREAD_RELOAD_RST_ALLDN = FALSE;
+				m_bTHREAD_RELOAD_RST_UP_INNER = FALSE;
+				m_bTHREAD_RELOAD_RST_ITS = FALSE;
+				m_bTHREAD_RELOAD_RST_DN_INNER = FALSE;
+				m_bTHREAD_RELOAD_RST_ALLUP_INNER = FALSE;
+				m_bTHREAD_RELOAD_RST_ALLDN_INNER = FALSE;
+
 				ReloadReelmap(nSerial);
-				UpdateRst();
+				//UpdateRst();
 				//pDoc->UpdateYieldOnRmap(); // 20230614
 				m_nLotEndAuto++;
 			}
@@ -18295,6 +18305,15 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 			m_nLotEndAuto++;
 			break;
 		case LOT_END + 2:
+			if (!m_bTHREAD_RELOAD_RST_UP && !m_bTHREAD_RELOAD_RST_DN && !m_bTHREAD_RELOAD_RST_ALLUP && !m_bTHREAD_RELOAD_RST_ALLDN
+				&& !m_bTHREAD_RELOAD_RST_UP_INNER && !m_bTHREAD_RELOAD_RST_ITS && !m_bTHREAD_RELOAD_RST_DN_INNER && !m_bTHREAD_RELOAD_RST_ALLUP_INNER
+				&& !m_bTHREAD_RELOAD_RST_ALLDN_INNER)
+			{
+				m_nLotEndAuto++;
+				UpdateRst();
+			}
+			break;
+		case LOT_END + 3:
 			Buzzer(TRUE, 0);
 			TowerLamp(RGB_YELLOW, TRUE);
 			Stop();
@@ -18302,7 +18321,7 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 			m_nLotEndAuto++;
 			break;
 
-		case LOT_END + 3:
+		case LOT_END + 4:
 			MsgBox(_T("작업이 종료되었습니다."));
 			//m_nStepAuto = 0; // 자동종료
 			m_nLotEndAuto++;
@@ -18311,7 +18330,7 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 			m_bMkSt = FALSE;
 			::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("0"), PATH_WORKING_INFO);
 			break;
-		case LOT_END + 4:
+		case LOT_END + 5:
 			break;
 		}
 	}
