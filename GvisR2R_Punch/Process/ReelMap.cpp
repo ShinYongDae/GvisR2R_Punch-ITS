@@ -2907,12 +2907,26 @@ BOOL CReelMap::UpdateYield(int nSerial)
 	if (bExist)
 	{
 		TCHAR szData[MAX_PATH];
-		if (0 < ::GetPrivateProfileString(_T("Info"), _T("Start Shot"), NULL, szData, sizeof(szData), sPath))
+		if (0 < ::GetPrivateProfileString(_T("Info"), _T("End Shot"), NULL, szData, sizeof(szData), sPath))
 			m_nBeforeSerial = _tstoi(szData);
 	}
 
 	int nPnl = m_nBeforeSerial;//nSerial - 1;
 
+	if (pView->m_bSerialDecrese)
+	{
+		if (nSerial >= m_nBeforeSerial)
+		{
+			m_nBeforeSerial = nSerial + 1;
+		}
+	}
+	else
+	{
+		if (m_nBeforeSerial >= nSerial)
+		{
+			m_nBeforeSerial = nSerial - 1;
+		}
+	}
 
 	//if (!nPnl)
 	//{

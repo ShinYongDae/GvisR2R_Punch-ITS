@@ -2953,7 +2953,8 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 	//CString sPath = pDoc->GetItsPath(nSerial, nLayer);
 
 	CString str = _T(""), sSide = _T(""), sTemp = _T(""), sItsData = _T("");
-	CString sItsCode = pDoc->WorkingInfo.LastJob.sEngItsCode;
+	CString sItsCode = pDoc->m_sItsCode;
+	//CString sItsCode = pDoc->WorkingInfo.LastJob.sEngItsCode;
 	//CString sItsCode = m_sLot;
 
 	int nNodeX = pDoc->m_Master[0].m_pPcsRgn->nCol;

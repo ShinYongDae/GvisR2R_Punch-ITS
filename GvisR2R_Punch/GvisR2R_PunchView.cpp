@@ -18283,18 +18283,18 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 		case LOT_END:
 			if (!m_bTHREAD_REELMAP_YIELD_UP && !m_bTHREAD_REELMAP_YIELD_DN && !m_bTHREAD_REELMAP_YIELD_ALLUP && !m_bTHREAD_REELMAP_YIELD_ALLDN) // Yield Reelmap
 			{
-				m_bTHREAD_RELOAD_RST_UP = FALSE;
-				m_bTHREAD_RELOAD_RST_DN = FALSE;
-				m_bTHREAD_RELOAD_RST_ALLUP = FALSE;
-				m_bTHREAD_RELOAD_RST_ALLDN = FALSE;
-				m_bTHREAD_RELOAD_RST_UP_INNER = FALSE;
-				m_bTHREAD_RELOAD_RST_ITS = FALSE;
-				m_bTHREAD_RELOAD_RST_DN_INNER = FALSE;
-				m_bTHREAD_RELOAD_RST_ALLUP_INNER = FALSE;
-				m_bTHREAD_RELOAD_RST_ALLDN_INNER = FALSE;
+				//m_bTHREAD_RELOAD_RST_UP = FALSE;
+				//m_bTHREAD_RELOAD_RST_DN = FALSE;
+				//m_bTHREAD_RELOAD_RST_ALLUP = FALSE;
+				//m_bTHREAD_RELOAD_RST_ALLDN = FALSE;
+				//m_bTHREAD_RELOAD_RST_UP_INNER = FALSE;
+				//m_bTHREAD_RELOAD_RST_ITS = FALSE;
+				//m_bTHREAD_RELOAD_RST_DN_INNER = FALSE;
+				//m_bTHREAD_RELOAD_RST_ALLUP_INNER = FALSE;
+				//m_bTHREAD_RELOAD_RST_ALLDN_INNER = FALSE;
 
-				ReloadReelmap(nSerial);
-				//UpdateRst();
+				//ReloadReelmap(nSerial);
+				UpdateRst();
 				//pDoc->UpdateYieldOnRmap(); // 20230614
 				m_nLotEndAuto++;
 			}
@@ -18305,12 +18305,11 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 			m_nLotEndAuto++;
 			break;
 		case LOT_END + 2:
-			if (!m_bTHREAD_RELOAD_RST_UP && !m_bTHREAD_RELOAD_RST_DN && !m_bTHREAD_RELOAD_RST_ALLUP && !m_bTHREAD_RELOAD_RST_ALLDN
-				&& !m_bTHREAD_RELOAD_RST_UP_INNER && !m_bTHREAD_RELOAD_RST_ITS && !m_bTHREAD_RELOAD_RST_DN_INNER && !m_bTHREAD_RELOAD_RST_ALLUP_INNER
-				&& !m_bTHREAD_RELOAD_RST_ALLDN_INNER)
+			//if (!m_bTHREAD_RELOAD_RST_UP && !m_bTHREAD_RELOAD_RST_DN && !m_bTHREAD_RELOAD_RST_ALLUP && !m_bTHREAD_RELOAD_RST_ALLDN
+			//	&& !m_bTHREAD_RELOAD_RST_UP_INNER && !m_bTHREAD_RELOAD_RST_ITS && !m_bTHREAD_RELOAD_RST_DN_INNER && !m_bTHREAD_RELOAD_RST_ALLUP_INNER
+			//	&& !m_bTHREAD_RELOAD_RST_ALLDN_INNER)
 			{
 				m_nLotEndAuto++;
-				UpdateRst();
 			}
 			break;
 		case LOT_END + 3:
@@ -21992,49 +21991,47 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			break;
 
 		case MK_ST + (Mk2PtIdx::DoMk) + 1:
-			m_nMkStAuto++;
-			//if (!m_bUpdateYield)
-			//{
-			//	if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
-			//	{
-			//		m_bUpdateYield = TRUE;
-			//		UpdateYield(); // Cam[0],  Cam[1]
-			//		m_nMkStAuto++;
-			//	}
-			//}
-			//else
-			//{
-			//	Sleep(100);
-			//	m_nMkStAuto++;
-			//}
+			if (!m_bUpdateYield)
+			{
+				if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
+				{
+					m_bUpdateYield = TRUE;
+					UpdateYield(); // Cam[0],  Cam[1]
+					m_nMkStAuto++;
+				}
+			}
+			else
+			{
+				Sleep(100);
+				m_nMkStAuto++;
+			}
 			break;
 
 		case MK_ST + (Mk2PtIdx::DoMk) + 2:
-			m_nMkStAuto++;
-			//if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
-			//{
-			//	if (!m_bUpdateYieldOnRmap)
-			//	{
-			//		if (!m_bTHREAD_UPDATE_REELMAP_UP && !m_bTHREAD_UPDATE_REELMAP_DN && !m_bTHREAD_UPDATE_REELMAP_ALLUP && !m_bTHREAD_UPDATE_REELMAP_ALLDN)
-			//		{
-			//			if (!m_bTHREAD_UPDATE_YIELD_UP && !m_bTHREAD_UPDATE_YIELD_DN && !m_bTHREAD_UPDATE_YIELD_ALLUP && !m_bTHREAD_UPDATE_YIELD_ALLDN)
-			//			{
-			//				m_bUpdateYieldOnRmap = TRUE;
-			//				pDoc->UpdateYieldOnRmap(); // 20230614
-			//				m_nMkStAuto++;
-			//			}
-			//			else
-			//				Sleep(100);
-			//		}
-			//		else
-			//			Sleep(100);
-			//	}
-			//	else
-			//	{
-			//		Sleep(100);
-			//		m_nMkStAuto++; // 마킹 및 verify가 완전히 끝나지 않은 경우.
-			//	}
-			//}
+			if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
+			{
+				if (!m_bUpdateYieldOnRmap)
+				{
+					if (!m_bTHREAD_UPDATE_REELMAP_UP && !m_bTHREAD_UPDATE_REELMAP_DN && !m_bTHREAD_UPDATE_REELMAP_ALLUP && !m_bTHREAD_UPDATE_REELMAP_ALLDN)
+					{
+						if (!m_bTHREAD_UPDATE_YIELD_UP && !m_bTHREAD_UPDATE_YIELD_DN && !m_bTHREAD_UPDATE_YIELD_ALLUP && !m_bTHREAD_UPDATE_YIELD_ALLDN)
+						{
+							m_bUpdateYieldOnRmap = TRUE;
+							pDoc->UpdateYieldOnRmap(); // 20230614
+							m_nMkStAuto++;
+						}
+						else
+							Sleep(100);
+					}
+					else
+						Sleep(100);
+				}
+				else
+				{
+					Sleep(100);
+					m_nMkStAuto++; // 마킹 및 verify가 완전히 끝나지 않은 경우.
+				}
+			}
 			break;
 
 		case MK_ST + (Mk2PtIdx::Verify) :
@@ -22260,6 +22257,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 		switch (m_nMkStAuto)
 		{
 		case MK_ST + (Mk2PtIdx::Shift2Mk) :
+			m_nMkStAuto++;
 			//if (!m_bUpdateYield)
 			//{
 				if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
@@ -22285,6 +22283,9 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 					{
 						if (!m_bTHREAD_UPDATE_YIELD_UP && !m_bTHREAD_UPDATE_YIELD_DN && !m_bTHREAD_UPDATE_YIELD_ALLUP && !m_bTHREAD_UPDATE_YIELD_ALLDN)
 						{
+							UpdateRst();
+							UpdateWorking();	// Update Working Info...
+
 							//m_bUpdateYieldOnRmap = TRUE;
 							pDoc->UpdateYieldOnRmap(); // 20230614
 							m_nMkStAuto++;
@@ -22344,18 +22345,21 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 #endif
 			break;
 		case MK_ST + (Mk2PtIdx::Shift2Mk) + 5:
-			if (!m_bTHREAD_SHIFT2MK && !m_bTHREAD_REELMAP_YIELD_UP && !m_bTHREAD_REELMAP_YIELD_DN && !m_bTHREAD_REELMAP_YIELD_ALLUP && !m_bTHREAD_REELMAP_YIELD_ALLDN) // Yield Reelmap
+			if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
 			{
-				if (pDoc->GetTestMode() == MODE_OUTER)
+				if (!m_bTHREAD_SHIFT2MK && !m_bTHREAD_REELMAP_YIELD_UP && !m_bTHREAD_REELMAP_YIELD_DN && !m_bTHREAD_REELMAP_YIELD_ALLUP && !m_bTHREAD_REELMAP_YIELD_ALLDN) // Yield Reelmap
 				{
-					if (m_bTHREAD_REELMAP_YIELD_ITS) // Yield Reelmap
-						break;
-				}
+					if (pDoc->GetTestMode() == MODE_OUTER)
+					{
+						if (m_bTHREAD_REELMAP_YIELD_ITS) // Yield Reelmap
+							break;
+					}
 
-				m_nMkStAuto++;
-				UpdateRst();
-				UpdateWorking();	// Update Working Info...
-				ChkYield();
+					m_nMkStAuto++;
+					UpdateRst();
+					UpdateWorking();	// Update Working Info...
+					ChkYield();
+				}
 			}
 			break;
 		case MK_ST + (Mk2PtIdx::Shift2Mk) + 6:
