@@ -480,7 +480,7 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 
 	m_bEngSt = FALSE;
 	m_bEngStSw = FALSE;
-	m_nEngStAuto = FALSE;
+	m_nEngStAuto = 0;
 
 	m_bEng2dSt = FALSE;
 	m_bEng2dStSw = FALSE;
@@ -22257,7 +22257,7 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 		switch (m_nMkStAuto)
 		{
 		case MK_ST + (Mk2PtIdx::Shift2Mk) :
-			m_nMkStAuto++;
+			//m_nMkStAuto++;
 			//if (!m_bUpdateYield)
 			//{
 				if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
@@ -33440,7 +33440,7 @@ BOOL CGvisR2R_PunchView::MakeItsFile(int nSerial)
 	{
 		pView->ClrDispMsg();
 		AfxMessageBox(_T("Serial Error.54"));
-		return 0;
+		return FALSE;
 	}
 
 	if (!pDoc->MakeMkDir())

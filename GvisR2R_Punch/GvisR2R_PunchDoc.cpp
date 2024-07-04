@@ -5585,7 +5585,7 @@ int CGvisR2R_PunchDoc::LoadPCRAllDn(int nSerial, BOOL bFromShare)	// return : 2(
 	{
 		str.Format(_T("PCR파일이 설정되지 않았습니다."));
 		pView->MsgBox(str);
-		// 		AfxMessageBox(strFileData);
+		//AfxMessageBox(strFileData);
 		return(2);
 	}
 
@@ -5593,7 +5593,7 @@ int CGvisR2R_PunchDoc::LoadPCRAllDn(int nSerial, BOOL bFromShare)	// return : 2(
 	{
 		str.Format(_T("PCR[3]관련 메모리가 할당되지 않았습니다."));
 		pView->MsgBox(str);
-		// 		AfxMessageBox(strFileData);
+		//AfxMessageBox(strFileData);
 		return(2);
 	}
 
@@ -5631,7 +5631,7 @@ int CGvisR2R_PunchDoc::LoadPCRAllDn(int nSerial, BOOL bFromShare)	// return : 2(
 	int nTotDef[3];
 	nTotDef[0] = pDoc->m_pPcr[0][nIdx]->m_nTotDef;
 	nTotDef[1] = pDoc->m_pPcr[1][nIdx]->m_nTotDef;
-	//	nTotDef[2] = nTotDef[0] + nTotDef[1];
+	//nTotDef[2] = nTotDef[0] + nTotDef[1];
 
 	int nTotPcs = m_Master[0].m_pPcsRgn->nTotPcs;
 	stPcrMerge *pPcrMgr = new stPcrMerge[nTotPcs];
@@ -6177,7 +6177,7 @@ int CGvisR2R_PunchDoc::LoadPCRDn(int nSerial, BOOL bFromShare)	// return : 2(Fai
 	{
 		strFileData.Format(_T("PCR[Dn] 파일이 존재하지 않습니다.\r\n%s"), sPath);
 		pView->MsgBox(strFileData);
-		//		AfxMessageBox(strFileData);
+		//AfxMessageBox(strFileData);
 		return(2);
 	}
 
@@ -8518,6 +8518,7 @@ void CGvisR2R_PunchDoc::DelShareVsPcrDn()
 		Sleep(30);
 	}
 }
+
 void CGvisR2R_PunchDoc::DelPcrAll()
 {
 	DelSharePcrUp();
