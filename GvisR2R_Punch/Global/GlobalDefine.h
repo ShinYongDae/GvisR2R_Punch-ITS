@@ -557,7 +557,7 @@ enum SliceDO_4{ DO_INK_MK=0 };
 #endif
 
 #ifndef ID_ENGRAVE
-#define ID_ENGRAVE		3
+#define ID_ENGRAVE		2
 #endif
 
 typedef struct 

@@ -4193,7 +4193,7 @@ void CGvisR2R_PunchDoc::ClrPcr()
 		{
 			if (m_pPcr[i][0])
 			{
-				m_pPcr[i][nIdx]->m_nIdx = 0;							// m_nIdx : From 0 to nTot.....
+				m_pPcr[i][nIdx]->m_nIdx = -1;							// m_nIdx : From 0 to nTot.....
 				m_pPcr[i][nIdx]->m_nSerial = 0;
 				m_pPcr[i][nIdx]->m_nErrPnl = 0;
 				m_pPcr[i][nIdx]->m_sModel = _T("");
@@ -4207,7 +4207,7 @@ void CGvisR2R_PunchDoc::ClrPcr()
 
 			if (m_pPcrInner[i][0])
 			{
-				m_pPcrInner[i][nIdx]->m_nIdx = 0;							// m_nIdx : From 0 to nTot.....
+				m_pPcrInner[i][nIdx]->m_nIdx = -1;							// m_nIdx : From 0 to nTot.....
 				m_pPcrInner[i][nIdx]->m_nSerial = 0;
 				m_pPcrInner[i][nIdx]->m_nErrPnl = 0;
 				m_pPcrInner[i][nIdx]->m_sModel = _T("");
@@ -4225,7 +4225,7 @@ void CGvisR2R_PunchDoc::ClrPcr()
 	{
 		if (m_pPcrIts[k])
 		{
-			m_pPcrIts[k]->m_nIdx = 0;							// m_nIdx : From 0 to nTot.....
+			m_pPcrIts[k]->m_nIdx = -1;							// m_nIdx : From 0 to nTot.....
 			m_pPcrIts[k]->m_nSerial = 0;
 			m_pPcrIts[k]->m_nErrPnl = 0;
 			m_pPcrIts[k]->m_sModel = _T("");
@@ -12565,7 +12565,7 @@ void CGvisR2R_PunchDoc::LoadPCRIts11(int nSerial) // 11 -> 외층 : 양면, 내층 : �
 			nId[0] = pPcrMgr[nPcsId].nIdxUp;				// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxUp (0~)는 불량표시순서 임. nId[0]: 외층에서의 PCR파일순서 인덱스
 			nId[1] = pPcrMgr[nPcsId].nIdxDn;				// 내외층 Merge [nPcsId:CamMaster Pcs Index]의 nIdxDn (0~)는 불량표시순서 임. nId[1]: 내층에서의 PCR파일순서 인덱스
 
-			if (nId[0] > -1)
+			if (nId[0] > -1) // 외층에서의 PCR파일순서 인덱스
 			{
 				Ord = nId[0];
 				// Cam ID
@@ -12590,7 +12590,7 @@ void CGvisR2R_PunchDoc::LoadPCRIts11(int nSerial) // 11 -> 외층 : 양면, 내층 : �
 
 				idx++;
 			}
-			else if (nId[1] > -1)
+			else if (nId[1] > -1) // 내층에서의 PCR파일순서 인덱스
 			{
 				Ord = nId[1];
 				// Cam ID
