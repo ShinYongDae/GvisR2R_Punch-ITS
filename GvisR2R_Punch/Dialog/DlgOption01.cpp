@@ -48,6 +48,11 @@ BEGIN_MESSAGE_MAP(CDlgOption01, CDialog)
 	ON_WM_SHOWWINDOW()
 	ON_BN_CLICKED(IDC_CHECK1, &CDlgOption01::OnBnClickedCheck1)
 	ON_BN_CLICKED(IDC_CHECK2, &CDlgOption01::OnBnClickedCheck2)
+	ON_BN_CLICKED(IDC_CHECK3, &CDlgOption01::OnBnClickedCheck3)
+	ON_BN_CLICKED(IDC_CHECK4, &CDlgOption01::OnBnClickedCheck4)
+	ON_EN_CHANGE(IDC_EDIT1, &CDlgOption01::OnEnChangeEdit1)
+	ON_EN_CHANGE(IDC_EDIT3, &CDlgOption01::OnEnChangeEdit3)
+	ON_BN_CLICKED(IDC_CHECK5, &CDlgOption01::OnBnClickedCheck5)
 END_MESSAGE_MAP()
 
 
@@ -83,8 +88,19 @@ void CDlgOption01::OnShowWindow(BOOL bShow, UINT nStatus)
 
 void CDlgOption01::AtDlgShow()
 {
+	CString str;
+
 	((CButton*)GetDlgItem(IDC_CHECK1))->SetCheck(pDoc->m_bOffLogAuto);
 	((CButton*)GetDlgItem(IDC_CHECK2))->SetCheck(pDoc->m_bOffLogPLC);
+	((CButton*)GetDlgItem(IDC_CHECK3))->SetCheck(pDoc->m_bDebugGrabAlign);
+
+	((CButton*)GetDlgItem(IDC_CHECK4))->SetCheck(pDoc->m_bUseRTRYShiftAdjust);
+	str.Format(_T("%3.2f"), pDoc->m_dShiftAdjustRatio);
+	GetDlgItem(IDC_EDIT1)->SetWindowText(str);
+
+	str.Format(_T("%d"), pDoc->m_nDelayShow);
+	GetDlgItem(IDC_EDIT2)->SetWindowText(str);	
+	((CButton*)GetDlgItem(IDC_CHECK5))->SetCheck(pDoc->m_bUseStatus);
 }
 
 void CDlgOption01::AtDlgHide()
@@ -134,5 +150,88 @@ void CDlgOption01::OnBnClickedCheck2()
 	else
 	{
 		::WritePrivateProfileString(_T("System"), _T("OffLogPLC"), _T("0"), PATH_WORKING_INFO);
+	}
+}
+
+
+void CDlgOption01::OnBnClickedCheck3()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	BOOL bOn = ((CButton*)GetDlgItem(IDC_CHECK3))->GetCheck();
+	pDoc->m_bDebugGrabAlign = bOn;
+
+	if (bOn)
+	{
+		::WritePrivateProfileString(_T("System"), _T("DebugGrabAlign"), _T("1"), PATH_WORKING_INFO);
+	}
+	else
+	{
+		::WritePrivateProfileString(_T("System"), _T("DebugGrabAlign"), _T("0"), PATH_WORKING_INFO);
+	}
+}
+
+
+void CDlgOption01::OnBnClickedCheck4()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	BOOL bOn = ((CButton*)GetDlgItem(IDC_CHECK4))->GetCheck();
+	pDoc->m_bUseRTRYShiftAdjust = bOn; pDoc->SetStatus(_T("General"), _T("bUseRTRYShiftAdjust"), pDoc->m_bUseRTRYShiftAdjust);
+
+	if (bOn)
+	{
+		::WritePrivateProfileString(_T("System"), _T("USE_RTR_SHIFT_ADJUST"), _T("1"), PATH_WORKING_INFO);
+	}
+	else
+	{
+		::WritePrivateProfileString(_T("System"), _T("USE_RTR_SHIFT_ADJUST"), _T("0"), PATH_WORKING_INFO);
+	}
+}
+
+
+void CDlgOption01::OnEnChangeEdit1()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialog::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString sPath = PATH_WORKING_INFO;
+	CString sData;
+	GetDlgItem(IDC_EDIT1)->GetWindowText(sData);
+	pDoc->m_dShiftAdjustRatio = _tstof(sData);
+	::WritePrivateProfileString(_T("System"), _T("RTR_SHIFT_ADJUST_RATIO"), sData, sPath);
+}
+
+
+void CDlgOption01::OnEnChangeEdit3()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialog::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString sPath = PATH_WORKING_INFO;
+	CString sData;
+	GetDlgItem(IDC_EDIT2)->GetWindowText(sData);
+	pDoc->m_nDelayShow = _ttoi(sData);
+	::WritePrivateProfileString(_T("System"), _T("RTR_SHIFT_ADJUST_RATIO"), sData, sPath);
+}
+
+
+void CDlgOption01::OnBnClickedCheck5()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	BOOL bOn = ((CButton*)GetDlgItem(IDC_CHECK5))->GetCheck();
+	pDoc->m_bUseStatus = bOn;
+
+	if (bOn)
+	{
+		::WritePrivateProfileString(_T("System"), _T("UseStatus"), _T("1"), PATH_WORKING_INFO);
+	}
+	else
+	{
+		::WritePrivateProfileString(_T("System"), _T("UseStatus"), _T("0"), PATH_WORKING_INFO);
 	}
 }

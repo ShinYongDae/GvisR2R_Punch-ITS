@@ -40,6 +40,8 @@ CDlgMenu01::CDlgMenu01(CWnd* pParent /*=NULL*/)
 
 	m_nIdxMkInfo[0] = 0;
 	m_nIdxMkInfo[1] = 0;
+	m_nDef[0] = 0;
+	m_nDef[1] = 0;
 
 	m_nIdxDef[0] = 0;
 	m_nIdxDef[1] = 0;
@@ -2295,11 +2297,12 @@ void CDlgMenu01::InitStcData()
 	myStcData[90].SubclassDlgItem(IDC_STC_TQ_DISP2_VAL_R, this);
 
 	myStcData[91].SubclassDlgItem(IDC_STC_ITS_CODE, this);
+	myStcData[92].SubclassDlgItem(IDC_STC_LOT_OFFSET, this);
 
 	for(int i=0; i<MAX_MENU01_STC_DATA; i++)
 	{
 		myStcData[i].SetFontName(_T("Arial"));
-		if (i == 84)
+		if (i == 84 || i == 92)
 		{
 			myStcData[i].SetFontSize(20);
 			myStcData[i].SetFontBold(TRUE);
@@ -3200,16 +3203,20 @@ void CDlgMenu01::ResetSerial()
 	{
 		myBtn[3].SetCheck(FALSE);
 		if (MODE_INNER != pDoc->GetTestMode())
-			m_bLastProcFromUp = TRUE;
+		{
+			m_bLastProcFromUp = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+		}
 		else
-			m_bLastProcFromEng = TRUE;
-		m_bLastProc = FALSE;
+		{
+			m_bLastProcFromEng = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+		}
+		m_bLastProc = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 	}
 
 	if(myBtn[6].GetCheck())
 	{
 		myBtn[6].SetCheck(FALSE);
-		m_bLotEnd = FALSE;
+		m_bLotEnd = FALSE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
 #ifdef USE_MPE
 		if(pView->m_pMpe)
 			pView->m_pMpe->Write(_T("MB440180"), 0);			// 작업종료(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
@@ -4160,19 +4167,23 @@ void CDlgMenu01::LotEnd()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if(m_bLastProc)
+	if (m_bLastProc)
 	{
 		if (MODE_INNER != pDoc->GetTestMode())
-			m_bLastProcFromUp = TRUE;
+		{
+			m_bLastProcFromUp = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+		}
 		else
-			m_bLastProcFromEng = TRUE;
-		m_bLastProc = FALSE;
+		{
+			m_bLastProcFromEng = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+		}
+		m_bLastProc = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 		myBtn[3].SetCheck(FALSE);
 	}
 
 	if(m_bLotEnd)
 	{
-		m_bLotEnd = FALSE;
+		m_bLotEnd = FALSE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
 		myBtn[6].SetCheck(FALSE);
 #ifdef USE_MPE
 		if(pView->m_pMpe)
@@ -4196,10 +4207,14 @@ void CDlgMenu01::SetLastProc()
 	if(!m_bLastProc)
 	{
 		if (MODE_INNER != pDoc->GetTestMode())
-			m_bLastProcFromUp = TRUE;
+		{
+			m_bLastProcFromUp = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+		}
 		else
-			m_bLastProcFromEng = TRUE;
-		m_bLastProc = TRUE;
+		{
+			m_bLastProcFromEng = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+		}
+		m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 		myBtn[3].SetCheck(TRUE);
 	}
 }
@@ -4223,7 +4238,7 @@ void CDlgMenu01::OnChkEjectBuffer()
 		{
 			pView->m_pMpe->Write(_T("MB44019D"), 0);			// 잔량처리 각인부 부터(PC가 On시키고, PLC가 확인하고 Off시킴)
 			pView->m_pMpe->Write(_T("MB440185"), 0);			// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
-			pView->m_pMpe->Write(_T("MB440186"), 0);			// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
+			pView->m_pMpe->Write(_T("MB440186"), 0);			// 잔량처리 AOI(하) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
 
 			if(MODE_INNER != pDoc->GetTestMode())
 			{ 
@@ -4236,8 +4251,8 @@ void CDlgMenu01::OnChkEjectBuffer()
 					}
 					else // AOI 하면부터 잔량처리
 					{
-						m_bLastProcFromUp = FALSE;
-						m_bLastProc = TRUE;
+						m_bLastProcFromUp = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+						m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 #ifdef USE_MPE 
 						pView->m_pMpe->Write(_T("MB440186"), 1);			// 잔량처리 AOI(하) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
 						//pView->m_pMpe->Write(_T("MB440181"), 1);					// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
@@ -4247,8 +4262,8 @@ void CDlgMenu01::OnChkEjectBuffer()
 				}
 				else // AOI 상면부터 잔량처리
 				{
-					m_bLastProcFromUp = TRUE;
-					m_bLastProc = TRUE;
+					m_bLastProcFromUp = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+					m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 #ifdef USE_MPE
 					pView->m_pMpe->Write(_T("MB440185"), 1);				// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
 					//pView->m_pMpe->Write(_T("MB440181"), 1);				// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
@@ -4287,8 +4302,8 @@ void CDlgMenu01::OnChkEjectBuffer()
 						}
 						else // AOI 하면부터 잔량처리
 						{
-							m_bLastProcFromUp = FALSE;
-							m_bLastProc = TRUE;
+							m_bLastProcFromUp = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+							m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 #ifdef USE_MPE 
 							pView->m_pMpe->Write(_T("MB440186"), 1);			// 잔량처리 AOI(하) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
 							//pView->m_pMpe->Write(_T("MB440181"), 1);			// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
@@ -4298,8 +4313,8 @@ void CDlgMenu01::OnChkEjectBuffer()
 					}
 					else // AOI 상면부터 잔량처리 
 					{
-						m_bLastProcFromUp = TRUE;
-						m_bLastProc = TRUE;
+						m_bLastProcFromUp = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+						m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 #ifdef USE_MPE
 						pView->m_pMpe->Write(_T("MB440185"), 1);				// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
 						//pView->m_pMpe->Write(_T("MB440181"), 1);				// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
@@ -4327,8 +4342,8 @@ void CDlgMenu01::OnChkEjectBuffer()
 				}
 				else // 각인부부터 잔량처리
 				{
-					m_bLastProcFromEng = TRUE;
-					m_bLastProc = TRUE;
+					m_bLastProcFromEng = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+					m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 #ifdef USE_MPE
 					pView->m_pMpe->Write(_T("MB44019D"), 1);				// 잔량처리 각인부 부터(PC가 On시키고, PLC가 확인하고 Off시킴)
 					//pView->m_pMpe->Write(_T("MB440181"), 1);				// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)
@@ -4377,23 +4392,25 @@ void CDlgMenu01::OnChkEjectBuffer()
 
 	if (!sLastShot.IsEmpty() && m_bLastProc)
 	{
-		pDoc->m_nEjectBufferLastShot = _ttoi(sLastShot);
+		pDoc->m_nEjectBufferLastShot = _ttoi(sLastShot); pDoc->SetStatusInt(_T("General"), _T("nEjectBufferLastShot"), pDoc->m_nEjectBufferLastShot);
 		pView->SetLotEnd(pDoc->m_nEjectBufferLastShot);
 
 		::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), sLastShot, pDoc->WorkingInfo.System.sPathMkCurrInfo);
 		::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("1"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 	}
 	else
-		pDoc->m_nEjectBufferLastShot = -1;
+	{
+		pDoc->m_nEjectBufferLastShot = -1; pDoc->SetStatusInt(_T("General"), _T("nEjectBufferLastShot"), pDoc->m_nEjectBufferLastShot);
+	}
 
 	this->MoveWindow(m_pRect, TRUE);
 }
 
 void CDlgMenu01::ResetLastProc()
 {
-	m_bLastProc = FALSE;
-	m_bLastProcFromUp = FALSE;
-	m_bLastProcFromEng = FALSE;
+	m_bLastProc = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
+	m_bLastProcFromUp = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+	m_bLastProcFromEng = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
 #ifdef USE_MPE
 	if(pView->m_pMpe)
 	{
@@ -4522,7 +4539,7 @@ void CDlgMenu01::OnChkLotEnd()
 			myBtn[6].SetCheck(FALSE);
 		else
 		{
-			m_bLotEnd = TRUE;
+			m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
 #ifdef USE_MPE
 			if(pView->m_pMpe)
 				pView->m_pMpe->Write(_T("MB440180"), 1);			// 작업종료(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031

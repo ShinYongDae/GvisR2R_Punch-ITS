@@ -1499,53 +1499,13 @@ int CDlgInfo::GetTestMode()
 void CDlgInfo::SetTestMode(int nMode)
 {
 	pDoc->WorkingInfo.LastJob.nTestMode = nMode; // MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2 .
-//
-//	CString sData;
-//	sData.Format(_T("%d"), nMode);
-//	::WritePrivateProfileString(_T("Last Job"), _T("Test Mode"), sData, PATH_WORKING_INFO);
-//
+
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
 		pView->m_pEngrave->SetTestMode();	//_ItemInx::_TestMode
 #endif
 
 	pDoc->SetTestMode(nMode);
-
-//#ifdef USE_MPE	
-//	if (pView && pView->m_pMpe)
-//	{
-//		if (pDoc->GetTestMode() == MODE_INNER)
-//		{
-//			pView->m_pMpe->Write(_T("MB440172"), 1);// 내층 검사 사용/미사용 
-//			pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
-//			pDoc->SetMkInfo(_T("Signal"), _T("Inner Test On"), TRUE);
-//			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), FALSE);
-//			if (pView->m_pDlgMenu01)
-//				pView->m_pDlgMenu01->EnableItsMode(FALSE);
-//		}
-//		else if (pDoc->GetTestMode() == MODE_OUTER)
-//		{
-//			pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
-//			pView->m_pMpe->Write(_T("MB440176"), 1);// 외층 검사 사용/미사용
-//			pDoc->SetMkInfo(_T("Signal"), _T("Inner Test On"), FALSE);
-//			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), TRUE);
-//			if (pView->m_pDlgMenu01)
-//				pView->m_pDlgMenu01->EnableItsMode();
-//
-//			//pView->m_bLoadMstInfo = TRUE; // LoadMstInfo()
-//			//pView->m_bLoadMstInfo = TRUE; // LoadMstInfo()
-//		}
-//		else
-//		{
-//			pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
-//			pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
-//			pDoc->SetMkInfo(_T("Signal"), _T("Inner Test On"), FALSE);
-//			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), FALSE);
-//			if (pView->m_pDlgMenu01)
-//				pView->m_pDlgMenu01->EnableItsMode(FALSE);
-//		}
-//	}
-//#endif
 
 	myBtn[23].RedrawWindow();
 	myBtn[24].RedrawWindow();

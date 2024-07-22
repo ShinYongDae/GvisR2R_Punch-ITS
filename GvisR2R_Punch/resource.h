@@ -137,6 +137,7 @@
 #define IDC_PIC_CAD_006                 1006
 #define IDC_EDIT1                       1006
 #define IDC_PIC_CAD_007                 1007
+#define IDC_EDIT3                       1007
 #define IDC_PIC_CAD_008                 1008
 #define IDC_PIC_CAD_009                 1009
 #define IDC_PIC_CAD_010                 1010
@@ -745,6 +746,7 @@
 #define IDC_STC_ALN4                    1220
 #define IDC_STC_12_                     1220
 #define IDC_STC_51                      1220
+#define IDC_STC_LOT_OFFSET              1220
 #define IDC_STC_0043                    1221
 #define IDC_STC_MK_POS2_2               1221
 #define IDC_STC_12_2                    1221
@@ -1264,11 +1266,14 @@
 #define IDC_CHECK2                      1415
 #define IDC_BTN_GD_RA_3                 1416
 #define IDC_STATIC_13                   1416
+#define IDC_CHECK3                      1416
 #define IDC_BTN_GD_RA_4                 1417
 #define IDC_STC_DEF_0                   1417
+#define IDC_CHECK4                      1417
 #define IDC_BTN_GD_RA_ALL               1418
 #define IDC_STC_DEF_1                   1418
 #define IDC_EDIT_REGISTER               1418
+#define IDC_CHECK5                      1418
 #define IDC_STC_DEF_2                   1419
 #define IDC_BTN_MEAS_MOVE               1419
 #define IDC_STC_DEF_3                   1420

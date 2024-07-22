@@ -2347,19 +2347,12 @@ void CDlgMenu02::OnBtnPinSave()
 
 	if (pView->m_nMkStAuto > MK_ST + 11 && pView->m_nMkStAuto < MK_ST + 29)
 	{
-		pView->m_nMkStAuto = MK_ST + 11;
-		//pView->SetMkStAuto();
+		pView->m_nMkStAuto = MK_ST + 11; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 	}
 
  	if(pDoc->m_pSpecLocal)
  	{
  		pDoc->SetMkPnt(CAM_LF);
-// 		if(myBtn[16].GetCheck())
-// 		{
-// 			if(m_pDlgUtil03)
-// 				m_pDlgUtil03->Disp(ROT_NONE);
-// // 				m_pDlgUtil03->Disp(ROT_CCW_90);
-// 		}
  	}
 
 }
@@ -2368,17 +2361,10 @@ void CDlgMenu02::OnBtnPinSave2()
 {
 	// TODO: Add your control notification handler code here
 
-//	pView->ShiftMsgPos(0, -430);
-//	if(IDNO == pView->MessageBox(_T("Do you want to save Pin Position?"), "",  MB_YESNO))
-//	if(IDNO == pView->DoMyMsgBox(_T("Do you want to save Pin Position?"), MB_YESNO))
 	if(IDNO == pView->MsgBox(_T("Do you want to save Pin Position?"), 0, MB_YESNO))
 	{
-//		pView->ShiftMsgPos(0, 0);
 		return;
 	}
-//	pView->ShiftMsgPos(0, 0);
-
-// 	pView->MyMsgBox(_T("Do you want to save Pin Position?"), MB_YESNO, (long)200);
 
 	CfPoint ptPnt;
 	ptPnt.x = pView->m_dEnc[AXIS_X1];
@@ -2393,36 +2379,14 @@ void CDlgMenu02::OnBtnPinSave2()
 		{
 			if(m_pDlgUtil03)
 				m_pDlgUtil03->Disp(ROT_NONE);
-// 				m_pDlgUtil03->Disp(ROT_CCW_90);
 		}
 	}	
 
 	if (pView->m_nMkStAuto > MK_ST + 11 && pView->m_nMkStAuto < MK_ST + 29)
 	{
-		pView->m_nMkStAuto = MK_ST + 11;
-		//pView->SetMkStAuto();
+		pView->m_nMkStAuto = MK_ST + 11; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 	}
 }
-
-// void CDlgMenu02::PinSave() 
-// {
-// 	CfPoint ptPnt;
-// 	ptPnt.x = pView->m_dEnc[AXIS_X];
-// 	ptPnt.y = pView->m_dEnc[AXIS_Y];
-// 
-// 	SetPinPos(ptPnt);
-// 
-// 	if(pDoc->m_pSpecLocal)
-// 	{
-// //		pDoc->SetMkPnt(CfPoint(pDoc->m_pSpecLocal->m_dPcsOffsetX, pDoc->m_pSpecLocal->m_dPcsOffsetY));
-// 		if(myBtn[16].GetCheck())
-// 		{
-// 			if(pView->m_pDlgUtil03)
-// 				pView->m_pDlgUtil03->Disp(ROT_NONE);
-// // 				pView->m_pDlgUtil03->Disp(ROT_CCW_90);
-// 		}
-// 	}
-// }
 
 void CDlgMenu02::OnBtnHomeMove() 
 {
@@ -2432,8 +2396,8 @@ void CDlgMenu02::OnBtnHomeMove()
 	double pTgtPos[2];
 	pTgtPos[1] = _tstof(pDoc->WorkingInfo.Motion.sStPosY[0]);
 	pTgtPos[0] = _tstof(pDoc->WorkingInfo.Motion.sStPosX[0]);
-	double dCurrX = pView->m_dEnc[AXIS_X0]; // pView->m_pMotion->GetActualPosition(AXIS_X);
-	double dCurrY = pView->m_dEnc[AXIS_Y0]; // pView->m_pMotion->GetActualPosition(AXIS_Y);
+	double dCurrX = pView->m_dEnc[AXIS_X0];
+	double dCurrY = pView->m_dEnc[AXIS_Y0];
 
 	if(pView->ChkCollision(AXIS_X0, pTgtPos[0]))
 	{
@@ -4326,13 +4290,11 @@ void CDlgMenu02::OnChkElecTest()
 {
 	// TODO: Add your control notification handler code here
 	if (IDYES == pView->MsgBox(_T("CamMaster에서 해당 모델의 데이터를 다시 업로드 할까요?"), 0, MB_YESNO))
-		pView->m_bLoadMstInfo = TRUE;
+	{
+		pView->m_bLoadMstInfo = TRUE; pDoc->SetStatus(_T("General"), _T("bLoadMstInfo"), pView->m_bLoadMstInfo);
+	}
 
 	myBtn[16].SetCheck(FALSE);
-	//m_lChk = 2;
-	//SetTimer(TIM_SHOW_ELEC_TEST, 150, NULL);
-	
-	//ChkElecTest();
 }
 
 
@@ -4643,7 +4605,6 @@ BOOL CDlgMenu02::Do2PtAlign0(int nPos, BOOL bDraw)
 #endif
 	return TRUE;
 }
-
 
 BOOL CDlgMenu02::TwoPointAlign1(int nPos)
 {

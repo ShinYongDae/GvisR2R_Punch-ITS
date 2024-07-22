@@ -160,8 +160,6 @@ typedef CArray<stDispMain, stDispMain> CArDispMain;
 
 class CGvisR2R_PunchView : public CFormView
 {
-	BOOL bPcrInShare[2], bPcrInShareVs[2];
-
 	CString m_sAoiUpAlarmReStartMsg, m_sAoiDnAlarmReStartMsg;
 	CString m_sAoiUpAlarmReTestMsg, m_sAoiDnAlarmReTestMsg;
 	BOOL m_bDestroyedView;
@@ -170,7 +168,6 @@ class CGvisR2R_PunchView : public CFormView
 	CDlgMyMsg* m_pDlgMyMsg;
 	CCriticalSection m_csMyMsgBox;
 	CCriticalSection m_csDispMain;
-	BOOL m_bAnswer[10];
 	int m_nDummy[2], m_nAoiLastSerial[2]; //[0]: Up, [1]: Dn
 	BOOL m_bChkLastProcVs;
 	int m_nChkBufIdx[2];
@@ -182,9 +179,6 @@ class CGvisR2R_PunchView : public CFormView
 	int m_nRtnMyMsgBox[4]; 	// [0] mk0, [1] mk1, [2] reject0, [3] reject1
 	int m_nRtnMyMsgBoxIdx;
 
-	int m_nPrevStepAuto, m_nPrevMkStAuto;
-	int m_nStepMk[4], m_nMkPcs[4]; 	// [0] Auto-Left, [1] Auto-Right, [2] Manual-Left, [3] Manual-Right  ; m_nStepMk(마킹Sequence), nMkOrderIdx(마킹한 count)
-	int m_nMkStrip[2][4]; // [nCam][nStrip] - [좌/우][] : 스트립에 펀칭한 피스 수 count
 	int m_nErrCnt;
 	int m_nStepInitView;
 
@@ -224,9 +218,6 @@ class CGvisR2R_PunchView : public CFormView
 	int m_nStepElecChk;
 	BOOL m_bStopFeeding;
 	BOOL m_bChkLightErr;
-
-	int m_nTotMk[2], m_nCurMk[2]; // [0]: 좌 MK, [1]: 우 MK
-	int m_nPrevTotMk[2], m_nPrevCurMk[2]; // [0]: 좌 MK, [1]: 우 MK
 
 	double m_dElecChkVal;
 	BOOL m_bContEngraveF;
@@ -369,6 +360,12 @@ public:
 
 	int m_nDebugStep; 	void DispThreadTick();
 
+	int m_nMkStrip[2][MAX_STRIP]; // [nCam][nStrip] - [좌/우][] : 스트립에 펀칭한 피스 수 count
+	int m_nStepMk[4], m_nMkPcs[4]; 	// [0] Auto-Left, [1] Auto-Right, [2] Manual-Left, [3] Manual-Right  ; m_nStepMk(마킹Sequence), nMkOrderIdx(마킹한 count)
+	int m_nTotMk[2], m_nCurMk[2]; // [0]: 좌 MK, [1]: 우 MK
+	int m_nPrevTotMk[2], m_nPrevCurMk[2]; // [0]: 좌 MK, [1]: 우 MK
+	int m_nPrevStepAuto, m_nPrevMkStAuto;
+	BOOL bPcrInShare[2], bPcrInShareVs[2];
 	BOOL m_bRcvSig[_SigInx::_EndIdx];
 	//stRcvSig m_stRcvSig;
 	CMpDevice* m_pMpe;
@@ -493,6 +490,7 @@ public:
 	int m_nBufUpCnt;
 	int m_nBufDnCnt;
 
+	BOOL m_bAnswer[10];
 	//BOOL m_bFailAlign[2][2]; // [nCam][nPos] 
 	//BOOL m_bReAlign[2][2]; // [nCam][nPos] 
 	//BOOL m_bSkipAlign[2][2]; // [nCam][nPos] 
@@ -545,7 +543,6 @@ public:
 	CDts* m_pDts;
 
 	int m_nNewLot;
-	int m_nSaveMk0Img, m_nSaveMk1Img;
 
 	//CString m_sPathRmapUpdate[4];
 	int m_nSerialRmapUpdate;
@@ -559,6 +556,7 @@ public:
 
 // 작업입니다.
 public:
+	int m_nSaveMk0Img, m_nSaveMk1Img;
 	BOOL m_bShift2Mk, m_bUpdateYield, m_bUpdateYieldOnRmap;
 
 	void SetLastSerialEng(int nSerial);
@@ -847,12 +845,12 @@ public:
 	int GetTotDefPcsUp1(int nSerial);
 	int GetTotDefPcsDn1(int nSerial);
 
-	CfPoint GetMkPnt(int nMkPcs);
-	CfPoint GetMkPnt0(int nMkPcs);
-	CfPoint GetMkPnt1(int nMkPcs);
 	// 	CfPoint GetMkPnt(int nSerial, int nMkPcs);
-	CfPoint GetMkPnt0(int nSerial, int nMkPcs);
-	CfPoint GetMkPnt1(int nSerial, int nMkPcs);
+	CfPoint GetMkPnt(int nIdx);						// CamMaster의 피스순서 인덱스
+	CfPoint GetMkPnt0(int nIdx);					// CamMaster의 피스순서 인덱스
+	CfPoint GetMkPnt1(int nIdx);					// CamMaster의 피스순서 인덱스
+	CfPoint GetMkPnt0(int nSerial, int nMkPcs);		// pcr 시리얼, pcr 불량 피스 읽은 순서 인덱스
+	CfPoint GetMkPnt1(int nSerial, int nMkPcs);		// pcr 시리얼, pcr 불량 피스 읽은 순서 인덱스
 
 	// 	void Move(CfPoint pt, BOOL bCam=FALSE);
 	void Move0(CfPoint pt, BOOL bCam = FALSE);

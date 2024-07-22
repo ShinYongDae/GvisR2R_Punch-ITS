@@ -1407,10 +1407,14 @@ void CDlgUtil03::OnCheckYshift()
 	// TODO: Add your control notification handler code here
 	CString strData;
 
-	if(((CButton*)GetDlgItem(IDC_CHECK_YSHIFT))->GetCheck())
-		pDoc->m_bUseRTRYShiftAdjust = TRUE;
+	if (((CButton*)GetDlgItem(IDC_CHECK_YSHIFT))->GetCheck())
+	{
+		pDoc->m_bUseRTRYShiftAdjust = TRUE; pDoc->SetStatus(_T("General"), _T("bUseRTRYShiftAdjust"), pDoc->m_bUseRTRYShiftAdjust);
+	}
 	else
-		pDoc->m_bUseRTRYShiftAdjust = FALSE;
+	{
+		pDoc->m_bUseRTRYShiftAdjust = FALSE; pDoc->SetStatus(_T("General"), _T("bUseRTRYShiftAdjust"), pDoc->m_bUseRTRYShiftAdjust);
+	}
 
 	CString sPath=PATH_WORKING_INFO;
 	strData.Format(_T("%d"), pDoc->m_bUseRTRYShiftAdjust);

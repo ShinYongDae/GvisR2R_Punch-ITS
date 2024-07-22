@@ -1174,6 +1174,14 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathMkMenu03 = CString(_T("C:\\PunchWork\\MkMenu03.ini"));
 	}
 
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("MkStatusPath"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.sPathMkStatus = CString(szData);
+	else
+	{
+		pView->ClrDispMsg(); AfxMessageBox(_T("MkStatusPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.sPathMkStatus = CString(_T("C:\\R2RSet\\Status.ini"));
+	}
+
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("MkInfoPath"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.System.sPathMkInfo = CString(szData);
 	else
@@ -4775,13 +4783,13 @@ BOOL CGvisR2R_PunchDoc::GetAoiDnInfo(int nSerial, int *pNewLot, BOOL bFromBuf) /
 	}
 
 	BOOL Info1;//Info0, 
-			   // 	Info0 = GetAoiInfoUp(nSerial);
+// 	Info0 = GetAoiInfoUp(nSerial);
 
-			   // 	double dCurPosMkFd = (double)m_pMpeData[0][0];	// 마킹부 Feeding 엔코더 값(단위 mm )
-			   // 	double dTgtFd = _tstof(WorkingInfo.Motion.sFdAoiAoiDistShot) * _tstof(WorkingInfo.Motion.sAoiFdDist);
-			   // 	if(dCurPosMkFd < dTgtFd-_tstof(WorkingInfo.Motion.sAoiFdDist) + 10.0)
-			   // 		return FALSE;
-			   // 	else
+// 	double dCurPosMkFd = (double)m_pMpeData[0][0];	// 마킹부 Feeding 엔코더 값(단위 mm )
+// 	double dTgtFd = _tstof(WorkingInfo.Motion.sFdAoiAoiDistShot) * _tstof(WorkingInfo.Motion.sAoiFdDist);
+// 	if(dCurPosMkFd < dTgtFd-_tstof(WorkingInfo.Motion.sAoiFdDist) + 10.0)
+// 		return FALSE;
+// 	else
 	{
 		Info1 = GetAoiInfoDn(nSerial, pNewLot, bFromBuf);
 		if (Info1)
@@ -4929,28 +4937,26 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		if (m_bBufEmptyF[0])
 		{
 			if (!m_bBufEmpty[0])
-				m_bBufEmptyF[0] = FALSE;
+			{
+				m_bBufEmptyF[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bBufEmptyF[0]"), m_bBufEmptyF[0]);
+			}
 
-			m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo();
+			m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo(); pDoc->SetStatusInt(_T("General"), _T("nAoiCamInfoStrPcs[0]"), m_nAoiCamInfoStrPcs[0]);
 			if (m_nAoiCamInfoStrPcs[0] > -1)
 			{
 				if ((m_nAoiCamInfoStrPcs[0] == 1 ? TRUE : FALSE) != WorkingInfo.System.bStripPcsRgnBin)
 				{
-					//if(m_nAoiCamInfoStrPcs[0])
-					//	pView->MsgBox(_T("현재 마킹부는 일반 모드 인데, \r\n상면 AOI는 DTS 모드에서 검사를 진행하였습니다."));
-					//else
-					//	pView->MsgBox(_T("현재 마킹부는 DTS 모드 인데, \r\n상면 AOI는 일반 모드에서 검사를 진행하였습니다."));
 					return FALSE;
 				}
 			}
 
-			pView->m_bInitAutoLoadMstInfo = FALSE;
+			pView->m_bInitAutoLoadMstInfo = FALSE; pDoc->SetStatus(_T("General"), _T("bInitAutoLoadMstInfo"), pView->m_bInitAutoLoadMstInfo);
 			return TRUE;
 		}
 
 		if (pView->m_bInitAutoLoadMstInfo)
 		{
-			pView->m_bInitAutoLoadMstInfo = FALSE;
+			pView->m_bInitAutoLoadMstInfo = FALSE; pDoc->SetStatus(_T("General"), _T("bInitAutoLoadMstInfo"), pView->m_bInitAutoLoadMstInfo);
 			return TRUE;
 		}
 	}
@@ -5144,17 +5150,15 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoDn(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		if (m_bBufEmptyF[1])
 		{
 			if (!m_bBufEmpty[1])
-				m_bBufEmptyF[1] = FALSE;
+			{
+				m_bBufEmptyF[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bBufEmptyF[1]"), m_bBufEmptyF[1]);
+			}
 
-			m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo();
+			m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo(); pDoc->SetStatusInt(_T("General"), _T("nAoiCamInfoStrPcs[1]"), m_nAoiCamInfoStrPcs[1]);
 			if (m_nAoiCamInfoStrPcs[1] > -1)
 			{
 				if ((m_nAoiCamInfoStrPcs[1] == 1 ? TRUE : FALSE) != WorkingInfo.System.bStripPcsRgnBin)
 				{
-					//if (m_nAoiCamInfoStrPcs[1])
-					//	pView->MsgBox(_T("현재 마킹부는 일반 모드 인데, \r\n하면 AOI는 DTS 모드에서 검사를 진행하였습니다."));
-					//else
-					//	pView->MsgBox(_T("현재 마킹부는 DTS 모드 인데, \r\n하면 AOI는 일반 모드에서 검사를 진행하였습니다."));
 					return FALSE;
 				}
 			}
@@ -8739,72 +8743,13 @@ void CGvisR2R_PunchDoc::UpdateYieldOnRmap()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	pView->m_bTHREAD_REELMAP_YIELD_UP = TRUE;		// UpdateReelmapYieldUp(); // Yield Reelmap
+	pView->m_bTHREAD_REELMAP_YIELD_UP = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_UP"), pView->m_bTHREAD_REELMAP_YIELD_UP); // UpdateReelmapYieldUp(); // Yield Reelmap
 	if (bDualTest)
 	{
-		pView->m_bTHREAD_REELMAP_YIELD_DN = TRUE;	// UpdateReelmapYieldDn(); // Yield Reelmap
-		//pView->m_bTHREAD_REELMAP_YIELD_ALLUP = TRUE;
-		//pView->m_bTHREAD_REELMAP_YIELD_ALLDN = TRUE;
+		pView->m_bTHREAD_REELMAP_YIELD_DN = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_DN"), pView->m_bTHREAD_REELMAP_YIELD_DN); // UpdateReelmapYieldDn(); // Yield Reelmap
 	}
 	Sleep(100);
-
-	//if (m_pReelMapUp)
-	//	m_pReelMapUp->UpdateRst();					// 릴맵 텍스트 파일의 수율정보를 업데이트함.
-	//if (bDualTest)
-	//{
-	//	if (m_pReelMapDn)
-	//		m_pReelMapDn->UpdateRst();					// 릴맵 텍스트 파일의 수율정보를 업데이트함.
-	//	if (m_pReelMapAllUp)
-	//		m_pReelMapAllUp->UpdateRst();					// 릴맵 텍스트 파일의 수율정보를 업데이트함.
-	//	if (m_pReelMapAllDn)
-	//		m_pReelMapAllDn->UpdateRst();					// 릴맵 텍스트 파일의 수율정보를 업데이트함.
-	//}
-
 }
-
-//void CGvisR2R_PunchDoc::UpdateYield(int nSerial)
-//{
-//	if (nSerial <= 0)
-//	{
-//		pView->ClrDispMsg();
-//		AfxMessageBox(_T("Serial Error.66"));
-//		return;
-//	}
-//
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-//
-//	if (m_pReelMapUp)
-//		m_pReelMapUp->UpdateYield(nSerial);
-//	if (bDualTest)
-//	{
-//		if (m_pReelMapDn)
-//			m_pReelMapDn->UpdateYield(nSerial);
-//		if (m_pReelMapAllUp)
-//			m_pReelMapAllUp->UpdateYield(nSerial);
-//		if (m_pReelMapAllDn)
-//			m_pReelMapAllDn->UpdateYield(nSerial);
-//	}
-//
-//	if (pDoc->GetTestMode() == MODE_OUTER)
-//	{
-//		if (m_pReelMapInnerUp)
-//			m_pReelMapInnerUp->UpdateYield(nSerial);
-//
-//		if (m_pReelMapIts)
-//			m_pReelMapIts->UpdateYield(nSerial);
-//
-//		if (WorkingInfo.LastJob.bDualTestInner)
-//		{
-//			if (m_pReelMapInnerDn)
-//				m_pReelMapInnerDn->UpdateYield(nSerial);
-//			if (m_pReelMapInnerAllUp)
-//				m_pReelMapInnerAllUp->UpdateYield(nSerial);
-//			if (m_pReelMapInnerAllDn)
-//				m_pReelMapInnerAllDn->UpdateYield(nSerial);
-//		}
-//	}
-//
-//}
 
 void CGvisR2R_PunchDoc::UpdateYieldUp(int nSerial)
 {
@@ -10080,18 +10025,9 @@ void CGvisR2R_PunchDoc::SetTestMode(int nMode)
 {
 	WorkingInfo.LastJob.nTestMode = nMode; // MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2 .
 
-	// For test on 20231025
-	//if(nMode == MODE_OUTER)
-	//	pView->m_bLoadMstInfo = TRUE;
-
 	CString sData;
 	sData.Format(_T("%d"), nMode);
 	::WritePrivateProfileString(_T("Last Job"), _T("Test Mode"), sData, PATH_WORKING_INFO);
-
-//#ifdef USE_ENGRAVE
-//	if (pView && pView->m_pEngrave)
-//		pView->m_pEngrave->SetTestMode();	//_ItemInx::_TestMode
-//#endif
 
 	CString sPath = WorkingInfo.System.sPathMkCurrInfo;
 
@@ -10123,9 +10059,6 @@ void CGvisR2R_PunchDoc::SetTestMode(int nMode)
 			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), TRUE);
 			if (pView->m_pDlgMenu01)
 				pView->m_pDlgMenu01->EnableItsMode();
-
-			//pView->m_bLoadMstInfo = TRUE; // LoadMstInfo()
-			//pView->m_bLoadMstInfo = TRUE; // LoadMstInfo()
 		}
 		else
 		{
@@ -14607,4 +14540,870 @@ int CGvisR2R_PunchDoc::IsOfflineFolder() // 0 : Not exist, 1 : Exist only Up, 2 
 		nRtn |= 0x02;
 
 	return nRtn;
+}
+
+void CGvisR2R_PunchDoc::SetStatus(CString sMenu, CString sItem, BOOL bOn)
+{
+	if (!m_bUseStatus) return;
+	CString sPath = WorkingInfo.System.sPathMkStatus;
+	CString sData = _T("");
+
+	if (sPath.IsEmpty())
+		return;
+
+	sData.Format(_T("%d"), bOn > 0 ? 1 : 0);
+	::WritePrivateProfileString(sMenu, sItem, sData, sPath);
+}
+
+void CGvisR2R_PunchDoc::SetStatusInt(CString sMenu, CString sItem, int nData)
+{
+	if (!m_bUseStatus) return;
+	CString sPath = WorkingInfo.System.sPathMkStatus;
+	if (sPath.IsEmpty())
+		return;
+	CString sData;
+	sData.Format(_T("%d"), nData);
+	::WritePrivateProfileString(sMenu, sItem, sData, sPath);
+	return;
+}
+
+void CGvisR2R_PunchDoc::SetStatus(CString sMenu, CString sItem, CString sData)
+{
+	if (!m_bUseStatus) return;
+	CString sPath = WorkingInfo.System.sPathMkStatus;
+	if (sPath.IsEmpty())
+		return;
+
+	::WritePrivateProfileString(sMenu, sItem, sData, sPath);
+}
+
+CString CGvisR2R_PunchDoc::GetStatus(CString sMenu, CString sItem)
+{
+	if (!m_bUseStatus) return _T("");
+	CString sPath = WorkingInfo.System.sPathMkStatus;
+	TCHAR szData[512];
+
+	if (sPath.IsEmpty())
+		return _T("");
+
+	if (0 < ::GetPrivateProfileString(sMenu, sItem, NULL, szData, sizeof(szData), sPath))
+		return (CString(szData));
+
+	return _T("");
+}
+
+BOOL CGvisR2R_PunchDoc::LoadStatus()
+{
+	CString sPath = WorkingInfo.System.sPathMkStatus;
+	TCHAR szData[512];
+
+	if (sPath.IsEmpty())
+		return FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("UseStatus"), NULL, szData, sizeof(szData), PATH_WORKING_INFO))
+		m_bUseStatus = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bUseStatus = FALSE;
+
+	if (!m_bUseStatus) return FALSE;
+
+	// [General] =================================================================================================================
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bLotEnd"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bLotEnd = pView->m_pDlgMenu01->m_bLotEnd = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bLotEnd = pView->m_pDlgMenu01->m_bLotEnd = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bLotEndF"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bLotEndF = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bLotEndF = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bLastProc"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bLastProc = pView->m_pDlgMenu01->m_bLastProc = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bLastProc = pView->m_pDlgMenu01->m_bLastProc = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bMkSt"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bMkSt = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bMkSt = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bCam"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bCam = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bCam = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bLastProcFromUp"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bLastProcFromUp = pView->m_pDlgMenu01->m_bLastProcFromUp = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bLastProcFromUp = pView->m_pDlgMenu01->m_bLastProcFromUp = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bLastProcFromEng"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bLastProcFromEng = pView->m_pDlgMenu01->m_bLastProcFromEng = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bLastProcFromEng = pView->m_pDlgMenu01->m_bLastProcFromEng = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bCycleStop"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bCycleStop = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bCycleStop = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bSerialDecrese"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bSerialDecrese = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bSerialDecrese = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bContDiffLot"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bContDiffLot = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bContDiffLot = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bDoneChgLot"), NULL, szData, sizeof(szData), sPath))
+		m_bDoneChgLot = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bDoneChgLot = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bUseRTRYShiftAdjust"), NULL, szData, sizeof(szData), sPath))
+		m_bUseRTRYShiftAdjust = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bUseRTRYShiftAdjust = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bUpdateYield"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bUpdateYield = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bUpdateYield = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bSkipAlign[0][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bSkipAlign[0][0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bSkipAlign[0][0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bSkipAlign[0][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bSkipAlign[0][1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bSkipAlign[0][1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bSkipAlign[0][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bSkipAlign[0][2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bSkipAlign[0][2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bSkipAlign[0][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bSkipAlign[0][3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bSkipAlign[0][3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bSkipAlign[1][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bSkipAlign[1][0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bSkipAlign[1][0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bSkipAlign[1][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bSkipAlign[1][1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bSkipAlign[1][1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bSkipAlign[1][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bSkipAlign[1][2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bSkipAlign[1][2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bSkipAlign[1][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bSkipAlign[1][3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bSkipAlign[1][3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReAlign[0][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReAlign[0][0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReAlign[0][0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReAlign[0][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReAlign[0][1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReAlign[0][1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReAlign[0][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReAlign[0][2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReAlign[0][2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReAlign[0][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReAlign[0][3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReAlign[0][3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReAlign[1][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReAlign[1][0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReAlign[1][0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReAlign[1][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReAlign[1][1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReAlign[1][1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReAlign[1][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReAlign[1][2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReAlign[1][2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReAlign[1][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReAlign[1][3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReAlign[1][3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bFailAlign[0][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bFailAlign[0][0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bFailAlign[0][0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bFailAlign[0][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bFailAlign[0][1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bFailAlign[0][1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bFailAlign[0][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bFailAlign[0][2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bFailAlign[0][2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bFailAlign[0][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bFailAlign[0][3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bFailAlign[0][3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bFailAlign[1][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bFailAlign[1][0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bFailAlign[1][0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bFailAlign[1][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bFailAlign[1][1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bFailAlign[1][1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bFailAlign[1][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bFailAlign[1][2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bFailAlign[1][2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bFailAlign[1][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bFailAlign[1][3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bFailAlign[1][3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bDoMk[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bDoMk[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bDoMk[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bDoMk[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bDoMk[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bDoMk[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bDoneMk[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bDoneMk[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bDoneMk[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bDoneMk[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bDoneMk[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bDoneMk[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReMark[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReMark[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReMark[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReMark[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReMark[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReMark[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAnswer[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAnswer[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAnswer[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAnswer[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAnswer[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAnswer[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAnswer[2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAnswer[2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAnswer[2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAnswer[3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAnswer[3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAnswer[3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bInitAuto"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bInitAuto = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bInitAuto = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bLoadMstInfo"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bLoadMstInfo = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bLoadMstInfo = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bBufEmpty[0]"), NULL, szData, sizeof(szData), sPath))
+		m_bBufEmpty[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bBufEmpty[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bBufEmpty[1]"), NULL, szData, sizeof(szData), sPath))
+		m_bBufEmpty[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bBufEmpty[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bBufEmptyF[0]"), NULL, szData, sizeof(szData), sPath))
+		m_bBufEmptyF[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bBufEmptyF[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bBufEmptyF[1]"), NULL, szData, sizeof(szData), sPath))
+		m_bBufEmptyF[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bBufEmptyF[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bCont"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bCont = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bCont = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAoiTest[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAoiTest[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAoiTest[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAoiTest[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAoiTest[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAoiTest[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bWaitPcr[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bWaitPcr[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bWaitPcr[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bWaitPcr[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bWaitPcr[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bWaitPcr[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bEngTest"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bEngTest = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bEngTest = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bEngFdWrite"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bEngFdWrite = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bEngFdWrite = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bReadyDone"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bReadyDone = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bReadyDone = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bStopF_Verify"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bStopF_Verify = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bStopF_Verify = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bInitAutoLoadMstInfo"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bInitAutoLoadMstInfo = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bInitAutoLoadMstInfo = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bRejectDone[0][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bRejectDone[0][0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bRejectDone[0][0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bRejectDone[0][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bRejectDone[0][1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bRejectDone[0][1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bRejectDone[0][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bRejectDone[0][2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bRejectDone[0][2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bRejectDone[0][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bRejectDone[0][3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bRejectDone[0][3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bRejectDone[1][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bRejectDone[1][0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bRejectDone[1][0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bRejectDone[1][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bRejectDone[1][1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bRejectDone[1][1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bRejectDone[1][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bRejectDone[1][2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bRejectDone[1][2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bRejectDone[1][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bRejectDone[1][3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bRejectDone[1][3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAoiTestF[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAoiTestF[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAoiTestF[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAoiTestF[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAoiTestF[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAoiTestF[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAoiFdWrite[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAoiFdWrite[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAoiFdWrite[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAoiFdWrite[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAoiFdWrite[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAoiFdWrite[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAoiFdWriteF[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAoiFdWriteF[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAoiFdWriteF[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bAoiFdWriteF[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bAoiFdWriteF[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bAoiFdWriteF[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bEngTestF"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bEngTestF = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bEngTestF = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bEngFdWriteF"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bEngFdWriteF = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bEngFdWriteF = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bCycleStop"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bCycleStop = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bCycleStop = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bPcrInShare[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->bPcrInShare[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->bPcrInShare[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bPcrInShare[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->bPcrInShare[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->bPcrInShare[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bPcrInShareVs[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->bPcrInShareVs[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->bPcrInShareVs[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("bPcrInShareVs[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->bPcrInShareVs[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->bPcrInShareVs[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nLotEndAuto"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nLotEndAuto = _ttoi(szData);
+	else
+		pView->m_nLotEndAuto = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkStAuto"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkStAuto = _ttoi(szData);
+	else
+		pView->m_nMkStAuto = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nPrevMkStAuto"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nPrevMkStAuto = _ttoi(szData);
+	else
+		pView->m_nPrevMkStAuto = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nLastProcAuto"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nLastProcAuto = _ttoi(szData);
+	else
+		pView->m_nLastProcAuto = 0;
+
+	//if (0 < ::GetPrivateProfileString(_T("General"), _T("nTestMode"), NULL, szData, sizeof(szData), sPath))
+	//	pView->m_nTestMode = _ttoi(szData);
+	//else
+	//	;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nLotEndSerial"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nLotEndSerial = _ttoi(szData);
+	else
+		pView->m_nLotEndSerial = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nStepAuto"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nStepAuto = _ttoi(szData);
+	else
+		pView->m_nStepAuto = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nPrevStepAuto"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nPrevStepAuto = _ttoi(szData);
+	else
+		pView->m_nPrevStepAuto = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nTotMk[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nTotMk[0] = _ttoi(szData);
+	else
+		pView->m_nTotMk[0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nTotMk[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nTotMk[1] = _ttoi(szData);
+	else
+		pView->m_nTotMk[1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nPrevTotMk[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nPrevTotMk[0] = _ttoi(szData);
+	else
+		pView->m_nPrevTotMk[0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nPrevTotMk[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nPrevTotMk[1] = _ttoi(szData);
+	else
+		pView->m_nPrevTotMk[1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nPrevMkPcs[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nPrevCurMk[0] = _ttoi(szData);
+	else
+		pView->m_nPrevCurMk[0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nPrevMkPcs[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nPrevCurMk[1] = _ttoi(szData);
+	else
+		pView->m_nPrevCurMk[1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nAoiCamInfoStrPcs[0]"), NULL, szData, sizeof(szData), sPath))
+		m_nAoiCamInfoStrPcs[0] = _ttoi(szData);
+	else
+		m_nAoiCamInfoStrPcs[0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nAoiCamInfoStrPcs[1]"), NULL, szData, sizeof(szData), sPath))
+		m_nAoiCamInfoStrPcs[1] = _ttoi(szData);
+	else
+		m_nAoiCamInfoStrPcs[1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nStepMk[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nStepMk[0] = _ttoi(szData);
+	else
+		pView->m_nStepMk[0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nStepMk[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nStepMk[1] = _ttoi(szData);
+	else
+		pView->m_nStepMk[1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nStepMk[2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nStepMk[2] = _ttoi(szData);
+	else
+		pView->m_nStepMk[2] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nStepMk[3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nStepMk[3] = _ttoi(szData);
+	else
+		pView->m_nStepMk[3] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkPcs[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkPcs[0] = _ttoi(szData);
+	else
+		pView->m_nMkPcs[0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkPcs[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkPcs[1] = _ttoi(szData);
+	else
+		pView->m_nMkPcs[1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkPcs[2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkPcs[2] = _ttoi(szData);
+	else
+		pView->m_nMkPcs[2] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkPcs[3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkPcs[3] = _ttoi(szData);
+	else
+		pView->m_nMkPcs[3] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkStrip[0][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkStrip[0][0] = _ttoi(szData);
+	else
+		pView->m_nMkStrip[0][0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkStrip[0][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkStrip[0][1] = _ttoi(szData);
+	else
+		pView->m_nMkStrip[0][1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkStrip[0][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkStrip[0][2] = _ttoi(szData);
+	else
+		pView->m_nMkStrip[0][2] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkStrip[0][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkStrip[0][3] = _ttoi(szData);
+	else
+		pView->m_nMkStrip[0][3] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkStrip[1][0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkStrip[1][0] = _ttoi(szData);
+	else
+		pView->m_nMkStrip[1][0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkStrip[1][1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkStrip[1][1] = _ttoi(szData);
+	else
+		pView->m_nMkStrip[1][1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkStrip[1][2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkStrip[1][2] = _ttoi(szData);
+	else
+		pView->m_nMkStrip[1][2] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nMkStrip[1][3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nMkStrip[1][3] = _ttoi(szData);
+	else
+		pView->m_nMkStrip[1][3] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nEjectBufferLastShot"), NULL, szData, sizeof(szData), sPath))
+		m_nEjectBufferLastShot = _ttoi(szData);
+	else
+		m_nEjectBufferLastShot = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nBufUpSerial[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nBufUpSerial[0] = _ttoi(szData);
+	else
+		pView->m_nBufUpSerial[0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nBufUpSerial[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nBufUpSerial[1] = _ttoi(szData);
+	else
+		pView->m_nBufUpSerial[1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nBufDnSerial[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nBufDnSerial[0] = _ttoi(szData);
+	else
+		pView->m_nBufDnSerial[0] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("nBufDnSerial[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nBufDnSerial[1] = _ttoi(szData);
+	else
+		pView->m_nBufDnSerial[1] = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("General"), _T("Flag"), NULL, szData, sizeof(szData), sPath))
+		pView->m_Flag = _ttoi(szData);
+	else
+		pView->m_Flag = 0;
+
+	// [Thread] =================================================================================================================
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_DISP_DEF"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_DISP_DEF = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_DISP_DEF = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_SHIFT2MK"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_SHIFT2MK = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_SHIFT2MK = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_UP"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_REELMAP_UP = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_REELMAP_UP = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_DN"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_REELMAP_DN = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_REELMAP_DN = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_ALLUP"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_REELMAP_ALLUP = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_REELMAP_ALLUP = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_ALLDN"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_REELMAP_ALLDN = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_REELMAP_ALLDN = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_UP"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_REELMAP_INNER_UP = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_REELMAP_INNER_UP = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_DN"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_REELMAP_INNER_DN = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_REELMAP_INNER_DN = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_ALLUP"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_ALLDN"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_DISP_DEF_INNER"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_DISP_DEF_INNER = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_DISP_DEF_INNER = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATAE_YIELD[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATAE_YIELD[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATAE_YIELD[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATAE_YIELD[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_UP"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_YIELD_UP = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_YIELD_UP = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_DN"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_YIELD_DN = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_YIELD_DN = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_ALLUP"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_YIELD_ALLUP = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_YIELD_ALLUP = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_ALLDN"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_UPDATE_YIELD_ALLDN = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_UPDATE_YIELD_ALLDN = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_UP"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_REELMAP_YIELD_UP = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_REELMAP_YIELD_UP = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_DN"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_REELMAP_YIELD_DN = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_REELMAP_YIELD_DN = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ALLUP"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_REELMAP_YIELD_ALLUP = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_REELMAP_YIELD_ALLUP = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ALLDN"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_REELMAP_YIELD_ALLDN = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_REELMAP_YIELD_ALLDN = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ITS"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_REELMAP_YIELD_ITS = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_REELMAP_YIELD_ITS = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_MAKE_ITS_FILE_UP"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_MAKE_ITS_FILE_UP = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_MAKE_ITS_FILE_UP = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_MAKE_ITS_FILE_DN"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_MAKE_ITS_FILE_DN = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_MAKE_ITS_FILE_DN = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_MK[0]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_MK[0] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_MK[0] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_MK[1]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_MK[1] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_MK[1] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_MK[2]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_MK[2] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_MK[2] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("bTHREAD_MK[3]"), NULL, szData, sizeof(szData), sPath))
+		pView->m_bTHREAD_MK[3] = _ttoi(szData) ? TRUE : FALSE;
+	else
+		pView->m_bTHREAD_MK[3] = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("nStepTHREAD_DISP_DEF"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nStepTHREAD_DISP_DEF = _ttoi(szData);
+	else
+		pView->m_nStepTHREAD_DISP_DEF = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("nStepTHREAD_DISP_DEF_INNER"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nStepTHREAD_DISP_DEF_INNER = _ttoi(szData);
+	else
+		pView->m_nStepTHREAD_DISP_DEF_INNER = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("nSerialRmapUpdate"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nSerialRmapUpdate = _ttoi(szData);
+	else
+		pView->m_nSerialRmapUpdate = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("nSerialRmapInnerUpdate"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nSerialRmapInnerUpdate = _ttoi(szData);
+	else
+		pView->m_nSerialRmapInnerUpdate = 0;
+
+	if (0 < ::GetPrivateProfileString(_T("Thread"), _T("nSnTHREAD_UPDATAE_YIELD"), NULL, szData, sizeof(szData), sPath))
+		pView->m_nSnTHREAD_UPDATAE_YIELD = _ttoi(szData);
+	else
+		pView->m_nSnTHREAD_UPDATAE_YIELD = 0;
+
+	// [Engrave] =================================================================================================================
+	if (0 < ::GetPrivateProfileString(_T("Engrave"), _T("IsOnMking"), NULL, szData, sizeof(szData), sPath))
+		BtnStatus.EngAuto.IsOnMking = _ttoi(szData) ? TRUE : FALSE;
+	else
+		BtnStatus.EngAuto.IsOnMking = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Engrave"), _T("IsMkDone"), NULL, szData, sizeof(szData), sPath))
+		BtnStatus.EngAuto.IsMkDone = _ttoi(szData) ? TRUE : FALSE;
+	else
+		BtnStatus.EngAuto.IsMkDone = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Engrave"), _T("IsOnRead2d"), NULL, szData, sizeof(szData), sPath))
+		BtnStatus.EngAuto.IsOnRead2d = _ttoi(szData) ? TRUE : FALSE;
+	else
+		BtnStatus.EngAuto.IsOnRead2d = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("Engrave"), _T("IsRead2dDone"), NULL, szData, sizeof(szData), sPath))
+		BtnStatus.EngAuto.IsRead2dDone = _ttoi(szData) ? TRUE : FALSE;
+	else
+		BtnStatus.EngAuto.IsRead2dDone = FALSE;
+
+	return TRUE;
 }

@@ -31,4 +31,9 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedCheck1();
 	afx_msg void OnBnClickedCheck2();
+	afx_msg void OnBnClickedCheck3();
+	afx_msg void OnBnClickedCheck4();
+	afx_msg void OnEnChangeEdit1();
+	afx_msg void OnEnChangeEdit3();
+	afx_msg void OnBnClickedCheck5();
 };

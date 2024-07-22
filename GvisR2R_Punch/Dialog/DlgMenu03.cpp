@@ -1859,8 +1859,7 @@ void CDlgMenu03::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 		if(pDoc->m_pMpeSignal[0] & (0x01<<0))	// PLC 운전준비 완료(PC가 확인하고 Reset시킴.)
 		{
 			m_bTIM_CHK_DONE_READY = FALSE;
-			//pView->ClrDispMsg();
-			pView->m_bReadyDone = TRUE;
+			pView->m_bReadyDone = TRUE; pDoc->SetStatus(_T("General"), _T("bReadyDone"), pView->m_bReadyDone);
 			if(pView->m_pMpe)
 				pView->m_pMpe->Write(_T("MB440100"), 0);	// PLC 운전준비 완료(PC가 확인하고 Reset시킴.)
 		}
@@ -1869,9 +1868,7 @@ void CDlgMenu03::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 			pView->GetDispMsg(strMsg, strTitle);
 			if(strMsg != _T("Searching Buffer Home Position...") || strTitle != _T("Homming"))
 			{
-				pView->m_bReadyDone = FALSE;
-				//pView->MsgBox("Searching Buffer Home Position...");
-				//pView->DispMsg(_T("Searching Buffer Home Position..."), _T("Homming"), RGB_GREEN, DELAY_TIME_MSG);
+				pView->m_bReadyDone = FALSE; pDoc->SetStatus(_T("General"), _T("bReadyDone"), pView->m_bReadyDone);
 			}
 		}
 #endif
@@ -3599,7 +3596,7 @@ BOOL CDlgMenu03::DoReset()
 		if(m_bTIM_CHK_DONE_READY)
 		{
 			m_bTIM_CHK_DONE_READY = FALSE;
-			pView->m_bReadyDone = FALSE;
+			pView->m_bReadyDone = FALSE; pDoc->SetStatus(_T("General"), _T("bReadyDone"), pView->m_bReadyDone);
 #ifdef USE_MPE
 			if(pView->m_pMpe)
 				pView->m_pMpe->Write(_T("MB440100"), 0);	// PLC 운전준비 완료(PC가 확인하고 Reset시킴.)
@@ -3618,7 +3615,7 @@ BOOL CDlgMenu03::DoReset()
 			bInit = FALSE;
 		else
 		{
-			pDoc->m_bDoneChgLot = FALSE;
+			pDoc->m_bDoneChgLot = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneChgLot"), pDoc->m_bDoneChgLot);
 			pView->m_nNewLot = 0;
 
 			if (pView->m_pDlgMenu01)
@@ -3629,10 +3626,10 @@ BOOL CDlgMenu03::DoReset()
 		{
 			if(IDNO == pView->MsgBox(_T("이어가기를 하시겠습니까?"), 0, MB_YESNO, DEFAULT_TIME_OUT, FALSE))
 			{
-				pView->m_bCont = FALSE;
+				pView->m_bCont = FALSE; pDoc->SetStatus(_T("General"), _T("bCont"), pView->m_bCont);
 				return FALSE;
 			}
-			pView->m_bCont = TRUE;
+			pView->m_bCont = TRUE; pDoc->SetStatus(_T("General"), _T("bCont"), pView->m_bCont);
 		}
 		pView->m_nDebugStep = 1; pView->DispThreadTick();
 		pView->InitAuto(bInit);
@@ -3648,12 +3645,12 @@ BOOL CDlgMenu03::DoReset()
 			pView->SetAoiDummyShot(1, pView->GetAoiDnDummyShot());
 
 		pView->m_nDebugStep = 5; pView->DispThreadTick();
-		pView->m_bAoiFdWrite[0] = FALSE;
-		pView->m_bAoiFdWrite[1] = FALSE;
-		pView->m_bAoiFdWriteF[0] = FALSE;
-		pView->m_bAoiFdWriteF[1] = FALSE;
-		pView->m_bCycleStop = FALSE;
-		pView->m_bContDiffLot = FALSE;
+		pView->m_bAoiFdWrite[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWrite[0]"), pView->m_bAoiFdWrite[0]);
+		pView->m_bAoiFdWrite[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWrite[1]"), pView->m_bAoiFdWrite[1]);
+		pView->m_bAoiFdWriteF[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[0]"), pView->m_bAoiFdWriteF[0]);
+		pView->m_bAoiFdWriteF[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[1]"), pView->m_bAoiFdWriteF[1]);
+		pView->m_bCycleStop = FALSE; pDoc->SetStatus(_T("General"), _T("bCycleStop"), pView->m_bCycleStop);
+		pView->m_bContDiffLot = FALSE; pDoc->SetStatus(_T("General"), _T("bContDiffLot"), pView->m_bContDiffLot);
 
 		pView->m_bInit = bInit;
 
@@ -3810,7 +3807,7 @@ void CDlgMenu03::SwRun()
 		pView->m_bSwStop = FALSE;
 		pView->m_bSwReady = FALSE;
 		pView->m_bSwReset = FALSE;
-		pView->m_bCycleStop = FALSE;
+		pView->m_bCycleStop = FALSE; pDoc->SetStatus(_T("General"), _T("bCycleStop"), pView->m_bCycleStop);
 
 		// 한판넬 이송 On
 		SetMkOnePnl(TRUE);

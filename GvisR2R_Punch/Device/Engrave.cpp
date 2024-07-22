@@ -1441,47 +1441,21 @@ void CEngrave::GetSignalEngraveAutoSequence(SOCKET_DATA SockData)
 			break;
 		case _SigInx::_EngAutoSeqMkSt:
 			pDoc->BtnStatus.EngAuto.MkSt = (SockData.nData1 > 0) ? TRUE : FALSE;
-//#ifdef USE_MPE	
-//			if (pView && pView->m_pMpe)
-//				pView->m_pMpe->Write(_T("MB440103"), SockData.nData1);// 2D(GUI) 각인 동작 Start신호(PLC On->PC Off)
-//#endif
 			break;
 		case _SigInx::_EngAutoSeqOnMkIng:
 			pDoc->BtnStatus.EngAuto.OnMking = (SockData.nData1 > 0) ? TRUE : FALSE;
-//#ifdef USE_MPE	
-//			if(pView && pView->m_pMpe)
-//				pView->m_pMpe->Write(_T("MB440173"), SockData.nData1);// 2D(GUI) 각인 동작Running신호(PC On->PC Off)
-//#endif
 			break;
 		case _SigInx::_EngAutoSeqMkDone:
 			pDoc->BtnStatus.EngAuto.MkDone = (SockData.nData1 > 0) ? TRUE : FALSE;
-//#ifdef USE_MPE	
-//			if (pView && pView->m_pMpe)
-//				pView->m_pMpe->Write(_T("MB440174"), 1);// 각인부 작업완료.(PC가 On, PLC가 확인 후 Off)
-//				//pView->m_pMpe->Write(_T("MB440174"), SockData.nData1);// 각인부 작업완료.(PC가 On, PLC가 확인 후 Off)
-//#endif
 			break;
 		case _SigInx::_EngAutoSeq2dReadSt:
 			pDoc->BtnStatus.EngAuto.Read2dSt = (SockData.nData1 > 0) ? TRUE : FALSE;
-//#ifdef USE_MPE	
-//			if (pView && pView->m_pMpe)
-//				pView->m_pMpe->Write(_T("MB440105"), SockData.nData1);// 각인부 2D 리더 시작신호(PLC On->PC Off)
-//#endif
 			break;
 		case _SigInx::_EngAutoSeqOnReading2d:
 			pDoc->BtnStatus.EngAuto.OnRead2d = (SockData.nData1 > 0) ? TRUE : FALSE;
-//#ifdef USE_MPE	
-//			if (pView && pView->m_pMpe)
-//				pView->m_pMpe->Write(_T("MB440178"), SockData.nData1);// 각인부 2D 리더 작업중 신호(PC On->PC Off)
-//#endif
 			break;
 		case _SigInx::_EngAutoSeq2dReadDone:
 			pDoc->BtnStatus.EngAuto.Read2dDone = (SockData.nData1 > 0) ? TRUE : FALSE;
-//#ifdef USE_MPE	
-//			if (pView && pView->m_pMpe)
-//				pView->m_pMpe->Write(_T("MB440179"), 1);// 각인부 2D 리더 작업완료 신호.(PC가 On, PLC가 확인 후 Off)
-//				//pView->m_pMpe->Write(_T("MB440179"), SockData.nData1);// 각인부 2D 리더 작업완료 신호.(PC가 On, PLC가 확인 후 Off)
-//#endif
 			break;
 			// Is
 		case _SigInx::_IsEngAutoInit:
@@ -1491,19 +1465,19 @@ void CEngrave::GetSignalEngraveAutoSequence(SOCKET_DATA SockData)
 			pDoc->BtnStatus.EngAuto.IsMkSt = (SockData.nData1 > 0) ? TRUE : FALSE;
 			break;
 		case _SigInx::_IsEngAutoSeqOnMkIng:
-			pDoc->BtnStatus.EngAuto.IsOnMking = (SockData.nData1 > 0) ? TRUE : FALSE;
+			pDoc->BtnStatus.EngAuto.IsOnMking = (SockData.nData1 > 0) ? TRUE : FALSE; pDoc->SetStatus(_T("Engrave"), _T("IsOnMking"), pDoc->BtnStatus.EngAuto.IsOnMking);
 			break;
 		case _SigInx::_IsEngAutoSeqMkDone:
-			pDoc->BtnStatus.EngAuto.IsMkDone = (SockData.nData1 > 0) ? TRUE : FALSE;
+			pDoc->BtnStatus.EngAuto.IsMkDone = (SockData.nData1 > 0) ? TRUE : FALSE; pDoc->SetStatus(_T("Engrave"), _T("IsMkDone"), pDoc->BtnStatus.EngAuto.IsMkDone);
 			break;
 		case _SigInx::_IsEngAutoSeq2dReadSt:
 			pDoc->BtnStatus.EngAuto.IsRead2dSt = (SockData.nData1 > 0) ? TRUE : FALSE;
 			break;
 		case _SigInx::_IsEngAutoSeqOnReading2d:
-			pDoc->BtnStatus.EngAuto.IsOnRead2d = (SockData.nData1 > 0) ? TRUE : FALSE;
+			pDoc->BtnStatus.EngAuto.IsOnRead2d = (SockData.nData1 > 0) ? TRUE : FALSE; pDoc->SetStatus(_T("Engrave"), _T("IsOnRead2d"), pDoc->BtnStatus.EngAuto.IsOnRead2d);
 			break;
 		case _SigInx::_IsEngAutoSeq2dReadDone:
-			pDoc->BtnStatus.EngAuto.IsRead2dDone = (SockData.nData1 > 0) ? TRUE : FALSE;
+			pDoc->BtnStatus.EngAuto.IsRead2dDone = (SockData.nData1 > 0) ? TRUE : FALSE; pDoc->SetStatus(_T("Engrave"), _T("IsRead2dDone"), pDoc->BtnStatus.EngAuto.IsRead2dDone);
 			break;
 		}
 	}
@@ -2089,7 +2063,7 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 			}
 			break;
 		case _ItemInx::_LoadMstInfo:
-			pView->m_bLoadMstInfo = TRUE;
+			pView->m_bLoadMstInfo = TRUE; pDoc->SetStatus(_T("General"), _T("bLoadMstInfo"), pView->m_bLoadMstInfo);
 			break;
 		case _ItemInx::_TotReelLen:
 			m_bGetInfo = TRUE;

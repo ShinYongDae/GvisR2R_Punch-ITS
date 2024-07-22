@@ -301,8 +301,6 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	m_bTHREAD_UPDATAE_YIELD[1] = FALSE;
 	m_nSerialTHREAD_UPDATAE_YIELD[0] = 0;
 	m_nSerialTHREAD_UPDATAE_YIELD[1] = 0;
-	//m_bTHREAD_SHIFT2MK[0] = FALSE;
-	//m_bTHREAD_SHIFT2MK[1] = FALSE;
 	m_bTHREAD_SHIFT2MK = FALSE;
 	m_bTHREAD_UPDATE_REELMAP_UP = FALSE;
 	m_bTHREAD_UPDATE_REELMAP_ALLUP = FALSE;
@@ -311,10 +309,6 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	m_bTHREAD_UPDATE_REELMAP_ITS = FALSE;
 	m_bTHREAD_MAKE_ITS_FILE_UP = FALSE;
 	m_bTHREAD_MAKE_ITS_FILE_DN = FALSE;
-	//m_bTHREAD_UPDATE_REELMAP_INOUTER_UP = FALSE;
-	//m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = FALSE;
-	//m_bTHREAD_UPDATE_REELMAP_INOUTER_DN = FALSE;
-	//m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = FALSE;
 	m_bTHREAD_UPDATE_REELMAP_INNER_UP = FALSE;
 	m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = FALSE;
 	m_bTHREAD_UPDATE_REELMAP_INNER_DN = FALSE;
@@ -407,9 +401,6 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	m_nVsBufLastSerial[0] = 0;
 	m_nVsBufLastSerial[1] = 0;
 	m_bShowModalMyPassword = FALSE;
-
-	// 	m_bFurgeRun = FALSE;
-	// 	m_nFurgeRun = 0;
 
 	m_nRstNum = 0;
 	m_bBufHomeDone = FALSE;
@@ -872,7 +863,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 			break;
 		case 15:
 			m_nStepInitView++;
-			m_bLoadMstInfo = TRUE;
+			m_bLoadMstInfo = TRUE; pDoc->SetStatus(_T("General"), _T("bLoadMstInfo"), m_bLoadMstInfo);
 			DispMsg(_T("H/W를 초기화합니다."), _T("알림"), RGB_GREEN, DELAY_TIME_MSG);
 			InitAct();
 			m_bStopFeeding = TRUE;
@@ -919,13 +910,6 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 			break;
 		case 18:
 			m_nStepInitView++;
-			//m_bLoadMstInfo = TRUE;
-			//if (m_pMotion)
-			//{
-			//	m_pMotion->ResetEStopTime(MS_X0Y0);
-			//	Sleep(30);
-			//	m_pMotion->ResetEStopTime(MS_X1Y1);
-			//}
 			break;
 		case 19:
 			m_nStepInitView++;
@@ -989,11 +973,6 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 
 			m_nStepInitView++;
 			ClrDispMsg();
-			//SetListBuf();
-
-			//pDoc->m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo();
-			//if (bDualTest)
-			//	pDoc->m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo();
 
 			bRtn = LoadPcrFromBuf();
 
@@ -1217,6 +1196,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 			if(m_bMkSt)
 				LoadSerial();
 
+			pDoc->LoadStatus();
 			m_bTIM_INIT_VIEW = FALSE;
 			break;
 		}
@@ -1344,7 +1324,9 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 				SetTimer(TIM_CAMMASTER_UPDATE, 500, NULL);
 			}
 			else
-				m_bLoadMstInfo = FALSE;
+			{
+				m_bLoadMstInfo = FALSE; pDoc->SetStatus(_T("General"), _T("bLoadMstInfo"), m_bLoadMstInfo);
+			}
 		}
 
 		if (m_bSetSig && !m_bSetSigF)
@@ -1420,7 +1402,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 				m_pDlgMenu01->UpdateData();
 		}
 		m_bLoadMstInfoF = FALSE;
-		m_bLoadMstInfo = FALSE;
+		m_bLoadMstInfo = FALSE; pDoc->SetStatus(_T("General"), _T("bLoadMstInfo"), m_bLoadMstInfo);
 	}
 
 
@@ -2933,8 +2915,8 @@ UINT CGvisR2R_PunchView::ThreadProc0(LPVOID lpContext)	// DoMark0(), DoMark1()
 					}
 					else
 					{
-						pThread->m_bDoneMk[0] = TRUE;
-						pThread->m_bTHREAD_MK[0] = FALSE;
+						pThread->m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), pThread->m_bDoneMk[0]);
+						pThread->m_bTHREAD_MK[0] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[0]"), pThread->m_bTHREAD_MK[0]);
 					}
 				}
 				if (pThread->m_bTHREAD_MK[1])
@@ -2948,8 +2930,8 @@ UINT CGvisR2R_PunchView::ThreadProc0(LPVOID lpContext)	// DoMark0(), DoMark1()
 					}
 					else
 					{
-						pThread->m_bDoneMk[1] = TRUE;
-						pThread->m_bTHREAD_MK[1] = FALSE;
+						pThread->m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), pThread->m_bDoneMk[1]);
+						pThread->m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), pThread->m_bTHREAD_MK[1]);
 					}
 				}
 			}
@@ -2961,8 +2943,8 @@ UINT CGvisR2R_PunchView::ThreadProc0(LPVOID lpContext)	// DoMark0(), DoMark1()
 						pThread->DoMark1();
 					else
 					{
-						pThread->m_bDoneMk[1] = TRUE;
-						pThread->m_bTHREAD_MK[1] = FALSE;
+						pThread->m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), pThread->m_bDoneMk[1]);
+						pThread->m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), pThread->m_bTHREAD_MK[1]);
 					}
 				}
 				if (pThread->m_bTHREAD_MK[0])
@@ -2971,8 +2953,8 @@ UINT CGvisR2R_PunchView::ThreadProc0(LPVOID lpContext)	// DoMark0(), DoMark1()
 						pThread->DoMark0();
 					else
 					{
-						pThread->m_bDoneMk[0] = TRUE;
-						pThread->m_bTHREAD_MK[0] = FALSE;
+						pThread->m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), pThread->m_bDoneMk[0]);
+						pThread->m_bTHREAD_MK[0] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[0]"), pThread->m_bTHREAD_MK[0]);
 					}
 				}
 			}
@@ -3117,7 +3099,7 @@ UINT CGvisR2R_PunchView::ThreadProc3(LPVOID lpContext)	// UpdateYield()
 		if (pThread->m_bTHREAD_UPDATAE_YIELD[0]) // Left Punching Yield
 		{
 			pThread->UpdateYield(pThread->m_nSerialTHREAD_UPDATAE_YIELD[0]);
-			pThread->m_bTHREAD_UPDATAE_YIELD[0] = FALSE;
+			pThread->m_bTHREAD_UPDATAE_YIELD[0] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[0]"), pThread->m_bTHREAD_UPDATAE_YIELD[0]);
 			Sleep(0);
 		}
 		else if(pThread->m_bTHREAD_UPDATAE_YIELD[1] && !pThread->m_bTHREAD_UPDATE_YIELD_UP) // Right Punching Yield
@@ -3127,13 +3109,13 @@ UINT CGvisR2R_PunchView::ThreadProc3(LPVOID lpContext)	// UpdateYield()
 				if (!pThread->m_bTHREAD_UPDATE_YIELD_DN && !pThread->m_bTHREAD_UPDATE_YIELD_ALLUP && !pThread->m_bTHREAD_UPDATE_YIELD_ALLDN)
 				{
 					pThread->UpdateYield(pThread->m_nSerialTHREAD_UPDATAE_YIELD[1]);
-					pThread->m_bTHREAD_UPDATAE_YIELD[1] = FALSE;
+					pThread->m_bTHREAD_UPDATAE_YIELD[1] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[1]"), pThread->m_bTHREAD_UPDATAE_YIELD[1]);
 					Sleep(0);
 				}
 			}
 			else
 			{
-				pThread->m_bTHREAD_UPDATAE_YIELD[1] = FALSE;
+				pThread->m_bTHREAD_UPDATAE_YIELD[1] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[1]"), pThread->m_bTHREAD_UPDATAE_YIELD[1]);
 				pThread->UpdateYield(pThread->m_nSerialTHREAD_UPDATAE_YIELD[1]);
 				Sleep(0);
 			}
@@ -3146,7 +3128,6 @@ UINT CGvisR2R_PunchView::ThreadProc3(LPVOID lpContext)	// UpdateYield()
 
 	return 0;
 }
-
 
 UINT CGvisR2R_PunchView::ThreadProc4(LPVOID lpContext)	// RunShift2Mk()
 {
@@ -3168,7 +3149,7 @@ UINT CGvisR2R_PunchView::ThreadProc4(LPVOID lpContext)	// RunShift2Mk()
 			if (!pThread->m_bTHREAD_UPDATAE_YIELD[0] && !pThread->m_bTHREAD_UPDATAE_YIELD[1])
 			{
 				pThread->RunShift2Mk();
-				pThread->m_bTHREAD_SHIFT2MK = FALSE;
+				pThread->m_bTHREAD_SHIFT2MK = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_SHIFT2MK"), pThread->m_bTHREAD_SHIFT2MK);
 				Sleep(0);
 			}
 			else
@@ -3183,7 +3164,6 @@ UINT CGvisR2R_PunchView::ThreadProc4(LPVOID lpContext)	// RunShift2Mk()
 
 	return 0;
 }
-
 
 UINT CGvisR2R_PunchView::ThreadProc5(LPVOID lpContext)	// GetCurrentInfoSignal()
 {
@@ -4020,10 +4000,11 @@ BOOL CGvisR2R_PunchView::ChkBufUp(int* pSerial, int &nTot)
 	BOOL bExist2 = cFile2.FindFile(pDoc->WorkingInfo.System.sPathVsDummyBufUp + _T("*.pcr"));
 	if (!bExist && !bExist2)
 	{
-		pDoc->m_bBufEmpty[0] = TRUE;
+		pDoc->m_bBufEmpty[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bBufEmpty[0]"), pDoc->m_bBufEmpty[0]);
 		if (!pDoc->m_bBufEmptyF[0])
-			pDoc->m_bBufEmptyF[0] = TRUE;		// 최초 한번 버퍼가 비어있으면(초기화를 하고 난 이후) TRUE.
-
+		{
+			pDoc->m_bBufEmptyF[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bBufEmptyF[0]"), pDoc->m_bBufEmptyF[0]);		// 최초 한번 버퍼가 비어있으면(초기화를 하고 난 이후) TRUE.
+		}
 		return FALSE; // pcr파일이 존재하지 않음.
 	}
 
@@ -4051,10 +4032,12 @@ BOOL CGvisR2R_PunchView::ChkBufUp(int* pSerial, int &nTot)
 	BOOL bRtn = SortingOutUp(pSerial, nTot);
 
 	if (nTot == 0)
-		pDoc->m_bBufEmpty[0] = TRUE;
+	{
+		pDoc->m_bBufEmpty[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bBufEmpty[0]"), pDoc->m_bBufEmpty[0]);
+	}
 	else
 	{
-		pDoc->m_bBufEmpty[0] = FALSE;
+		pDoc->m_bBufEmpty[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bBufEmpty[0]"), pDoc->m_bBufEmpty[0]);
 		m_bIsBuf[0] = TRUE;
 	}
 
@@ -4068,9 +4051,11 @@ BOOL CGvisR2R_PunchView::ChkBufDn(int* pSerial, int &nTot)
 	BOOL bExist2 = cFile2.FindFile(pDoc->WorkingInfo.System.sPathVsDummyBufDn + _T("*.pcr"));
 	if (!bExist && !bExist2)
 	{
-		pDoc->m_bBufEmpty[1] = TRUE;
+		pDoc->m_bBufEmpty[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bBufEmpty[1]"), pDoc->m_bBufEmpty[1]);
 		if (!pDoc->m_bBufEmptyF[1])
-			pDoc->m_bBufEmptyF[1] = TRUE;
+		{
+			pDoc->m_bBufEmptyF[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bBufEmptyF[1]"), pDoc->m_bBufEmptyF[1]);
+		}
 		return FALSE; // pcr파일이 존재하지 않음.
 	}
 
@@ -4107,15 +4092,16 @@ BOOL CGvisR2R_PunchView::ChkBufDn(int* pSerial, int &nTot)
 	BOOL bRtn = SortingOutDn(pSerial, nTot);
 
 	if (nTot == 0)
-		pDoc->m_bBufEmpty[1] = TRUE;
+	{
+		pDoc->m_bBufEmpty[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bBufEmpty[1]"), pDoc->m_bBufEmpty[1]);
+	}
 	else
 	{
-		pDoc->m_bBufEmpty[1] = FALSE;
+		pDoc->m_bBufEmpty[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bBufEmpty[1]"), pDoc->m_bBufEmpty[1]);
 		m_bIsBuf[1] = TRUE;
 	}
 
 	return (bRtn);
-	//return TRUE;
 }
 
 void CGvisR2R_PunchView::SwapDn(__int64 *num1, __int64 *num2) 	// 위치 바꾸는 함수
@@ -5293,7 +5279,7 @@ void CGvisR2R_PunchView::ChkBufUp()
 
 			if (m_nBufTot[0] == 1)
 			{
-				pDoc->m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo();
+				pDoc->m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo(); pDoc->SetStatusInt(_T("General"), _T("nAoiCamInfoStrPcs[0]"), pDoc->m_nAoiCamInfoStrPcs[0]);
 			}
 		}
 	}
@@ -5338,7 +5324,7 @@ void CGvisR2R_PunchView::ChkBufDn()
 
 			if (m_nBufTot[1] == 1)
 			{
-				pDoc->m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo();
+				pDoc->m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo(); pDoc->SetStatusInt(_T("General"), _T("nAoiCamInfoStrPcs[1]"), pDoc->m_nAoiCamInfoStrPcs[1]);
 			}
 		}
 	}
@@ -5488,7 +5474,7 @@ void CGvisR2R_PunchView::DoIO()
 
 	if (m_bCycleStop)
 	{
-		m_bCycleStop = FALSE;
+		m_bCycleStop = FALSE; pDoc->SetStatus(_T("General"), _T("bCycleStop"), m_bCycleStop);
 		Buzzer(TRUE);
 		TowerLamp(RGB_YELLOW, TRUE);
 		//Stop();
@@ -9071,7 +9057,6 @@ void CGvisR2R_PunchView::DispMain(CString sMsg, COLORREF rgb)
 
 	if (sMsg == _T("정 지"))
 	{
-		//m_bStopF_Verify = TRUE;
 		pDoc->SetMkMenu03(_T("Main"), _T("Stop"), TRUE);
 		pDoc->SetMkMenu03(_T("Main"), _T("Run"), FALSE);
 	}
@@ -9348,213 +9333,6 @@ void CGvisR2R_PunchView::CompletedMk(int nCam) // 0: Only Cam0, 1: Only Cam1, 2:
 
 	pDoc->SetCompletedSerial(nSerial);
 }
-
-//void CGvisR2R_PunchView::Shift2Mk()
-//{
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-//	int nSerial = m_nBufUpSerial[0];
-//
-//	if (bDualTest)
-//	{
-//		if (m_bLastProc && m_nBufDnSerial[0] == m_nLotEndSerial)
-//		{
-//			nSerial = m_nBufDnSerial[0];
-//			if (nSerial > 0 && (nSerial % 2))
-//			{
-//				//pDoc->UpdateYield(nSerial);
-//				//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//				//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//				pDoc->Shift2Mk(nSerial);	// Cam0
-//				if (m_pDlgFrameHigh)
-//					m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//				pDoc->UpdateYieldOnRmap();
-//			}
-//		}
-//		else
-//		{
-//			nSerial = m_nBufDnSerial[0];
-//			if (!m_bCont)
-//			{
-//				if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//
-//					//pDoc->UpdateYield(nSerial + 1);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[1] = nSerial + 1;
-//					//m_bTHREAD_UPDATAE_YIELD[1] = TRUE;
-//
-//					if (m_nBufDnSerial[1] > 0)
-//					{
-//					pDoc->Shift2Mk(m_nBufDnSerial[1]);	// Cam1
-//					pDoc->UpdateYieldOnRmap();
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(m_nBufDnSerial[1]);
-//				}
-//				else
-//				{
-//						if (m_pDlgFrameHigh)
-//							m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					}
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//			else
-//			{
-//				if (nSerial > 0)
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//
-//					//pDoc->UpdateYield(nSerial + 1);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[1] = nSerial + 1;
-//					//m_bTHREAD_UPDATAE_YIELD[1] = TRUE;
-//
-//					if (m_nBufDnSerial[1] > 0)
-//					{
-//					pDoc->Shift2Mk(m_nBufDnSerial[1]);	// Cam1
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(m_nBufDnSerial[1]);
-//				}
-//				else
-//				{
-//						if (m_pDlgFrameHigh)
-//							m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					}
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//		}
-//	}
-//	else
-//	{
-//		if (m_bLastProc && m_nBufUpSerial[0] == m_nLotEndSerial)
-//		{
-//			nSerial = m_nBufUpSerial[0];
-//			if (!m_bCont)
-//			{
-//				if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//			else
-//			{
-//				if (nSerial > 0)
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//		}
-//		else
-//		{
-//			nSerial = m_nBufUpSerial[0];
-//			if (!m_bCont)
-//			{
-//				if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//
-//					//pDoc->UpdateYield(nSerial + 1);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[1] = nSerial + 1;
-//					//m_bTHREAD_UPDATAE_YIELD[1] = TRUE;
-//
-//					if (m_nBufUpSerial[1] > 0)
-//					{
-//					pDoc->Shift2Mk(m_nBufUpSerial[1]);	// Cam1
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(m_nBufUpSerial[1]);
-//				}
-//				else
-//				{
-//						if (m_pDlgFrameHigh)
-//							m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					}
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//			else
-//			{
-//				if (nSerial > 0)
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//
-//					//pDoc->UpdateYield(nSerial + 1);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[1] = nSerial + 1;
-//					//m_bTHREAD_UPDATAE_YIELD[1] = TRUE;
-//
-//					if (m_nBufUpSerial[1] > 0)
-//					{
-//					pDoc->Shift2Mk(m_nBufUpSerial[1]);	// Cam1
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(m_nBufUpSerial[1]);
-//				}
-//				else
-//				{
-//						if (m_pDlgFrameHigh)
-//							m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					}
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//		}
-//	}
-//
-//	m_bShift2Mk = FALSE;
-//}
 
 void CGvisR2R_PunchView::SetTestSts(int nStep)
 {
@@ -10045,7 +9823,7 @@ void CGvisR2R_PunchView::Stop()
 	{
 		if (IsAuto() && IsRun())
 		{
-			m_bStopF_Verify = TRUE;
+			m_bStopF_Verify = TRUE; pDoc->SetStatus(_T("General"), _T("bStopF_Verify"), m_bStopF_Verify);
 		}
 
 		m_pDlgMenu03->SwStop();
@@ -10443,11 +10221,10 @@ void CGvisR2R_PunchView::SetReMk(BOOL bMk0, BOOL bMk1)
 	{
 		if (!m_bTHREAD_MK[0])
 		{
-			m_nStepMk[0] = 0;
-			m_nMkPcs[0] = 0;
-			m_bDoneMk[0] = FALSE;
-			//m_bReMark[0] = FALSE;
-			m_bTHREAD_MK[0] = TRUE;
+			m_nStepMk[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
+			m_nMkPcs[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+			m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+			m_bTHREAD_MK[0] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[0]"), m_bTHREAD_MK[0]);
 
 			nSerial = m_nBufUpSerial[0]; // Cam0
 
@@ -10483,11 +10260,10 @@ void CGvisR2R_PunchView::SetReMk(BOOL bMk0, BOOL bMk1)
 	{
 		if (!m_bTHREAD_MK[1])
 		{
-			m_nStepMk[1] = 0;
-			m_nMkPcs[1] = 0;
-			m_bDoneMk[1] = FALSE;
-			//m_bReMark[1] = FALSE;
-			m_bTHREAD_MK[1] = TRUE;
+			m_nStepMk[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
+			m_nMkPcs[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+			m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+			m_bTHREAD_MK[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
 
 			nSerial = m_nBufUpSerial[1]; // Cam1
 
@@ -10524,6 +10300,7 @@ BOOL CGvisR2R_PunchView::SetMk(BOOL bRun)	// Marking Start
 {
 	CfPoint ptPnt;
 	int nSerial, nTot, a, b;
+	CString sItem;
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
@@ -10533,6 +10310,8 @@ BOOL CGvisR2R_PunchView::SetMk(BOOL bRun)	// Marking Start
 		{
 			m_nMkStrip[a][b] = 0;			// [nCam][nStrip]:[2][4] - [좌/우][] : 스트립에 펀칭한 피스 수 count
 			m_bRejectDone[a][b] = FALSE;	// [nCam][nStrip]:[2][4] - [좌/우][] : 스트립에 펀칭한 피스 수 count가 스트립 폐기 설정수 완료 여부 
+			sItem.Format(_T("bRejectDone[%d][%d]"), a, b);
+			pDoc->SetStatus(_T("General"), sItem, m_bRejectDone[a][b]);
 		}
 	}
 
@@ -10542,15 +10321,14 @@ BOOL CGvisR2R_PunchView::SetMk(BOOL bRun)	// Marking Start
 		{
 			if (!m_bTHREAD_MK[0])
 			{
-				m_nStepMk[0] = 0;
-				m_nMkPcs[0] = 0;
-				m_bDoneMk[0] = FALSE;
-				//m_bReMark[0] = FALSE;
-				m_bTHREAD_MK[0] = TRUE;
+				m_nStepMk[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
+				m_nMkPcs[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+				m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+				m_bTHREAD_MK[0] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[0]"), m_bTHREAD_MK[0]);
 
 				nSerial = m_nBufUpSerial[0]; // Cam0
 
-				m_nTotMk[0] = nTot = GetTotDefPcs0(nSerial);
+				m_nTotMk[0] = nTot = GetTotDefPcs0(nSerial); pDoc->SetStatusInt(_T("General"), _T("nTotMk[0]"), m_nTotMk[0]);
 				m_nCurMk[0] = 0;
 				if (nTot>0)
 				{
@@ -10583,15 +10361,14 @@ BOOL CGvisR2R_PunchView::SetMk(BOOL bRun)	// Marking Start
 		{
 			if (!m_bTHREAD_MK[1])
 			{
-				m_nStepMk[1] = 0;
-				m_nMkPcs[1] = 0;
-				m_bDoneMk[1] = FALSE;
-				//m_bReMark[1] = FALSE;
-				m_bTHREAD_MK[1] = TRUE;
+				m_nStepMk[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
+				m_nMkPcs[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+				m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+				m_bTHREAD_MK[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
 
 				nSerial = m_nBufUpSerial[1]; // Cam1
 
-				m_nTotMk[1] = nTot = GetTotDefPcs1(nSerial);
+				m_nTotMk[1] = nTot = GetTotDefPcs1(nSerial); pDoc->SetStatusInt(_T("General"), _T("nTotMk[1]"), m_nTotMk[1]);
 				m_nCurMk[1] = 0;
 				if (nTot>0)
 				{
@@ -10622,19 +10399,11 @@ BOOL CGvisR2R_PunchView::SetMk(BOOL bRun)	// Marking Start
 	}
 	else
 	{
-		m_bTHREAD_MK[0] = FALSE;
-		m_bTHREAD_MK[1] = FALSE;
+		m_bTHREAD_MK[0] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[0]"), m_bTHREAD_MK[0]);
+		m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
 	}
 	return TRUE;
 }
-
-//BOOL CGvisR2R_PunchView::IsMk()
-//{
-//	if (m_bTHREAD_MK[0] && m_bTHREAD_MK[1] && m_nStepMk[0] != MK_END && m_nStepMk[1] != MK_END)
-//		return TRUE;
-//
-//	return FALSE;
-//}
 
 BOOL CGvisR2R_PunchView::IsReMk()
 {
@@ -10643,20 +10412,20 @@ BOOL CGvisR2R_PunchView::IsReMk()
 
 	if (m_bReMark[0] && m_bDoneMk[1])
 	{
-		m_bReMark[0] = FALSE;
+		m_bReMark[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[0]"), m_bReMark[0]);
 		SetReMk(TRUE, FALSE);
 		return TRUE;
 	}
 	else if (m_bDoneMk[0] && m_bReMark[1])
 	{
-		m_bReMark[1] = FALSE;
+		m_bReMark[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[1]"), m_bReMark[1]);
 		SetReMk(FALSE, TRUE);
 		return TRUE;
 	}
 	else if (m_bReMark[0] && m_bReMark[1])
 	{
-		m_bReMark[0] = FALSE;
-		m_bReMark[1] = FALSE;
+		m_bReMark[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[0]"), m_bReMark[0]);
+		m_bReMark[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[1]"), m_bReMark[1]);
 		SetReMk(TRUE, TRUE);
 		return TRUE;
 	}
@@ -10841,8 +10610,10 @@ BOOL CGvisR2R_PunchView::IsBuffer(int nNum)
 				if (pDoc->m_ListBuf[0].GetLast() == nLastShot && pDoc->m_ListBuf[1].GetLast() == nLastShot)
 				{
 					nNum = 0;
-					if(!m_bLotEnd)
-						m_bLotEndF = TRUE;
+					if (!m_bLotEnd)
+					{
+						m_bLotEndF = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEndF"), m_bLotEndF);
+					}
 				}
 				else
 					nNum = 1;
@@ -10853,7 +10624,7 @@ BOOL CGvisR2R_PunchView::IsBuffer(int nNum)
 				{
 					nNum = 0;
 					if (!m_bLotEnd)
-						m_bLotEndF = TRUE;
+						m_bLotEndF = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEndF"), m_bLotEndF);
 				}
 				else
 					nNum = 1;
@@ -11030,8 +10801,8 @@ BOOL CGvisR2R_PunchView::IsShare()
 		{
 			if (IsShareUp() && IsShareDn())
 			{
-				m_bWaitPcr[0] = FALSE;
-				m_bWaitPcr[1] = FALSE;
+				m_bWaitPcr[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[0]"), m_bWaitPcr[0]);
+				m_bWaitPcr[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[1]"), m_bWaitPcr[1]);
 				return TRUE;
 			}
 		}
@@ -11039,7 +10810,7 @@ BOOL CGvisR2R_PunchView::IsShare()
 		{
 			if (IsShareUp())
 			{
-				m_bWaitPcr[0] = FALSE;
+				m_bWaitPcr[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[0]"), m_bWaitPcr[0]);
 				return TRUE;
 			}
 		}
@@ -11047,7 +10818,7 @@ BOOL CGvisR2R_PunchView::IsShare()
 		{
 			if (IsShareDn())
 			{
-				m_bWaitPcr[1] = FALSE;
+				m_bWaitPcr[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[1]"), m_bWaitPcr[1]);
 				return TRUE;
 			}
 		}
@@ -11063,7 +10834,7 @@ BOOL CGvisR2R_PunchView::IsShare()
 		{
 			if (IsShareUp())
 			{
-				m_bWaitPcr[0] = FALSE;
+				m_bWaitPcr[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[0]"), m_bWaitPcr[0]);
 				return TRUE;
 			}
 		}
@@ -11295,6 +11066,8 @@ BOOL CGvisR2R_PunchView::SetSerialMkInfo(int nSerial, BOOL bDumy)
 
 void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 {
+	CString sItem;
+
 	if (!pDoc->WorkingInfo.LastJob.bSampleTest)
 	{
 		::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
@@ -11326,45 +11099,45 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 	m_sFixMsg[0] = _T("");
 	m_sFixMsg[1] = _T("");
 
-	m_bReadyDone = FALSE;
+	m_bReadyDone = FALSE; pDoc->SetStatus(_T("General"), _T("bReadyDone"), pView->m_bReadyDone);
 	m_bChkLastProcVs = FALSE;
 	m_nDummy[0] = 0;
 	m_nDummy[1] = 0;
 	m_nAoiLastSerial[0] = 0;
 	m_nAoiLastSerial[1] = 0;
-	m_nStepAuto = 0;
-	m_nPrevStepAuto = 0;
-	m_nPrevMkStAuto = 0;
+	m_nStepAuto = 0; pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
+	m_nPrevStepAuto = 0; pDoc->SetStatusInt(_T("General"), _T("nPrevStepAuto"), m_nPrevStepAuto);
+	m_nPrevMkStAuto = 0; pDoc->SetStatusInt(_T("General"), _T("nPrevMkStAuto"), m_nPrevMkStAuto);
 	m_bAoiLdRun = TRUE;
 	m_bAoiLdRunF = FALSE;
 	m_bNewModel = FALSE;
-	m_nLotEndSerial = 0;
+	m_nLotEndSerial = 0; pDoc->SetStatusInt(_T("General"), _T("nLotEndSerial"), m_nLotEndSerial);
 	if(m_pDlgMenu01)
 		m_pDlgMenu01->DispLotEndSerial(0);
-	m_bCam = FALSE;
+	m_bCam = FALSE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 	m_bReview = FALSE;
 	m_bChkBufIdx[0] = TRUE;
 	m_bChkBufIdx[0] = TRUE;
 
 	m_nErrCnt = 0;
 
-	m_nStepMk[0] = 0;
-	m_nStepMk[1] = 0;
-	m_nStepMk[2] = 0;
-	m_nStepMk[3] = 0;
-	m_bTHREAD_MK[0] = FALSE;
-	m_bTHREAD_MK[1] = FALSE;
-	m_bTHREAD_MK[2] = FALSE;
-	m_bTHREAD_MK[3] = FALSE;
-	m_nMkPcs[0] = 0;
-	m_nMkPcs[1] = 0;
-	m_nMkPcs[2] = 0;
-	m_nMkPcs[3] = 0;
+	m_nStepMk[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
+	m_nStepMk[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
+	m_nStepMk[2] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
+	m_nStepMk[3] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
+	m_bTHREAD_MK[0] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[0]"), m_bTHREAD_MK[0]);
+	m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
+	m_bTHREAD_MK[2] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[2]"), m_bTHREAD_MK[2]);
+	m_bTHREAD_MK[3] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[3]"), m_bTHREAD_MK[3]);
+	m_nMkPcs[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+	m_nMkPcs[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+	m_nMkPcs[2] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[2]"), m_nMkPcs[2]);
+	m_nMkPcs[3] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[3]"), m_nMkPcs[3]);
 
 	m_bMkTmpStop = FALSE;
 
-	m_bWaitPcr[0] = FALSE;
-	m_bWaitPcr[1] = FALSE;
+	m_bWaitPcr[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[0]"), m_bWaitPcr[0]);
+	m_bWaitPcr[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[1]"), m_bWaitPcr[1]);
 
 
 	m_nShareUpS = 0;
@@ -11377,12 +11150,12 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 	m_nShareDnSerial[1] = 0;
 	m_nShareDnCnt = 0;
 
-	m_nBufUpSerial[0] = 0;
-	m_nBufUpSerial[1] = 0;
+	m_nBufUpSerial[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[0]"), m_nBufUpSerial[0]);
+	m_nBufUpSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
 	m_nBufUpCnt = 0;
 
-	m_nBufDnSerial[0] = 0;
-	m_nBufDnSerial[1] = 0;
+	m_nBufDnSerial[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[0]"), m_nBufDnSerial[0]);
+	m_nBufDnSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[1]"), m_nBufDnSerial[1]);
 	m_nBufDnCnt = 0;
 
 	for (nCam = 0; nCam < 2; nCam++)
@@ -11400,54 +11173,53 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 	m_pDlgMenu02->m_dAoiDnFdOffsetX = 0.0;
 	m_pDlgMenu02->m_dAoiDnFdOffsetY = 0.0;
 
-	m_bReAlign[0][0] = FALSE;	// [nCam][nPos]
-	m_bReAlign[0][1] = FALSE;	// [nCam][nPos]
-	m_bReAlign[0][2] = FALSE;	// [nCam][nPos]
-	m_bReAlign[0][3] = FALSE;	// [nCam][nPos]
-	m_bReAlign[1][0] = FALSE;	// [nCam][nPos]
-	m_bReAlign[1][1] = FALSE;	// [nCam][nPos]
-	m_bReAlign[1][2] = FALSE;	// [nCam][nPos]
-	m_bReAlign[1][3] = FALSE;	// [nCam][nPos]
+	m_bReAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][0]"), m_bReAlign[0][0]);	// [nCam][nPos]
+	m_bReAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][1]"), m_bReAlign[0][1]);	// [nCam][nPos]
+	m_bReAlign[0][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][2]"), m_bReAlign[0][2]);	// [nCam][nPos]
+	m_bReAlign[0][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][3]"), m_bReAlign[0][3]);	// [nCam][nPos]
+	m_bReAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][0]"), m_bReAlign[1][0]);	// [nCam][nPos]
+	m_bReAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][1]"), m_bReAlign[1][1]);	// [nCam][nPos]
+	m_bReAlign[1][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][2]"), m_bReAlign[1][2]);	// [nCam][nPos]
+	m_bReAlign[1][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][3]"), m_bReAlign[1][3]);	// [nCam][nPos]
 
-	m_bSkipAlign[0][0] = FALSE;	// [nCam][nPos]
-	m_bSkipAlign[0][1] = FALSE;	// [nCam][nPos]
-	m_bSkipAlign[0][2] = FALSE;	// [nCam][nPos]
-	m_bSkipAlign[0][3] = FALSE;	// [nCam][nPos]
-	m_bSkipAlign[1][0] = FALSE;	// [nCam][nPos]
-	m_bSkipAlign[1][1] = FALSE;	// [nCam][nPos]
-	m_bSkipAlign[1][2] = FALSE;	// [nCam][nPos]
-	m_bSkipAlign[1][3] = FALSE;	// [nCam][nPos]
+	m_bSkipAlign[0][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]); // [nCam][nPos]
+	m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);	// [nCam][nPos]
+	m_bSkipAlign[0][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][2]"), m_bSkipAlign[0][2]);	// [nCam][nPos]
+	m_bSkipAlign[0][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][3]"), m_bSkipAlign[0][3]);	// [nCam][nPos]
+	m_bSkipAlign[1][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);	// [nCam][nPos]
+	m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);	// [nCam][nPos]
+	m_bSkipAlign[1][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);	// [nCam][nPos]
+	m_bSkipAlign[1][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);	// [nCam][nPos]
 
-	m_bFailAlign[0][0] = FALSE;	// [nCam][nPos]
-	m_bFailAlign[0][1] = FALSE;	// [nCam][nPos]
-	m_bFailAlign[0][2] = FALSE;	// [nCam][nPos]
-	m_bFailAlign[0][3] = FALSE;	// [nCam][nPos]
-	m_bFailAlign[1][0] = FALSE;	// [nCam][nPos]
-	m_bFailAlign[1][1] = FALSE;	// [nCam][nPos]
-	m_bFailAlign[1][2] = FALSE;	// [nCam][nPos]
-	m_bFailAlign[1][3] = FALSE;	// [nCam][nPos]
+	m_bFailAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][0]"), m_bFailAlign[0][0]);	// [nCam][nPos]
+	m_bFailAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]);	// [nCam][nPos]
+	m_bFailAlign[0][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][2]"), m_bFailAlign[0][2]);	// [nCam][nPos]
+	m_bFailAlign[0][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][3]"), m_bFailAlign[0][3]);	// [nCam][nPos]
+	m_bFailAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][0]"), m_bFailAlign[1][0]);	// [nCam][nPos]
+	m_bFailAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]);	// [nCam][nPos]
+	m_bFailAlign[1][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][2]"), m_bFailAlign[1][2]);	// [nCam][nPos]
+	m_bFailAlign[1][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][3]"), m_bFailAlign[1][3]);	// [nCam][nPos]
 
-	m_bDoMk[0] = TRUE;			// [nCam]
-	m_bDoMk[1] = TRUE;			// [nCam]
-	m_bDoneMk[0] = FALSE;		// [nCam]
-	m_bDoneMk[1] = FALSE;		// [nCam]
-	m_bReMark[0] = FALSE;		// [nCam]
-	m_bReMark[1] = FALSE;		// [nCam]
+	m_bDoMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);			// [nCam]
+	m_bDoMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);			// [nCam]
+	m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);		// [nCam]
+	m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);		// [nCam]
+	m_bReMark[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[0]"), m_bReMark[0]);		// [nCam]
+	m_bReMark[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[1]"), m_bReMark[1]);		// [nCam]
 
-	m_nTotMk[0] = 0;
+	m_nTotMk[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nTotMk[0]"), m_nTotMk[0]);
 	m_nCurMk[0] = 0;
-	m_nTotMk[1] = 0;
+	m_nTotMk[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nTotMk[1]"), m_nTotMk[1]);
 	m_nCurMk[1] = 0;
-	m_nPrevTotMk[0] = 0;
-	m_nPrevCurMk[0] = 0;
-	m_nPrevTotMk[1] = 0;
-	m_nPrevCurMk[1] = 0;
+	m_nPrevTotMk[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nPrevTotMk[0]"), m_nPrevTotMk[0]);
+	m_nPrevCurMk[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nPrevCurMk[0]"), m_nPrevCurMk[0]);
+	m_nPrevTotMk[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nPrevTotMk[1]"), m_nPrevTotMk[1]);
+	m_nPrevCurMk[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nPrevCurMk[1]"), m_nPrevCurMk[1]);	
 
-
-	m_bMkSt = FALSE;
+	m_bMkSt = FALSE; pDoc->SetStatus(_T("General"), _T("bMkSt"), m_bMkSt);
 	::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("0"), PATH_WORKING_INFO);
 	m_bMkStSw = FALSE;
-	m_nMkStAuto = 0;
+	m_nMkStAuto = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 
 	m_bEngSt = FALSE;
 	m_bEngStSw = FALSE;
@@ -11457,17 +11229,21 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 	m_bEng2dStSw = FALSE;
 	m_nEng2dStAuto = 0;
 
-	m_bLotEnd = FALSE;
-	m_bLotEndF = FALSE;
-	m_nLotEndAuto = 0;
+	m_bLotEnd = FALSE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+	m_bLotEndF = FALSE; pDoc->SetStatus(_T("General"), _T("bLotEndF"), m_bLotEndF);
+	m_nLotEndAuto = 0; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 
-	m_bLastProc = FALSE;
-	if(MODE_INNER != pDoc->GetTestMode())
-		m_bLastProcFromUp = TRUE;
+	m_bLastProc = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
+	if (MODE_INNER != pDoc->GetTestMode())
+	{
+		m_bLastProcFromUp = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+	}
 	else
-		m_bLastProcFromEng = TRUE;
+	{
+		m_bLastProcFromEng = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+	}
 
-	m_nLastProcAuto = 0;
+	m_nLastProcAuto = 0; pDoc->SetStatusInt(_T("General"), _T("nLastProcAuto"), m_nLastProcAuto);
 
 	pDoc->m_sAlmMsg = _T("");
 	pDoc->m_sIsAlmMsg = _T("");
@@ -11479,10 +11255,10 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 
 	m_nStop = 0;
 
-	m_nStepTHREAD_DISP_DEF = 0;
-	m_bTHREAD_DISP_DEF = FALSE;				// CopyDefImg Stop
-	m_nStepTHREAD_DISP_DEF_INNER = 0;
-	m_bTHREAD_DISP_DEF_INNER = FALSE;		// DispDefImg Stop
+	m_nStepTHREAD_DISP_DEF = 0; pDoc->SetStatusInt(_T("Thread"), _T("nStepTHREAD_DISP_DEF"), m_nStepTHREAD_DISP_DEF);
+	m_bTHREAD_DISP_DEF = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_DISP_DEF"), m_bTHREAD_DISP_DEF);	// CopyDefImg Stop
+	m_nStepTHREAD_DISP_DEF_INNER = 0; pDoc->SetStatusInt(_T("Thread"), _T("nStepTHREAD_DISP_DEF_INNER"), m_nStepTHREAD_DISP_DEF_INNER);
+	m_bTHREAD_DISP_DEF_INNER = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_DISP_DEF_INNER"), m_bTHREAD_DISP_DEF_INNER); // DispDefImg Stop
 
 	pDoc->SetMkMenu01(_T("Signal"), _T("DispDefImg"), _T("0"));
 
@@ -11493,6 +11269,8 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 		{
 			m_nMkStrip[a][b] = 0;
 			m_bRejectDone[a][b] = FALSE;
+			sItem.Format(_T("bRejectDone[%d][%d]"), a, b);
+			pDoc->SetStatus(_T("General"), sItem, m_bRejectDone[a][b]);
 		}
 	}
 
@@ -11520,52 +11298,52 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 	pView->m_nDebugStep = 18; pView->DispThreadTick();
 	if (m_pDlgMenu01)
 	{
-		m_pDlgMenu01->m_bLastProc = FALSE;
+		m_pDlgMenu01->m_bLastProc = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_pDlgMenu01->m_bLastProc);
 
 		if (MODE_INNER != pDoc->GetTestMode())
-			m_pDlgMenu01->m_bLastProcFromUp = TRUE;
+		{
+			m_pDlgMenu01->m_bLastProcFromUp = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_pDlgMenu01->m_bLastProcFromUp);
+		}
 		else
-			m_pDlgMenu01->m_bLastProcFromEng = TRUE;
+		{
+			m_pDlgMenu01->m_bLastProcFromEng = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+		}
 
 		m_pDlgMenu01->ResetSerial();
 		m_pDlgMenu01->ResetLastProc();
 	}
 
 
-	m_bTHREAD_UPDATAE_YIELD[0] = FALSE;
-	m_bTHREAD_UPDATAE_YIELD[1] = FALSE;
+	m_bTHREAD_UPDATAE_YIELD[0] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[0]"), m_bTHREAD_UPDATAE_YIELD[0]);
+	m_bTHREAD_UPDATAE_YIELD[1] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[1]"), m_bTHREAD_UPDATAE_YIELD[1]);
 	m_nSerialTHREAD_UPDATAE_YIELD[0] = 0;
 	m_nSerialTHREAD_UPDATAE_YIELD[1] = 0;
 
-	m_bTHREAD_UPDATE_REELMAP_UP = FALSE;
-	m_bTHREAD_UPDATE_REELMAP_ALLUP = FALSE;
-	m_bTHREAD_UPDATE_REELMAP_DN = FALSE;
-	m_bTHREAD_UPDATE_REELMAP_ALLDN = FALSE;
-	m_bTHREAD_UPDATE_REELMAP_ITS = FALSE;
-	m_bTHREAD_MAKE_ITS_FILE_UP = FALSE;
-	m_bTHREAD_MAKE_ITS_FILE_DN = FALSE;
-	//m_bTHREAD_UPDATE_REELMAP_INOUTER_UP = FALSE;
-	//m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = FALSE;
-	//m_bTHREAD_UPDATE_REELMAP_INOUTER_DN = FALSE;
-	//m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = FALSE;
-	m_bTHREAD_UPDATE_REELMAP_INNER_UP = FALSE;
-	m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = FALSE;
-	m_bTHREAD_UPDATE_REELMAP_INNER_DN = FALSE;
-	m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = FALSE;
+	m_bTHREAD_UPDATE_REELMAP_UP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_UP"), m_bTHREAD_UPDATE_REELMAP_UP);
+	m_bTHREAD_UPDATE_REELMAP_ALLUP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_ALLUP"), m_bTHREAD_UPDATE_REELMAP_ALLUP);
+	m_bTHREAD_UPDATE_REELMAP_DN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_DN"), m_bTHREAD_UPDATE_REELMAP_DN);
+	m_bTHREAD_UPDATE_REELMAP_ALLDN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_ALLDN"), m_bTHREAD_UPDATE_REELMAP_ALLDN);
+	m_bTHREAD_UPDATE_REELMAP_ITS = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_ITS"), m_bTHREAD_UPDATE_REELMAP_ITS);
+	m_bTHREAD_MAKE_ITS_FILE_UP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MAKE_ITS_FILE_UP"), m_bTHREAD_MAKE_ITS_FILE_UP);
+	m_bTHREAD_MAKE_ITS_FILE_DN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MAKE_ITS_FILE_DN"), m_bTHREAD_MAKE_ITS_FILE_DN);
+	m_bTHREAD_UPDATE_REELMAP_INNER_UP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_UP"), m_bTHREAD_UPDATE_REELMAP_INNER_UP);
+	m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_ALLUP"), m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP);
+	m_bTHREAD_UPDATE_REELMAP_INNER_DN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_DN"), m_bTHREAD_UPDATE_REELMAP_INNER_DN);
+	m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_ALLDN"), m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN);
 
-	m_bTHREAD_REELMAP_YIELD_UP = FALSE;
-	m_bTHREAD_REELMAP_YIELD_ALLUP = FALSE;
-	m_bTHREAD_REELMAP_YIELD_DN = FALSE;
-	m_bTHREAD_REELMAP_YIELD_ALLDN = FALSE;
-	m_bTHREAD_REELMAP_YIELD_ITS = FALSE;
+	m_bTHREAD_REELMAP_YIELD_UP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_UP"), m_bTHREAD_REELMAP_YIELD_UP);
+	m_bTHREAD_REELMAP_YIELD_ALLUP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ALLUP"), m_bTHREAD_REELMAP_YIELD_ALLUP);
+	m_bTHREAD_REELMAP_YIELD_DN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_DN"), m_bTHREAD_REELMAP_YIELD_DN);
+	m_bTHREAD_REELMAP_YIELD_ALLDN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ALLDN"), m_bTHREAD_REELMAP_YIELD_ALLDN);
+	m_bTHREAD_REELMAP_YIELD_ITS = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ITS"), m_bTHREAD_REELMAP_YIELD_ITS);
 
-	m_nSnTHREAD_UPDATAE_YIELD = 0;
+	m_nSnTHREAD_UPDATAE_YIELD = 0; pDoc->SetStatusInt(_T("Thread"), _T("nSnTHREAD_UPDATAE_YIELD"), m_nSnTHREAD_UPDATAE_YIELD);
 
-	pDoc->m_nEjectBufferLastShot = -1;
-	m_bSerialDecrese = FALSE;
-	m_bStopF_Verify = TRUE;
-	m_bInitAuto = TRUE;
-	m_bInitAutoLoadMstInfo = TRUE;
+	pDoc->m_nEjectBufferLastShot = -1; pDoc->SetStatusInt(_T("General"), _T("nEjectBufferLastShot"), pDoc->m_nEjectBufferLastShot);
+	m_bSerialDecrese = FALSE; pDoc->SetStatus(_T("General"), _T("bSerialDecrese"), m_bSerialDecrese);
+	m_bStopF_Verify = TRUE; pDoc->SetStatus(_T("General"), _T("bStopF_Verify"), m_bStopF_Verify);
+	m_bInitAuto = TRUE; pDoc->SetStatus(_T("General"), _T("bInitAuto"), m_bInitAuto);
+	m_bInitAutoLoadMstInfo = TRUE; pDoc->SetStatus(_T("General"), _T("bInitAutoLoadMstInfo"), m_bInitAutoLoadMstInfo);
 
 	if (bInit) // 이어가기가 아닌경우.
 	{
@@ -11584,7 +11362,7 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 		pDoc->m_bNewLotShare[1] = FALSE;
 		pDoc->m_bNewLotBuf[0] = FALSE;
 		pDoc->m_bNewLotBuf[1] = FALSE;
-		pDoc->m_bDoneChgLot = FALSE;
+		pDoc->m_bDoneChgLot = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneChgLot"), pDoc->m_bDoneChgLot);
 
 		m_pDlgFrameHigh->m_nMkLastShot = 0;
 		m_pDlgFrameHigh->m_nAoiLastShot[0] = 0;
@@ -12178,10 +11956,14 @@ BOOL CGvisR2R_PunchView::InitMk()
 	if (nRSer)
 	{
 		// syd - 20130224 : 보완 필요
-		//if(nRSer < 0)
-		//	m_bSerialDecrese = TRUE;
-		//else
-			m_bSerialDecrese = FALSE;
+		if (nRSer < 0)
+		{
+			m_bSerialDecrese = TRUE; pDoc->SetStatus(_T("General"), _T("bSerialDecrese"), m_bSerialDecrese);
+		}
+		else
+		{
+			m_bSerialDecrese = FALSE; pDoc->SetStatus(_T("General"), _T("bSerialDecrese"), m_bSerialDecrese);
+		}
 
 		if (pDoc->m_bUseRTRYShiftAdjust)
 		{
@@ -12714,64 +12496,63 @@ int CGvisR2R_PunchView::GetTotDefPcsDn1(int nSerial)
 	return nTotDef;
 }
 
-
-CfPoint CGvisR2R_PunchView::GetMkPnt(int nMkPcs)
-{
-	CfPoint ptPnt;
-	ptPnt.x = -1.0;
-	ptPnt.y = -1.0;
-
-#ifndef TEST_MODE
-	if (pDoc->m_Master[0].m_pPcsRgn)
-		ptPnt = pDoc->m_Master[0].m_pPcsRgn->GetMkPnt(nMkPcs); // Cam0의 Mk 포인트.
-#else
-	ptPnt.x = 1.0;
-	ptPnt.y = 1.0;
-#endif
-
-	return ptPnt;
-}
-
-CfPoint CGvisR2R_PunchView::GetMkPnt0(int nMkPcs)
-{
-	CfPoint ptPnt;
-	ptPnt.x = -1.0;
-	ptPnt.y = -1.0;
-
-#ifndef TEST_MODE
-	if (pDoc->m_Master[0].m_pPcsRgn)
-		ptPnt = pDoc->m_Master[0].m_pPcsRgn->GetMkPnt0(nMkPcs); // Cam0의 Mk 포인트.
-#else
-	ptPnt.x = 1.0;
-	ptPnt.y = 1.0;
-#endif
-
-	return ptPnt;
-}
-
-CfPoint CGvisR2R_PunchView::GetMkPnt1(int nMkPcs) // pcr 불량 피스 읽은 순서 인덱스
-{
-	CfPoint ptPnt;
-	ptPnt.x = -1.0;
-	ptPnt.y = -1.0;
-
-#ifndef TEST_MODE
-	if (pDoc->m_Master[0].m_pPcsRgn)
-		ptPnt = pDoc->m_Master[0].m_pPcsRgn->GetMkPnt1(nMkPcs); // Cam1의 Mk 포인트.
-#else
-	ptPnt.x = 1.0;
-	ptPnt.y = 1.0;
-#endif
-
-	return ptPnt;
-}
-
 BOOL CGvisR2R_PunchView::CheckMkPnt()
 {
 	if (GetMkPnt(0).x == GetMkPnt(1).x && GetMkPnt(0).y == GetMkPnt(1).y)
 		return FALSE;
 
 	return TRUE;
+}
+
+CfPoint CGvisR2R_PunchView::GetMkPnt(int nIdx)	// CamMaster의 피스순서 인덱스
+{
+	CfPoint ptPnt;
+	ptPnt.x = -1.0;
+	ptPnt.y = -1.0;
+
+#ifndef TEST_MODE
+	if (pDoc->m_Master[0].m_pPcsRgn)
+		ptPnt = pDoc->m_Master[0].m_pPcsRgn->GetMkPnt(nIdx); // CamMaster의 피스순서 인덱스
+#else
+	ptPnt.x = 1.0;
+	ptPnt.y = 1.0;
+#endif
+
+	return ptPnt;
+}
+
+CfPoint CGvisR2R_PunchView::GetMkPnt0(int nIdx)	// CamMaster의 피스순서 인덱스
+{
+	CfPoint ptPnt;
+	ptPnt.x = -1.0;
+	ptPnt.y = -1.0;
+
+#ifndef TEST_MODE
+	if (pDoc->m_Master[0].m_pPcsRgn)
+		ptPnt = pDoc->m_Master[0].m_pPcsRgn->GetMkPnt0(nIdx); // CamMaster의 피스순서 인덱스
+#else
+	ptPnt.x = 1.0;
+	ptPnt.y = 1.0;
+#endif
+
+	return ptPnt;
+}
+
+CfPoint CGvisR2R_PunchView::GetMkPnt1(int nIdx) // CamMaster의 피스순서 인덱스
+{
+	CfPoint ptPnt;
+	ptPnt.x = -1.0;
+	ptPnt.y = -1.0;
+
+#ifndef TEST_MODE
+	if (pDoc->m_Master[0].m_pPcsRgn)
+		ptPnt = pDoc->m_Master[0].m_pPcsRgn->GetMkPnt1(nIdx); // CamMaster의 피스순서 인덱스
+#else
+	ptPnt.x = 1.0;
+	ptPnt.y = 1.0;
+#endif
+
+	return ptPnt;
 }
 
 // CfPoint CGvisR2R_PunchView::GetMkPnt(int nSerial, int nMkPcs)
@@ -13900,114 +13681,11 @@ BOOL CGvisR2R_PunchView::LoadPcrDn(int nSerial, BOOL bFromShare)
 	return TRUE;
 }
 
-//BOOL CGvisR2R_PunchView::UpdateReelmap(int nSerial)
-//{
-//	if (nSerial <= 0)
-//	{
-//		pView->ClrDispMsg();
-//		AfxMessageBox(_T("Serial Error.54"));
-//		return 0;
-//	}
-//
-//	if (!pDoc->MakeMkDir())
-//		return FALSE;
-//
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-//
-//	CString str;
-//	CString sPathRmap[4], sPathPcr[2]; //[Up/Dn]
-//
-//	if (pDoc->m_pReelMap)
-//	{
-//		stModelInfo stInfo;
-//		sPathPcr[0].Format(_T("%s%04d.pcr"), pDoc->WorkingInfo.System.sPathVrsBufUp, nSerial);
-//		if (bDualTest)
-//			sPathPcr[1].Format(_T("%s%04d.pcr"), pDoc->WorkingInfo.System.sPathVrsBufDn, nSerial);
-//
-//		if (!pDoc->GetPcrInfo(sPathPcr[0], stInfo)) // Up
-//		{
-//			pView->DispStsBar(_T("E(4)"), 5);
-//			pView->ClrDispMsg();
-//			AfxMessageBox(_T("Error-GetPcrInfo(4)"));
-//			return FALSE;
-//		}
-//
-//		if (!pDoc->MakeMkDir(stInfo.sModel, stInfo.sLot, stInfo.sLayer))
-//			return FALSE;
-//
-//		str = _T("ReelMapDataUp.txt"); // [0]:AOI-Up
-//		sPathRmap[0].Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//			stInfo.sModel,
-//			stInfo.sLot,
-//			stInfo.sLayer,
-//			str);
-//
-//		if (bDualTest)
-//		{
-//			str = _T("ReelMapDataAll.txt"); // [2]:AOI-AllUp
-//			sPathRmap[2].Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				stInfo.sModel,
-//				stInfo.sLot,
-//				stInfo.sLayer,
-//				str);
-//
-//			if (!pDoc->GetPcrInfo(sPathPcr[1], stInfo)) // Dn
-//			{
-//				pView->DispStsBar(_T("E(5)"), 5);
-//				pView->ClrDispMsg();
-//				AfxMessageBox(_T("Error-GetPcrInfo(5)"));
-//				return FALSE;
-//			}
-//
-//			if (!pDoc->MakeMkDir(stInfo.sModel, stInfo.sLot, stInfo.sLayer))
-//				return FALSE;
-//
-//			str = _T("ReelMapDataDn.txt"); // [1]:AOI-Dn
-//			sPathRmap[1].Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				stInfo.sModel,
-//				stInfo.sLot,
-//				stInfo.sLayer,
-//				str);
-//			str = _T("ReelMapDataAll.txt"); // [3]:AOI-AllDn
-//			sPathRmap[3].Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				stInfo.sModel,
-//				stInfo.sLot,
-//				stInfo.sLayer,
-//				str);
-//		}
-//
-//		m_nSerialRmapUpdate = nSerial;
-//		m_sPathRmapUpdate[0] = sPathRmap[0];
-//		m_sPathRmapUpdate[1] = sPathRmap[1];
-//		m_sPathRmapUpdate[2] = sPathRmap[2];
-//		m_sPathRmapUpdate[3] = sPathRmap[3];
-//
-//		m_bTHREAD_UPDATE_REELMAP_UP = TRUE;
-//		if (bDualTest)
-//		{
-//			m_bTHREAD_UPDATE_REELMAP_DN = TRUE;
-//			m_bTHREAD_UPDATE_REELMAP_ALLUP = TRUE;
-//			m_bTHREAD_UPDATE_REELMAP_ALLDN = TRUE;
-//		}
-//
-//		if (pDoc->GetTestMode() == MODE_OUTER)
-//			UpdateReelmapInner(nSerial);
-//
-//		Sleep(100);
-//		return TRUE;
-//	}
-//	else
-//		MsgBox(_T("Error-ReelMapWrite()"));
-//
-//	return FALSE;
-//}
-
 void CGvisR2R_PunchView::UpdateRMapUp()
 {
 	if (pDoc->m_pReelMapUp)
 	{
 		pDoc->m_pReelMapUp->Write(m_nSerialRmapUpdate); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
-		//pDoc->m_pReelMapUp->Write(m_nSerialRmapUpdate, 0, m_sPathRmapUpdate[0]); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 
 		if (pDoc->m_pReelMap == pDoc->m_pReelMapUp)
 		{
@@ -14100,12 +13778,10 @@ UINT CGvisR2R_PunchView::ThreadProc7(LPVOID lpContext)	// UpdateRMapDn()
 
 		if (pThread->m_bTHREAD_UPDATE_REELMAP_DN) // Write Reelmap
 		{
-			//pThread->m_bTHREAD_UPDATE_REELMAP_ALLUP = TRUE;
-			//pThread->m_bTHREAD_UPDATE_REELMAP_ALLDN = TRUE;
 			if (!pThread->m_bTHREAD_REELMAP_YIELD_DN) // Yield Reelmap
 			{
 				pThread->UpdateRMapDn(); // Write Reelmap
-				pThread->m_bTHREAD_UPDATE_REELMAP_DN = FALSE;
+				pThread->m_bTHREAD_UPDATE_REELMAP_DN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_DN"), pThread->m_bTHREAD_UPDATE_REELMAP_DN);
 				Sleep(0);
 			}
 			else
@@ -14140,7 +13816,7 @@ UINT CGvisR2R_PunchView::ThreadProc8(LPVOID lpContext)	// UpdateRMapAllUp()
 			if (!pThread->m_bTHREAD_REELMAP_YIELD_ALLUP) // Yield Reelmap
 			{
 				pThread->UpdateRMapAllUp(); // Write Reelmap
-				pThread->m_bTHREAD_UPDATE_REELMAP_ALLUP = FALSE;
+				pThread->m_bTHREAD_UPDATE_REELMAP_ALLUP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_ALLUP"), pThread->m_bTHREAD_UPDATE_REELMAP_ALLUP);
 				Sleep(0);
 			}
 			else
@@ -14175,7 +13851,7 @@ UINT CGvisR2R_PunchView::ThreadProc9(LPVOID lpContext)	// UpdateRMapAllDn()
 			if (!pThread->m_bTHREAD_REELMAP_YIELD_ALLDN) // Yield Reelmap
 			{
 				pThread->UpdateRMapAllDn(); // Write Reelmap
-				pThread->m_bTHREAD_UPDATE_REELMAP_ALLDN = FALSE;
+				pThread->m_bTHREAD_UPDATE_REELMAP_ALLDN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_ALLDN"), pThread->m_bTHREAD_UPDATE_REELMAP_ALLDN);
 				Sleep(0);
 			}
 			else
@@ -14929,7 +14605,7 @@ void CGvisR2R_PunchView::SetLotEnd(int nSerial)
 		return;
 	}
 
-	m_nLotEndSerial = nSerial;
+	m_nLotEndSerial = nSerial; pDoc->SetStatusInt(_T("General"), _T("nLotEndSerial"), m_nLotEndSerial);
 	m_nAoiLastSerial[0] = nSerial;
 
 	CString str;
@@ -15084,7 +14760,7 @@ BOOL CGvisR2R_PunchView::IsVerify()
 		{
 			if (nSerial0 == 1 || nPeriod == 0 || nPeriod == 1 || nPeriod == 2 || m_bStopF_Verify)
 			{
-				m_bStopF_Verify = FALSE;
+				m_bStopF_Verify = FALSE; pDoc->SetStatus(_T("General"), _T("bStopF_Verify"), m_bStopF_Verify);
 				bVerify = TRUE;
 			}
 			else
@@ -15774,9 +15450,8 @@ void CGvisR2R_PunchView::DoReject0()
 #ifdef TEST_MODE
 	return;
 #endif
-
-	//BOOL bOn;
-	int nIdx, nRtn;//nSerial, 
+	CString sItem;
+	int nIdx, nRtn;
 	CfPoint ptPnt;
 
 	if (!IsRun() && m_bAuto)
@@ -15801,14 +15476,14 @@ void CGvisR2R_PunchView::DoReject0()
 	case 0:
 		if (IsNoMk())
 			ShowLive();
-		m_nMkStrip[0][0] = 0;
-		m_nMkStrip[0][1] = 0;
-		m_nMkStrip[0][2] = 0;
-		m_nMkStrip[0][3] = 0;
-		m_bRejectDone[0][0] = FALSE;
-		m_bRejectDone[0][1] = FALSE;
-		m_bRejectDone[0][2] = FALSE;
-		m_bRejectDone[0][3] = FALSE;
+		m_nMkStrip[0][0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[0][0]"), m_nMkStrip[0][0]);
+		m_nMkStrip[0][1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[0][1]"), m_nMkStrip[0][1]);
+		m_nMkStrip[0][2] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[0][2]"), m_nMkStrip[0][2]);
+		m_nMkStrip[0][3] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[0][3]"), m_nMkStrip[0][3]);
+		m_bRejectDone[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bRejectDone[0][0]"), m_bRejectDone[0][0]);
+		m_bRejectDone[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bRejectDone[0][1]"), m_bRejectDone[0][1]);
+		m_bRejectDone[0][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bRejectDone[0][2]"), m_bRejectDone[0][2]);
+		m_bRejectDone[0][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bRejectDone[0][3]"), m_bRejectDone[0][3]);
 		m_nStepMk[2]++;
 		break;
 	case 1:
@@ -15818,7 +15493,7 @@ void CGvisR2R_PunchView::DoReject0()
 		}
 		else
 		{
-			m_nStepMk[2] = MK_END;
+			m_nStepMk[2] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 		}
 		break;
 	case 2:
@@ -15848,6 +15523,8 @@ void CGvisR2R_PunchView::DoReject0()
 					if (m_nMkStrip[0][nIdx - 1] > pDoc->GetStripRejectMkNum())
 					{
 						m_bRejectDone[0][nIdx - 1] = TRUE;
+						sItem.Format(_T("bRejectDone[0][%d]"), nIdx - 1);
+						pDoc->SetStatus(_T("General"), sItem, m_bRejectDone[0][nIdx - 1]);
 						m_nMkPcs[2]++;
 						break;
 					}
@@ -15865,7 +15542,7 @@ void CGvisR2R_PunchView::DoReject0()
 			if (m_bRejectDone[0][0] && m_bRejectDone[0][1] &&
 				m_bRejectDone[0][2] && m_bRejectDone[0][3])
 			{
-				m_nStepMk[2] = MK_END;
+				m_nStepMk[2] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 				break;
 			}
 
@@ -15880,13 +15557,13 @@ void CGvisR2R_PunchView::DoReject0()
 				Move0(ptPnt, m_bCam);
 				m_nStepMk[2]++;
 			}
-			else if (m_bPriority[0])
+			else if (m_bPriority[0]) // Cam0 <-
 			{
 				m_bPriority[0] = FALSE;
 				Move0(ptPnt, m_bCam);
 				m_nStepMk[2]++;
 			}
-			else if (m_bPriority[2])
+			else if (m_bPriority[2]) // Cam1 <-
 			{
 				m_bPriority[2] = FALSE;
 				ptPnt.x = 0.0;
@@ -15896,7 +15573,7 @@ void CGvisR2R_PunchView::DoReject0()
 		}
 		else
 		{
-			m_nStepMk[2] = MK_END;
+			m_nStepMk[2] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 		}
 		break;
 	case 4:
@@ -15955,7 +15632,7 @@ void CGvisR2R_PunchView::DoReject0()
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[2] = 7;
+						m_nStepMk[2] = 7; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 					}
 					else if (nRtn < 0)
 						m_nStepMk[2]++;
@@ -15985,7 +15662,7 @@ void CGvisR2R_PunchView::DoReject0()
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[2] = 7;
+				m_nStepMk[2] = 7; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 			}
 			else
 			{
@@ -16001,11 +15678,11 @@ void CGvisR2R_PunchView::DoReject0()
 	case 13:
 		if (m_nMkPcs[2] < pDoc->m_Master[0].m_pPcsRgn->nTotPcs)	// 마킹완료Check
 		{
-			m_nStepMk[2] = 3;
+			m_nStepMk[2] = 3; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 		}
 		else
 		{
-			m_nStepMk[2] = MK_END;
+			m_nStepMk[2] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 		}
 		break;
 	case MK_END:
@@ -16023,13 +15700,13 @@ void CGvisR2R_PunchView::DoReject0()
 	case 102:
 		if (IsMoveDone0())
 		{
-			m_bTHREAD_MK[2] = FALSE;
-			m_bDoneMk[0] = TRUE;
-			m_nStepMk[2] = 0;
-			m_nMkStrip[0][0] = 0;
-			m_nMkStrip[0][1] = 0;
-			m_nMkStrip[0][2] = 0;
-			m_nMkStrip[0][3] = 0;
+			m_bTHREAD_MK[2] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[2]"), m_bTHREAD_MK[2]);
+			m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+			m_nStepMk[2] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
+			m_nMkStrip[0][0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[0][0]"), m_nMkStrip[0][0]);
+			m_nMkStrip[0][1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[0][1]"), m_nMkStrip[0][1]);
+			m_nMkStrip[0][2] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[0][2]"), m_nMkStrip[0][2]);
+			m_nMkStrip[0][3] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[0][3]"), m_nMkStrip[0][3]);
 		}
 		break;
 	}
@@ -16040,9 +15717,8 @@ void CGvisR2R_PunchView::DoReject1()
 #ifdef TEST_MODE
 	return;
 #endif
-
-	//BOOL bOn;
-	int nIdx, nRtn;//nSerial, 
+	CString sItem;
+	int nIdx, nRtn;
 	CfPoint ptPnt;
 
 	if (!IsRun() && m_bAuto)
@@ -16067,14 +15743,14 @@ void CGvisR2R_PunchView::DoReject1()
 	case 0:
 		if (IsNoMk())
 			ShowLive();
-		m_nMkStrip[1][0] = 0;
-		m_nMkStrip[1][1] = 0;
-		m_nMkStrip[1][2] = 0;
-		m_nMkStrip[1][3] = 0;
-		m_bRejectDone[1][0] = FALSE;
-		m_bRejectDone[1][1] = FALSE;
-		m_bRejectDone[1][2] = FALSE;
-		m_bRejectDone[1][3] = FALSE;
+		m_nMkStrip[1][0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[1][0]"), m_nMkStrip[1][0]);
+		m_nMkStrip[1][1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[1][1]"), m_nMkStrip[1][1]);
+		m_nMkStrip[1][2] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[1][2]"), m_nMkStrip[1][2]);
+		m_nMkStrip[1][3] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[1][3]"), m_nMkStrip[1][3]);
+		m_bRejectDone[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bRejectDone[1][0]"), m_bRejectDone[1][0]);
+		m_bRejectDone[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bRejectDone[1][1]"), m_bRejectDone[1][1]);
+		m_bRejectDone[1][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bRejectDone[1][2]"), m_bRejectDone[1][2]);
+		m_bRejectDone[1][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bRejectDone[1][3]"), m_bRejectDone[1][3]);
 		m_nStepMk[3]++;
 		break;
 	case 1:
@@ -16084,7 +15760,7 @@ void CGvisR2R_PunchView::DoReject1()
 		}
 		else
 		{
-			m_nStepMk[3] = MK_END;
+			m_nStepMk[3] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 		}
 		break;
 	case 2:
@@ -16114,6 +15790,8 @@ void CGvisR2R_PunchView::DoReject1()
 					if (m_nMkStrip[1][nIdx - 1] > pDoc->GetStripRejectMkNum())
 					{
 						m_bRejectDone[1][nIdx - 1] = TRUE;
+						sItem.Format(_T("bRejectDone[1][%d]"), nIdx - 1);
+						pDoc->SetStatus(_T("General"), sItem, m_bRejectDone[1][nIdx - 1]);
 						m_nMkPcs[3]++;
 						break;
 					}
@@ -16131,7 +15809,7 @@ void CGvisR2R_PunchView::DoReject1()
 			if (m_bRejectDone[1][0] && m_bRejectDone[1][1] &&
 				m_bRejectDone[1][2] && m_bRejectDone[1][3])
 			{
-				m_nStepMk[2] = MK_END;
+				m_nStepMk[2] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 				break;
 			}
 
@@ -16146,13 +15824,13 @@ void CGvisR2R_PunchView::DoReject1()
 				Move1(ptPnt, m_bCam);
 				m_nStepMk[3]++;
 			}
-			else if (m_bPriority[1])
+			else if (m_bPriority[1]) // Cam1 ->
 			{
 				m_bPriority[1] = FALSE;
 				Move1(ptPnt, m_bCam);
 				m_nStepMk[3]++;
 			}
-			else if (m_bPriority[3])
+			else if (m_bPriority[3]) // Cam0 ->
 			{
 				m_bPriority[3] = FALSE;
 				ptPnt.x = _tstof(pDoc->WorkingInfo.Motion.sSafeZone);
@@ -16162,7 +15840,7 @@ void CGvisR2R_PunchView::DoReject1()
 		}
 		else
 		{
-			m_nStepMk[3] = MK_END;
+			m_nStepMk[3] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 		}
 		break;
 	case 4:
@@ -16220,7 +15898,7 @@ void CGvisR2R_PunchView::DoReject1()
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[3] = 7;
+						m_nStepMk[3] = 7; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 					}
 					else if (nRtn < 0)
 						m_nStepMk[3]++;
@@ -16242,15 +15920,12 @@ void CGvisR2R_PunchView::DoReject1()
 		}
 		break;
 	case 11:
-		//m_nStepMk[3]++;
-		//if(m_bRtnMyMsgBox[3])
 		if ((nRtn = WaitRtnVal(4)) > -1)
 		{
-			//if(IDYES == m_nRtnMyMsgBox[3])
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[3] = 7;
+				m_nStepMk[3] = 7; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 			}
 			else
 			{
@@ -16266,11 +15941,11 @@ void CGvisR2R_PunchView::DoReject1()
 	case 13:
 		if (m_nMkPcs[3] < pDoc->m_Master[0].m_pPcsRgn->nTotPcs)	// 마킹완료Check
 		{
-			m_nStepMk[3] = 3;
+			m_nStepMk[3] = 3; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 		}
 		else
 		{
-			m_nStepMk[3] = MK_END;
+			m_nStepMk[3] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 		}
 		break;
 	case MK_END:
@@ -16288,13 +15963,13 @@ void CGvisR2R_PunchView::DoReject1()
 	case 102:
 		if (IsMoveDone1())
 		{
-			m_bTHREAD_MK[3] = FALSE;
-			m_bDoneMk[1] = TRUE;
-			m_nStepMk[3] = 0;
-			m_nMkStrip[1][0] = 0;
-			m_nMkStrip[1][1] = 0;
-			m_nMkStrip[1][2] = 0;
-			m_nMkStrip[1][3] = 0;
+			m_bTHREAD_MK[3] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[3]"), m_bTHREAD_MK[3]);
+			m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+			m_nStepMk[3] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
+			m_nMkStrip[1][0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[1][0]"), m_nMkStrip[1][0]);
+			m_nMkStrip[1][1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[1][1]"), m_nMkStrip[1][1]);
+			m_nMkStrip[1][2] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[1][2]"), m_nMkStrip[1][2]);
+			m_nMkStrip[1][3] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStrip[1][3]"), m_nMkStrip[1][3]);
 		}
 		break;
 	}
@@ -16321,7 +15996,7 @@ void CGvisR2R_PunchView::DoMark0All()
 
 			if (m_nStepMk[2] < 5 && m_nStepMk[2] > 3) // Mk0();
 			{
-				m_nStepMk[2] = 3;	// 마킹완료Check
+				m_nStepMk[2] = 3; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);	// 마킹완료Check
 			}
 		}
 		return;
@@ -16340,7 +16015,7 @@ void CGvisR2R_PunchView::DoMark0All()
 		}
 		else
 		{
-			m_nStepMk[2] = MK_END;
+			m_nStepMk[2] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 		}
 		break;
 	case 2:
@@ -16393,7 +16068,7 @@ void CGvisR2R_PunchView::DoMark0All()
 		}
 		else
 		{
-			m_nStepMk[2] = MK_END;
+			m_nStepMk[2] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 		}
 		break;
 	case 4:
@@ -16423,11 +16098,11 @@ void CGvisR2R_PunchView::DoMark0All()
 	case 8:
 		if (m_nMkPcs[2] < pDoc->m_Master[0].m_pPcsRgn->nTotPcs)	// 마킹완료Check
 		{
-			m_nStepMk[2] = 3;
+			m_nStepMk[2] = 3; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 		}
 		else
 		{
-			m_nStepMk[2] = MK_END;
+			m_nStepMk[2] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 		}
 		break;
 	case MK_END:
@@ -16449,8 +16124,8 @@ void CGvisR2R_PunchView::DoMark0All()
 			m_nStepMk[2]++;
 		break;
 	case 103:
-		m_bDoneMk[0] = TRUE;
-		m_bTHREAD_MK[2] = FALSE;
+		m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+		m_bTHREAD_MK[2] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[2]"), m_bTHREAD_MK[2]);
 		break;
 	}
 }
@@ -16476,7 +16151,7 @@ void CGvisR2R_PunchView::DoMark1All()
 
 			if (m_nStepMk[3] < 5 && m_nStepMk[3] > 3) // Mk1();
 			{
-				m_nStepMk[3] = 3;	// 마킹완료Check
+				m_nStepMk[3] = 3; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);	// 마킹완료Check
 			}
 		}
 		return;
@@ -16495,7 +16170,7 @@ void CGvisR2R_PunchView::DoMark1All()
 		}
 		else
 		{
-			m_nStepMk[3] = MK_END;
+			m_nStepMk[3] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 		}
 		break;
 	case 2:
@@ -16548,7 +16223,7 @@ void CGvisR2R_PunchView::DoMark1All()
 		}
 		else
 		{
-			m_nStepMk[3] = MK_END;
+			m_nStepMk[3] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 		}
 		break;
 	case 4:
@@ -16578,7 +16253,7 @@ void CGvisR2R_PunchView::DoMark1All()
 	case 8:
 		if (m_nMkPcs[3] < pDoc->m_Master[0].m_pPcsRgn->nTotPcs)	// 마킹완료Check
 		{
-			m_nStepMk[3] = 3;
+			m_nStepMk[3] = 3; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 		}
 		else
 		{
@@ -16601,7 +16276,7 @@ void CGvisR2R_PunchView::DoMark1All()
 					{
 						if (IsMoveDone1())
 						{
-							m_Flag |= (0x01 << 0);
+							m_Flag |= (0x01 << 0); pDoc->SetStatusInt(_T("General"), _T("Flag"), m_Flag);
 							ptPnt.x = _tstof(pDoc->WorkingInfo.Motion.sSafeZone);
 							ptPnt.y = 0.0;//m_dEnc[AXIS_Y1];
 							Move1(ptPnt, FALSE);
@@ -16612,7 +16287,7 @@ void CGvisR2R_PunchView::DoMark1All()
 				{
 					if (IsMoveDone1())
 					{
-						m_Flag &= ~(0x01 << 0);
+						m_Flag &= ~(0x01 << 0); pDoc->SetStatusInt(_T("General"), _T("Flag"), m_Flag);
 						MoveMkEdPos1();
 						m_nStepMk[3]++;
 					}
@@ -16622,7 +16297,7 @@ void CGvisR2R_PunchView::DoMark1All()
 			{
 				if (IsMoveDone1())
 				{
-					m_Flag &= ~(0x01 << 0);
+					m_Flag &= ~(0x01 << 0); pDoc->SetStatusInt(_T("General"), _T("Flag"), m_Flag);
 					MoveMkEdPos1();
 					m_nStepMk[3]++;
 				}
@@ -16634,8 +16309,8 @@ void CGvisR2R_PunchView::DoMark1All()
 			m_nStepMk[3]++;
 		break;
 	case 103:
-		m_bDoneMk[1] = TRUE;
-		m_bTHREAD_MK[3] = FALSE;
+		m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+		m_bTHREAD_MK[3] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[3]"), m_bTHREAD_MK[3]);
 		break;
 	}
 }
@@ -16676,7 +16351,7 @@ void CGvisR2R_PunchView::DoMark0()
 
 			if (m_nStepMk[0] < 13 && m_nStepMk[0] > 8) // Mk0();
 			{
-				m_nStepMk[0] = 8;	// 마킹완료Check
+				m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
 			}
 		}
 		return;
@@ -16706,8 +16381,8 @@ void CGvisR2R_PunchView::DoMark0()
 		{
 			if ((nErrCode = GetErrCode0(nSerial)) != 1)
 			{
-				m_nMkPcs[0] = GetTotDefPcs0(nSerial);
-				m_nStepMk[0] = MK_END;
+				m_nMkPcs[0] = GetTotDefPcs0(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+				m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 			else
 			{
@@ -16749,8 +16424,8 @@ void CGvisR2R_PunchView::DoMark0()
 				{
 					if (m_bReview)
 					{
-						m_nMkPcs[0] = GetTotDefPcs0(nSerial);
-						m_nStepMk[0] = MK_END;
+						m_nMkPcs[0] = GetTotDefPcs0(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+						m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 						break;
 					}
 				}
@@ -16761,7 +16436,7 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		else
 		{
-			m_nStepMk[0] = MK_END;
+			m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		}
 		break;
 	case 7:
@@ -16769,7 +16444,7 @@ void CGvisR2R_PunchView::DoMark0()
 
 		if (!WaitDelay0(1))		// F:Done, T:On Waiting....		// Delay후에
 		{
-			m_nMkPcs[0] = 0;
+			m_nMkPcs[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
 
 			if (!IsNoMk0())										// Punching On이면
 			{
@@ -16785,8 +16460,8 @@ void CGvisR2R_PunchView::DoMark0()
 				{
 					if (m_bReview)
 					{
-						m_nMkPcs[0] = GetTotDefPcs0(nSerial);
-						m_nStepMk[0] = MK_END;
+						m_nMkPcs[0] = GetTotDefPcs0(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+						m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 					}
 					else
 						m_nStepMk[0]++;
@@ -16815,7 +16490,7 @@ void CGvisR2R_PunchView::DoMark0()
 			if (ptPnt.x < 0.0 && ptPnt.y < 0.0) // 양품화. (마킹하지 않음)
 			{
 				m_nMkPcs[0]++;
-				m_nStepMk[0] = MK_DONE_CHECK;
+				m_nStepMk[0] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 				break;
 			}
 
@@ -16825,7 +16500,7 @@ void CGvisR2R_PunchView::DoMark0()
 				if (!IsMkStrip(nIdx)) // Strip[] Mk Off
 				{
 					m_nMkPcs[0]++;
-					m_nStepMk[0] = MK_DONE_CHECK;
+					m_nStepMk[0] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 					break;
 				}
 				else
@@ -16833,7 +16508,7 @@ void CGvisR2R_PunchView::DoMark0()
 					if (m_nMkStrip[0][nIdx - 1] >= nStripOut)
 					{
 						m_nMkPcs[0]++;
-						m_nStepMk[0] = MK_DONE_CHECK;
+						m_nStepMk[0] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 						break;
 					}
 					else
@@ -16854,7 +16529,7 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		else
 		{
-			m_nStepMk[0] = MK_END;
+			m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		}
 		break;
 	case 9:
@@ -16923,7 +16598,6 @@ void CGvisR2R_PunchView::DoMark0()
 				pView->ClrDispMsg();
 				AfxMessageBox(_T("Error-SaveMk0Img()"));
 			}
-			//m_nDebugStep = m_nMkPcs[0]; DispThreadTick();
 		}
 		m_nStepMk[0]++;
 		break;
@@ -16950,12 +16624,12 @@ void CGvisR2R_PunchView::DoMark0()
 				// One more MK On Start....
 				if (!m_nMkPcs[0] /*&& pDoc->WorkingInfo.Probing[0].bUse*/ && !m_bAnswer[2])
 				{
-					m_bAnswer[2] = TRUE;
+					m_bAnswer[2] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[2]"), m_bAnswer[2]);
 					Mk0();
 				}
 				else
 				{
-					m_bAnswer[2] = FALSE;
+					m_bAnswer[2] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[2]"), m_bAnswer[2]);
 					m_nMkPcs[0]++;
 					m_nStepMk[0]++;
 					m_nStepMk[0]++;
@@ -16966,22 +16640,20 @@ void CGvisR2R_PunchView::DoMark0()
 				if (m_dwStMkDn[0] + 5000 < GetTickCount())
 				{
 					BuzzerFromThread(TRUE, 0);
-					//pView->DispStsBar(_T("정지-32"), 0);
 					DispMain(_T("정 지"), RGB_RED);
 					m_pVoiceCoil[0]->SearchHomeSmac0();
 
-					//nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[0] = 13;
+						m_nStepMk[0] = 13; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 					}
 					else if (nRtn < 0)
 						m_nStepMk[0]++; // Wait...
 					else
 					{
-						m_bAnswer[2] = FALSE;
+						m_bAnswer[2] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[2]"), m_bAnswer[2]);
 						m_nMkPcs[0]++;
 						m_nStepMk[0]++;
 						m_nStepMk[0]++;
@@ -17003,11 +16675,11 @@ void CGvisR2R_PunchView::DoMark0()
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[0] = 13;
+				m_nStepMk[0] = 13; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 			else
 			{
-				m_bAnswer[2] = FALSE;
+				m_bAnswer[2] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[2]"), m_bAnswer[2]);
 				m_nMkPcs[0]++;
 				m_nStepMk[0]++;
 				StopFromThread();
@@ -17015,7 +16687,7 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		break;
 	case 19:
-		m_nStepMk[0] = MK_DONE_CHECK;
+		m_nStepMk[0] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		break;
 	case MK_DONE_CHECK:
 		nSerial = m_nBufUpSerial[0]; // Cam0
@@ -17033,17 +16705,24 @@ void CGvisR2R_PunchView::DoMark0()
 					}
 					else if (!pDoc->WorkingInfo.LastJob.bVerify)
 					{
-						m_nMkPcs[0] = GetTotDefPcs0(nSerial);
-						m_nStepMk[0] = MK_END;
+						m_nMkPcs[0] = GetTotDefPcs0(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+						m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 					}
 					else
-						m_nStepMk[0] = 8;	// 마킹완료Check
+					{
+						m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+					}
 				}
 				else
-					m_nStepMk[0] = 8;	// 마킹완료Check
+				{
+					m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+				}
+				
 			}
 			else
-				m_nStepMk[0] = 8;	// 마킹완료Check
+			{
+				m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+			}
 		}
 		else
 		{
@@ -17052,15 +16731,19 @@ void CGvisR2R_PunchView::DoMark0()
 				if (IsReview0())
 				{
 					if (IsJogRtDn0())
-						m_nStepMk[0] = MK_END;
+					{
+						m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
+					}
 				}
 				else
 				{
-					m_nStepMk[0] = MK_END;
+					m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 				}
 			}
 			else
-				m_nStepMk[0] = MK_END;
+			{
+				m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
+			}
 		}
 		break;
 	case MK_DONE_CHECK + 1:
@@ -17073,20 +16756,24 @@ void CGvisR2R_PunchView::DoMark0()
 				if (IsReview0())
 				{
 					if (IsJogRtUp0())
-						m_nStepMk[0] = 8;	// 마킹완료Check
+					{
+						m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+					}
 				}
 				else
 				{
-					m_nMkPcs[0] = GetTotDefPcs0(nSerial);
-					m_nStepMk[0] = MK_END;
+					m_nMkPcs[0] = GetTotDefPcs0(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+					m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 				}
 			}
 			else
-				m_nStepMk[0] = 8;	// 마킹완료Check
+			{
+				m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+			}
 		}
 		else
 		{
-			m_nStepMk[0] = MK_END;
+			m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		}
 		break;
 
@@ -17134,19 +16821,18 @@ void CGvisR2R_PunchView::DoMark0()
 		{
 			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
 			{
-				m_nStepMk[0] = ERR_PROC;
+				m_nStepMk[0] = ERR_PROC; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 		}
 		break;
 	case 106: // MK Done....
-		m_bDoneMk[0] = TRUE;
-		m_bTHREAD_MK[0] = FALSE;
+		m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+		m_bTHREAD_MK[0] = FALSE; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
 		break;
 
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
 		m_pVoiceCoil[0]->SearchHomeSmac0();
-		//AsyncMsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		MsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		m_nStepMk[0]++;
 		break;
@@ -17171,7 +16857,7 @@ void CGvisR2R_PunchView::DoMark0()
 		{
 			if (IDYES == nRtn)
 			{
-				m_nStepMk[0] = ERR_PROC + 10;
+				m_nStepMk[0] = ERR_PROC + 10; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 			else
 			{
@@ -17192,7 +16878,7 @@ void CGvisR2R_PunchView::DoMark0()
 		{
 			if (IDYES == nRtn)
 			{
-				m_nStepMk[0] = ERR_PROC + 20;
+				m_nStepMk[0] = ERR_PROC + 20; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 			else
 			{
@@ -17202,13 +16888,13 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		break;
 	case ERR_PROC + 10:
-		m_bReMark[0] = TRUE;
-		m_bTHREAD_MK[0] = FALSE;
-		m_nStepMk[0] = 0;
+		m_bReMark[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReMark[0]"), m_bReMark[0]);
+		m_bTHREAD_MK[0] = FALSE; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+		m_nStepMk[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		break;
 	case ERR_PROC + 20: // MK Done....
-		m_bDoneMk[0] = TRUE;
-		m_bTHREAD_MK[0] = FALSE;
+		m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+		m_bTHREAD_MK[0] = FALSE; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
 		break;
 	}
 }
@@ -17303,7 +16989,7 @@ void CGvisR2R_PunchView::DoMark1()
 
 			if (m_nStepMk[1] < 13 && m_nStepMk[1] > 8) // Mk1();
 			{
-				m_nStepMk[1] = 8;	// 마킹완료Check
+				m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
 			}
 		}
 		return;
@@ -17332,8 +17018,8 @@ void CGvisR2R_PunchView::DoMark1()
 		{
 			if ((nErrCode = GetErrCode1(nSerial)) != 1)
 			{
-				m_nMkPcs[1] = GetTotDefPcs1(nSerial);
-				m_nStepMk[1] = MK_END;
+				m_nMkPcs[1] = GetTotDefPcs1(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+				m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 			else
 			{
@@ -17373,8 +17059,8 @@ void CGvisR2R_PunchView::DoMark1()
 				{
 					if (m_bReview)
 					{
-						m_nMkPcs[1] = GetTotDefPcs1(nSerial);
-						m_nStepMk[1] = MK_END;
+						m_nMkPcs[1] = GetTotDefPcs1(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+						m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 						break;
 					}
 				}
@@ -17384,7 +17070,7 @@ void CGvisR2R_PunchView::DoMark1()
 		}
 		else
 		{
-			m_nStepMk[1] = MK_END;
+			m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		}
 		break;
 	case 7:
@@ -17392,7 +17078,7 @@ void CGvisR2R_PunchView::DoMark1()
 
 		if (!WaitDelay1(6))		// F:Done, T:On Waiting....
 		{
-			m_nMkPcs[1] = 0;
+			m_nMkPcs[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
 
 			if (!IsNoMk1())
 			{
@@ -17408,8 +17094,8 @@ void CGvisR2R_PunchView::DoMark1()
 				{
 					if (m_bReview)
 					{
-						m_nMkPcs[1] = GetTotDefPcs1(nSerial);
-						m_nStepMk[1] = MK_END;
+						m_nMkPcs[1] = GetTotDefPcs1(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+						m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 					}
 					else
 						m_nStepMk[1]++;
@@ -17438,7 +17124,7 @@ void CGvisR2R_PunchView::DoMark1()
 			if (ptPnt.x < 0.0 && ptPnt.y < 0.0) // 양품화.
 			{
 				m_nMkPcs[1]++;
-				m_nStepMk[1] = MK_DONE_CHECK;
+				m_nStepMk[1] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 				break;
 			}
 
@@ -17448,7 +17134,7 @@ void CGvisR2R_PunchView::DoMark1()
 				if (!IsMkStrip(nIdx)) // Strip[] Mk Off
 				{
 					m_nMkPcs[1]++;
-					m_nStepMk[1] = MK_DONE_CHECK;
+					m_nStepMk[1] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 					break;
 				}
 				else
@@ -17456,7 +17142,7 @@ void CGvisR2R_PunchView::DoMark1()
 					if (m_nMkStrip[1][nIdx - 1] >= nStripOut)
 					{
 						m_nMkPcs[1]++;
-						m_nStepMk[1] = MK_DONE_CHECK;
+						m_nStepMk[1] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 						break;
 					}
 					else
@@ -17477,7 +17163,7 @@ void CGvisR2R_PunchView::DoMark1()
 		}
 		else
 		{
-			m_nStepMk[1] = MK_END;
+			m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		}
 		break;
 	case 9:
@@ -17572,12 +17258,12 @@ void CGvisR2R_PunchView::DoMark1()
 				// One more MK On Start....
 				if (!m_nMkPcs[1] && !m_bAnswer[3])
 				{
-					m_bAnswer[3] = TRUE;
+					m_bAnswer[3] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[3]"), m_bAnswer[3]);
 					Mk1();
 				}
 				else
 				{
-					m_bAnswer[3] = FALSE;
+					m_bAnswer[3] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[3]"), m_bAnswer[3]);
 					m_nMkPcs[1]++;
 					m_nStepMk[1]++;
 					m_nStepMk[1]++;
@@ -17597,13 +17283,13 @@ void CGvisR2R_PunchView::DoMark1()
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[1] = 13;
+						m_nStepMk[1] = 13; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 					}
 					else if (nRtn < 0)
 						m_nStepMk[1]++; // Wait...
 					else
 					{
-						m_bAnswer[3] = FALSE;
+						m_bAnswer[3] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[3]"), m_bAnswer[3]);
 						m_nMkPcs[1]++;
 						m_nStepMk[1]++;
 						m_nStepMk[1]++;
@@ -17625,11 +17311,11 @@ void CGvisR2R_PunchView::DoMark1()
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[1] = 13;
+				m_nStepMk[1] = 13; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 			else
 			{
-				m_bAnswer[3] = FALSE;
+				m_bAnswer[3] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[3]"), m_bAnswer[3]);
 				m_nMkPcs[1]++;
 				m_nStepMk[1]++;
 				StopFromThread();
@@ -17637,7 +17323,7 @@ void CGvisR2R_PunchView::DoMark1()
 		}
 		break;
 	case 19:
-		m_nStepMk[1] = MK_DONE_CHECK;
+		m_nStepMk[1] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		break;
 	case MK_DONE_CHECK:
 		nSerial = m_nBufUpSerial[1]; // Cam1
@@ -17655,17 +17341,23 @@ void CGvisR2R_PunchView::DoMark1()
 					}
 					else if (!pDoc->WorkingInfo.LastJob.bVerify)
 					{
-						m_nMkPcs[1] = GetTotDefPcs1(nSerial);
-						m_nStepMk[1] = MK_END;
+						m_nMkPcs[1] = GetTotDefPcs1(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+						m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 					}
 					else
-						m_nStepMk[1] = 8;	// 마킹완료Check
+					{
+						m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+					}
 				}
 				else
-					m_nStepMk[1] = 8;	// 마킹완료Check
+				{
+					m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+				}
 			}
 			else
-				m_nStepMk[1] = 8;	// 마킹완료Check
+			{
+				m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+			}
 		}
 		else
 		{
@@ -17674,15 +17366,19 @@ void CGvisR2R_PunchView::DoMark1()
 				if (IsReview1())
 				{
 					if (IsJogRtDn1())
-						m_nStepMk[1] = MK_END;
+					{
+						m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
+					}
 				}
 				else
 				{
-					m_nStepMk[1] = MK_END;
+					m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 				}
 			}
 			else
-				m_nStepMk[1] = MK_END;
+			{
+				m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
+			}
 		}
 		break;
 	case MK_DONE_CHECK + 1:
@@ -17695,20 +17391,24 @@ void CGvisR2R_PunchView::DoMark1()
 				if (IsReview1())
 				{
 					if (IsJogRtUp1())
-						m_nStepMk[1] = 8;	// 마킹완료Check
+					{
+						m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+					}
 				}
 				else
 				{
-					m_nMkPcs[1] = GetTotDefPcs1(nSerial);
-					m_nStepMk[1] = MK_END;
+					m_nMkPcs[1] = GetTotDefPcs1(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+					m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 				}
 			}
 			else
-				m_nStepMk[1] = 8;	// 마킹완료Check
+			{
+				m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+			}
 		}
 		else
 		{
-			m_nStepMk[1] = MK_END;
+			m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		}
 		break;
 
@@ -17755,19 +17455,18 @@ void CGvisR2R_PunchView::DoMark1()
 		{
 			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
 			{
-				m_nStepMk[1] = ERR_PROC;
+				m_nStepMk[1] = ERR_PROC; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 		}
 		break;
 	case 106: // MK Done....
-		m_bDoneMk[1] = TRUE;
-		m_bTHREAD_MK[1] = FALSE;
+		m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+		m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
 		break;
 
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
 		m_pVoiceCoil[1]->SearchHomeSmac1();
-		//AsyncMsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		MsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		m_nStepMk[1]++;
 		break;
@@ -17792,7 +17491,7 @@ void CGvisR2R_PunchView::DoMark1()
 		{
 			if (IDYES == nRtn)
 			{
-				m_nStepMk[1] = ERR_PROC + 10;
+				m_nStepMk[1] = ERR_PROC + 10; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 			else
 			{
@@ -17814,7 +17513,7 @@ void CGvisR2R_PunchView::DoMark1()
 		{
 			if (IDYES == nRtn)
 			{
-				m_nStepMk[1] = ERR_PROC + 20;
+				m_nStepMk[1] = ERR_PROC + 20; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 			else
 			{
@@ -17824,13 +17523,13 @@ void CGvisR2R_PunchView::DoMark1()
 		}
 		break;
 	case ERR_PROC + 10:
-		m_bReMark[1] = TRUE;
-		m_bTHREAD_MK[1] = FALSE;
-		m_nStepMk[1] = 0;
+		m_bReMark[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReMark[1]"), m_bReMark[1]);
+		m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
+		m_nStepMk[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		break;
 	case ERR_PROC + 20: // MK Done....
-		m_bDoneMk[1] = TRUE;
-		m_bTHREAD_MK[1] = FALSE;
+		m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+		m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
 		break;
 	}
 }
@@ -18179,7 +17878,7 @@ void CGvisR2R_PunchView::DispDefImg()
 			m_nStepTHREAD_DISP_DEF++;
 		break;
 	case 12:
-		m_bTHREAD_DISP_DEF = FALSE;
+		m_bTHREAD_DISP_DEF = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_DISP_DEF"), m_bTHREAD_DISP_DEF);
 		pDoc->SetMkMenu01(_T("Signal"), _T("DispDefImg"), _T("0"));
 		if (m_pEngrave)
 			m_pEngrave->SwMenu01DispDefImg(TRUE);
@@ -18249,8 +17948,8 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 	{
 		if (m_pDlgMenu01->m_bLotEnd && m_nStepAuto < LOT_END)
 		{
-			m_bLotEnd = TRUE;
-			m_nLotEndAuto = LOT_END;
+			m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+			m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 		}
 	}
 
@@ -18258,25 +17957,25 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 	{
 		if (!GetAoiUpVsStatus())
 		{
-			m_bLotEnd = TRUE;
-			m_nLotEndAuto = LOT_END;
+			m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+			m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 		}
 	}
 	else if(!IsBuffer(0) && m_nMkStAuto > MK_ST + (Mk2PtIdx::DoneMk) + 4)
 	{
 		if (!GetAoiUpVsStatus())
 		{
-			m_nMkStAuto = 0;
-			m_bLotEnd = TRUE;
+			m_nMkStAuto = 0; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+			m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
 			m_nLotEndAuto = LOT_END;
 		}
 	}
 
 	if (!IsBuffer(0) && m_bLotEndF)
 	{
-		m_bLotEndF = FALSE;
-		m_bLotEnd = TRUE;
-		m_nLotEndAuto = LOT_END;
+		m_bLotEndF = FALSE; pDoc->SetStatus(_T("General"), _T("bLotEndF"), m_bLotEndF);
+		m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+		m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 	}
 
 
@@ -18331,11 +18030,9 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 
 		case LOT_END + 4:
 			MsgBox(_T("작업이 종료되었습니다."));
-			//m_nStepAuto = 0; // 자동종료
 			m_nLotEndAuto++;
-			//m_bLotEnd = FALSE;
-			m_bLastProc = FALSE;
-			m_bMkSt = FALSE;
+			m_bLastProc = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
+			m_bMkSt = FALSE; pDoc->SetStatus(_T("General"), _T("bMkSt"), m_bMkSt);
 			::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("0"), PATH_WORKING_INFO);
 			break;
 		case LOT_END + 5:
@@ -18368,8 +18065,8 @@ void CGvisR2R_PunchView::DoAtuoGetMkStSignal()
 						//m_pMpe->Write(_T("MB440101"), 0);		// 마킹부 Feeding완료
 					}
 
-					m_bMkSt = TRUE;
-					m_nMkStAuto = MK_ST;
+					m_bMkSt = TRUE; pDoc->SetStatus(_T("General"), _T("bMkSt"), m_bMkSt);
+					m_nMkStAuto = MK_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 					::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("1"), PATH_WORKING_INFO);
 
 					if (!pDoc->GetLastShotMk())
@@ -18449,32 +18146,32 @@ void CGvisR2R_PunchView::DoAutoSetFdOffsetLastProc()
 
 	if (bOn0 && !(m_Flag & (0x01 << 2)))
 	{
-		m_Flag |= (0x01 << 2);
+		m_Flag |= (0x01 << 2); pDoc->SetStatusInt(_T("General"), _T("Flag"), m_Flag);
 	}
 	else if (!bOn0 && (m_Flag & (0x01 << 2)))
 	{
-		m_Flag &= ~(0x01 << 2);
+		m_Flag &= ~(0x01 << 2); pDoc->SetStatusInt(_T("General"), _T("Flag"), m_Flag);
 
-		m_bAoiTest[0] = FALSE;
-		m_bWaitPcr[0] = FALSE;
-		m_bAoiTestF[0] = FALSE;
-		m_bAoiFdWriteF[0] = FALSE;
+		m_bAoiTest[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTest[0]"), m_bAoiTest[0]);
+		m_bWaitPcr[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[0]"), m_bWaitPcr[0]);
+		m_bAoiTestF[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTestF[0]"), m_bAoiTestF[0]);
+		m_bAoiFdWriteF[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[0]"), m_bAoiFdWriteF[0]);
 		pView->m_pMpe->Write(_T("MB440111"), 0); // 검사부(상) Feeding Offset Write 완료(PC가 확인하고 Reset시킴.)-20141103
 		pDoc->LogAuto(_T("PLC: 검사부(상) Feeding Offset Write 완료(PC가 확인하고 MB440111 Reset시킴.)"));
 	}
 
 	if (bOn1 && !(m_Flag & (0x01 << 3)))
 	{
-		m_Flag |= (0x01 << 3);
+		m_Flag |= (0x01 << 3); pDoc->SetStatusInt(_T("General"), _T("Flag"), m_Flag);
 	}
 	else if (!bOn1 && (m_Flag & (0x01 << 3)))
 	{
-		m_Flag &= ~(0x01 << 3);
+		m_Flag &= ~(0x01 << 3); pDoc->SetStatusInt(_T("General"), _T("Flag"), m_Flag);
 
-		m_bAoiTest[1] = FALSE;
-		m_bWaitPcr[1] = FALSE;
-		m_bAoiTestF[1] = FALSE;
-		m_bAoiFdWriteF[1] = FALSE;
+		m_bAoiTest[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTest[1]"), m_bAoiTest[1]);
+		m_bWaitPcr[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[1]"), m_bWaitPcr[1]);
+		m_bAoiTestF[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTestF[1]"), m_bAoiTestF[1]);
+		m_bAoiFdWriteF[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[1]"), m_bAoiFdWriteF[1]);
 		pView->m_pMpe->Write(_T("MB440112"), 0); // 검사부(하) Feeding Offset Write 완료(PC가 확인하고 Reset시킴.)-20141103
 		pDoc->LogAuto(_T("PLC: 검사부(하) Feeding Offset Write 완료(PC가 확인하고 MB440112 Reset시킴.)"));
 	}
@@ -18490,15 +18187,15 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 
 	if (pDoc->m_pMpeSignal[1] & (0x01 << 3) && !m_bAoiTestF[0])		// 검사부(상) 검사중-20141103
 	{
-		m_bAoiTestF[0] = TRUE;
-		m_bAoiTest[0] = TRUE;
-		m_bWaitPcr[0] = TRUE;
+		m_bAoiTestF[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiTestF[0]"), m_bAoiTestF[0]);
+		m_bAoiTest[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiTest[0]"), m_bAoiTest[0]);
+		m_bWaitPcr[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[0]"), m_bWaitPcr[0]);
 	}
 	else if (!(pDoc->m_pMpeSignal[1] & (0x01 << 3)) && m_bAoiTestF[0])
 	{
-		m_bAoiTestF[0] = FALSE;
-		m_bAoiTest[0] = FALSE;//
-		m_bAoiFdWriteF[0] = FALSE;
+		m_bAoiTestF[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTestF[0]"), m_bAoiTestF[0]);
+		m_bAoiTest[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTest[0]"), m_bAoiTest[0]);
+		m_bAoiFdWriteF[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[0]"), pView->m_bAoiFdWriteF[0]);
 
 		pView->m_pMpe->Write(_T("MB440111"), 0); // 검사부(상) Feeding Offset Write 완료(PC가 확인하고 Reset시킴.)-20141103
 		pDoc->LogAuto(_T("PLC: 검사부(상) Feeding Offset Write 완료(PC가 확인하고 MB440111 Reset시킴.)"));
@@ -18506,24 +18203,28 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 
 	if (pDoc->m_pMpeSignal[1] & (0x01 << 4) && !m_bAoiTestF[1])		// 검사부(하) 검사중-20141103
 	{
-		m_bAoiTestF[1] = TRUE;
-		m_bAoiTest[1] = TRUE;
-		m_bWaitPcr[1] = TRUE;
+		m_bAoiTestF[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiTestF[1]"), m_bAoiTestF[1]);
+		m_bAoiTest[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiTest[1]"), m_bAoiTest[1]);
+		m_bWaitPcr[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[1]"), m_bWaitPcr[1]);
 	}
 	else if (!(pDoc->m_pMpeSignal[1] & (0x01 << 4)) && m_bAoiTestF[1])
 	{
-		m_bAoiTestF[1] = FALSE;
-		m_bAoiTest[1] = FALSE;//
-		m_bAoiFdWriteF[1] = FALSE;
+		m_bAoiTestF[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTestF[1]"), m_bAoiTestF[1]);
+		m_bAoiTest[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTest[1]"), m_bAoiTest[1]);
+		m_bAoiFdWriteF[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[1]"), m_bAoiFdWriteF[1]);
 		pView->m_pMpe->Write(_T("MB440112"), 0); // 검사부(하) Feeding Offset Write 완료(PC가 확인하고 Reset시킴.)-20141103
 		pDoc->LogAuto(_T("PLC: 검사부(하) Feeding Offset Write 완료(PC가 확인하고 MB440112 Reset시킴.)"));
 	}
 
 
 	if (pDoc->m_pMpeSignal[1] & (0x01 << 1) && !m_bAoiFdWrite[0])		// 검사부(상) Feeding Offset Write 완료-20141103
-		m_bAoiFdWrite[0] = TRUE;
+	{
+		m_bAoiFdWrite[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiFdWrite[0]"), m_bAoiFdWrite[0]);
+	}
 	else if (!(pDoc->m_pMpeSignal[1] & (0x01 << 1)) && m_bAoiFdWrite[0])
-		m_bAoiFdWrite[0] = FALSE;
+	{
+		m_bAoiFdWrite[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWrite[0]"), m_bAoiFdWrite[0]);
+	}
 
 	if (pDoc->m_pMpeSignal[1] & (0x01 << 2) && !m_bAoiFdWrite[1])		// 검사부(하) Feeding Offset Write 완료-20141103
 		m_bAoiFdWrite[1] = TRUE;
@@ -18535,8 +18236,8 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 	{
 		if ((m_bAoiFdWrite[0] && m_bAoiFdWrite[1]) && (!m_bAoiFdWriteF[0] && !m_bAoiFdWriteF[1]))
 		{
-			m_bAoiFdWriteF[0] = TRUE;
-			m_bAoiFdWriteF[1] = TRUE;
+			m_bAoiFdWriteF[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[0]"), pView->m_bAoiFdWriteF[0]);
+			m_bAoiFdWriteF[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[1]"), pView->m_bAoiFdWriteF[1]);
 
 			GetAoiUpOffset(OfStUp);
 			GetAoiDnOffset(OfStDn);
@@ -18561,17 +18262,17 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 		}
 		else if ((!m_bAoiFdWrite[0] && !m_bAoiFdWrite[1]) && (m_bAoiFdWriteF[0] && m_bAoiFdWriteF[1]))
 		{
-			m_bAoiFdWriteF[0] = FALSE;
-			m_bAoiFdWriteF[1] = FALSE;
-			m_bAoiTest[0] = FALSE;
-			m_bAoiTest[1] = FALSE;
+			m_bAoiFdWriteF[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[0]"), pView->m_bAoiFdWriteF[0]);
+			m_bAoiFdWriteF[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[1]"), pView->m_bAoiFdWriteF[1]);
+			m_bAoiTest[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTest[0]"), m_bAoiTest[0]);
+			m_bAoiTest[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTest[1]"), m_bAoiTest[1]);
 		}
 
 		if (m_bAoiTest[0] && !m_bAoiTest[1])
 		{
 			if (m_bAoiFdWrite[0] && !m_bAoiFdWriteF[0])
 			{
-				m_bAoiFdWriteF[0] = TRUE;
+				m_bAoiFdWriteF[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[0]"), pView->m_bAoiFdWriteF[0]);
 
 				GetAoiUpOffset(OfStUp);
 
@@ -18589,8 +18290,8 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 			}
 			else if (!m_bAoiFdWrite[0] && m_bAoiFdWriteF[0])
 			{
-				m_bAoiFdWriteF[0] = FALSE;
-				m_bAoiTest[0] = FALSE;
+				m_bAoiFdWriteF[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[0]"), pView->m_bAoiFdWriteF[0]);
+				m_bAoiTest[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTest[0]"), m_bAoiTest[0]);
 			}
 		}
 
@@ -18598,7 +18299,7 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 		{
 			if (m_bAoiFdWrite[1] && !m_bAoiFdWriteF[1])
 			{
-				m_bAoiFdWriteF[1] = TRUE;
+				m_bAoiFdWriteF[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[1]"), pView->m_bAoiFdWriteF[1]);
 
 				GetAoiDnOffset(OfStDn);
 
@@ -18616,8 +18317,8 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 			}
 			else if (!m_bAoiFdWrite[1] && m_bAoiFdWriteF[1])
 			{
-				m_bAoiFdWriteF[1] = FALSE;
-				m_bAoiTest[1] = FALSE;
+				m_bAoiFdWriteF[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[1]"), pView->m_bAoiFdWriteF[1]);
+				m_bAoiTest[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTest[1]"), m_bAoiTest[1]);
 			}
 		}
 	}
@@ -18625,7 +18326,7 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 	{
 		if (m_bAoiFdWrite[0] && !m_bAoiFdWriteF[0])
 		{
-			m_bAoiFdWriteF[0] = TRUE;
+			m_bAoiFdWriteF[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[0]"), pView->m_bAoiFdWriteF[0]);
 
 			GetAoiUpOffset(OfStUp);
 
@@ -18645,8 +18346,8 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 		}
 		else if (!m_bAoiFdWrite[0] && m_bAoiFdWriteF[0])
 		{
-			m_bAoiFdWriteF[0] = FALSE;
-			m_bAoiTest[0] = FALSE;
+			m_bAoiFdWriteF[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiFdWriteF[0]"), pView->m_bAoiFdWriteF[0]);
+			m_bAoiTest[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAoiTest[0]"), m_bAoiTest[0]);
 		}
 	}
 #endif
@@ -18656,7 +18357,7 @@ void CGvisR2R_PunchView::DoAutoChkCycleStop()
 {
 	if (m_bCycleStop)
 	{
-		m_bCycleStop = FALSE;
+		m_bCycleStop = FALSE; pDoc->SetStatus(_T("General"), _T("bCycleStop"), m_bCycleStop);
 		Buzzer(TRUE);
 		TowerLamp(RGB_YELLOW, TRUE);
 		//MyMsgBox(pDoc->m_sAlmMsg);
@@ -18865,7 +18566,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 			}
 			else
 			{
-				ResetWinker(); // 20151126 : 운전스위치 램프 동작 문제로 수정.
+				ResetWinker(); // 운전스위치 램프 동작 문제로 수정.
 
 				TowerLamp(RGB_GREEN, TRUE, TRUE);
 				if (pDoc->WorkingInfo.LastJob.bSampleTest)
@@ -18900,8 +18601,6 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 				{
 					if (m_sDispMain != _T("단면검사"))
 						DispMain(_T("단면검사"), RGB_GREEN);
-					//if(m_sDispMain != _T("초기운전")
-					//	DispMain(_T("초기운전", RGB_GREEN);
 				}
 				m_nVsBufLastSerial[0] = GetVsUpBufLastSerial();
 				if (bDualTest)
@@ -18916,8 +18615,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 						m_pDlgMenu01->UpdateData();
 				}
 
-
-				m_nStepAuto = AT_LP;
+				m_nStepAuto = AT_LP; pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
 			}
 		}
 		else
@@ -18927,8 +18625,8 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 	case AT_LP + (AtLpVsIdx::ChkShare) :
 		if (IsShare()) // ChkShare()
 		{
-			bPcrInShare[0] = FALSE;
-			bPcrInShare[1] = FALSE;
+			bPcrInShare[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[0]"), bPcrInShare[0]);
+			bPcrInShare[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[1]"), bPcrInShare[1]);
 
 			if (IsShareUp()) // 검사부(상) 검사중
 			{
@@ -18944,8 +18642,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 						}
 						else
 						{
-							//m_nShareUpS = nSerial;
-							bPcrInShare[0] = TRUE;
+							bPcrInShare[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[0]"), bPcrInShare[0]);
 						}
 					}
 					else
@@ -18957,19 +18654,11 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 						}
 						else
 						{
-							//m_nShareUpS = nSerial;
-							bPcrInShare[0] = TRUE;
+							bPcrInShare[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[0]"), bPcrInShare[0]);
 						}
 					}
 				}
-				//else
-				//{
-				//	m_bLoadShare[0] = FALSE;
-				//}
 			}
-			//else
-			//	m_bLoadShare[0] = FALSE;
-
 
 			if (bDualTest)
 			{
@@ -18987,8 +18676,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 							}
 							else
 							{
-								//m_nShareDnS = nSerial;
-								bPcrInShare[1] = TRUE;
+								bPcrInShare[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[1]"), bPcrInShare[1]);
 							}
 						}
 						else
@@ -19000,18 +18688,11 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 							}
 							else
 							{
-								//m_nShareDnS = nSerial;
-								bPcrInShare[1] = TRUE;
+								bPcrInShare[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[1]"), bPcrInShare[1]);
 							}
 						}
 					}
-					//else
-					//{
-					//	m_bLoadShare[1] = FALSE;
-					//}
 				}
-				//else
-				//	m_bLoadShare[1] = FALSE;
 
 				if (bPcrInShare[0] || bPcrInShare[1])
 					m_nStepAuto++;
@@ -19025,39 +18706,29 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		else // if (IsShare())
 		{
 			if (IsShareVs())
-				m_nStepAuto = AT_LP + (AtLpVsIdx::ChkShareVs);
+			{
+				m_nStepAuto = AT_LP + (AtLpVsIdx::ChkShareVs); pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
+			}
 		}
 		break;
 
 	case AT_LP + (AtLpVsIdx::ChkShare) + 1:
-		//if (!m_bCont) // 이어가기 아닌 경우.
-		//{
-		//	if (!ChkStShotNum())
-		//	{
-		//		Stop();
-		//		TowerLamp(RGB_YELLOW, TRUE);
-		//	}
-		//}
 		m_nStepAuto++;
 		break;
 	case AT_LP + (AtLpVsIdx::ChkShare) + 2:
-		//if (IsRun())
-		{
-			//m_bBufEmpty[0] = pDoc->m_bBufEmpty[0]; // Up
-			m_nStepAuto++;
-		}
+		m_nStepAuto++;
 		break;
 
 	case AT_LP + (AtLpVsIdx::ChkShare) + 3:
 		Shift2DummyBuf();			// PCR 이동(Share->Buffer)
-		m_nStepAuto = AT_LP + (AtLpVsIdx::ChkShare);
+		m_nStepAuto = AT_LP + (AtLpVsIdx::ChkShare); pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
 		break;
 
 	case AT_LP + (AtLpVsIdx::ChkShareVs) :
 		if (IsShareVs()) // ChkShareVs()
 		{
-			bPcrInShareVs[0] = FALSE;
-			bPcrInShareVs[1] = FALSE;
+			bPcrInShareVs[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bPcrInShareVs[0]"), bPcrInShareVs[0]);
+			bPcrInShareVs[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bPcrInShareVs[1]"), bPcrInShareVs[1]);
 
 			if (IsShareVsUp()) // 검사부(상) 검사중
 			{
@@ -19074,7 +18745,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 						else
 						{
 							m_nShareUpS = nSerial;
-							bPcrInShareVs[0] = TRUE;
+							bPcrInShareVs[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShareVs[0]"), bPcrInShareVs[0]);
 						}
 					}
 					else
@@ -19087,18 +18758,11 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 						else
 						{
 							m_nShareUpS = nSerial;
-							bPcrInShareVs[0] = TRUE;
+							bPcrInShareVs[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShareVs[0]"), bPcrInShareVs[0]);
 						}
 					}
 				}
-				//else
-				//{
-				//	m_bLoadShareVs[0] = FALSE;
-				//}
 			}
-			//else
-			//	m_bLoadShareVs[0] = FALSE;
-
 
 			if (bDualTest)
 			{
@@ -19117,7 +18781,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 							else
 							{
 								m_nShareDnS = nSerial;
-								bPcrInShareVs[1] = TRUE;
+								bPcrInShareVs[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShareVs[1]"), bPcrInShareVs[1]);
 							}
 						}
 						else
@@ -19130,17 +18794,11 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 							else
 							{
 								m_nShareDnS = nSerial;
-								bPcrInShareVs[1] = TRUE;
+								bPcrInShareVs[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShareVs[1]"), bPcrInShareVs[1]);
 							}
 						}
 					}
-					//else
-					//{
-					//	m_bLoadShareVs[1] = FALSE;
-					//}
 				}
-				//else
-				//	m_bLoadShareVs[1] = FALSE;
 
 				if (bPcrInShareVs[0] || bPcrInShareVs[1])
 					m_nStepAuto++;
@@ -19157,8 +18815,8 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 			{
 				if (ChkLastProc())
 				{
-					m_nLastProcAuto = LAST_PROC;
-					m_bLastProc = TRUE;
+					m_nLastProcAuto = LAST_PROC; pDoc->SetStatusInt(_T("General"), _T("nLastProcAuto"), m_nLastProcAuto);
+					m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 					nSerial = GetShareVsUp();
 
 					if (bDualTest)
@@ -19226,8 +18884,8 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 					}
 				}
 
-				m_bWaitPcr[0] = FALSE; // 향후 제거해야 할 flag
-				m_bWaitPcr[1] = FALSE;
+				m_bWaitPcr[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[0]"), m_bWaitPcr[0]);// 향후 제거해야 할 flag
+				m_bWaitPcr[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[1]"), m_bWaitPcr[1]);
 				m_nStepAuto++;
 			}
 
@@ -19262,11 +18920,8 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		m_nStepAuto++;
 		break;
 	case AT_LP + (AtLpVsIdx::ChkShareVs) + 2:
-		//if (IsRun())
-		{
-			m_bBufEmpty[0] = pDoc->m_bBufEmpty[0]; // Up
-			m_nStepAuto++;
-		}
+		m_bBufEmpty[0] = pDoc->m_bBufEmpty[0]; pDoc->SetStatus(_T("General"), _T("bBufEmpty[0]"), pDoc->m_bBufEmpty[0]); // Up
+		m_nStepAuto++;
 		break;
 
 	case AT_LP + (AtLpVsIdx::ChkShareVs) + 3:
@@ -19416,7 +19071,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 			{
 				if (m_nShareUpS == 1)
 				{
-					pDoc->m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo();
+					pDoc->m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo(); pDoc->SetStatusInt(_T("General"), _T("nAoiCamInfoStrPcs[0]"), pDoc->m_nAoiCamInfoStrPcs[0]);
 					if ((pDoc->m_nAoiCamInfoStrPcs[0] == 1 ? TRUE : FALSE) != pDoc->WorkingInfo.System.bStripPcsRgnBin)
 					{
 						if (pDoc->m_nAoiCamInfoStrPcs[0] == 1 ? TRUE : FALSE)
@@ -19448,21 +19103,12 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 				UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬
 			}
 
-			//if (!bDualTest)
-			//{
-			//	if (m_nShareUpS != m_nShareUpSprev)
-			//	{
-			//		m_nShareUpSprev = m_nShareUpS;
-			//		UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬 
-			//	}
-			//}
-
 			if (!m_bLastProc)
 			{
 				if (ChkLastProc())
 				{
-					m_nLastProcAuto = LAST_PROC;
-					m_bLastProc = TRUE;
+					m_nLastProcAuto = LAST_PROC; pDoc->SetStatusInt(_T("General"), _T("nLastProcAuto"), m_nLastProcAuto);
+					m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 
 					if (bDualTest)
 					{
@@ -19583,7 +19229,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 			{
 				if (m_nShareDnS == 1)
 				{
-					pDoc->m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo();
+					pDoc->m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo(); pDoc->SetStatusInt(_T("General"), _T("nAoiCamInfoStrPcs[1]"), pDoc->m_nAoiCamInfoStrPcs[1]);
 					if ((pDoc->m_nAoiCamInfoStrPcs[1] == 1 ? TRUE : FALSE) != pDoc->WorkingInfo.System.bStripPcsRgnBin)
 					{
 						if (pDoc->m_nAoiCamInfoStrPcs[1] == 1 ? TRUE : FALSE)
@@ -19615,22 +19261,12 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 				UpdateReelmap(m_nShareDnS); // 시리얼파일의 정보로 릴맵을 만듬
 			}
 
-			//if (bDualTest)
-			//{
-			//	if (m_nShareDnS != m_nShareDnSprev)
-			//	{
-			//		m_nShareDnSprev = m_nShareDnS;
-			//		UpdateReelmap(m_nShareDnS);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
-			//	}
-			//}
-
-
 			if (!m_bLastProc)
 			{
 				if (ChkLastProc())
 				{
-					m_nLastProcAuto = LAST_PROC;
-					m_bLastProc = TRUE;
+					m_nLastProcAuto = LAST_PROC; pDoc->SetStatusInt(_T("General"), _T("nLastProcAuto"), m_nLastProcAuto);
+					m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 
 					if (ChkLastProcFromEng())
 					{
@@ -19702,61 +19338,55 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		break;
 
 	case AT_LP + (AtLpVsIdx::UpdateReelmap) + 3:
-		//if (IsRun())
+		if (bDualTest)
 		{
-			if (bDualTest)
-			{
-				if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
-					break;
-			}
-			else
-			{
-				if (m_bTHREAD_UPDATE_REELMAP_UP) // Write Reelmap
-					break;
-			}
-			m_nStepAuto++;
+			if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
+				break;
 		}
+		else
+		{
+			if (m_bTHREAD_UPDATE_REELMAP_UP) // Write Reelmap
+				break;
+		}
+		m_nStepAuto++;
 		break;
 
 	case AT_LP + (AtLpVsIdx::MakeItsFile):
-		//if (IsRun())
+		if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
 		{
-			if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
+			if (!bDualTest)
 			{
-				if (!bDualTest)
+				if (m_nShareUpS > 0)
 				{
-					if (m_nShareUpS > 0)
+					MakeItsFile(m_nShareUpS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
+					if (pDoc->GetTestMode() == MODE_OUTER)
+						UpdateReelmapInner(m_nShareUpS);
+				}
+			}
+			else
+			{
+				if (m_nShareUpS > 0)
+				{
+					if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
 					{
 						MakeItsFile(m_nShareUpS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
 						if (pDoc->GetTestMode() == MODE_OUTER)
 							UpdateReelmapInner(m_nShareUpS);
 					}
 				}
-				else
+				if (m_nShareDnS > 0)
 				{
-					if (m_nShareUpS > 0)
+					if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
 					{
-						if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
-						{
-							MakeItsFile(m_nShareUpS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
-							if (pDoc->GetTestMode() == MODE_OUTER)
-								UpdateReelmapInner(m_nShareUpS);
-						}
-					}
-					if (m_nShareDnS > 0)
-					{
-						if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
-						{
-							MakeItsFile(m_nShareDnS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
-							if (pDoc->GetTestMode() == MODE_OUTER)
-								UpdateReelmapInner(m_nShareDnS);
-						}
+						MakeItsFile(m_nShareDnS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
+						if (pDoc->GetTestMode() == MODE_OUTER)
+							UpdateReelmapInner(m_nShareDnS);
 					}
 				}
 			}
-
-			m_nStepAuto++;
 		}
+
+		m_nStepAuto++;
 		break;
 
 	case AT_LP + (AtLpVsIdx::MakeItsFile) + 1:
@@ -19783,7 +19413,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 	case AT_LP + (AtLpVsIdx::ResetShare) + 1:
 		m_bLoadShare[0] = FALSE;
 		m_bLoadShare[1] = FALSE;
-		m_nStepAuto = AT_LP + (AtLpVsIdx::ChkShare);
+		m_nStepAuto = AT_LP + (AtLpVsIdx::ChkShare); pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
 		break;
 
 
@@ -19804,26 +19434,25 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		if (IsVsUp())
 			m_nStepAuto++;
 		else
-			m_nStepAuto = m_nPrevStepAuto;
+		{
+			m_nStepAuto = m_nPrevStepAuto; pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
+		}
 		break;
 
 	case LAST_PROC_VS_ALL + 2:
-		//SetDummyUp();
 		m_nStepAuto++;
 		break;
 
 	case LAST_PROC_VS_ALL + 3:
-		//SetDummyUp();
 		m_nStepAuto++;
 		break;
 
 	case LAST_PROC_VS_ALL + 4:
-		//SetDummyUp();
 		m_nStepAuto++;
 		break;
 
 	case LAST_PROC_VS_ALL + 5:
-		m_nStepAuto = m_nPrevStepAuto;
+		m_nStepAuto = m_nPrevStepAuto; pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
 		break;
 	}
 }
@@ -19837,7 +19466,6 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 	int nSerial = 0;
 	CString sNewLot;
 	int nNewLot = 0;
-	//BOOL bPcrInShare[2];
 	BOOL bNewModel = FALSE;
 
 	switch (m_nStepAuto)
@@ -19908,8 +19536,6 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				{
 					if (m_sDispMain != _T("단면검사"))
 						DispMain(_T("단면검사"), RGB_GREEN);
- 					//if(m_sDispMain != _T("초기운전")
- 					//	DispMain(_T("초기운전", RGB_GREEN);
 				}
 				m_nVsBufLastSerial[0] = GetVsUpBufLastSerial();
 				if (bDualTest)
@@ -19925,7 +19551,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				}
 
 				
-				m_nStepAuto = AT_LP;
+				m_nStepAuto = AT_LP; pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
 			}
 		}
 		else
@@ -19935,10 +19561,9 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 	case AT_LP:
 		if (IsShare()) // ChkShare()
 		{
-			bPcrInShare[0] = FALSE;
-			bPcrInShare[1] = FALSE;
+			bPcrInShare[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[0]"), bPcrInShare[0]);
+			bPcrInShare[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[1]"), bPcrInShare[1]);
 
-			//if (IsShareUp() && IsTestDoneUp() && !m_bAoiTestF[0]) // 검사부(상) 검사중
 			if (IsShareUp())
 			{
 				nSerial = GetShareUp();
@@ -19954,7 +19579,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 						else
 						{
 							m_nShareUpS = nSerial;
-							bPcrInShare[0] = TRUE;
+							bPcrInShare[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[0]"), bPcrInShare[0]);
 						}
 					}
 					else
@@ -19967,7 +19592,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 						else
 						{
 							m_nShareUpS = nSerial;
-							bPcrInShare[0] = TRUE;
+							bPcrInShare[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[0]"), bPcrInShare[0]);
 						}
 					}
 				}
@@ -19982,7 +19607,6 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 			if (bDualTest)
 			{
-				//if (IsShareDn() && IsTestDoneDn() && !m_bAoiTestF[1]) // 검사부(하) 검사중
 				if (IsShareDn())
 				{
 					nSerial = GetShareDn();
@@ -19998,7 +19622,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 							else
 							{
 								m_nShareDnS = nSerial;
-								bPcrInShare[1] = TRUE;
+								bPcrInShare[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[1]"), bPcrInShare[1]);
 							}
 						}
 						else
@@ -20011,7 +19635,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 							else
 							{
 								m_nShareDnS = nSerial;
-								bPcrInShare[1] = TRUE;
+								bPcrInShare[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bPcrInShare[1]"), bPcrInShare[1]);
 							}
 						}
 					}
@@ -20038,72 +19662,58 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			{
 				if (ChkLastProc())
 				{
-					m_nLastProcAuto = LAST_PROC;
-					m_bLastProc = TRUE;
+					m_nLastProcAuto = LAST_PROC; pDoc->SetStatusInt(_T("General"), _T("nLastProcAuto"), m_nLastProcAuto);
+					m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 					nSerial = GetShareUp();
 
-					//if (IsVs())
-					//{
-					//	if (m_nAoiLastSerial[0] < 1)
-					//		m_nAoiLastSerial[0] = nSerial;
-
-					//	m_nPrevStepAuto = m_nStepAuto;
-					//	m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
-					//	break;
-					//}
-					//else
+					if (bDualTest)
 					{
-						if (bDualTest)
+						if (ChkLastProcFromEng())
 						{
-							if (ChkLastProcFromEng())
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->GetCurrentInfoEngShotNum();
-							}
-							else if (ChkLastProcFromUp())
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->m_ListBuf[0].GetLast();
-							}
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
 							else
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->m_ListBuf[1].GetLast();
-							}
+								nSerial = pDoc->GetCurrentInfoEngShotNum();
+						}
+						else if (ChkLastProcFromUp())
+						{
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
+							else
+								nSerial = pDoc->m_ListBuf[0].GetLast();
 						}
 						else
 						{
-							if (ChkLastProcFromEng())
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->GetCurrentInfoEngShotNum();
-							}
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
 							else
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->m_ListBuf[0].GetLast();
-							}
+								nSerial = pDoc->m_ListBuf[1].GetLast();
 						}
-
-						if (!IsSetLotEnd()) // 20160810
-						{
-							SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
-						//if (m_nAoiLastSerial[0] < 1)
-							//m_nAoiLastSerial[0] = nSerial;
-						}
-
-						m_nStepAuto++;
 					}
+					else
+					{
+						if (ChkLastProcFromEng())
+						{
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
+							else
+								nSerial = pDoc->GetCurrentInfoEngShotNum();
+						}
+						else
+						{
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
+							else
+								nSerial = pDoc->m_ListBuf[0].GetLast();
+						}
+					}
+
+					if (!IsSetLotEnd()) // 20160810
+					{
+						SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
+					}
+
+					m_nStepAuto++;
 				}
 			}
 			else
@@ -20115,17 +19725,14 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					else
 						nSerial = pDoc->GetCurrentInfoEngShotNum();
 
-					//if (m_nLotEndSerial != nSerial)
 					if (!IsSetLotEnd())
 					{
 						SetLotEnd(nSerial);
-						//if (m_nAoiLastSerial[0] < 1)
-						//m_nAoiLastSerial[0] = nSerial;
 					}
 				}
 
-				m_bWaitPcr[0] = FALSE;
-				m_bWaitPcr[1] = FALSE;
+				m_bWaitPcr[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[0]"), m_bWaitPcr[0]);
+				m_bWaitPcr[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bWaitPcr[1]"), m_bWaitPcr[1]);
 				m_nStepAuto++;
 			}
 			
@@ -20135,13 +19742,11 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					nSerial = GetLotEndSerial();
 				else
 					nSerial = pDoc->GetCurrentInfoEngShotNum();
-				//SetLastSerialEng(nSerial);
 
 				if (ChkLastProc())
 				{
 					if (ChkLastProcFromEng())
 					{
-						//if (m_nLotEndSerial != nSerial)
 						if (!IsSetLotEnd())
 							SetLotEnd(nSerial);
 					}
@@ -20160,20 +19765,13 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				TowerLamp(RGB_YELLOW, TRUE);
 			}
 		}
-		else
-		{
-			//if (!ChkContShotNum())
-			//{
-			//	Stop();
-			//	TowerLamp(RGB_YELLOW, TRUE);
-			//}
-		}
+
 		m_nStepAuto++;
 		break;
 	case AT_LP + 2:
 		if (IsRun())
 		{
-			m_bBufEmpty[0] = pDoc->m_bBufEmpty[0]; // Up
+			m_bBufEmpty[0] = pDoc->m_bBufEmpty[0]; pDoc->SetStatus(_T("General"), _T("bBufEmpty[0]"), pDoc->m_bBufEmpty[0]); // Up
 			m_nStepAuto++;
 		}
 		break;
@@ -20354,7 +19952,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			{
 				if (m_nShareUpS == 1)
 				{
-					pDoc->m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo();
+					pDoc->m_nAoiCamInfoStrPcs[0] = GetAoiUpCamMstInfo(); pDoc->SetStatusInt(_T("General"), _T("nAoiCamInfoStrPcs[0]"), pDoc->m_nAoiCamInfoStrPcs[0]);
 					if ((pDoc->m_nAoiCamInfoStrPcs[0] == 1 ? TRUE : FALSE) != pDoc->WorkingInfo.System.bStripPcsRgnBin)
 					{
 						if (pDoc->m_nAoiCamInfoStrPcs[0] == 1 ? TRUE : FALSE)
@@ -20387,95 +19985,58 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬
 			}
 
-			//if (!bDualTest)
-			//{
-			//	if (m_nShareUpS != m_nShareUpSprev)
-			//	{
-			//		m_nShareUpSprev = m_nShareUpS;
-			//		UpdateReelmap(m_nShareUpS); // 시리얼파일의 정보로 릴맵을 만듬 
-			//	}
-			//}
-
 			if (!m_bLastProc)
 			{
-				//if (!IsSetLotEnd())
-				//{
-				//	if (ChkLotEndUp(m_nShareUpS))// 파일의 내용 중에 Lot End (-2) 잔량처리를 체크함. (연속 3Pnl:-2) -> 로트완료 
-				//	{
-				//		SetLotEnd(m_nShareUpS - pDoc->AoiDummyShot[0]);
-				//		if (m_nAoiLastSerial[0] < 1)
-				//			m_nAoiLastSerial[0] = m_nShareUpS;
-				//		if (!bDualTest)
-				//		{
-				//			m_bLastProc = TRUE;
-				//			m_nLastProcAuto = LAST_PROC;
-				//		}
-				//	}
-				//}
-
 				if (ChkLastProc())
 				{
-					m_nLastProcAuto = LAST_PROC;
-					m_bLastProc = TRUE;
+					m_nLastProcAuto = LAST_PROC; pDoc->SetStatusInt(_T("General"), _T("nLastProcAuto"), m_nLastProcAuto);
+					m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 
-					//if (IsVs())
-					//{
-					//	if (m_nAoiLastSerial[0] < 1)
-					//		m_nAoiLastSerial[0] = m_nShareUpS;
-					//	m_nPrevStepAuto = m_nStepAuto;
-					//	m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
-					//	break;
-					//}
-					//else
+					if (bDualTest)
 					{
-						if (bDualTest)
+						if (ChkLastProcFromEng())
 						{
-							if (ChkLastProcFromEng())
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->GetCurrentInfoEngShotNum();
-							}
-							else if (ChkLastProcFromUp())
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->m_ListBuf[0].GetLast();
-							}
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
 							else
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->m_ListBuf[1].GetLast();
-							}
+								nSerial = pDoc->GetCurrentInfoEngShotNum();
+						}
+						else if (ChkLastProcFromUp())
+						{
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
+							else
+								nSerial = pDoc->m_ListBuf[0].GetLast();
 						}
 						else
 						{
-							if (ChkLastProcFromEng())
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->GetCurrentInfoEngShotNum();
-							}
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
 							else
-							{
-								if (IsSetLotEnd())
-									nSerial = GetLotEndSerial();
-								else
-									nSerial = pDoc->m_ListBuf[0].GetLast();
-							}
+								nSerial = pDoc->m_ListBuf[1].GetLast();
 						}
-
-						if (!IsSetLotEnd()) // 20160810
+					}
+					else
+					{
+						if (ChkLastProcFromEng())
 						{
-							SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
-							//if (m_nAoiLastSerial[0] < 1)
-							//m_nAoiLastSerial[0] = nSerial;
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
+							else
+								nSerial = pDoc->GetCurrentInfoEngShotNum();
 						}
+						else
+						{
+							if (IsSetLotEnd())
+								nSerial = GetLotEndSerial();
+							else
+								nSerial = pDoc->m_ListBuf[0].GetLast();
+						}
+					}
+
+					if (!IsSetLotEnd()) // 20160810
+					{
+						SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
 					}
 				}
 			}
@@ -20558,7 +20119,6 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 			if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
 			{
-				//MsgBox(_T("신규 모델에 의한 AOI(하)에서 로트 분리가 되었습니다.\r\n이전 로트를 잔량처리 합니다.");
 				InitInfo();
 				ResetMkInfo(1); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn	
 				ModelChange(1); // 0 : AOI-Up , 1 : AOI-Dn
@@ -20568,7 +20128,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			{
 				if (m_nShareDnS == 1)
 				{
-					pDoc->m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo();
+					pDoc->m_nAoiCamInfoStrPcs[1] = GetAoiDnCamMstInfo(); pDoc->SetStatusInt(_T("General"), _T("nAoiCamInfoStrPcs[1]"), pDoc->m_nAoiCamInfoStrPcs[1]);
 					if ((pDoc->m_nAoiCamInfoStrPcs[1] == 1 ? TRUE : FALSE) != pDoc->WorkingInfo.System.bStripPcsRgnBin)
 					{
 						if (pDoc->m_nAoiCamInfoStrPcs[1] == 1 ? TRUE : FALSE)
@@ -20600,77 +20160,38 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				UpdateReelmap(m_nShareDnS); // 시리얼파일의 정보로 릴맵을 만듬
 			}
 
-			//if (bDualTest)
-			//{
-			//	if (m_nShareDnS != m_nShareDnSprev)
-			//	{
-			//		m_nShareDnSprev = m_nShareDnS;
-			//		UpdateReelmap(m_nShareDnS);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
-			//	}
-			//}
-
-
 			if (!m_bLastProc)
 			{
-				//if (!IsSetLotEnd())
-				//{
-				//	if (ChkLotEndDn(m_nShareDnS))// 파일의 내용 중에 Lot End (-2) 잔량처리를 체크함. (연속 3Pnl:-2) -> 로트완료 
-				//	{
-				//		if (!IsSetLotEnd())
-				//			SetLotEnd(m_nShareDnS - pDoc->AoiDummyShot[1]);
-				//		if (m_nAoiLastSerial[0] < 1)
-				//			m_nAoiLastSerial[0] = m_nShareDnS;
-				//		if (bDualTest)
-				//		{
-				//			m_bLastProc = TRUE;
-				//			m_nLastProcAuto = LAST_PROC;
-				//		}
-				//	}
-				//}
-
 				if (ChkLastProc())
 				{
-					m_nLastProcAuto = LAST_PROC;
-					m_bLastProc = TRUE;
+					m_nLastProcAuto = LAST_PROC; pDoc->SetStatusInt(_T("General"), _T("nLastProcAuto"), m_nLastProcAuto);
+					m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 
-					//if (IsVs())
-					//{
-					//	if (m_nAoiLastSerial[0] < 1)
-					//		m_nAoiLastSerial[0] = m_nShareDnS;
-					//	m_nPrevStepAuto = m_nStepAuto;
-					//	m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
-					//	break;
-					//}
-					//else
+					if (ChkLastProcFromEng())
 					{
-						if (ChkLastProcFromEng())
-						{
-							if (IsSetLotEnd())
-								nSerial = GetLotEndSerial();
-							else
-								nSerial = pDoc->GetCurrentInfoEngShotNum();
-						}
-						else if (ChkLastProcFromUp())
-						{
-							if (IsSetLotEnd())
-								nSerial = GetLotEndSerial();
-							else
-								nSerial = pDoc->m_ListBuf[0].GetLast();
-						}
+						if (IsSetLotEnd())
+							nSerial = GetLotEndSerial();
 						else
-						{
-							if (IsSetLotEnd())
-								nSerial = GetLotEndSerial();
-							else
-								nSerial = pDoc->m_ListBuf[1].GetLast();
-						}
+							nSerial = pDoc->GetCurrentInfoEngShotNum();
+					}
+					else if (ChkLastProcFromUp())
+					{
+						if (IsSetLotEnd())
+							nSerial = GetLotEndSerial();
+						else
+							nSerial = pDoc->m_ListBuf[0].GetLast();
+					}
+					else
+					{
+						if (IsSetLotEnd())
+							nSerial = GetLotEndSerial();
+						else
+							nSerial = pDoc->m_ListBuf[1].GetLast();
+					}
 
-						if (!IsSetLotEnd()) // 20160810
-						{
-							SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
-						//if (m_nAoiLastSerial[0] < 1)
-						//m_nAoiLastSerial[0] = nSerial;
-						}
+					if (!IsSetLotEnd()) // 20160810
+					{
+						SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
 					}
 				}
 			}
@@ -20833,7 +20354,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 	case AT_LP + 11:
 		m_bLoadShare[0] = FALSE;
 		m_bLoadShare[1] = FALSE;
-		m_nStepAuto = AT_LP;
+		m_nStepAuto = AT_LP; pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
 		break;
 
 
@@ -20855,7 +20376,9 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		if (IsVsUp())
 			m_nStepAuto++;
 		else
-			m_nStepAuto = m_nPrevStepAuto;
+		{
+			m_nStepAuto = m_nPrevStepAuto; pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
+		}
 		break;
 
 	case LAST_PROC_VS_ALL + 2:
@@ -20874,7 +20397,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		break;
 
 	case LAST_PROC_VS_ALL + 5:
-		m_nStepAuto = m_nPrevStepAuto;
+		m_nStepAuto = m_nPrevStepAuto; pDoc->SetStatusInt(_T("General"), _T("nStepAuto"), m_nStepAuto);
 		break;
 	}
 }
@@ -20921,7 +20444,7 @@ void CGvisR2R_PunchView::Mk2PtReady()
 						pView->ClrDispMsg();
 						sMsg.Format(_T("2D 리더기가 연결이 되지 않았습니다."));
 						AfxMessageBox(sMsg);
-						m_nMkStAuto = MK_ST;
+						m_nMkStAuto = MK_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 						break;
 					}
 				}
@@ -20933,7 +20456,7 @@ void CGvisR2R_PunchView::Mk2PtReady()
 			if (!m_bTHREAD_SHIFT2MK)
 			{
 				SetListBuf();
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::Start);
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::Start); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 			}
 			break;
 		case MK_ST + (Mk2PtIdx::Start) :	// 2
@@ -20943,32 +20466,26 @@ void CGvisR2R_PunchView::Mk2PtReady()
 				{
 					m_nMkStAuto++;
 
-					m_nBufDnSerial[0] = pDoc->m_ListBuf[1].Pop();
-					m_nBufUpSerial[0] = m_nBufDnSerial[0];
-
-					//if (GetAoiUpVsStatus())
-					//	UpdateReelmap(m_nBufDnSerial[0]);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
+					m_nBufDnSerial[0] = pDoc->m_ListBuf[1].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[0]"), m_nBufDnSerial[0]);
+					m_nBufUpSerial[0] = m_nBufDnSerial[0]; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[0]"), m_nBufUpSerial[0]);
 
 					if (pDoc->m_ListBuf[1].nTot > 0) // AOI-Dn
 					{
-						m_nBufDnSerial[1] = pDoc->m_ListBuf[1].Pop();
-						m_nBufUpSerial[1] = m_nBufDnSerial[1];
-
-						//if (GetAoiUpVsStatus())
-						//	UpdateReelmap(m_nBufDnSerial[1]);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
+						m_nBufDnSerial[1] = pDoc->m_ListBuf[1].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[1]"), m_nBufDnSerial[1]);
+						m_nBufUpSerial[1] = m_nBufDnSerial[1]; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
 					}
 					else
 					{
-						m_nBufDnSerial[1] = 0;
-						m_nBufUpSerial[1] = 0;
+						m_nBufDnSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[1]"), m_nBufDnSerial[1]);
+						m_nBufUpSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
 					}
 				}
 				else
 				{
 					if (!GetAoiUpVsStatus())
 					{
-						m_bLotEnd = TRUE;
-						m_nLotEndAuto = LOT_END;
+						m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+						m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 					}
 				}
 
@@ -20976,10 +20493,10 @@ void CGvisR2R_PunchView::Mk2PtReady()
 				{
 					if (m_nBufUpSerial[0] == 1)
 					{
-						m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);
-						m_bLastProcFromUp = FALSE;
-						m_bLastProcFromEng = FALSE;
-						m_bLastProc = TRUE;
+						m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum); pDoc->SetStatusInt(_T("General"), _T("nLotEndSerial"), m_nLotEndSerial);
+						m_bLastProcFromUp = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+						m_bLastProcFromEng = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+						m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 						if (m_pDlgMenu01)
 							m_pDlgMenu01->m_bLastProc = TRUE;
 						if (m_pMpe)
@@ -20996,27 +20513,22 @@ void CGvisR2R_PunchView::Mk2PtReady()
 				if (pDoc->m_ListBuf[0].nTot > 0) // AOI-Up
 				{
 					m_nMkStAuto++;
-					m_nBufUpSerial[0] = pDoc->m_ListBuf[0].Pop();
-
-					//if (GetAoiUpVsStatus())
-					//	UpdateReelmap(m_nBufUpSerial[0]);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
-
+					m_nBufUpSerial[0] = pDoc->m_ListBuf[0].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[0]"), m_nBufUpSerial[0]);
 					if (pDoc->m_ListBuf[0].nTot > 0) // AOI-Up
 					{
-						m_nBufUpSerial[1] = pDoc->m_ListBuf[0].Pop();
-
-						//if (GetAoiUpVsStatus())
-						//	UpdateReelmap(m_nBufUpSerial[1]);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
+						m_nBufUpSerial[1] = pDoc->m_ListBuf[0].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
 					}
 					else
-						m_nBufUpSerial[1] = 0;
+					{
+						m_nBufUpSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
+					}
 				}
 				else
 				{
 					if (!GetAoiUpVsStatus())
 					{
-						m_bLotEnd = TRUE;
-						m_nLotEndAuto = LOT_END;
+						m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+						m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 					}
 				}
 
@@ -21024,10 +20536,10 @@ void CGvisR2R_PunchView::Mk2PtReady()
 				{
 					if (m_nBufUpSerial[0] == 1)
 					{
-						m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);
-						m_bLastProcFromUp = FALSE;
-						m_bLastProcFromEng = FALSE;
-						m_bLastProc = TRUE;
+						m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum); pDoc->SetStatusInt(_T("General"), _T("nLotEndSerial"), m_nLotEndSerial);
+						m_bLastProcFromUp = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+						m_bLastProcFromEng = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+						m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 						if (m_pDlgMenu01)
 							m_pDlgMenu01->m_bLastProc = TRUE;
 						if (m_pMpe)
@@ -21044,13 +20556,16 @@ void CGvisR2R_PunchView::Mk2PtReady()
 			if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
 			{
 				if (!m_bTHREAD_UPDATE_REELMAP_UP && !m_bTHREAD_UPDATE_REELMAP_DN && !m_bTHREAD_UPDATE_REELMAP_ALLUP && !m_bTHREAD_UPDATE_REELMAP_ALLDN && !m_bTHREAD_MAKE_ITS_FILE_UP && !m_bTHREAD_MAKE_ITS_FILE_DN && !m_bTHREAD_UPDATE_REELMAP_INNER_UP && !m_bTHREAD_UPDATE_REELMAP_INNER_DN && !m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP && !m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN)
-					//&& !m_bTHREAD_UPDATE_REELMAP_INOUTER_UP && !m_bTHREAD_UPDATE_REELMAP_INOUTER_DN && !m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP && !m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN) // Write Reelmap
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkSn);
+				{
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkSn); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+				}
 			}
 			else
 			{
 				if (!m_bTHREAD_UPDATE_REELMAP_UP && !m_bTHREAD_UPDATE_REELMAP_DN && !m_bTHREAD_UPDATE_REELMAP_ALLUP && !m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkSn);
+				{
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkSn); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+				}
 			}
 			break;
 		}
@@ -21082,23 +20597,22 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 				pView->ClrDispMsg();
 				AfxMessageBox(_T("좌/우 마킹 시리얼이 같습니다."));
 				SetListBuf();
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::Start);
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::Start); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 				break;
 			}
 
 			if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
 			{
 				if (!m_bTHREAD_UPDATE_REELMAP_UP && !m_bTHREAD_UPDATE_REELMAP_DN && !m_bTHREAD_UPDATE_REELMAP_ALLUP && !m_bTHREAD_UPDATE_REELMAP_ALLDN && !m_bTHREAD_MAKE_ITS_FILE_UP && !m_bTHREAD_MAKE_ITS_FILE_DN && !m_bTHREAD_UPDATE_REELMAP_INNER_UP && !m_bTHREAD_UPDATE_REELMAP_INNER_DN && !m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP && !m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN)
-					//&& !m_bTHREAD_UPDATE_REELMAP_INOUTER_UP && !m_bTHREAD_UPDATE_REELMAP_INOUTER_DN && !m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP && !m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN) // Write Reelmap
 				{
 					if (!m_bTHREAD_DISP_DEF && !m_bTHREAD_DISP_DEF_INNER)
 					{
 						m_nMkStAuto++;
-						m_nStepTHREAD_DISP_DEF = 0;
-						m_nStepTHREAD_DISP_DEF_INNER = 0;
+						m_nStepTHREAD_DISP_DEF = 0; pDoc->SetStatusInt(_T("Thread"), _T("nStepTHREAD_DISP_DEF"), m_nStepTHREAD_DISP_DEF);
+						m_nStepTHREAD_DISP_DEF_INNER = 0; pDoc->SetStatusInt(_T("Thread"), _T("nStepTHREAD_DISP_DEF_INNER"), m_nStepTHREAD_DISP_DEF_INNER);
 
-						m_bTHREAD_DISP_DEF = TRUE;				// DispDefImg() : CopyDefImg Start -> Disp Reelmap Start
-						m_bTHREAD_DISP_DEF_INNER = TRUE;		// DispDefImgInner() : Disp Reelmap Start
+						m_bTHREAD_DISP_DEF = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_DISP_DEF"), m_bTHREAD_DISP_DEF);				// DispDefImg() : CopyDefImg Start -> Disp Reelmap Start
+						m_bTHREAD_DISP_DEF_INNER = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_DISP_DEF_INNER"), m_bTHREAD_DISP_DEF_INNER); // DispDefImgInner() : Disp Reelmap Start
 
 						pDoc->SetMkMenu01(_T("Signal"), _T("DispDefImg"), _T("1"));
 					}
@@ -21111,9 +20625,9 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 					if (!m_bTHREAD_DISP_DEF)
 					{
 						m_nMkStAuto++;
-						m_nStepTHREAD_DISP_DEF = 0;
+						m_nStepTHREAD_DISP_DEF = 0; pDoc->SetStatusInt(_T("Thread"), _T("nStepTHREAD_DISP_DEF"), m_nStepTHREAD_DISP_DEF);
 
-						m_bTHREAD_DISP_DEF = TRUE;		// DispDefImg() : CopyDefImg Start -> Disp Reelmap Start
+						m_bTHREAD_DISP_DEF = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_DISP_DEF"), m_bTHREAD_DISP_DEF);		// DispDefImg() : CopyDefImg Start -> Disp Reelmap Start
 						pDoc->SetMkMenu01(_T("Signal"), _T("DispDefImg"), _T("1"));
 					}
 				}
@@ -21149,7 +20663,7 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 
 					if (!IsSameUpDnLot() && !m_bContDiffLot)
 					{
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::LotDiff);
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::LotDiff); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 						break;
 					}
 				}
@@ -21166,7 +20680,7 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 					dFdEnc = (double)pDoc->m_pMpeData[0][0];	// 마킹부 Feeding 엔코더 값(단위 mm )
 					if ((pDoc->WorkingInfo.LastJob.bLotSep || pDoc->m_bDoneChgLot) && (dFdEnc + _tstof(pDoc->WorkingInfo.LastJob.sOnePnlLen)*2.0) > _tstof(pDoc->WorkingInfo.LastJob.sLotSepLen)*1000.0)
 					{
-						pDoc->m_bDoneChgLot = TRUE;
+						pDoc->m_bDoneChgLot = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneChgLot"), pDoc->m_bDoneChgLot);
 						SetPathAtBuf();
 					}
 #endif
@@ -21195,7 +20709,7 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 					{
 						if (m_nBufUpSerial[0] == m_nGet2dCodeSerial)
 						{
-							m_nMkStAuto = MK_ST + (Mk2PtIdx::InitMk);			// InitMk()
+							m_nMkStAuto = MK_ST + (Mk2PtIdx::InitMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);			// InitMk()
 						}
 						else
 						{
@@ -21203,12 +20717,12 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 							pView->ClrDispMsg();
 							sMsg.Format(_T("2D각인 시리얼(%d)과 검사파일 시리얼(%d)이 다릅니다."), m_nGet2dCodeSerial, m_nBufUpSerial[0]);
 							AfxMessageBox(sMsg);
-							m_nMkStAuto = MK_ST + (Mk2PtIdx::Start);
+							m_nMkStAuto = MK_ST + (Mk2PtIdx::Start); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 							break;
 						}
 					}
 					else
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::InitMk);			// InitMk()
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::InitMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);			// InitMk()
 
 				}
 				else
@@ -21217,14 +20731,14 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 					pView->ClrDispMsg();
 					sMsg.Format(_T("2D 리더기가 연결이 되지 않았습니다."));
 					AfxMessageBox(sMsg);
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::Start);
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::Start); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 					break;
 				}
 			}
 			else
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::InitMk);					// InitMk()
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::InitMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);					// InitMk()
 #else
-			m_nMkStAuto = MK_ST + (Mk2PtIdx::InitMk);					// InitMk()
+			m_nMkStAuto = MK_ST + (Mk2PtIdx::InitMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);					// InitMk()
 #endif
 			break;
 		}
@@ -21274,11 +20788,7 @@ void CGvisR2R_PunchView::Mk2PtInit()
 		case MK_ST + (Mk2PtIdx::InitMk) + 1:
 			if (IsRun())
 			{
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1);	// Move - Cam1 - Pt0
-				//if (MODE_INNER != pDoc->GetTestMode())
-				//	m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1);	// Move - Cam1 - Pt0
-				//else
-				//	m_nMkStAuto = MK_ST + (Mk2PtIdx::MoveInitPt);
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);	// Move - Cam1 - Pt0
 			}
 			break;
 		}
@@ -21303,22 +20813,22 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 				{
 					if (m_bLastProc && m_nBufDnSerial[1] < m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else if (m_nBufDnSerial[1] == 0)
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -21331,22 +20841,22 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 				{
 					if (m_bLastProc && m_nBufDnSerial[1] > m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else if (m_nBufDnSerial[1] == 0)
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -21362,22 +20872,22 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 				{
 					if (m_bLastProc && m_nBufUpSerial[1] < m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else if (m_nBufUpSerial[1] == 0)
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -21390,22 +20900,22 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 				{
 					if (m_bLastProc && m_nBufUpSerial[1] > m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else if (m_nBufUpSerial[1] == 0)
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -21418,7 +20928,9 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 			break;
 		case MK_ST + (Mk2PtIdx::Move0Cam1) + 1:
 			if (IsRun())
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam0);
+			{
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+			}
 			break;
 		case MK_ST + (Mk2PtIdx::Move0Cam0) :	// Move - Cam0 - Pt0
 			if (MoveAlign0(0))
@@ -21432,26 +20944,34 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 			if (IsMoveDone())
 			{
 				Sleep(100);
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::Align1_0);
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::Align1_0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 			}
 			break;
 		case MK_ST + (Mk2PtIdx::Align1_0) :	// 2PtAlign - Cam1 - Pt0
 			if (!m_bSkipAlign[1][0])
 			{
 				if (TwoPointAlign1(0))
-					m_bFailAlign[1][0] = FALSE;
+				{
+					m_bFailAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][0]"), m_bFailAlign[1][0]);
+				}
 				else
-					m_bFailAlign[1][0] = TRUE;
+				{
+					m_bFailAlign[1][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][0]"), m_bFailAlign[1][0]);
+				}
 			}
-			m_nMkStAuto = MK_ST + (Mk2PtIdx::Align0_0);
+			m_nMkStAuto = MK_ST + (Mk2PtIdx::Align0_0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 			break;
 		case MK_ST + (Mk2PtIdx::Align0_0) :	// 2PtAlign - Cam0 - Pt0
 			if (!m_bSkipAlign[0][0])
 			{
 				if (TwoPointAlign0(0))
-					m_bFailAlign[0][0] = FALSE;
+				{
+					m_bFailAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][0]"), m_bFailAlign[0][0]);
+				}
 				else
-					m_bFailAlign[0][0] = TRUE;
+				{
+					m_bFailAlign[0][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][0]"), m_bFailAlign[0][0]);
+				}
 			}
 			m_nMkStAuto++;
 			break;
@@ -21466,44 +20986,42 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 
 					if (IDYES == MsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[0][0] = FALSE;
-						m_bSkipAlign[0][0] = TRUE;
-						m_bSkipAlign[0][1] = TRUE;
-						m_bSkipAlign[0][2] = TRUE;
-						m_bSkipAlign[0][3] = TRUE;
+						m_bReAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][0]"), m_bReAlign[0][0]);
+						m_bSkipAlign[0][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]);
+						m_bSkipAlign[0][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+						m_bSkipAlign[0][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][2]"), m_bSkipAlign[0][2]);
+						m_bSkipAlign[0][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][3]"), m_bSkipAlign[0][3]);
 						if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[0] = FALSE;
-							m_bDoneMk[0] = TRUE;
+							m_bDoMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 						else
 						{
-							m_bDoMk[0] = TRUE;
-							m_bDoneMk[0] = FALSE;
+							m_bDoMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 					}
 					else
 					{
-						m_bReAlign[0][0] = TRUE;
-						m_bSkipAlign[0][0] = FALSE;
-						m_bSkipAlign[0][1] = FALSE;
-						m_bSkipAlign[0][2] = FALSE;
-						m_bSkipAlign[0][3] = FALSE;
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam0); // TwoPointAlign0(0) 으로 진행. - 카메라 재정렬
+						m_bReAlign[0][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][0]"), m_bReAlign[0][0]);
+						m_bSkipAlign[0][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]);
+						m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+						m_bSkipAlign[0][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][2]"), m_bSkipAlign[0][2]);
+						m_bSkipAlign[0][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][3]"), m_bSkipAlign[0][3]);
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign0(0) 으로 진행. - 카메라 재정렬
 						Stop();
-						//TowerLamp(RGB_YELLOW, TRUE);
 					}
 				}
 				else
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[0][0] = TRUE;
-					m_bSkipAlign[0][0] = FALSE;
-					m_bSkipAlign[0][1] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam0); // TwoPointAlign0(0) 으로 진행. - 카메라 재정렬
+					m_bReAlign[0][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][0]"), m_bReAlign[0][0]);
+					m_bSkipAlign[0][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]);
+					m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign0(0) 으로 진행. - 카메라 재정렬
 					Stop();
-					//TowerLamp(RGB_YELLOW, TRUE);
 				}
 			}
 			if (m_bFailAlign[1][0])
@@ -21516,30 +21034,30 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 
 					if (IDYES == MsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[1][0] = FALSE;
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
+						m_bReAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][0]"), m_bReAlign[1][0]);
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
 						if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[1] = FALSE;
-							m_bDoneMk[1] = TRUE;
+							m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 						else
 						{
-							m_bDoMk[1] = TRUE;
-							m_bDoneMk[1] = FALSE;
+							m_bDoMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 					}
 					else
 					{
-						m_bReAlign[1][0] = TRUE;
-						m_bSkipAlign[1][0] = FALSE;
-						m_bSkipAlign[1][1] = FALSE;
-						m_bSkipAlign[1][2] = FALSE;
-						m_bSkipAlign[1][3] = FALSE;
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1); // TwoPointAlign1(0) 으로 진행. - 카메라 재정렬
+						m_bReAlign[1][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][0]"), m_bReAlign[1][0]);
+						m_bSkipAlign[1][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign1(0) 으로 진행. - 카메라 재정렬
 						Stop();
 						TowerLamp(RGB_YELLOW, TRUE);
 					}
@@ -21548,12 +21066,12 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[1][0] = TRUE;
-					m_bSkipAlign[1][0] = FALSE;
-					m_bSkipAlign[1][1] = FALSE;
-					m_bSkipAlign[1][2] = FALSE;
-					m_bSkipAlign[1][3] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1); // TwoPointAlign1(0) 으로 진행. - 카메라 재정렬
+					m_bReAlign[1][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][0]"), m_bReAlign[1][0]);
+					m_bSkipAlign[1][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+					m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+					m_bSkipAlign[1][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+					m_bSkipAlign[1][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign1(0) 으로 진행. - 카메라 재정렬
 					Stop();
 					TowerLamp(RGB_YELLOW, TRUE);
 				}
@@ -21572,12 +21090,12 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 						if (!IsInitPos1())
 							MoveInitPos1();
 
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
 					}
 				}
 				else
 				{
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1); // TwoPointAlign1(0) 으로 진행. - 카메라 재정렬
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move0Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign1(0) 으로 진행. - 카메라 재정렬
 				}
 			}
 			else
@@ -21586,7 +21104,7 @@ void CGvisR2R_PunchView::Mk2PtAlignPt0()
 			break;
 		case MK_ST + (Mk2PtIdx::Align0_0) + 2:
 			if (IsRun())
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam1);
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 			break;
 		}
 	}
@@ -21610,22 +21128,22 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 				{
 					if (m_bLastProc && m_nBufDnSerial[1] < m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else if (m_nBufDnSerial[1] == 0)
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -21638,22 +21156,22 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 				{
 					if (m_bLastProc && m_nBufDnSerial[1] > m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else if (m_nBufDnSerial[1] == 0)
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -21669,22 +21187,22 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 				{
 					if (m_bLastProc && m_nBufUpSerial[1] < m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else if (m_nBufUpSerial[1] == 0)
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -21697,22 +21215,22 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 				{
 					if (m_bLastProc && m_nBufUpSerial[1] > m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else if (m_nBufUpSerial[1] == 0)
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -21739,7 +21257,7 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 			if (IsMoveDone())
 			{
 				Sleep(100);
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::Align1_1);
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::Align1_1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 			}
 			break;
 		case MK_ST + (Mk2PtIdx::Align1_1) :	// 2PtAlign - Cam1 - Pt1
@@ -21748,17 +21266,25 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 				if (!m_bSkipAlign[1][1])
 				{
 					if (!TwoPointAlign1(1))
-						m_bFailAlign[1][1] = TRUE;
+					{
+						m_bFailAlign[1][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]);
+					}
 					else
-						m_bFailAlign[1][1] = FALSE;
+					{
+						m_bFailAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]);
+					}
 				}
 				else
-					m_bFailAlign[1][1] = FALSE;
+				{
+					m_bFailAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]);
+				}
 			}
 			else
-				m_bFailAlign[1][1] = FALSE;
+			{
+				m_bFailAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]);
+			}
 
-			m_nMkStAuto = MK_ST + (Mk2PtIdx::Align0_1);
+			m_nMkStAuto = MK_ST + (Mk2PtIdx::Align0_1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 			break;
 		case MK_ST + (Mk2PtIdx::Align0_1) :	// 2PtAlign - Cam0 - Pt1
 			if (!m_bFailAlign[0][0])
@@ -21766,15 +21292,23 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 				if (!m_bSkipAlign[0][1])
 				{
 					if (!TwoPointAlign0(1))
-						m_bFailAlign[0][1] = TRUE;
+					{
+						m_bFailAlign[0][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]);
+					}
 					else
-						m_bFailAlign[0][1] = FALSE;
+					{
+						m_bFailAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]);
+					}
 				}
 				else
-					m_bFailAlign[0][1] = FALSE;
+				{
+					m_bFailAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]);
+				}
 			}
 			else
-				m_bFailAlign[0][1] = FALSE;
+			{
+				m_bFailAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]);
+			}
 
 			m_nMkStAuto++;
 			break;
@@ -21790,37 +21324,35 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 
 					if (IDYES == MsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[0][1] = FALSE;
-						m_bSkipAlign[0][1] = TRUE;
+						m_bReAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][1]"), m_bReAlign[0][1]);
+						m_bSkipAlign[0][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
 						if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[0] = FALSE;
-							m_bDoneMk[0] = TRUE;
+							m_bDoMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 						else
 						{
-							m_bDoMk[0] = TRUE;
-							m_bDoneMk[0] = FALSE;
+							m_bDoMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 					}
 					else
 					{
-						m_bReAlign[0][1] = TRUE;
-						m_bSkipAlign[0][1] = FALSE;
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam0); // TwoPointAlign0(1) 으로 진행. - 카메라 재정렬
+						m_bReAlign[0][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][1]"), m_bReAlign[0][1]);
+						m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign0(1) 으로 진행. - 카메라 재정렬
 						Stop();
-						//TowerLamp(RGB_YELLOW, TRUE);
 					}
 				}
 				else
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[0][1] = TRUE;
-					m_bSkipAlign[0][1] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam0); // TwoPointAlign1(1) 으로 진행. - 카메라 재정렬
+					m_bReAlign[0][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][1]"), m_bReAlign[0][1]);
+					m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign1(1) 으로 진행. - 카메라 재정렬
 					Stop();
-					//TowerLamp(RGB_YELLOW, TRUE);
 				}
 			}
 			if (m_bFailAlign[1][1])
@@ -21834,35 +21366,34 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 
 					if (IDYES == MsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[1][1] = FALSE;
-						m_bSkipAlign[1][1] = TRUE;
+						m_bReAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][1]"), m_bReAlign[1][1]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
 						if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[1] = FALSE;
-							m_bDoneMk[1] = TRUE;
+							m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 						else
 						{
-							m_bDoMk[1] = TRUE;
-							m_bDoneMk[1] = FALSE;
+							m_bDoMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 					}
 					else
 					{
-						m_bReAlign[1][1] = TRUE;
-						m_bSkipAlign[1][1] = FALSE;
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam1); // TwoPointAlign1(1) 으로 진행. - 카메라 재정렬
+						m_bReAlign[1][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][1]"), m_bReAlign[1][1]);
+						m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign1(1) 으로 진행. - 카메라 재정렬
 						Stop();
-						//TowerLamp(RGB_YELLOW, TRUE);
 					}
 				}
 				else
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[1][1] = TRUE;
-					m_bSkipAlign[1][1] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam1); // TwoPointAlign1(1) 으로 진행. - 카메라 재정렬
+					m_bReAlign[1][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][1]"), m_bReAlign[1][1]);
+					m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign1(1) 으로 진행. - 카메라 재정렬
 					Stop();
 					//TowerLamp(RGB_YELLOW, TRUE);
 				}
@@ -21873,7 +21404,9 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 				if (!m_bReAlign[0][1] && !m_bReAlign[1][1])
 				{
 					if (m_bDoMk[0] || m_bDoMk[1])
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::MoveInitPt); //m_nMkStAuto = MK_ST + 29;  // MoveInitPos0()
+					{
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::MoveInitPt); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); //m_nMkStAuto = MK_ST + 29;  // MoveInitPos0()
+					}
 					else
 					{
 						if (!IsInitPos0())
@@ -21881,14 +21414,18 @@ void CGvisR2R_PunchView::Mk2PtAlignPt1()
 						if (!IsInitPos1())
 							MoveInitPos1();
 
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk); // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
 					}
 				}
 				else
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam1); // TwoPointAlign1(1) 으로 진행. - 카메라 재정렬
+				{
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::Move1Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign1(1) 으로 진행. - 카메라 재정렬
+				}
 			}
 			else
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::MoveInitPt);
+			{
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::MoveInitPt); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+			}
 
 			break;
 		}
@@ -21911,7 +21448,9 @@ void CGvisR2R_PunchView::Mk2PtMoveInitPos()
 			break;
 		case MK_ST + (Mk2PtIdx::MoveInitPt) + 2:
 			if (IsMoveDone())
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkElec);
+			{
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkElec); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+			}
 			break;
 		}
 	}
@@ -21933,13 +21472,15 @@ void CGvisR2R_PunchView::Mk2PtElecChk()
 					if (sRst == _T("Open"))
 					{
 						if (pDoc->WorkingInfo.Probing[0].bStopOnOpen)
-							m_nMkStAuto = REJECT_ST;
+						{
+							m_nMkStAuto = REJECT_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+						}
 						else
 							m_nMkStAuto++;
 					}
 					else if (sRst == _T("Error"))
 					{
-						m_nMkStAuto = ERROR_ST;
+						m_nMkStAuto = ERROR_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 					}
 					else
 					{
@@ -21960,9 +21501,13 @@ void CGvisR2R_PunchView::Mk2PtElecChk()
 			else
 			{
 				if (MODE_INNER != pDoc->GetTestMode())
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk); 	// Mk 마킹 시작
+				{
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); 	// Mk 마킹 시작
+				}
 				else
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::Shift2Mk);
+				{
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::Shift2Mk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+				}
 			}
 			break;
 
@@ -21973,9 +21518,13 @@ void CGvisR2R_PunchView::Mk2PtElecChk()
 					m_pMotion->IsEnable(MS_X1) && m_pMotion->IsEnable(MS_Y1))
 				{
 					if (MODE_INNER != pDoc->GetTestMode())
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk); 	// Mk 마킹 시작
+					{
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); 	// Mk 마킹 시작
+					}
 					else
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::Shift2Mk);
+					{
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::Shift2Mk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+					}
 				}
 				else
 				{
@@ -22000,7 +21549,7 @@ void CGvisR2R_PunchView::Mk2PtElecChk()
 void CGvisR2R_PunchView::Mk2PtDoMarking()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-	CString sRst, sMsg;
+	CString sRst, sMsg, sItem;
 	int a, b, nSerial, nPrevSerial;
 
 	if (m_bMkSt && IsBuffer())
@@ -22030,7 +21579,7 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			{
 				if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
 				{
-					m_bUpdateYield = TRUE;
+					m_bUpdateYield = TRUE; pDoc->SetStatus(_T("General"), _T("bUpdateYield"), m_bUpdateYield);
 					UpdateYield(); // Cam[0],  Cam[1]
 					m_nMkStAuto++;
 				}
@@ -22074,9 +21623,9 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			{
 				if (IsVerify() && !m_nPrevMkStAuto)
 				{
-					m_nPrevMkStAuto = MK_ST + (Mk2PtIdx::Verify);
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk);		// Mk 마킹 시작
-					m_bCam = TRUE;
+					m_nPrevMkStAuto = MK_ST + (Mk2PtIdx::Verify); pDoc->SetStatusInt(_T("General"), _T("nPrevMkStAuto"), m_nPrevMkStAuto);
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 마킹 시작
+					m_bCam = TRUE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 				}
 				else
 				{
@@ -22084,27 +21633,27 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 					{
 						if (!m_bCam)
 						{
-							m_nPrevStepAuto = MK_ST + (Mk2PtIdx::Verify);
-							m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk);		// Mk 마킹 시작
-							m_bCam = TRUE;
+							m_nPrevStepAuto = MK_ST + (Mk2PtIdx::Verify); pDoc->SetStatusInt(_T("General"), _T("nPrevStepAuto"), m_nPrevStepAuto);
+							m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 마킹 시작
+							m_bCam = TRUE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 							MsgBox(_T("▶ Jog 버튼을 이용하여 마킹위치를 확인하여 주세요."));
 						}
 						else
 						{
-							m_bCam = FALSE;
-							m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk);	// Mk 마킹 완료
+							m_bCam = FALSE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
+							m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);	// Mk 마킹 완료
 						}
 					}
 					else
 					{
-						m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk);	// Mk 마킹 완료
+						m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);	// Mk 마킹 완료
 					}
 				}
 			}
 			else if (IsReMk())
 			{
-				m_nPrevMkStAuto = MK_ST + (Mk2PtIdx::Verify);
-				m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk);		// Mk 재시작
+				m_nPrevMkStAuto = MK_ST + (Mk2PtIdx::Verify); pDoc->SetStatusInt(_T("General"), _T("nPrevMkStAuto"), m_nPrevMkStAuto);
+				m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 재시작
 			}
 			else
 			{
@@ -22119,12 +21668,9 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			if (!IsRun()) 
 				break;
 
-			//if (m_bTHREAD_UPDATE_YIELD_UP || m_bTHREAD_UPDATE_YIELD_DN || m_bTHREAD_UPDATE_YIELD_ALLUP || m_bTHREAD_UPDATE_YIELD_ALLDN)
-			//	break;
-
 			if (m_bInitAuto)
 			{
-				m_bInitAuto = FALSE;
+				m_bInitAuto = FALSE; pDoc->SetStatus(_T("General"), _T("bInitAuto"), m_bInitAuto);
 				MsgBox(_T("마킹위치를 확인하세요."));
 				Stop();
 				TowerLamp(RGB_YELLOW, TRUE);
@@ -22133,13 +21679,13 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 
 			if (m_nBufUpSerial[0] == 0)
 			{
-				m_bSkipAlign[0][0] = TRUE;
-				m_bSkipAlign[0][1] = TRUE;
+				m_bSkipAlign[0][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]);
+				m_bSkipAlign[0][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
 			}
 			if (m_nBufUpSerial[1] == 0)
 			{
-				m_bSkipAlign[1][0] = TRUE;
-				m_bSkipAlign[1][1] = TRUE;
+				m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+				m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
 			}
 
 			if( (!m_bSkipAlign[0][0] && !m_bSkipAlign[0][1]) && (!m_bSkipAlign[1][0] && !m_bSkipAlign[1][1]) )
@@ -22154,31 +21700,31 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			m_nMkStAuto++;
 			break;
 		case MK_ST + (Mk2PtIdx::DoneMk) + 1:  // Mk변수 초기화
-			m_bReAlign[0][0] = FALSE; // [nCam][nPos] 
-			m_bReAlign[0][1] = FALSE; // [nCam][nPos] 
-			m_bReAlign[1][0] = FALSE; // [nCam][nPos] 
-			m_bReAlign[1][1] = FALSE; // [nCam][nPos] 
+			m_bReAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][0]"), m_bReAlign[0][0]); // [nCam][nPos] 
+			m_bReAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][1]"), m_bReAlign[0][1]); // [nCam][nPos] 
+			m_bReAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][2]"), m_bReAlign[0][2]); // [nCam][nPos] 
+			m_bReAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][3]"), m_bReAlign[0][3]); // [nCam][nPos] 
 
-			m_bSkipAlign[0][0] = FALSE; // [nCam][nPos] 
-			m_bSkipAlign[0][1] = FALSE; // [nCam][nPos] 
-			m_bSkipAlign[1][0] = FALSE; // [nCam][nPos] 
-			m_bSkipAlign[1][1] = FALSE; // [nCam][nPos] 
+			m_bSkipAlign[0][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]); // [nCam][nPos] 
+			m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]); // [nCam][nPos] 
+			m_bSkipAlign[1][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]); // [nCam][nPos] 
+			m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]); // [nCam][nPos] 
 
-			m_bFailAlign[0][0] = FALSE; // [nCam][nPos] 
-			m_bFailAlign[0][1] = FALSE; // [nCam][nPos] 
-			m_bFailAlign[1][0] = FALSE; // [nCam][nPos] 
-			m_bFailAlign[1][1] = FALSE; // [nCam][nPos] 
+			m_bFailAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][0]"), m_bFailAlign[0][0]); // [nCam][nPos] 
+			m_bFailAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]); // [nCam][nPos] 
+			m_bFailAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][0]"), m_bFailAlign[1][0]); // [nCam][nPos] 
+			m_bFailAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]); // [nCam][nPos] 
 
-			m_bDoMk[0] = TRUE;
-			m_bDoMk[1] = TRUE;
-			m_bDoneMk[0] = FALSE;
-			m_bDoneMk[1] = FALSE;
-			m_bReMark[0] = FALSE;
-			m_bReMark[1] = FALSE;
-			m_bCam = FALSE;
-			m_nPrevMkStAuto = 0;
+			m_bDoMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+			m_bDoMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+			m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+			m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+			m_bReMark[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[0]"), m_bReMark[0]);
+			m_bReMark[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[1]"), m_bReMark[1]);
+			m_bCam = FALSE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
+			m_nPrevMkStAuto = 0; pDoc->SetStatusInt(_T("General"), _T("nPrevMkStAuto"), m_nPrevMkStAuto);
 
-			m_bUpdateYield = FALSE;
+			m_bUpdateYield = FALSE; pDoc->SetStatus(_T("General"), _T("bUpdateYield"), m_bUpdateYield);
 			m_bUpdateYieldOnRmap = FALSE;
 
 			for (a = 0; a < 2; a++)
@@ -22187,6 +21733,8 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 				{
 					m_nMkStrip[a][b] = 0;
 					m_bRejectDone[a][b] = FALSE;
+					sItem.Format(_T("bRejectDone[%d][%d]"), a, b);
+					pDoc->SetStatus(_T("General"), sItem, m_bRejectDone[a][b]);
 				}
 			}
 
@@ -22207,43 +21755,32 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			{
 				pDoc->LogAuto(_T("PLC: 마킹부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)"));
 				m_nMkStAuto++;
-				//if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
-				//{
-				//	UpdateYield(); // Cam[0],  Cam[1]
-				//	m_nMkStAuto++;
-				//}
 			}
 			break;
 
 		case MK_ST + (Mk2PtIdx::DoneMk) + 3:
 #ifdef USE_MPE
-			//if (pDoc->m_pMpeSignal[0] & (0x01 << 1))	// 마킹부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)-20141030
+			if (!m_bTHREAD_SHIFT2MK)
 			{
-				if (!m_bTHREAD_SHIFT2MK)
-				{
-					m_pMpe->Write(_T("MB440101"), 0);	// 마킹부 Feeding완료
-					pDoc->LogAuto(_T("PC: 마킹부 Feeding완료 OFF"));
+				m_pMpe->Write(_T("MB440101"), 0);	// 마킹부 Feeding완료
+				pDoc->LogAuto(_T("PC: 마킹부 Feeding완료 OFF"));
 
-					//Shift2Mk();			// PCR 이동(Buffer->Marked) // 기록(WorkingInfo.LastJob.sSerial)
-					m_bShift2Mk = TRUE;
-					DoShift2Mk();
+				//Shift2Mk();			// PCR 이동(Buffer->Marked) // 기록(WorkingInfo.LastJob.sSerial)
+				m_bShift2Mk = TRUE;
+				DoShift2Mk();
 
-					SetMkFdLen();
-					SetCycTime();
-					m_dwCycSt = GetTickCount();
+				SetMkFdLen();
+				SetCycTime();
+				m_dwCycSt = GetTickCount();
 
-					UpdateRst();
+				UpdateRst();
 
-					//UpdateWorking();	// Update Working Info...
-					m_nMkStAuto++;
-				}
+				//UpdateWorking();	// Update Working Info...
+				m_nMkStAuto++;
 			}
 #endif
 			break;
 		case MK_ST + (Mk2PtIdx::DoneMk) + 4:
-			//sMsg.Format(_T("%d%d%d%d%d"), m_bTHREAD_SHIFT2MK ? 1 : 0, m_bTHREAD_REELMAP_YIELD_UP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_DN ? 1 : 0, m_bTHREAD_REELMAP_YIELD_ALLUP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_ALLDN ? 1 : 0);
-			//DispStsBar(sMsg, 0);
-
 			if (!m_bTHREAD_SHIFT2MK && !m_bTHREAD_REELMAP_YIELD_UP && !m_bTHREAD_REELMAP_YIELD_DN && !m_bTHREAD_REELMAP_YIELD_ALLUP && !m_bTHREAD_REELMAP_YIELD_ALLDN) // Yield Reelmap
 			{
 				if (pDoc->GetTestMode() == MODE_OUTER)
@@ -22253,8 +21790,6 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 				}
 
 				m_nMkStAuto++;
-				//UpdateRst();
-				//UpdateWorking();	// Update Working Info...
 				ChkYield();
 			}
 			break;
@@ -22275,7 +21810,7 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("0"), PATH_WORKING_INFO);
 			break;
 		case MK_ST + (Mk2PtIdx::DoneMk) + 8:
-			m_bMkSt = FALSE;
+			m_bMkSt = FALSE; pDoc->SetStatus(_T("General"), _T("bMkSt"), m_bMkSt);
 			break;
 		}
 	}
@@ -22407,83 +21942,13 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 			break;
 		case MK_ST + (Mk2PtIdx::Shift2Mk) + 7:
 			m_nMkStAuto++;
-			/*
-			if (!IsBuffer(0))
-			{
-				m_bLotEnd = TRUE;
-				m_nLotEndAuto = LOT_END;
-			}
-			else
-			{
-				// [0]: AOI-Up , [1]: AOI-Dn
-				nSerial = pDoc->m_ListBuf[0].Pop(); // Up (좌)
-				nSerial = pDoc->m_ListBuf[0].Pop(); // Up (우)
-
-				SetListBuf();
-
-				if (pView->m_bSerialDecrese)
-				{
-					if (m_nLotEndSerial > 0)
-					{
-						nSerial = GetBufferUp(&nPrevSerial); // m_pBufSerial[0][0] : 버퍼 첫번째 시리얼
-
-						if (nSerial < m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-						{
-							if (IsDoneDispMkInfo())
-							{
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial);
-								//else
-								//	SetSerial(nPrevSerial + 1, TRUE);
-
-								nSerial = m_pBufSerial[0][1]; // m_pBufSerial[0][1] : 버퍼 두번째 시리얼
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial);	//SetSerial(nSerial + 1);
-								//else
-								//	SetSerial(nPrevSerial + 2, TRUE);
-
-								m_bLotEnd = TRUE;
-								m_nLotEndAuto = LOT_END;
-							}
-						}
-					}
-				}
-				else
-				{
-					if (m_nLotEndSerial > 0)
-					{
-						nSerial = GetBufferUp(&nPrevSerial); // m_pBufSerial[0][0] : 버퍼 첫번째 시리얼
-
-						if (nSerial > m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-						{
-							if (IsDoneDispMkInfo())
-							{
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial);
-								//else
-								//	SetSerial(nPrevSerial + 1, TRUE);
-
-								nSerial = m_pBufSerial[0][1]; // m_pBufSerial[0][1] : 버퍼 두번째 시리얼
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial);	//SetSerial(nSerial + 1);
-								//else
-								//	SetSerial(nPrevSerial + 2, TRUE);
-
-								m_bLotEnd = TRUE;
-								m_nLotEndAuto = LOT_END;
-							}
-						}
-					}
-				}
-			}
-*/
 			break;
 		case MK_ST + (Mk2PtIdx::Shift2Mk) + 8:
 			m_nMkStAuto++;
 			::WritePrivateProfileString(_T("Last Job"), _T("MkSt"), _T("0"), PATH_WORKING_INFO);
 			break;
 		case MK_ST + (Mk2PtIdx::Shift2Mk) + 9:
-			m_bMkSt = FALSE;
+			m_bMkSt = FALSE; pDoc->SetStatus(_T("General"), _T("bMkSt"), m_bMkSt);
 			break;
 		}
 	}
@@ -22501,16 +21966,15 @@ void CGvisR2R_PunchView::Mk2PtLotDiff()
 			m_nMkStAuto++;
 			break;
 		case MK_ST + (Mk2PtIdx::LotDiff) + 1:
-			//if(IDYES == DoMyMsgBox(_T("상면과 하면의 Lot가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), MB_YESNO))
 			if (IDYES == MsgBox(_T("상면과 하면의 Lot가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 0, MB_YESNO))
 			{
-				m_bContDiffLot = TRUE;
+				m_bContDiffLot = TRUE; pDoc->SetStatus(_T("General"), _T("bContDiffLot"), m_bContDiffLot);
 			}
 			else
 			{
-				m_bContDiffLot = FALSE;
-				m_bLotEnd = TRUE;
-				m_nLotEndAuto = LOT_END;
+				m_bContDiffLot = FALSE; pDoc->SetStatus(_T("General"), _T("bContDiffLot"), m_bContDiffLot);
+				m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+				m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 			}
 			m_nMkStAuto++;
 			break;
@@ -22518,15 +21982,17 @@ void CGvisR2R_PunchView::Mk2PtLotDiff()
 			if (IsRun())
 			{
 				if (m_bContDiffLot)
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkSn);
+				{
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkSn); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+				}
 				else
 					m_nMkStAuto++;
 			}
 			break;
 		case MK_ST + (Mk2PtIdx::LotDiff) + 3:
-			m_bContDiffLot = FALSE;
-			m_bLotEnd = TRUE;
-			m_nLotEndAuto = LOT_END;
+			m_bContDiffLot = FALSE; pDoc->SetStatus(_T("General"), _T("bContDiffLot"), m_bContDiffLot);
+			m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+			m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 			break;
 		}
 	}
@@ -22535,6 +22001,7 @@ void CGvisR2R_PunchView::Mk2PtLotDiff()
 void CGvisR2R_PunchView::Mk2PtReject()
 {
 	int a, b;
+	CString sItem;
 
 	if (m_bMkSt && IsBuffer())
 	{
@@ -22545,18 +22012,16 @@ void CGvisR2R_PunchView::Mk2PtReject()
 			TowerLamp(RGB_RED, TRUE);
 			Stop();
 
-			//if(IDYES == DoMyMsgBox(_T("쇼트 체크 불량입니다.\r\n리젝 처리를 진행하시겠습니까?"), MB_YESNO))
 			if (IDYES == MsgBox(_T("쇼트 체크 불량입니다.\r\n리젝 처리를 진행하시겠습니까?"), 0, MB_YESNO))
 			{
-				m_bAnswer[0] = TRUE;
+				m_bAnswer[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[0]"), m_bAnswer[0]);
 				m_nMkStAuto++;
 			}
 			else
 			{
-				//if(IDYES == DoMyMsgBox(_T("리젝 처리를 취소하였습니다.\r\n불량만 마킹 처리를 진행하시겠습니까?"), MB_YESNO))
 				if (IDYES == MsgBox(_T("리젝 처리를 취소하였습니다.\r\n불량만 마킹 처리를 진행하시겠습니까?"), 0, MB_YESNO))
 				{
-					m_bAnswer[1] = TRUE;
+					m_bAnswer[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[1]"), m_bAnswer[1]);
 					m_nMkStAuto++;
 				}
 			}
@@ -22568,16 +22033,18 @@ void CGvisR2R_PunchView::Mk2PtReject()
 			{
 				if (m_bAnswer[0])
 				{
-					m_bAnswer[0] = FALSE;
+					m_bAnswer[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[0]"), m_bAnswer[0]);
 					m_nMkStAuto++;
 				}
 				else if (m_bAnswer[1])
 				{
-					m_bAnswer[1] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk);	// Mk 마킹 시작
+					m_bAnswer[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[1]"), m_bAnswer[1]);
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);	// Mk 마킹 시작
 				}
 				else
-					m_nMkStAuto = REJECT_ST;
+				{
+					m_nMkStAuto = REJECT_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+				}
 			}
 			break;
 		case REJECT_ST + 2:
@@ -22592,12 +22059,12 @@ void CGvisR2R_PunchView::Mk2PtReject()
 			{
 				if (IsVerify() && !m_nPrevMkStAuto)
 				{
-					m_nPrevMkStAuto = REJECT_ST + 4;
-					m_nMkStAuto = REJECT_ST + 2;		// Mk 마킹 시작
-					m_bCam = TRUE;
+					m_nPrevMkStAuto = REJECT_ST + 4; pDoc->SetStatusInt(_T("General"), _T("nPrevMkStAuto"), m_nPrevMkStAuto);
+					m_nMkStAuto = REJECT_ST + 2; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 마킹 시작
+					m_bCam = TRUE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 
-					m_bDoneMk[0] = FALSE;
-					m_bDoneMk[1] = FALSE;
+					m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+					m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 
 					for (a = 0; a < 2; a++)
 					{
@@ -22605,6 +22072,8 @@ void CGvisR2R_PunchView::Mk2PtReject()
 						{
 							m_nMkStrip[a][b] = 0;
 							m_bRejectDone[a][b] = FALSE;
+							sItem.Format(_T("bRejectDone[%d][%d]"), a, b);
+							pDoc->SetStatus(_T("General"), sItem, m_bRejectDone[a][b]);
 						}
 					}
 				}
@@ -22614,14 +22083,14 @@ void CGvisR2R_PunchView::Mk2PtReject()
 					{
 						if (!m_bCam)
 						{
-							m_nPrevStepAuto = REJECT_ST + 4;
-							m_nMkStAuto = REJECT_ST + 2;		// Mk 마킹 시작
-							m_bCam = TRUE;
+							m_nPrevStepAuto = REJECT_ST + 4; pDoc->SetStatusInt(_T("General"), _T("nPrevStepAuto"), m_nPrevStepAuto);
+							m_nMkStAuto = REJECT_ST + 2; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 마킹 시작
+							m_bCam = TRUE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 							MsgBox(_T("▶ Jog 버튼을 이용하여 마킹위치를 확인하여 주세요."));
 						}
 						else
 						{
-							m_bCam = FALSE;
+							m_bCam = FALSE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 							m_nMkStAuto++;	// Mk 마킹 완료
 
 											//sMsg = _T("");
@@ -22639,7 +22108,7 @@ void CGvisR2R_PunchView::Mk2PtReject()
 			}
 			break;
 		case REJECT_ST + 5:
-			m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk);				// Align변수 초기화
+			m_nMkStAuto = MK_ST + (Mk2PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);			// Align변수 초기화
 			break;
 		}
 	}
@@ -22658,7 +22127,7 @@ void CGvisR2R_PunchView::Mk2PtErrStop()
 			//if(IDYES == DoMyMsgBox(_T("쇼트 체크 Error입니다.\r\n다시 쇼트 체크를 진행하시겠습니까?"), MB_YESNO))
 			if (IDYES == MsgBox(_T("쇼트 체크 Error입니다.\r\n다시 쇼트 체크를 진행하시겠습니까?"), 0, MB_YESNO))
 			{
-				m_bAnswer[0] = TRUE;
+				m_bAnswer[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[0]"), m_bAnswer[0]);
 				m_nMkStAuto++;
 			}
 			else
@@ -22666,7 +22135,7 @@ void CGvisR2R_PunchView::Mk2PtErrStop()
 				//if(IDYES == DoMyMsgBox(_T("쇼트 체크를 취소하였습니다.\r\n불량만 마킹 처리를 진행하시겠습니까?"), MB_YESNO))
 				if (IDYES == MsgBox(_T("쇼트 체크를 취소하였습니다.\r\n불량만 마킹 처리를 진행하시겠습니까?"), 0, MB_YESNO))
 				{
-					m_bAnswer[1] = TRUE;
+					m_bAnswer[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[1]"), m_bAnswer[1]);
 					m_nMkStAuto++;
 				}
 				else
@@ -22681,20 +22150,20 @@ void CGvisR2R_PunchView::Mk2PtErrStop()
 			{
 				if (m_bAnswer[0])
 				{
-					m_bAnswer[0] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkElec); // DoElecChk
+					m_bAnswer[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[0]"), m_bAnswer[0]);
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::ChkElec); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // DoElecChk
 				}
 				else if (m_bAnswer[1])
 				{
-					m_bAnswer[1] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk);	// Mk 마킹 시작
+					m_bAnswer[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[1]"), m_bAnswer[1]);
+					m_nMkStAuto = MK_ST + (Mk2PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);	// Mk 마킹 시작
 				}
 				else
 					m_nMkStAuto++;
 			}
 			break;
 		case ERROR_ST + 3:
-			m_nMkStAuto = ERROR_ST;
+			m_nMkStAuto = ERROR_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 			break;
 		}
 	}
@@ -22745,25 +22214,25 @@ void CGvisR2R_PunchView::Mk4PtReady()
 				{
 					m_nMkStAuto++;
 
-					m_nBufDnSerial[0] = pDoc->m_ListBuf[1].Pop();
-					m_nBufUpSerial[0] = m_nBufDnSerial[0];
+					m_nBufDnSerial[0] = pDoc->m_ListBuf[1].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[0]"), m_nBufDnSerial[0]);
+					m_nBufUpSerial[0] = m_nBufDnSerial[0]; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[0]"), m_nBufUpSerial[0]);
 					if (pDoc->m_ListBuf[1].nTot > 0) // AOI-Dn
 					{
-						m_nBufDnSerial[1] = pDoc->m_ListBuf[1].Pop();
-						m_nBufUpSerial[1] = m_nBufDnSerial[1];
+						m_nBufDnSerial[1] = pDoc->m_ListBuf[1].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[1]"), m_nBufDnSerial[1]);
+						m_nBufUpSerial[1] = m_nBufDnSerial[1]; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
 					}
 					else
 					{
-						m_nBufDnSerial[1] = 0;
-						m_nBufUpSerial[1] = 0;
+						m_nBufDnSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[1]"), m_nBufDnSerial[1]);
+						m_nBufUpSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
 					}
 				}
 				else
 				{
 					if (!GetAoiUpVsStatus())
 					{
-						m_bLotEnd = TRUE;
-						m_nLotEndAuto = LOT_END;
+						m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+						m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 					}
 				}
 
@@ -22771,10 +22240,10 @@ void CGvisR2R_PunchView::Mk4PtReady()
 				{
 					if (m_nBufUpSerial[0] == 1)
 					{
-						m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);
-						m_bLastProcFromUp = FALSE;
-						m_bLastProcFromEng = FALSE;
-						m_bLastProc = TRUE;
+						m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum); pDoc->SetStatusInt(_T("General"), _T("nLotEndSerial"), m_nLotEndSerial);
+						m_bLastProcFromUp = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+						m_bLastProcFromEng = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+						m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 						if (m_pDlgMenu01)
 							m_pDlgMenu01->m_bLastProc = TRUE;
 						if (m_pMpe)
@@ -22791,18 +22260,22 @@ void CGvisR2R_PunchView::Mk4PtReady()
 				if (pDoc->m_ListBuf[0].nTot > 0) // AOI-Up
 				{
 					m_nMkStAuto++;
-					m_nBufUpSerial[0] = pDoc->m_ListBuf[0].Pop();
+					m_nBufUpSerial[0] = pDoc->m_ListBuf[0].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[0]"), m_nBufUpSerial[0]);
 					if (pDoc->m_ListBuf[0].nTot > 0) // AOI-Up
-						m_nBufUpSerial[1] = pDoc->m_ListBuf[0].Pop();
+					{
+						m_nBufUpSerial[1] = pDoc->m_ListBuf[0].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
+					}
 					else
-						m_nBufUpSerial[1] = 0;
+					{
+						m_nBufUpSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
+					}
 				}
 				else
 				{
 					if (!GetAoiUpVsStatus())
 					{
-						m_bLotEnd = TRUE;
-						m_nLotEndAuto = LOT_END;
+						m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+						m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 					}
 				}
 
@@ -22810,10 +22283,10 @@ void CGvisR2R_PunchView::Mk4PtReady()
 				{
 					if (m_nBufUpSerial[0] == 1)
 					{
-						m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);
-						m_bLastProcFromUp = FALSE;
-						m_bLastProcFromEng = FALSE;
-						m_bLastProc = TRUE;
+						m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum); pDoc->SetStatusInt(_T("General"), _T("nLotEndSerial"), m_nLotEndSerial);
+						m_bLastProcFromUp = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+						m_bLastProcFromEng = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+						m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 						if (m_pDlgMenu01)
 							m_pDlgMenu01->m_bLastProc = TRUE;
 						if (m_pMpe)
@@ -22853,21 +22326,21 @@ void CGvisR2R_PunchView::Mk4PtChkSerial()
 				pView->ClrDispMsg();
 				AfxMessageBox(_T("좌/우 마킹 시리얼이 같습니다."));
 				SetListBuf();
-				m_nMkStAuto = MK_ST + (Mk4PtIdx::Start);
+				m_nMkStAuto = MK_ST + (Mk4PtIdx::Start); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 				break;
 			}
 
 			if (!m_bTHREAD_DISP_DEF)
 			{
 				m_nMkStAuto++;
-				m_nStepTHREAD_DISP_DEF = 0;
-				m_bTHREAD_DISP_DEF = TRUE;		// DispDefImg() : CopyDefImg Start
+				m_nStepTHREAD_DISP_DEF = 0; pDoc->SetStatusInt(_T("Thread"), _T("nStepTHREAD_DISP_DEF"), m_nStepTHREAD_DISP_DEF);
+				m_bTHREAD_DISP_DEF = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_DISP_DEF"), m_bTHREAD_DISP_DEF);		// DispDefImg() : CopyDefImg Start
 				pDoc->SetMkMenu01(_T("Signal"), _T("DispDefImg"), _T("1"));
 			}
 			break;
 
 		case MK_ST + (Mk4PtIdx::ChkSn) + 1:
-			m_nMkStAuto = MK_ST + (Mk4PtIdx::InitMk);			// InitMk()
+			m_nMkStAuto = MK_ST + (Mk4PtIdx::InitMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);			// InitMk()
 			nSerial = m_nBufUpSerial[0];
 			sNewLot = m_sNewLotUp;
 
@@ -22895,8 +22368,7 @@ void CGvisR2R_PunchView::Mk4PtChkSerial()
 
 					if (!IsSameUpDnLot() && !m_bContDiffLot)
 					{
-						//sNewLot.Empty();
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::LotDiff);
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::LotDiff); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 						break;
 					}
 				}
@@ -22913,7 +22385,7 @@ void CGvisR2R_PunchView::Mk4PtChkSerial()
 					dFdEnc = (double)pDoc->m_pMpeData[0][0];	// 마킹부 Feeding 엔코더 값(단위 mm )
 					if ((pDoc->WorkingInfo.LastJob.bLotSep || pDoc->m_bDoneChgLot) && (dFdEnc + _tstof(pDoc->WorkingInfo.LastJob.sOnePnlLen)*2.0) > _tstof(pDoc->WorkingInfo.LastJob.sLotSepLen)*1000.0)
 					{
-						pDoc->m_bDoneChgLot = TRUE;
+						pDoc->m_bDoneChgLot = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneChgLot"), pDoc->m_bDoneChgLot);
 						SetPathAtBuf();
 					}
 #endif
@@ -22994,12 +22466,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 				{
 					if (m_bLastProc && m_nBufDnSerial[0] - 1 < m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23012,12 +22484,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 				{
 					if (m_bLastProc && m_nBufDnSerial[0] + 1 > m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23033,12 +22505,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 				{
 					if (m_bLastProc && m_nBufUpSerial[0] - 1 < m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23051,12 +22523,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 				{
 					if (m_bLastProc && m_nBufUpSerial[0] + 1 > m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23090,9 +22562,13 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 			if (!m_bSkipAlign[1][0])
 			{
 				if (FourPointAlign1(0))
-					m_bFailAlign[1][0] = FALSE;
+				{
+					m_bFailAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][0]"), m_bFailAlign[1][0]);
+				}
 				else
-					m_bFailAlign[1][0] = TRUE;
+				{
+					m_bFailAlign[1][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][0]"), m_bFailAlign[1][0]);
+				}
 			}
 			m_nMkStAuto++;
 			break;
@@ -23100,9 +22576,13 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 			if (!m_bSkipAlign[0][0])
 			{
 				if (FourPointAlign0(0))
-					m_bFailAlign[0][0] = FALSE;
+				{
+					m_bFailAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][0]"), m_bFailAlign[0][0]);
+				}
 				else
-					m_bFailAlign[0][0] = TRUE;
+				{
+					m_bFailAlign[0][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][0]"), m_bFailAlign[0][0]);
+				}
 			}
 			m_nMkStAuto++;
 			break;
@@ -23112,55 +22592,48 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 				Buzzer(TRUE, 0);
 				TowerLamp(RGB_YELLOW, TRUE);
 
-				//if(IDNO == DoMyMsgBox(_T("카메라(좌)의 검사판넬을 다시 정렬하시겠습니까?"), MB_YESNO))
 				if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 다시 정렬하시겠습니까?"), 0, MB_YESNO))
 				{
 					Buzzer(FALSE, 0);
 
-					//if(IDYES == DoMyMsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), MB_YESNO))
 					if (IDYES == MsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[0][0] = FALSE;
-						m_bSkipAlign[0][0] = TRUE;
-						m_bSkipAlign[0][1] = TRUE;
-						m_bSkipAlign[0][2] = TRUE;
-						m_bSkipAlign[0][3] = TRUE;
-						//if(IDNO == DoMyMsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), MB_YESNO))
+						m_bReAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][0]"), m_bReAlign[0][0]);
+						m_bSkipAlign[0][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]);
+						m_bSkipAlign[0][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+						m_bSkipAlign[0][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][2]"), m_bSkipAlign[0][2]);
+						m_bSkipAlign[0][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][3]"), m_bSkipAlign[0][3]);
 						if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[0] = FALSE;
-							m_bDoneMk[0] = TRUE;
+							m_bDoMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 						else
 						{
-							m_bDoMk[0] = TRUE;
-							m_bDoneMk[0] = FALSE;
+							m_bDoMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 					}
 					else
 					{
-						m_bReAlign[0][0] = TRUE;
-						m_bSkipAlign[0][0] = FALSE;
-						m_bSkipAlign[0][1] = FALSE;
-						m_bSkipAlign[0][2] = FALSE;
-						m_bSkipAlign[0][3] = FALSE;
-						//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align0_0); // FourPointAlign0(0) 으로 진행. - 카메라 재정렬
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam0); // FourPointAlign0(0) 으로 진행. - 카메라 재정렬
+						m_bReAlign[0][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][0]"), m_bReAlign[0][0]);
+						m_bSkipAlign[0][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]);
+						m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+						m_bSkipAlign[0][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][2]"), m_bSkipAlign[0][2]);
+						m_bSkipAlign[0][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][3]"), m_bSkipAlign[0][3]);
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign0(0) 으로 진행. - 카메라 재정렬
 						Stop();
-						//TowerLamp(RGB_YELLOW, TRUE);
 					}
 				}
 				else
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[0][0] = TRUE;
-					m_bSkipAlign[0][0] = FALSE;
-					m_bSkipAlign[0][1] = FALSE;
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align0_0); // FourPointAlign0(0) 으로 진행. - 카메라 재정렬
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam0); // FourPointAlign0(0) 으로 진행. - 카메라 재정렬
+					m_bReAlign[0][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][0]"), m_bReAlign[0][0]);
+					m_bSkipAlign[0][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]);
+					m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign0(0) 으로 진행. - 카메라 재정렬
 					Stop();
-					//TowerLamp(RGB_YELLOW, TRUE);
 				}
 			}
 			if (m_bFailAlign[1][0])
@@ -23168,57 +22641,50 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 				Buzzer(TRUE, 0);
 				TowerLamp(RGB_YELLOW, TRUE);
 
-				//if(IDNO == DoMyMsgBox(_T("카메라(우)의 검사판넬을 다시 정렬하시겠습니까?"), MB_YESNO))
 				if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 다시 정렬하시겠습니까?"), 0, MB_YESNO))
 				{
 					Buzzer(FALSE, 0);
 
-					//if(IDYES == DoMyMsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), MB_YESNO))
 					if (IDYES == MsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[1][0] = FALSE;
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						//if(IDNO == DoMyMsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), MB_YESNO))
+						m_bReAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][0]"), m_bReAlign[1][0]);
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
 						if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[1] = FALSE;
-							m_bDoneMk[1] = TRUE;
+							m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 						else
 						{
-							m_bDoMk[1] = TRUE;
-							m_bDoneMk[1] = FALSE;
+							m_bDoMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 					}
 					else
 					{
-						m_bReAlign[1][0] = TRUE;
-						m_bSkipAlign[1][0] = FALSE;
-						m_bSkipAlign[1][1] = FALSE;
-						m_bSkipAlign[1][2] = FALSE;
-						m_bSkipAlign[1][3] = FALSE;
-						//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_0); // FourPointAlign1(0) 으로 진행. - 카메라 재정렬
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam1); // FourPointAlign1(0) 으로 진행. - 카메라 재정렬
+						m_bReAlign[1][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][0]"), m_bReAlign[1][0]);
+						m_bSkipAlign[1][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(0) 으로 진행. - 카메라 재정렬
 						Stop();
-						//TowerLamp(RGB_YELLOW, TRUE);
 					}
 				}
 				else
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[1][0] = TRUE;
-					m_bSkipAlign[1][0] = FALSE;
-					m_bSkipAlign[1][1] = FALSE;
-					m_bSkipAlign[1][2] = FALSE;
-					m_bSkipAlign[1][3] = FALSE;
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_0); // FourPointAlign1(0) 으로 진행. - 카메라 재정렬
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam1); // FourPointAlign1(0) 으로 진행. - 카메라 재정렬
+					m_bReAlign[1][0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][0]"), m_bReAlign[1][0]);
+					m_bSkipAlign[1][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+					m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+					m_bSkipAlign[1][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+					m_bSkipAlign[1][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(0) 으로 진행. - 카메라 재정렬
 					Stop();
-					//TowerLamp(RGB_YELLOW, TRUE);
 				}
 			}
 
@@ -23235,13 +22701,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt0()
 						if (!IsInitPos1())
 							MoveInitPos1();
 
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
 					}
 				}
 				else
 				{
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_0); // TwoPointAlign1(0) 으로 진행. - 카메라 재정렬
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam1); // TwoPointAlign1(0) 으로 진행. - 카메라 재정렬
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move0Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // TwoPointAlign1(0) 으로 진행. - 카메라 재정렬
 				}
 			}
 			else
@@ -23274,12 +22739,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 				{
 					if (m_bLastProc && m_nBufDnSerial[0] - 1 < m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23292,12 +22757,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 				{
 					if (m_bLastProc && m_nBufDnSerial[0] + 1 > m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23313,12 +22778,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 				{
 					if (m_bLastProc && m_nBufUpSerial[0] - 1 < m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23331,12 +22796,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 				{
 					if (m_bLastProc && m_nBufUpSerial[0] + 1 > m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23372,15 +22837,23 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 				if (!m_bSkipAlign[1][1])
 				{
 					if (!FourPointAlign1(1))
-						m_bFailAlign[1][1] = TRUE;
+					{
+						m_bFailAlign[1][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]);
+					}
 					else
-						m_bFailAlign[1][1] = FALSE;
+					{
+						m_bFailAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]);
+					}
 				}
 				else
-					m_bFailAlign[1][1] = FALSE;
+				{
+					m_bFailAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]);
+				}
 			}
 			else
-				m_bFailAlign[1][1] = FALSE;
+			{
+				m_bFailAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]);
+			}
 
 			m_nMkStAuto++;
 			break;
@@ -23390,15 +22863,23 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 				if (!m_bSkipAlign[0][1])
 				{
 					if (!FourPointAlign0(1))
-						m_bFailAlign[0][1] = TRUE;
+					{
+						m_bFailAlign[0][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]);
+					}
 					else
-						m_bFailAlign[0][1] = FALSE;
+					{
+						m_bFailAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]);
+					}
 				}
 				else
-					m_bFailAlign[0][1] = FALSE;
+				{
+					m_bFailAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]);
+				}
 			}
 			else
-				m_bFailAlign[0][1] = FALSE;
+			{
+				m_bFailAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]);
+			}
 
 			m_nMkStAuto++;
 			break;
@@ -23408,48 +22889,41 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 				Buzzer(TRUE, 0);
 				TowerLamp(RGB_YELLOW, TRUE);
 
-				//if(IDNO == DoMyMsgBox(_T("카메라(좌)의 검사판넬을 다시 정렬하시겠습니까?"), MB_YESNO))
 				if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 다시 정렬하시겠습니까?"), 0, MB_YESNO))
 				{
 					Buzzer(FALSE, 0);
 
-					//if(IDYES == DoMyMsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), MB_YESNO))
 					if (IDYES == MsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[0][1] = FALSE;
-						m_bSkipAlign[0][1] = TRUE;
-						//if(IDNO == DoMyMsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), MB_YESNO))
+						m_bReAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][1]"), m_bReAlign[0][1]);
+						m_bSkipAlign[0][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
 						if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[0] = FALSE;
-							m_bDoneMk[0] = TRUE;
+							m_bDoMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 						else
 						{
-							m_bDoMk[0] = TRUE;
-							m_bDoneMk[0] = FALSE;
+							m_bDoMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 					}
 					else
 					{
-						m_bReAlign[0][1] = TRUE;
-						m_bSkipAlign[0][1] = FALSE;
-						//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align0_1); // FourPointAlign0(1) 으로 진행. - 카메라 재정렬
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam0); // FourPointAlign0(1) 으로 진행. - 카메라 재정렬
+						m_bReAlign[0][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][1]"), m_bReAlign[0][1]);
+						m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign0(1) 으로 진행. - 카메라 재정렬
 						Stop();
-						//TowerLamp(RGB_YELLOW, TRUE);
 					}
 				}
 				else
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[0][1] = TRUE;
-					m_bSkipAlign[0][1] = FALSE;
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align0_1); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam0); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
+					m_bReAlign[0][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][1]"), m_bReAlign[0][1]);
+					m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
 					Stop();
-					//TowerLamp(RGB_YELLOW, TRUE);
 				}
 			}
 			if (m_bFailAlign[1][1])
@@ -23457,48 +22931,41 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 				Buzzer(TRUE, 0);
 				TowerLamp(RGB_YELLOW, TRUE);
 
-				//if(IDNO == DoMyMsgBox(_T("카메라(우)의 검사판넬을 다시 정렬하시겠습니까?"), MB_YESNO))
 				if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 다시 정렬하시겠습니까?"), 0, MB_YESNO))
 				{
 					Buzzer(FALSE, 0);
 
-					//if(IDYES == DoMyMsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), MB_YESNO))
 					if (IDYES == MsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[1][1] = FALSE;
-						m_bSkipAlign[1][1] = TRUE;
-						//if(IDNO == DoMyMsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), MB_YESNO))
+						m_bReAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][1]"), m_bReAlign[1][1]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
 						if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[1] = FALSE;
-							m_bDoneMk[1] = TRUE;
+							m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 						else
 						{
-							m_bDoMk[1] = TRUE;
-							m_bDoneMk[1] = FALSE;
+							m_bDoMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 					}
 					else
 					{
-						m_bReAlign[1][1] = TRUE;
-						m_bSkipAlign[1][1] = FALSE;
-						//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_1); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam1); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
+						m_bReAlign[1][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][1]"), m_bReAlign[1][1]);
+						m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
 						Stop();
-						//TowerLamp(RGB_YELLOW, TRUE);
 					}
 				}
 				else
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[1][1] = TRUE;
-					m_bSkipAlign[1][1] = FALSE;
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_1); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam1); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
+					m_bReAlign[1][1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][1]"), m_bReAlign[1][1]);
+					m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
 					Stop();
-					//TowerLamp(RGB_YELLOW, TRUE);
 				}
 			}
 
@@ -23515,12 +22982,13 @@ void CGvisR2R_PunchView::Mk4PtAlignPt1()
 						if (!IsInitPos1())
 							MoveInitPos1();
 
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
 					}
 				}
 				else
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam1); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_1); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
+				{
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move1Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(1) 으로 진행. - 카메라 재정렬
+				}
 			}
 			else
 				m_nMkStAuto++;
@@ -23545,12 +23013,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 				{
 					if (m_bLastProc && m_nBufDnSerial[0] - 1 < m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23563,12 +23031,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 				{
 					if (m_bLastProc && m_nBufDnSerial[0] + 1 > m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23584,12 +23052,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 				{
 					if (m_bLastProc && m_nBufUpSerial[0] - 1 < m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23602,12 +23070,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 				{
 					if (m_bLastProc && m_nBufUpSerial[0] + 1 > m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23645,18 +23113,28 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 					if (!m_bSkipAlign[1][2])
 					{
 						if (!FourPointAlign1(2))
-							m_bFailAlign[1][2] = TRUE;
+						{
+							m_bFailAlign[1][2] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][2]"), m_bFailAlign[1][2]);
+						}
 						else
-							m_bFailAlign[1][2] = FALSE;
+						{
+							m_bFailAlign[1][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][2]"), m_bFailAlign[1][2]);
+						}
 					}
 					else
-						m_bFailAlign[1][2] = FALSE;
+					{
+						m_bFailAlign[1][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][2]"), m_bFailAlign[1][2]);
+					}
 				}
 				else
-					m_bFailAlign[1][2] = FALSE;
+				{
+					m_bFailAlign[1][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][2]"), m_bFailAlign[1][2]);
+				}
 			}
 			else
-				m_bFailAlign[1][2] = FALSE;
+			{
+				m_bFailAlign[1][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][2]"), m_bFailAlign[1][2]);
+			}
 
 			m_nMkStAuto++;
 			break;
@@ -23668,18 +23146,28 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 					if (!m_bSkipAlign[0][2])
 					{
 						if (!FourPointAlign0(2))
-							m_bFailAlign[0][2] = TRUE;
+						{
+							m_bFailAlign[0][2] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][2]"), m_bFailAlign[0][2]);
+						}
 						else
-							m_bFailAlign[0][2] = FALSE;
+						{
+							m_bFailAlign[0][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][2]"), m_bFailAlign[0][2]);
+						}
 					}
 					else
-						m_bFailAlign[0][2] = FALSE;
+					{
+						m_bFailAlign[0][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][2]"), m_bFailAlign[0][2]);
+					}
 				}
 				else
-					m_bFailAlign[0][2] = FALSE;
+				{
+					m_bFailAlign[0][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][2]"), m_bFailAlign[0][2]);
+				}
 			}
 			else
-				m_bFailAlign[0][2] = FALSE;
+			{
+				m_bFailAlign[0][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][2]"), m_bFailAlign[0][2]);
+			}
 
 			m_nMkStAuto++;
 			break;
@@ -23689,36 +23177,31 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 				Buzzer(TRUE, 0);
 				TowerLamp(RGB_YELLOW, TRUE);
 
-				//if(IDNO == DoMyMsgBox(_T("카메라(좌)의 검사판넬을 다시 정렬하시겠습니까?"), MB_YESNO))
 				if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 다시 정렬하시겠습니까?"), 0, MB_YESNO))
 				{
 					Buzzer(FALSE, 0);
 
-					//if(IDYES == DoMyMsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), MB_YESNO))
 					if (IDYES == MsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
 						m_bReAlign[0][2] = FALSE;
-						m_bSkipAlign[0][2] = TRUE;
-						//if(IDNO == DoMyMsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), MB_YESNO))
+						m_bSkipAlign[0][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][2]"), m_bSkipAlign[0][2]);
 						if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[0] = FALSE;
-							m_bDoneMk[0] = TRUE;
+							m_bDoMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 						else
 						{
-							m_bDoMk[0] = TRUE;
-							m_bDoneMk[0] = FALSE;
+							m_bDoMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 					}
 					else
 					{
 						m_bReAlign[0][2] = TRUE;
-						m_bSkipAlign[0][2] = FALSE;
-						//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align0_2); // FourPointAlign0(2) 으로 진행. - 카메라 재정렬
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam0); // FourPointAlign0(2) 으로 진행. - 카메라 재정렬
+						m_bSkipAlign[0][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][2]"), m_bSkipAlign[0][2]);
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign0(2) 으로 진행. - 카메라 재정렬
 						Stop();
-						//TowerLamp(RGB_YELLOW, TRUE);
 					}
 				}
 				else
@@ -23726,11 +23209,9 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 					Buzzer(FALSE, 0);
 
 					m_bReAlign[0][2] = TRUE;
-					m_bSkipAlign[0][2] = FALSE;
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align0_2); // FourPointAlign0(2) 으로 진행. - 카메라 재정렬
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam0); // FourPointAlign0(2) 으로 진행. - 카메라 재정렬
+					m_bSkipAlign[0][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][2]"), m_bSkipAlign[0][2]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign0(2) 으로 진행. - 카메라 재정렬
 					Stop();
-					//TowerLamp(RGB_YELLOW, TRUE);
 				}
 			}
 			if (m_bFailAlign[1][2])
@@ -23738,48 +23219,41 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 				Buzzer(TRUE, 0);
 				TowerLamp(RGB_YELLOW, TRUE);
 
-				//if(IDNO == DoMyMsgBox(_T("카메라(우)의 검사판넬을 다시 정렬하시겠습니까?"), MB_YESNO))
 				if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 다시 정렬하시겠습니까?"), 0, MB_YESNO))
 				{
 					Buzzer(FALSE, 0);
 
-					//if(IDYES == DoMyMsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), MB_YESNO))
 					if (IDYES == MsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[1][2] = FALSE;
-						m_bSkipAlign[1][2] = TRUE;
-						//if(IDNO == DoMyMsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), MB_YESNO))
+						m_bReAlign[1][2] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][2]"), m_bReAlign[1][2]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
 						if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[1] = FALSE;
-							m_bDoneMk[1] = TRUE;
+							m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 						else
 						{
-							m_bDoMk[1] = TRUE;
-							m_bDoneMk[1] = FALSE;
+							m_bDoMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 					}
 					else
 					{
-						m_bReAlign[1][2] = TRUE;
-						m_bSkipAlign[1][2] = FALSE;
-						//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_2); // FourPointAlign1(2) 으로 진행. - 카메라 재정렬
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam1); // FourPointAlign1(2) 으로 진행. - 카메라 재정렬
+						m_bReAlign[1][2] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][2]"), m_bReAlign[1][2]);
+						m_bSkipAlign[1][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(2) 으로 진행. - 카메라 재정렬
 						Stop();
-						//TowerLamp(RGB_YELLOW, TRUE);
 					}
 				}
 				else
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[1][2] = TRUE;
-					m_bSkipAlign[1][2] = FALSE;
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_2); // FourPointAlign1(2) 으로 진행. - 카메라 재정렬
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam1); // FourPointAlign1(2) 으로 진행. - 카메라 재정렬
+					m_bReAlign[1][2] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][2]"), m_bReAlign[1][2]);
+					m_bSkipAlign[1][2] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(2) 으로 진행. - 카메라 재정렬
 					Stop();
-					//TowerLamp(RGB_YELLOW, TRUE);
 				}
 			}
 
@@ -23796,12 +23270,11 @@ void CGvisR2R_PunchView::Mk4PtAlignPt2()
 						if (!IsInitPos1())
 							MoveInitPos1();
 
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
 					}
 				}
 				else
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam1); // FourPointAlign1(2) 으로 진행. - 카메라 재정렬
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_2); // FourPointAlign1(2) 으로 진행. - 카메라 재정렬
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move2Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(2) 으로 진행. - 카메라 재정렬
 			}
 			else
 				m_nMkStAuto++;
@@ -23826,12 +23299,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 				{
 					if (m_bLastProc && m_nBufDnSerial[0] - 1 < m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23844,12 +23317,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 				{
 					if (m_bLastProc && m_nBufDnSerial[0] + 1 > m_nLotEndSerial)	// AOI하면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23865,12 +23338,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 				{
 					if (m_bLastProc && m_nBufUpSerial[0] - 1 < m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23883,12 +23356,12 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 				{
 					if (m_bLastProc && m_nBufUpSerial[0] + 1 > m_nLotEndSerial)	// AOI상면 Serial
 					{
-						m_bSkipAlign[1][0] = TRUE;
-						m_bSkipAlign[1][1] = TRUE;
-						m_bSkipAlign[1][2] = TRUE;
-						m_bSkipAlign[1][3] = TRUE;
-						m_bDoMk[1] = FALSE;
-						m_bDoneMk[1] = TRUE;
+						m_bSkipAlign[1][0] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]);
+						m_bSkipAlign[1][1] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]);
+						m_bSkipAlign[1][2] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][2]"), m_bSkipAlign[1][2]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+						m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						m_nMkStAuto++;
 					}
 					else
@@ -23928,21 +23401,33 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 						if (!m_bSkipAlign[1][3])
 						{
 							if (!FourPointAlign1(3))
-								m_bFailAlign[1][3] = TRUE;
+							{
+								m_bFailAlign[1][3] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][3]"), m_bFailAlign[1][3]);
+							}
 							else
-								m_bFailAlign[1][3] = FALSE;
+							{
+								m_bFailAlign[1][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][3]"), m_bFailAlign[1][3]);
+							}
 						}
 						else
-							m_bFailAlign[1][3] = FALSE;
+						{
+							m_bFailAlign[1][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][3]"), m_bFailAlign[1][3]);
+						}
 					}
 					else
-						m_bFailAlign[1][3] = FALSE;
+					{
+						m_bFailAlign[1][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][3]"), m_bFailAlign[1][3]);
+					}
 				}
 				else
-					m_bFailAlign[1][3] = FALSE;
+				{
+					m_bFailAlign[1][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][3]"), m_bFailAlign[1][3]);
+				}
 			}
 			else
-				m_bFailAlign[1][3] = FALSE;
+			{
+				m_bFailAlign[1][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][3]"), m_bFailAlign[1][3]);
+			}
 
 			m_nMkStAuto++;
 			break;
@@ -23956,21 +23441,33 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 						if (!m_bSkipAlign[0][3])
 						{
 							if (!FourPointAlign0(3))
-								m_bFailAlign[0][3] = TRUE;
+							{
+								m_bFailAlign[0][3] = TRUE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][3]"), m_bFailAlign[0][3]);
+							}
 							else
-								m_bFailAlign[0][3] = FALSE;
+							{
+								m_bFailAlign[0][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][3]"), m_bFailAlign[0][3]);
+							}
 						}
 						else
-							m_bFailAlign[0][3] = FALSE;
+						{
+							m_bFailAlign[0][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][3]"), m_bFailAlign[0][3]);
+						}
 					}
 					else
-						m_bFailAlign[0][3] = FALSE;
+					{
+						m_bFailAlign[0][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][3]"), m_bFailAlign[0][3]);
+					}
 				}
 				else
-					m_bFailAlign[0][3] = FALSE;
+				{
+					m_bFailAlign[0][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][3]"), m_bFailAlign[0][3]);
+				}
 			}
 			else
-				m_bFailAlign[0][3] = FALSE;
+			{
+				m_bFailAlign[0][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][3]"), m_bFailAlign[0][3]);
+			}
 
 			m_nMkStAuto++;
 			break;
@@ -23979,34 +23476,30 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 			{
 				Buzzer(TRUE, 0);
 
-				//if(IDNO == DoMyMsgBox(_T("카메라(좌)의 검사판넬을 다시 정렬하시겠습니까?"), MB_YESNO))
 				if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 다시 정렬하시겠습니까?"), 0, MB_YESNO))
 				{
 					Buzzer(FALSE, 0);
 
-					//if(IDYES == DoMyMsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), MB_YESNO))
 					if (IDYES == MsgBox(_T("카메라(좌)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[0][3] = FALSE;
-						m_bSkipAlign[0][3] = TRUE;
-						//if(IDNO == DoMyMsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), MB_YESNO))
+						m_bReAlign[0][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][3]"), m_bReAlign[0][3]);
+						m_bSkipAlign[0][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][3]"), m_bSkipAlign[0][3]);
 						if (IDNO == MsgBox(_T("카메라(좌)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[0] = FALSE;
-							m_bDoneMk[0] = TRUE;
+							m_bDoMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 						else
 						{
-							m_bDoMk[0] = TRUE;
-							m_bDoneMk[0] = FALSE;
+							m_bDoMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+							m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
 						}
 					}
 					else
 					{
-						m_bReAlign[0][3] = TRUE;
-						m_bSkipAlign[0][3] = FALSE;
-						//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align0_3); // FourPointAlign0(3) 으로 진행. - 카메라 재정렬
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam0); // FourPointAlign0(3) 으로 진행. - 카메라 재정렬
+						m_bReAlign[0][3] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][3]"), m_bReAlign[0][3]);
+						m_bSkipAlign[0][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][3]"), m_bSkipAlign[0][3]);
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign0(3) 으로 진행. - 카메라 재정렬
 						Stop();
 						TowerLamp(RGB_YELLOW, TRUE);
 					}
@@ -24015,10 +23508,9 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[0][3] = TRUE;
-					m_bSkipAlign[0][3] = FALSE;
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align0_3); // FourPointAlign0(3) 으로 진행. - 카메라 재정렬
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam0); // FourPointAlign0(3) 으로 진행. - 카메라 재정렬
+					m_bReAlign[0][3] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][3]"), m_bReAlign[0][3]);
+					m_bSkipAlign[0][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][3]"), m_bSkipAlign[0][3]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam0); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign0(3) 으로 진행. - 카메라 재정렬
 					Stop();
 					TowerLamp(RGB_YELLOW, TRUE);
 				}
@@ -24027,34 +23519,30 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 			{
 				Buzzer(TRUE, 0);
 
-				//if(IDNO == DoMyMsgBox(_T("카메라(우)의 검사판넬을 다시 정렬하시겠습니까?"), MB_YESNO))
 				if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 다시 정렬하시겠습니까?"), 0, MB_YESNO))
 				{
 					Buzzer(FALSE, 0);
 
-					//if(IDYES == DoMyMsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), MB_YESNO))
 					if (IDYES == MsgBox(_T("카메라(우)의 검사판넬 정렬을 정말 않하시겠습니까?"), 0, MB_YESNO))
 					{
-						m_bReAlign[1][3] = FALSE;
-						m_bSkipAlign[1][3] = TRUE;
-						//if(IDNO == DoMyMsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), MB_YESNO))
+						m_bReAlign[1][3] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][3]"), m_bReAlign[1][3]);
+						m_bSkipAlign[1][3] = TRUE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
 						if (IDNO == MsgBox(_T("카메라(우)의 검사판넬을 불량마킹 하시겠습니까?"), 0, MB_YESNO))
 						{
-							m_bDoMk[1] = FALSE;
-							m_bDoneMk[1] = TRUE;
+							m_bDoMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 						else
 						{
-							m_bDoMk[1] = TRUE;
-							m_bDoneMk[1] = FALSE;
+							m_bDoMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+							m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 						}
 					}
 					else
 					{
-						m_bReAlign[1][3] = TRUE;
-						m_bSkipAlign[1][3] = FALSE;
-						//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_3); // FourPointAlign1(3) 으로 진행. - 카메라 재정렬
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam1); // FourPointAlign1(3) 으로 진행. - 카메라 재정렬
+						m_bReAlign[1][3] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][3]"), m_bReAlign[1][3]);
+						m_bSkipAlign[1][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(3) 으로 진행. - 카메라 재정렬
 						Stop();
 						TowerLamp(RGB_YELLOW, TRUE);
 					}
@@ -24063,10 +23551,9 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 				{
 					Buzzer(FALSE, 0);
 
-					m_bReAlign[1][3] = TRUE;
-					m_bSkipAlign[1][3] = FALSE;
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_3); // FourPointAlign1(3) 으로 진행. - 카메라 재정렬
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam1); // FourPointAlign1(3) 으로 진행. - 카메라 재정렬
+					m_bReAlign[1][3] = TRUE; pDoc->SetStatus(_T("General"), _T("bReAlign[1][3]"), m_bReAlign[1][3]);
+					m_bSkipAlign[1][3] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][3]"), m_bSkipAlign[1][3]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(3) 으로 진행. - 카메라 재정렬
 					Stop();
 					TowerLamp(RGB_YELLOW, TRUE);
 				}
@@ -24085,12 +23572,13 @@ void CGvisR2R_PunchView::Mk4PtAlignPt3()
 						if (!IsInitPos1())
 							MoveInitPos1();
 
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // // 불량이미지 Display, Align변수 초기화 (Skip 65 : Mk())
 					}
 				}
 				else
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam1); // FourPointAlign1(3) 으로 진행. - 카메라 재정렬
-					//m_nMkStAuto = MK_ST + (Mk4PtIdx::Align1_3); // FourPointAlign1(3) 으로 진행. - 카메라 재정렬
+				{
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::Move3Cam1); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // FourPointAlign1(3) 으로 진행. - 카메라 재정렬
+				}
 			}
 			else
 				m_nMkStAuto++;
@@ -24141,13 +23629,15 @@ void CGvisR2R_PunchView::Mk4PtElecChk()
 					if (sRst == _T("Open"))
 					{
 						if (pDoc->WorkingInfo.Probing[0].bStopOnOpen)
-							m_nMkStAuto = REJECT_ST;
+						{
+							m_nMkStAuto = REJECT_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+						}
 						else
 							m_nMkStAuto++;
 					}
 					else if (sRst == _T("Error"))
 					{
-						m_nMkStAuto = ERROR_ST;
+						m_nMkStAuto = ERROR_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 					}
 					else
 					{
@@ -24166,7 +23656,9 @@ void CGvisR2R_PunchView::Mk4PtElecChk()
 				m_nMkStAuto++;
 			}
 			else
-				m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk);	// Mk 마킹 시작
+			{
+				m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);	// Mk 마킹 시작
+			}
 			break;
 
 		case MK_ST + (Mk4PtIdx::ChkElec) + 2:
@@ -24176,9 +23668,13 @@ void CGvisR2R_PunchView::Mk4PtElecChk()
 					m_pMotion->IsEnable(MS_X1) && m_pMotion->IsEnable(MS_Y1))
 				{
 					if (MODE_INNER != pDoc->GetTestMode())
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk); 	// Mk 마킹 시작
+					{
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); 	// Mk 마킹 시작
+					}
 					else
-						m_nMkStAuto = MK_ST + (Mk4PtIdx::Shift2Mk);
+					{
+						m_nMkStAuto = MK_ST + (Mk4PtIdx::Shift2Mk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+					}
 				}
 				else
 				{
@@ -24203,7 +23699,7 @@ void CGvisR2R_PunchView::Mk4PtElecChk()
 void CGvisR2R_PunchView::Mk4PtDoMarking()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-	CString sRst, sMsg;
+	CString sRst, sMsg, sItem;
 	int a, b, nSerial, nPrevSerial;
 
 	if (m_bMkSt && IsBuffer())
@@ -24229,9 +23725,9 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 			{
 				if (IsVerify() && !m_nPrevMkStAuto)
 				{
-					m_nPrevMkStAuto = MK_ST + (Mk4PtIdx::Verify);
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk);		// Mk 마킹 시작
-					m_bCam = TRUE;
+					m_nPrevMkStAuto = MK_ST + (Mk4PtIdx::Verify); pDoc->SetStatusInt(_T("General"), _T("nPrevMkStAuto"), m_nPrevMkStAuto);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 마킹 시작
+					m_bCam = TRUE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 				}
 				else
 				{
@@ -24239,33 +23735,27 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 					{
 						if (!m_bCam)
 						{
-							m_nPrevStepAuto = MK_ST + (Mk4PtIdx::Verify);
-							m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk);		// Mk 마킹 시작
-							m_bCam = TRUE;
+							m_nPrevStepAuto = MK_ST + (Mk4PtIdx::Verify); pDoc->SetStatusInt(_T("General"), _T("nPrevStepAuto"), m_nPrevStepAuto);
+							m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 마킹 시작
+							m_bCam = TRUE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 							MsgBox(_T("▶ Jog 버튼을 이용하여 마킹위치를 확인하여 주세요."));
 						}
 						else
 						{
-							m_bCam = FALSE;
+							m_bCam = FALSE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 							m_nMkStAuto++;	// Mk 마킹 완료
-
-											//sMsg = _T("");
-											//DispStsBar(sMsg, 0);
 						}
 					}
 					else
 					{
 						m_nMkStAuto++;	// Mk 마킹 완료
-
-										//sMsg = _T("");
-										//DispStsBar(sMsg, 0);
 					}
 				}
 			}
 			else if (IsReMk())
 			{
-				m_nPrevMkStAuto = MK_ST + (Mk4PtIdx::Verify);
-				m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk);		// Mk 재시작
+				m_nPrevMkStAuto = MK_ST + (Mk4PtIdx::Verify); pDoc->SetStatusInt(_T("General"), _T("nPrevMkStAuto"), m_nPrevMkStAuto);
+				m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 재시작
 			}
 			else
 			{
@@ -24273,36 +23763,35 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 				sMsg += m_sDispSts[0];
 				sMsg += _T(",");
 				sMsg += m_sDispSts[1];
-				//DispStsBar(sMsg, 0);
 			}
 										break;
 
 		case MK_ST + (Mk4PtIdx::DoneMk) :	 // Align변수 초기화
-			m_bReAlign[0][0] = FALSE; // [nCam][nPos] 
-			m_bReAlign[0][1] = FALSE; // [nCam][nPos] 
-			m_bReAlign[1][0] = FALSE; // [nCam][nPos] 
-			m_bReAlign[1][1] = FALSE; // [nCam][nPos] 
+			m_bReAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][0]"), m_bReAlign[0][0]); // [nCam][nPos] 
+			m_bReAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][1]"), m_bReAlign[0][1]); // [nCam][nPos] 
+			m_bReAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][2]"), m_bReAlign[0][2]); // [nCam][nPos] 
+			m_bReAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReAlign[0][3]"), m_bReAlign[0][3]); // [nCam][nPos] 
 
-			m_bSkipAlign[0][0] = FALSE; // [nCam][nPos] 
-			m_bSkipAlign[0][1] = FALSE; // [nCam][nPos] 
-			m_bSkipAlign[1][0] = FALSE; // [nCam][nPos] 
-			m_bSkipAlign[1][1] = FALSE; // [nCam][nPos] 
+			m_bSkipAlign[0][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][0]"), m_bSkipAlign[0][0]); // [nCam][nPos] 
+			m_bSkipAlign[0][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[0][1]"), m_bSkipAlign[0][1]); // [nCam][nPos] 
+			m_bSkipAlign[1][0] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][0]"), m_bSkipAlign[1][0]); // [nCam][nPos] 
+			m_bSkipAlign[1][1] = FALSE;	pDoc->SetStatus(_T("General"), _T("bSkipAlign[1][1]"), m_bSkipAlign[1][1]); // [nCam][nPos] 
 
-			m_bFailAlign[0][0] = FALSE; // [nCam][nPos] 
-			m_bFailAlign[0][1] = FALSE; // [nCam][nPos] 
-			m_bFailAlign[1][0] = FALSE; // [nCam][nPos] 
-			m_bFailAlign[1][1] = FALSE; // [nCam][nPos] 
+			m_bFailAlign[0][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][0]"), m_bFailAlign[0][0]); // [nCam][nPos] 
+			m_bFailAlign[0][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[0][1]"), m_bFailAlign[0][1]); // [nCam][nPos] 
+			m_bFailAlign[1][0] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][0]"), m_bFailAlign[1][0]); // [nCam][nPos] 
+			m_bFailAlign[1][1] = FALSE; pDoc->SetStatus(_T("General"), _T("bFailAlign[1][1]"), m_bFailAlign[1][1]); // [nCam][nPos] 
 			m_nMkStAuto++;
 			break;
 		case MK_ST + (Mk4PtIdx::DoneMk) + 1:  // Mk변수 초기화
-			m_bDoMk[0] = TRUE;
-			m_bDoMk[1] = TRUE;
-			m_bDoneMk[0] = FALSE;
-			m_bDoneMk[1] = FALSE;
-			m_bReMark[0] = FALSE;
-			m_bReMark[1] = FALSE;
-			m_bCam = FALSE;
-			m_nPrevMkStAuto = 0;
+			m_bDoMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[0]"), m_bDoMk[0]);
+			m_bDoMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoMk[1]"), m_bDoMk[1]);
+			m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+			m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+			m_bReMark[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[0]"), m_bReMark[0]);
+			m_bReMark[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bReMark[1]"), m_bReMark[1]);
+			m_bCam = FALSE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
+			m_nPrevMkStAuto = 0; pDoc->SetStatusInt(_T("General"), _T("nPrevMkStAuto"), m_nPrevMkStAuto);
 
 			for (a = 0; a < 2; a++)
 			{
@@ -24310,6 +23799,8 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 				{
 					m_nMkStrip[a][b] = 0;
 					m_bRejectDone[a][b] = FALSE;
+					sItem.Format(_T("bRejectDone[%d][%d]"), a, b);
+					pDoc->SetStatus(_T("General"), sItem, m_bRejectDone[a][b]);
 				}
 			}
 
@@ -24364,122 +23855,6 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 			break;
 		case MK_ST + (Mk4PtIdx::DoneMk) + 6:
 			m_nMkStAuto++;
-			/*
-			if (!IsBuffer(0))
-			{
-				m_bLotEnd = TRUE;
-				m_nLotEndAuto = LOT_END;
-			}
-			else
-			{
-				// [0]: AOI-Up , [1]: AOI-Dn
-				if (bDualTest)
-				{
-					nSerial = pDoc->m_ListBuf[0].Pop(); // Up (좌)
-					nSerial = pDoc->m_ListBuf[0].Pop(); // Up (우)
-
-					SetListBuf();
-				}
-
-				if (m_nLotEndSerial > 0)
-				{
-					nSerial = GetBufferUp(&nPrevSerial);
-
-					if (pView->m_bSerialDecrese)
-					{
-						if (nSerial < m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-						{
-							if (IsDoneDispMkInfo())
-							{
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial);
-								else
-									SetSerial(nPrevSerial - 1, TRUE);
-
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial + 1);
-								else
-									SetSerial(nPrevSerial - 2, TRUE);
-
-								//m_nStepAuto = LOT_END;
-								m_bLotEnd = TRUE;
-								m_nLotEndAuto = LOT_END;
-							}
-						}
-					}
-					else
-					{
-						if (nSerial > m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-						{
-							if (IsDoneDispMkInfo())
-							{
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial);
-								else
-									SetSerial(nPrevSerial + 1, TRUE);
-
-								if (IsBuffer() && nSerial > 0)
-									SetSerial(nSerial + 1);
-								else
-									SetSerial(nPrevSerial + 2, TRUE);
-
-								//m_nStepAuto = LOT_END;
-								m_bLotEnd = TRUE;
-								m_nLotEndAuto = LOT_END;
-							}
-						}
-					}
-
-					if (bDualTest)
-					{
-						nSerial = GetBufferDn(&nPrevSerial);
-
-						if (pView->m_bSerialDecrese)
-						{
-							if (nSerial < m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-							{
-								if (IsDoneDispMkInfo())
-								{
-									if (IsBuffer() && nSerial > 0)
-										SetSerial(nSerial);
-									else
-										SetSerial(nPrevSerial - 1, TRUE);
-
-									if (IsBuffer() && nSerial > 0)
-										SetSerial(nSerial + 1);
-									else
-										SetSerial(nPrevSerial - 2, TRUE);
-
-									m_bLotEnd = TRUE;
-									m_nLotEndAuto = LOT_END;
-								}
-							}
-						}
-						else
-						{
-							if (nSerial > m_nLotEndSerial || nSerial <= 0) // 노광불량 3번째 Lot End ( -1, -1, -2)
-							{
-								if (IsDoneDispMkInfo())
-								{
-									if (IsBuffer() && nSerial > 0)
-										SetSerial(nSerial);
-									else
-										SetSerial(nPrevSerial + 1, TRUE);
-
-									if (IsBuffer() && nSerial > 0)
-										SetSerial(nSerial + 1);
-									else
-										SetSerial(nPrevSerial + 2, TRUE);
-
-									m_bLotEnd = TRUE;
-									m_nLotEndAuto = LOT_END;
-								}
-							}
-						}
-					}
-				}
-			}
-*/
 			break;
 		case MK_ST + (Mk4PtIdx::DoneMk) + 7:
 			m_nMkStAuto++;
@@ -24487,7 +23862,7 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 			break;
 
 		case MK_ST + (Mk4PtIdx::DoneMk) + 8:
-			m_bMkSt = FALSE;
+			m_bMkSt = FALSE; pDoc->SetStatus(_T("General"), _T("bMkSt"), m_bMkSt);
 			break;
 		}
 	}
@@ -24505,16 +23880,15 @@ void CGvisR2R_PunchView::Mk4PtLotDiff()
 			m_nMkStAuto++;
 			break;
 		case MK_ST + (Mk4PtIdx::LotDiff) + 1:
-			//if(IDYES == DoMyMsgBox(_T("상면과 하면의 Lot가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), MB_YESNO))
 			if (IDYES == MsgBox(_T("상면과 하면의 Lot가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 0, MB_YESNO))
 			{
-				m_bContDiffLot = TRUE;
+				m_bContDiffLot = TRUE; pDoc->SetStatus(_T("General"), _T("bContDiffLot"), m_bContDiffLot);
 			}
 			else
 			{
-				m_bContDiffLot = FALSE;
-				m_bLotEnd = TRUE;
-				m_nLotEndAuto = LOT_END;
+				m_bContDiffLot = FALSE; pDoc->SetStatus(_T("General"), _T("bContDiffLot"), m_bContDiffLot);
+				m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+				m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 			}
 			m_nMkStAuto++;
 			break;
@@ -24522,15 +23896,17 @@ void CGvisR2R_PunchView::Mk4PtLotDiff()
 			if (IsRun())
 			{
 				if (m_bContDiffLot)
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::ChkSn);
+				{
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::ChkSn); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+				}
 				else
 					m_nMkStAuto++;
 			}
 			break;
 		case MK_ST + (Mk4PtIdx::LotDiff) + 3:
-			m_bContDiffLot = FALSE;
-			m_bLotEnd = TRUE;
-			m_nLotEndAuto = LOT_END;
+			m_bContDiffLot = FALSE; pDoc->SetStatus(_T("General"), _T("bContDiffLot"), m_bContDiffLot);
+			m_bLotEnd = TRUE; pDoc->SetStatus(_T("General"), _T("bLotEnd"), m_bLotEnd);
+			m_nLotEndAuto = LOT_END; pDoc->SetStatusInt(_T("General"), _T("nLotEndAuto"), m_nLotEndAuto);
 			break;
 		}
 	}
@@ -24539,6 +23915,7 @@ void CGvisR2R_PunchView::Mk4PtLotDiff()
 void CGvisR2R_PunchView::Mk4PtReject()
 {
 	int a, b;
+	CString sItem;
 
 	if (m_bMkSt && IsBuffer())
 	{
@@ -24549,18 +23926,16 @@ void CGvisR2R_PunchView::Mk4PtReject()
 			TowerLamp(RGB_RED, TRUE);
 			Stop();
 
-			//if(IDYES == DoMyMsgBox(_T("쇼트 체크 불량입니다.\r\n리젝 처리를 진행하시겠습니까?"), MB_YESNO))
 			if (IDYES == MsgBox(_T("쇼트 체크 불량입니다.\r\n리젝 처리를 진행하시겠습니까?"), 0, MB_YESNO))
 			{
-				m_bAnswer[0] = TRUE;
+				m_bAnswer[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[0]"), m_bAnswer[0]);
 				m_nMkStAuto++;
 			}
 			else
 			{
-				//if(IDYES == DoMyMsgBox(_T("리젝 처리를 취소하였습니다.\r\n불량만 마킹 처리를 진행하시겠습니까?"), MB_YESNO))
 				if (IDYES == MsgBox(_T("리젝 처리를 취소하였습니다.\r\n불량만 마킹 처리를 진행하시겠습니까?"), 0, MB_YESNO))
 				{
-					m_bAnswer[1] = TRUE;
+					m_bAnswer[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[1]"), m_bAnswer[1]);
 					m_nMkStAuto++;
 				}
 			}
@@ -24572,16 +23947,18 @@ void CGvisR2R_PunchView::Mk4PtReject()
 			{
 				if (m_bAnswer[0])
 				{
-					m_bAnswer[0] = FALSE;
+					m_bAnswer[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[0]"), m_bAnswer[0]);
 					m_nMkStAuto++;
 				}
 				else if (m_bAnswer[1])
 				{
-					m_bAnswer[1] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk);	// Mk 마킹 시작
+					m_bAnswer[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[1]"), m_bAnswer[1]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);	// Mk 마킹 시작
 				}
 				else
-					m_nMkStAuto = REJECT_ST;
+				{
+					m_nMkStAuto = REJECT_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
+				}
 			}
 			break;
 		case REJECT_ST + 2:
@@ -24596,12 +23973,12 @@ void CGvisR2R_PunchView::Mk4PtReject()
 			{
 				if (IsVerify() && !m_nPrevMkStAuto)
 				{
-					m_nPrevMkStAuto = REJECT_ST + 4;
-					m_nMkStAuto = REJECT_ST + 2;		// Mk 마킹 시작
-					m_bCam = TRUE;
+					m_nPrevMkStAuto = REJECT_ST + 4; pDoc->SetStatusInt(_T("General"), _T("nPrevMkStAuto"), m_nPrevMkStAuto);
+					m_nMkStAuto = REJECT_ST + 2; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 마킹 시작
+					m_bCam = TRUE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 
-					m_bDoneMk[0] = FALSE;
-					m_bDoneMk[1] = FALSE;
+					m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+					m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
 
 					for (a = 0; a < 2; a++)
 					{
@@ -24609,6 +23986,8 @@ void CGvisR2R_PunchView::Mk4PtReject()
 						{
 							m_nMkStrip[a][b] = 0;
 							m_bRejectDone[a][b] = FALSE;
+							sItem.Format(_T("bRejectDone[%d][%d]"), a, b);
+							pDoc->SetStatus(_T("General"), sItem, m_bRejectDone[a][b]);
 						}
 					}
 				}
@@ -24618,32 +23997,26 @@ void CGvisR2R_PunchView::Mk4PtReject()
 					{
 						if (!m_bCam)
 						{
-							m_nPrevStepAuto = REJECT_ST + 4;
-							m_nMkStAuto = REJECT_ST + 2;		// Mk 마킹 시작
-							m_bCam = TRUE;
+							m_nPrevStepAuto = REJECT_ST + 4; pDoc->SetStatusInt(_T("General"), _T("nPrevStepAuto"), m_nPrevStepAuto);
+							m_nMkStAuto = REJECT_ST + 2; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);		// Mk 마킹 시작
+							m_bCam = TRUE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 							MsgBox(_T("▶ Jog 버튼을 이용하여 마킹위치를 확인하여 주세요."));
 						}
 						else
 						{
-							m_bCam = FALSE;
+							m_bCam = FALSE; pDoc->SetStatus(_T("General"), _T("bCam"), m_bCam);
 							m_nMkStAuto++;	// Mk 마킹 완료
-
-											//sMsg = _T("");
-											//DispStsBar(sMsg, 0);
 						}
 					}
 					else
 					{
 						m_nMkStAuto++;	// Mk 마킹 완료
-
-										//sMsg = _T("");
-										//DispStsBar(sMsg, 0);
 					}
 				}
 			}
 			break;
 		case REJECT_ST + 5:
-			m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk);				// Align변수 초기화
+			m_nMkStAuto = MK_ST + (Mk4PtIdx::DoneMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);				// Align변수 초기화
 			break;
 		}
 	}
@@ -24659,18 +24032,16 @@ void CGvisR2R_PunchView::Mk4PtErrStop()
 			Stop();
 			TowerLamp(RGB_RED, TRUE);
 
-			//if(IDYES == DoMyMsgBox(_T("쇼트 체크 Error입니다.\r\n다시 쇼트 체크를 진행하시겠습니까?"), MB_YESNO))
 			if (IDYES == MsgBox(_T("쇼트 체크 Error입니다.\r\n다시 쇼트 체크를 진행하시겠습니까?"), 0, MB_YESNO))
 			{
-				m_bAnswer[0] = TRUE;
+				m_bAnswer[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[0]"), m_bAnswer[0]);
 				m_nMkStAuto++;
 			}
 			else
 			{
-				//if(IDYES == DoMyMsgBox(_T("쇼트 체크를 취소하였습니다.\r\n불량만 마킹 처리를 진행하시겠습니까?"), MB_YESNO))
 				if (IDYES == MsgBox(_T("쇼트 체크를 취소하였습니다.\r\n불량만 마킹 처리를 진행하시겠습니까?"), 0, MB_YESNO))
 				{
-					m_bAnswer[1] = TRUE;
+					m_bAnswer[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[1]"), m_bAnswer[1]);
 					m_nMkStAuto++;
 				}
 				else
@@ -24685,20 +24056,20 @@ void CGvisR2R_PunchView::Mk4PtErrStop()
 			{
 				if (m_bAnswer[0])
 				{
-					m_bAnswer[0] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::ChkElec); // DoElecChk
+					m_bAnswer[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[0]"), m_bAnswer[0]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::ChkElec); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto); // DoElecChk
 				}
 				else if (m_bAnswer[1])
 				{
-					m_bAnswer[1] = FALSE;
-					m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk);	// Mk 마킹 시작
+					m_bAnswer[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[1]"), m_bAnswer[1]);
+					m_nMkStAuto = MK_ST + (Mk4PtIdx::DoMk); pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);	// Mk 마킹 시작
 				}
 				else
 					m_nMkStAuto++;
 			}
 			break;
 		case ERROR_ST + 3:
-			m_nMkStAuto = ERROR_ST;
+			m_nMkStAuto = ERROR_ST; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 			break;
 		}
 	}
@@ -24894,7 +24265,6 @@ BOOL CGvisR2R_PunchView::ReloadReelmapInner()
 
 	return TRUE;
 }
-
 
 BOOL CGvisR2R_PunchView::IsDoneReloadReelmapInner(int& nProc)
 {
@@ -25377,33 +24747,67 @@ void CGvisR2R_PunchView::SetPriority()
 
 	// Cam0 : m_bPriority[0], m_bPriority[3]
 	// Cam1 : m_bPriority[1], m_bPriority[2]
-	if (nDir[1] > 0) // Cam1 ->
+	if (pDoc->m_Master[0].MasterInfo.nActionCode == 1 || pDoc->m_Master[0].MasterInfo.nActionCode == 3) // 1 : 좌우 미러 , 3 : 180 회전
 	{
-		m_bPriority[0] = FALSE;
-		m_bPriority[1] = TRUE;
-		m_bPriority[2] = FALSE;
-		m_bPriority[3] = FALSE;
+		if (nDir[0] < 0) // Cam0 <-
+		{
+			m_bPriority[0] = TRUE;
+			m_bPriority[1] = FALSE;
+			m_bPriority[2] = FALSE;
+			m_bPriority[3] = FALSE;
+		}
+		else if (nDir[1] > 0) // Cam1 ->
+		{
+			m_bPriority[0] = FALSE;
+			m_bPriority[1] = TRUE;
+			m_bPriority[2] = FALSE;
+			m_bPriority[3] = FALSE;
+		}
+		else if (nDir[0] > 0)// Cam0 ->
+		{
+			m_bPriority[0] = FALSE;
+			m_bPriority[1] = FALSE;
+			m_bPriority[2] = FALSE;
+			m_bPriority[3] = TRUE;
+		}
+		else // Cam1 <-
+		{
+			m_bPriority[0] = FALSE;
+			m_bPriority[1] = FALSE;
+			m_bPriority[2] = TRUE;
+			m_bPriority[3] = FALSE;
+		}
 	}
-	else if (nDir[0] < 0) // Cam0 <-
+	else
 	{
-		m_bPriority[0] = TRUE;
-		m_bPriority[1] = FALSE;
-		m_bPriority[2] = FALSE;
-		m_bPriority[3] = FALSE;
-	}
-	else if (nDir[1] < 0) // Cam1 <-
-	{
-		m_bPriority[0] = FALSE;
-		m_bPriority[1] = FALSE;
-		m_bPriority[2] = TRUE;
-		m_bPriority[3] = FALSE;
-	}
-	else // Cam0 ->
-	{
-		m_bPriority[0] = FALSE;
-		m_bPriority[1] = FALSE;
-		m_bPriority[2] = FALSE;
-		m_bPriority[3] = TRUE;
+		if (nDir[1] > 0) // Cam1 ->
+		{
+			m_bPriority[0] = FALSE;
+			m_bPriority[1] = TRUE;
+			m_bPriority[2] = FALSE;
+			m_bPriority[3] = FALSE;
+		}
+		else if (nDir[0] < 0) // Cam0 <-
+		{
+			m_bPriority[0] = TRUE;
+			m_bPriority[1] = FALSE;
+			m_bPriority[2] = FALSE;
+			m_bPriority[3] = FALSE;
+		}
+		else if (nDir[1] < 0) // Cam1 <-
+		{
+			m_bPriority[0] = FALSE;
+			m_bPriority[1] = FALSE;
+			m_bPriority[2] = TRUE;
+			m_bPriority[3] = FALSE;
+		}
+		else // Cam0 ->
+		{
+			m_bPriority[0] = FALSE;
+			m_bPriority[1] = FALSE;
+			m_bPriority[2] = FALSE;
+			m_bPriority[3] = TRUE;
+		}
 	}
 }
 
@@ -25524,10 +24928,10 @@ BOOL CGvisR2R_PunchView::ChkCollision(int nAxisId, double dTgtPosX, double dTgtN
 void CGvisR2R_PunchView::StopAllMk()
 {
 	// Mk0
-	m_nStepMk[2] = MK_END;
+	m_nStepMk[2] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
 
 	// Mk1
-	m_nStepMk[3] = MK_END;
+	m_nStepMk[3] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
 }
 
 void CGvisR2R_PunchView::DoAllMk(int nCam)
@@ -25557,13 +24961,13 @@ void CGvisR2R_PunchView::DoAllMk(int nCam)
 		}
 		if (!m_bTHREAD_MK[2])
 		{
-			m_nStepMk[2] = 0;
-			m_nMkPcs[2] = 0;
-			m_bTHREAD_MK[2] = TRUE;
+			m_nStepMk[2] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
+			m_nMkPcs[2] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[2]"), m_nMkPcs[2]);
+			m_bTHREAD_MK[2] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[2]"), m_bTHREAD_MK[2]);
 		}
 		else
 		{
-			m_bTHREAD_MK[2] = FALSE;
+			m_bTHREAD_MK[2] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[2]"), m_bTHREAD_MK[2]);
 		}
 	}
 	else if (nCam == CAM_RT)
@@ -25591,37 +24995,37 @@ void CGvisR2R_PunchView::DoAllMk(int nCam)
 		}
 		if (!m_bTHREAD_MK[3])
 		{
-			m_nStepMk[3] = 0;
-			m_nMkPcs[3] = 0;
-			m_bTHREAD_MK[3] = TRUE;
+			m_nStepMk[3] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
+			m_nMkPcs[3] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[3]"), m_nMkPcs[3]);
+			m_bTHREAD_MK[3] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[3]"), m_bTHREAD_MK[3]);
 		}
 		else
 		{
-			m_bTHREAD_MK[3] = FALSE;
+			m_bTHREAD_MK[3] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[3]"), m_bTHREAD_MK[3]);
 		}
 	}
 	else if (nCam == CAM_BOTH)
 	{
 		if (!m_bTHREAD_MK[2])
 		{
-			m_nStepMk[2] = 0;
-			m_nMkPcs[2] = 0;
-			m_bTHREAD_MK[2] = TRUE;
+			m_nStepMk[2] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
+			m_nMkPcs[2] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[2]"), m_nMkPcs[2]);
+			m_bTHREAD_MK[2] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[2]"), m_bTHREAD_MK[2]);
 		}
 		else
 		{
-			m_bTHREAD_MK[2] = FALSE;
+			m_bTHREAD_MK[2] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[2]"), m_bTHREAD_MK[2]);
 		}
 
 		if (!m_bTHREAD_MK[3])
 		{
-			m_nStepMk[3] = 0;
-			m_nMkPcs[3] = 0;
-			m_bTHREAD_MK[3] = TRUE;
+			m_nStepMk[3] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
+			m_nMkPcs[3] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[3]"), m_nMkPcs[3]);
+			m_bTHREAD_MK[3] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[3]"), m_bTHREAD_MK[3]);
 		}
 		else
 		{
-			m_bTHREAD_MK[3] = FALSE;
+			m_bTHREAD_MK[3] = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[3]"), m_bTHREAD_MK[3]);
 		}
 	}
 }
@@ -26068,7 +25472,7 @@ void CGvisR2R_PunchView::GetPlcParam()
 	pDoc->BtnStatus.Mk.TblVac = m_pMpe->Read(_T("MB003716")) ? TRUE : FALSE;	// 마킹부 토크 진공 스위치 램프
 	pDoc->BtnStatus.Mk.FdClp = m_pMpe->Read(_T("MB003719")) ? TRUE : FALSE;		// 마킹부 피딩 클램프 스위치 램프  
 	pDoc->BtnStatus.Mk.TqClp = m_pMpe->Read(_T("MB00371A")) ? TRUE : FALSE;		// 마킹부 텐션 클램프 스위치 램프
-	pDoc->BtnStatus.Mk.MvOne = m_pMpe->Read(_T("MB440151")) ? TRUE : FALSE;
+	pDoc->BtnStatus.Mk.MvOne = m_pMpe->Read(_T("MB440151")) ? TRUE : FALSE;		// 마킹부 한판넬 이송 스위치 
 	pDoc->BtnStatus.Mk.LsrPt = m_pMpe->Read(_T("MB003718")) ? TRUE : FALSE;		// 마킹부 레이져 포인터 스위치 램프
 	pDoc->BtnStatus.Mk.DcRSol = m_pMpe->Read(_T("MB00371B")) ? TRUE : FALSE;	// 마킹부 댄서롤 상승/하강 스위치 램프
 
@@ -27458,7 +26862,7 @@ BOOL CGvisR2R_PunchView::IsMkStrip(int nStripIdx)
 
 void CGvisR2R_PunchView::CycleStop()
 {
-	m_bCycleStop = TRUE;
+	m_bCycleStop = TRUE; pDoc->SetStatus(_T("General"), _T("bCycleStop"), m_bCycleStop);
 }
 
 BOOL CGvisR2R_PunchView::ChkLotCutPos()
@@ -28121,10 +27525,10 @@ void CGvisR2R_PunchView::SetReject()
 	{
 		if (!m_bTHREAD_MK[2])
 		{
-			m_bDoneMk[0] = FALSE;
-			m_nStepMk[2] = 0;
-			m_nMkPcs[2] = 0;
-			m_bTHREAD_MK[2] = TRUE;
+			m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+			m_nStepMk[2] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[2]"), m_nStepMk[2]);
+			m_nMkPcs[2] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[2]"), m_nMkPcs[2]);
+			m_bTHREAD_MK[2] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[2]"), m_bTHREAD_MK[2]);
 		}
 	}
 
@@ -28132,10 +27536,10 @@ void CGvisR2R_PunchView::SetReject()
 	{
 		if (!m_bTHREAD_MK[3])
 		{
-			m_bDoneMk[1] = FALSE;
-			m_nStepMk[3] = 0;
-			m_nMkPcs[3] = 0;
-			m_bTHREAD_MK[3] = TRUE;
+			m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+			m_nStepMk[3] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[3]"), m_nStepMk[3]);
+			m_nMkPcs[3] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[3]"), m_nMkPcs[3]);
+			m_bTHREAD_MK[3] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MK[3]"), m_bTHREAD_MK[3]);
 		}
 	}
 }
@@ -28229,23 +27633,23 @@ void CGvisR2R_PunchView::CntMk()
 #ifdef USE_MPE
 	if (m_nPrevTotMk[0] != m_nTotMk[0])
 	{
-		m_nPrevTotMk[0] = m_nTotMk[0];
+		m_nPrevTotMk[0] = m_nTotMk[0]; pDoc->SetStatusInt(_T("General"), _T("nPrevTotMk[0]"), m_nPrevTotMk[0]);
 		pView->m_pMpe->Write(_T("ML45096"), (long)m_nTotMk[0]);	// 마킹부 (좌) 총 마킹수 
 	}
 	if (m_nPrevCurMk[0] != m_nMkPcs[0])//m_nCurMk[0])
 	{
-		m_nPrevCurMk[0] = m_nMkPcs[0];//m_nCurMk[0];
+		m_nPrevCurMk[0] = m_nMkPcs[0]; pDoc->SetStatusInt(_T("General"), _T("nPrevCurMk[0]"), m_nPrevCurMk[0]);//m_nCurMk[0];
 		pView->m_pMpe->Write(_T("ML45098"), (long)m_nMkPcs[0]);	// 마킹부 (좌) 현재 마킹한 수
 	}
 
 	if (m_nPrevTotMk[1] != m_nTotMk[1])
 	{
-		m_nPrevTotMk[1] = m_nTotMk[1];
+		m_nPrevTotMk[1] = m_nTotMk[1]; pDoc->SetStatusInt(_T("General"), _T("nPrevTotMk[1]"), m_nPrevTotMk[1]);
 		pView->m_pMpe->Write(_T("ML45100"), (long)m_nTotMk[1]);	// 마킹부 (우) 총 마킹수 
 	}
 	if (m_nPrevCurMk[1] != m_nMkPcs[1])//m_nCurMk[1])
 	{
-		m_nPrevCurMk[1] = m_nMkPcs[1];//m_nCurMk[1];
+		m_nPrevCurMk[1] = m_nMkPcs[1]; pDoc->SetStatusInt(_T("General"), _T("nPrevCurMk[1]"), m_nPrevCurMk[1]);//m_nCurMk[1];
 		pView->m_pMpe->Write(_T("ML45102"), (long)m_nMkPcs[1]);	// 마킹부 (우) 현재 마킹한 수
 	}
 #endif
@@ -28782,26 +28186,14 @@ BOOL CGvisR2R_PunchView::LoadMasterSpec()
 // Call from Thread Function
 void CGvisR2R_PunchView::UpdateYield(int nSerial)
 {
-	//pDoc->UpdateYield(nSerial);
-
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-	//int nId = nSerial % 2; // 홀수(1), 짝수(0)
 
-	m_nSnTHREAD_UPDATAE_YIELD = nSerial;
-	m_bTHREAD_UPDATE_YIELD_UP = TRUE;
-	if(bDualTest)
-		m_bTHREAD_UPDATE_YIELD_DN = TRUE;
-
-	//if (pDoc->GetTestMode() == MODE_OUTER)
-	//{
-	//	m_bTHREAD_UPDATE_YIELD_ITS = TRUE;
-	//	m_bTHREAD_UPDATE_YIELD_INNER_UP = TRUE;
-	//	if (pDoc->WorkingInfo.LastJob.bDualTestInner)
-	//	{
-	//		m_bTHREAD_UPDATE_YIELD_INNER_DN = TRUE;
-	//	}
-	//}
-
+	m_nSnTHREAD_UPDATAE_YIELD = nSerial; pDoc->SetStatusInt(_T("Thread"), _T("nSnTHREAD_UPDATAE_YIELD"), m_nSnTHREAD_UPDATAE_YIELD);
+	m_bTHREAD_UPDATE_YIELD_UP = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_UP"), m_bTHREAD_UPDATE_YIELD_UP);
+	if (bDualTest)
+	{
+		m_bTHREAD_UPDATE_YIELD_DN = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_DN"), m_bTHREAD_UPDATE_YIELD_DN);
+	}
 }
 
 void CGvisR2R_PunchView::UpdateYieldUp(int nSerial)
@@ -28864,25 +28256,23 @@ void CGvisR2R_PunchView::UpdateYield()
 	if (m_bLastProc && m_nBufUpSerial[0] == m_nLotEndSerial)
 	{
 			m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-			m_bTHREAD_UPDATAE_YIELD[0] = TRUE; // Cam[0]
+			m_bTHREAD_UPDATAE_YIELD[0] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[0]"), m_bTHREAD_UPDATAE_YIELD[0]); // Cam[0]
 			Sleep(30);
 	}
 	else
 	{
 		m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-		m_bTHREAD_UPDATAE_YIELD[0] = TRUE; // Cam[0]
+		m_bTHREAD_UPDATAE_YIELD[0] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[0]"), m_bTHREAD_UPDATAE_YIELD[0]); // Cam[0]
 		Sleep(30);
 
 		if (m_nBufUpSerial[1] > 0)
 		{
 			m_nSerialTHREAD_UPDATAE_YIELD[1] = m_nBufUpSerial[1];
-			m_bTHREAD_UPDATAE_YIELD[1] = TRUE; // Cam[1]
+			m_bTHREAD_UPDATAE_YIELD[1] = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATAE_YIELD[1]"), m_bTHREAD_UPDATAE_YIELD[1]); // Cam[1]
 			Sleep(30);
 		}
 		else if(m_nBufUpSerial[1] < 0)
 		{
-			//Stop();
-			//MsgBox(_T("Error-UpdateYield() : m_nBufUpSerial[1] < 1"));
 			return;
 		}
 	}
@@ -28897,25 +28287,29 @@ void CGvisR2R_PunchView::DoShift2Mk()
 	if (m_bLastProc && m_nBufUpSerial[0] == m_nLotEndSerial)
 	{
 		nSerial = m_nBufUpSerial[0];
-		//if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-		if (nSerial > 0) // 20130202
-			m_bTHREAD_SHIFT2MK = TRUE;
+		if (nSerial > 0)
+		{
+			m_bTHREAD_SHIFT2MK = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_SHIFT2MK"), m_bTHREAD_SHIFT2MK);
+		}
 	}
 	else
 	{
 		nSerial = m_nBufUpSerial[0];
 		if (!m_bCont)
 		{
-			//if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
 			if (nSerial > 0)
-				m_bTHREAD_SHIFT2MK = TRUE;
+			{
+				m_bTHREAD_SHIFT2MK = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_SHIFT2MK"), m_bTHREAD_SHIFT2MK);
+			}
 			else
 				Stop();
 		}
 		else
 		{
 			if (nSerial > 0)
-				m_bTHREAD_SHIFT2MK = TRUE;
+			{
+				m_bTHREAD_SHIFT2MK = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_SHIFT2MK"), m_bTHREAD_SHIFT2MK);
+			}
 			else
 				Stop();
 		}
@@ -28933,216 +28327,7 @@ void CGvisR2R_PunchView::DoAutoEng()
 
 	// 각인부 2D 코드 Reading신호를 확인
 	DoAtuoGet2dReadStSignal();
-
-/*	// LastProc Start
-	DoAutoSetLastProcAtPlc();
-
-	// CycleStop
-	DoAutoChkCycleStop();
-
-	// DispMsg
-	DoAutoDispMsg();
-
-	// 각인부 Marking Start
-	DoAutoMarking();
-
-	// 각인부 2D 코드 Reading Start
-	DoAuto2dReading(); */
 }
-
-
-
-//void CGvisR2R_PunchView::DoAtuoGetEngStSignal()
-//{
-//#ifdef USE_MPE
-//	if (m_pMpe)
-//	{
-//		if (!pDoc->BtnStatus.EngAuto.MkSt && pDoc->BtnStatus.EngAuto.MkStF)
-//		{
-//			pDoc->BtnStatus.EngAuto.MkStF = FALSE;
-//
-//			m_pMpe->Write(_T("MB440103"), 0);			// 2D(GUI) 각인 동작 Start신호(PLC On->PC Off)
-//
-//			if (pDoc->m_pMpeSignal[0] & (0x01 << 2))	// 각인부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)
-//				m_pMpe->Write(_T("MB440102"), 0);		// 각인부 Feeding완료
-//
-//			//m_bEngSt = TRUE;
-//			//m_nEngStAuto = ENG_ST;
-//		}
-//
-//		if ((pDoc->m_pMpeSignal[0] & (0x01 << 3) || m_bEngStSw) && !pDoc->BtnStatus.EngAuto.MkStF)// 2D(GUI) 각인 동작 Start신호(PLC On->PC Off)
-//		{
-//			pDoc->BtnStatus.EngAuto.MkStF = TRUE;
-//			m_bEngStSw = FALSE;
-//
-//			if (m_pEngrave && m_pEngrave->IsConnected())
-//			{ 
-//				pDoc->BtnStatus.EngAuto.IsMkSt = FALSE;
-//				m_pEngrave->SwEngAutoMkSt(TRUE);
-//				Sleep(100);
-//			}
-//		}
-//		else if ((pDoc->m_pMpeSignal[0] & (0x01 << 3) || m_bEngStSw) && pDoc->BtnStatus.EngAuto.MkStF)
-//		{
-//			if (m_pEngrave && m_pEngrave->IsConnected())
-//			{
-//				m_pEngrave->IsSwEngAutoMkSt(TRUE);
-//				if (!pDoc->BtnStatus.EngAuto.IsMkSt)
-//				{
-//					m_pEngrave->SwEngAutoMkSt(TRUE);
-//					Sleep(100);
-//				}
-//			}
-//		}
-//	}
-//
-//#endif
-//}
-
-//void CGvisR2R_PunchView::DoAtuoGet2dReadStSignal()
-//{
-//#ifdef USE_MPE
-//	if (m_pMpe)
-//	{
-//		//if (IsRun())
-//		//{
-//			if (!pDoc->BtnStatus.EngAuto.Read2dSt)// && pDoc->BtnStatus.EngAuto.Read2dStF)
-//			{
-//				pDoc->BtnStatus.EngAuto.Read2dStF = FALSE;
-//
-//				m_pMpe->Write(_T("MB440105"), 0);			// 각인부 2D 리더 시작신호(PLC On->PC Off)
-//
-//				if (pDoc->m_pMpeSignal[0] & (0x01 << 2))	// 각인부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)
-//					m_pMpe->Write(_T("MB440102"), 0);		// 각인부 Feeding완료
-//
-//				//m_bEng2dSt = TRUE;
-//				//m_nEng2dStAuto = ENG_2D_ST;
-//			}
-//		//}
-//
-//		//if (!m_bEng2dSt)
-//		{
-//			if ((pDoc->m_pMpeSignal[0] & (0x01 << 5) || m_bEng2dStSw))// && !pDoc->BtnStatus.EngAuto.Read2dStF)// 각인부 2D 리더 시작신호(PLC On->PC Off)
-//			{
-//				pDoc->BtnStatus.EngAuto.Read2dStF = TRUE;
-//				m_bEng2dStSw = FALSE;
-//
-//				if (m_pEngrave)
-//				{
-//					m_pEngrave->SwEngAuto2dReadSt(TRUE);
-//				}
-//			}
-//		}
-//	}
-//
-//#endif
-//}
-
-
-//void CGvisR2R_PunchView::DoAtuoGet2dReadStSignal()
-//{
-//#ifdef USE_MPE
-//	if (m_pMpe)
-//	{
-//		if (!pDoc->BtnStatus.EngAuto.Read2dSt && pDoc->BtnStatus.EngAuto.Read2dStF)
-//		{
-//			pDoc->BtnStatus.EngAuto.Read2dStF = FALSE;
-//
-//			m_pMpe->Write(_T("MB440105"), 0);			// 각인부 2D 리더 시작신호(PLC On->PC Off)
-//
-//			if (pDoc->m_pMpeSignal[0] & (0x01 << 2))	// 각인부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)
-//				m_pMpe->Write(_T("MB440102"), 0);		// 각인부 Feeding완료
-//
-//			//m_bEng2dSt = TRUE;
-//			//m_nEng2dStAuto = ENG_2D_ST;
-//		}
-//
-//		if ((pDoc->m_pMpeSignal[0] & (0x01 << 5) || m_bEng2dStSw) && !pDoc->BtnStatus.EngAuto.Read2dStF)// 각인부 2D 리더 시작신호(PLC On->PC Off)
-//		{
-//			pDoc->BtnStatus.EngAuto.Read2dStF = TRUE;
-//			m_bEng2dStSw = FALSE;
-//
-//			if (m_pEngrave && m_pEngrave->IsConnected())
-//			{
-//				pDoc->BtnStatus.EngAuto.IsRead2dSt = FALSE;
-//				m_pEngrave->SwEngAuto2dReadSt(TRUE);
-//				Sleep(100);
-//			}
-//		}
-//		else if ((pDoc->m_pMpeSignal[0] & (0x01 << 5) || m_bEng2dStSw) && pDoc->BtnStatus.EngAuto.Read2dStF)
-//		{
-//			if (m_pEngrave && m_pEngrave->IsConnected())
-//			{
-//				m_pEngrave->IsSwEngAuto2dReadSt(TRUE);
-//				if (!pDoc->BtnStatus.EngAuto.IsRead2dSt)
-//				{
-//					m_pEngrave->SwEngAuto2dReadSt(TRUE);
-//					Sleep(100);
-//				}
-//			}
-//		}		
-//	}
-//#endif
-//}
-
-//void CGvisR2R_PunchView::DoAutoSetFdOffsetEngrave()
-//{
-//#ifdef USE_MPE
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-//	double dAveX, dAveY;
-//	CfPoint OfSt;
-//	
-//	//if (pDoc->m_pMpeSignal[1] & (0x01 << 6) && !m_bEngTestF)
-//	//else if (!(pDoc->m_pMpeSignal[1] & (0x01 << 6)) && m_bEngTestF)
-//	if ((pDoc->BtnStatus.EngAuto.OnMking && !m_bEngTestF) || (pDoc->BtnStatus.EngAuto.OnRead2d && !m_bEngTestF)) // 각인부 검사중
-//	{
-//		m_bEngTestF = TRUE;
-//		m_bEngTest = TRUE;
-//	}
-//	else if((!pDoc->BtnStatus.EngAuto.OnMking && m_bEngTestF) || (!pDoc->BtnStatus.EngAuto.OnRead2d && m_bEngTestF))
-//	{
-//		m_bEngTestF = FALSE;
-//		m_bEngTest = FALSE;
-//		m_bEngFdWriteF = FALSE;
-//		pView->m_pMpe->Write(_T("MB44011A"), 0);					// 각인부 Feeding Offset Write 완료(PC가 확인하고 Reset시킴.)
-//	}
-//
-//	if (pDoc->m_pMpeSignal[1] & (0x01 << 10) && !m_bEngFdWrite)		// 각인부 Feeding Offset Write 완료(PC가 확인하고 Reset시킴.)
-//	{
-//		m_bEngFdWrite = TRUE;
-//	}
-//	else if (!(pDoc->m_pMpeSignal[1] & (0x01 << 10)) && m_bEngFdWrite)
-//	{
-//		m_bEngFdWrite = FALSE;
-//	}
-//
-//
-//	if (m_bEngFdWrite&& !m_bEngFdWriteF)
-//	{
-//		m_bEngFdWriteF = TRUE;
-//
-//		GetEngOffset(OfSt);
-//
-//		dAveX = OfSt.x;
-//		dAveY = OfSt.y;
-//
-//		if (m_pDlgMenu02)
-//		{
-//			m_pDlgMenu02->m_dEngFdOffsetX = OfSt.x;
-//			m_pDlgMenu02->m_dEngFdOffsetY = OfSt.y;
-//		}
-//
-//		pView->m_pMpe->Write(_T("ML45078"), (long)(dAveX*1000.0));	// 각인부 Feeding 롤러 Offset(*1000, +:더 보냄, -덜 보냄, PC가 쓰고 PLC에서 지움)
-//		pView->m_pMpe->Write(_T("MB44011A"), 0);					// 각인부 Feeding Offset Write 완료(PC가 확인하고 Reset시킴.)
-//		Sleep(100);
-//	}
-//	else if (!m_bEngFdWrite && m_bEngFdWriteF)
-//	{
-//		m_bEngFdWriteF = FALSE;
-//		m_bEngTest = FALSE;
-//	}
-//#endif
-//}
 
 void CGvisR2R_PunchView::DoAtuoGetEngStSignal()
 {
@@ -29222,14 +28407,14 @@ void CGvisR2R_PunchView::DoAutoSetFdOffsetEngrave()
 
 	if ((pDoc->BtnStatus.EngAuto.IsOnMking && !m_bEngTestF) || (pDoc->BtnStatus.EngAuto.IsOnRead2d && !m_bEngTestF)) // 각인부 검사중
 	{
-		m_bEngTestF = TRUE;
-		m_bEngTest = TRUE;
+		m_bEngTestF = TRUE; pDoc->SetStatus(_T("General"), _T("bEngTestF"), m_bEngTestF);
+		m_bEngTest = TRUE; pDoc->SetStatus(_T("General"), _T("bEngTest"), m_bEngTest);
 	}
 	else if ((!pDoc->BtnStatus.EngAuto.IsOnMking && m_bEngTestF) || (!pDoc->BtnStatus.EngAuto.IsOnRead2d && m_bEngTestF))
 	{
-		m_bEngTestF = FALSE;
-		m_bEngTest = FALSE;
-		m_bEngFdWriteF = FALSE;
+		m_bEngTestF = FALSE; pDoc->SetStatus(_T("General"), _T("bEngTestF"), m_bEngTestF);
+		m_bEngTest = FALSE; pDoc->SetStatus(_T("General"), _T("bEngTest"), m_bEngTest);
+		m_bEngFdWriteF = FALSE; pDoc->SetStatus(_T("General"), _T("bEngFdWriteF"), m_bEngFdWriteF);
 #ifdef USE_MPE
 		if (m_pMpe)
 		{
@@ -29241,20 +28426,17 @@ void CGvisR2R_PunchView::DoAutoSetFdOffsetEngrave()
 
 	if (pDoc->m_pMpeSignal[1] & (0x01 << 10) && !m_bEngFdWrite)		// 각인부 Feeding Offset Write 완료(PC가 확인하고 Reset시킴.)
 	{
-		m_bEngFdWrite = TRUE;
+		m_bEngFdWrite = TRUE; pDoc->SetStatus(_T("General"), _T("bEngFdWrite"), m_bEngFdWrite);
 	}
 	else if (!(pDoc->m_pMpeSignal[1] & (0x01 << 10)) && m_bEngFdWrite)
 	{
-		m_bEngFdWrite = FALSE;
+		m_bEngFdWrite = FALSE; pDoc->SetStatus(_T("General"), _T("bEngFdWrite"), m_bEngFdWrite);
 	}
 
 
 	if (m_bEngFdWrite && !m_bEngFdWriteF)
 	{
-		m_bEngFdWriteF = TRUE;
-
-		//if (MODE_INNER == pDoc->GetTestMode())
-		//	GetCurrentInfoEng();
+		m_bEngFdWriteF = TRUE; pDoc->SetStatus(_T("General"), _T("bEngFdWriteF"), m_bEngFdWriteF);
 
 		GetEngOffset(OfSt);
 
@@ -29279,8 +28461,8 @@ void CGvisR2R_PunchView::DoAutoSetFdOffsetEngrave()
 	}
 	else if (!m_bEngFdWrite && m_bEngFdWriteF)
 	{
-		m_bEngFdWriteF = FALSE;
-		m_bEngTest = FALSE;
+		m_bEngFdWriteF = FALSE; pDoc->SetStatus(_T("General"), _T("bEngFdWriteF"), m_bEngFdWriteF);
+		m_bEngTest = FALSE; pDoc->SetStatus(_T("General"), _T("bEngTest"), m_bEngTest);
 	}
 
 }
@@ -29459,10 +28641,10 @@ void CGvisR2R_PunchView::InitAutoEngSignal()
 {
 	pDoc->BtnStatus.EngAuto._Init();
 
-	m_bEngFdWrite = FALSE;
-	m_bEngFdWriteF = FALSE;
-	m_bEngTest = FALSE;
-	m_bEngTestF = FALSE;
+	m_bEngFdWrite = FALSE; pDoc->SetStatus(_T("General"), _T("bEngFdWrite"), m_bEngFdWrite);
+	m_bEngFdWriteF = FALSE; pDoc->SetStatus(_T("General"), _T("bEngFdWriteF"), m_bEngFdWriteF);
+	m_bEngTest = FALSE; pDoc->SetStatus(_T("General"), _T("bEngTest"), m_bEngTest);
+	m_bEngTestF = FALSE; pDoc->SetStatus(_T("General"), _T("bEngTestF"), m_bEngTestF);
 
 	m_pMpe->Write(_T("MB440103"), 0); // 2D(GUI) 각인 동작 Start신호(PLC On->PC Off)
 	m_pMpe->Write(_T("MB440173"), 0); // 2D(GUI) 각인 동작Running신호(PC On->PC Off)
@@ -29487,11 +28669,11 @@ BOOL CGvisR2R_PunchView::GetCurrentInfoSignal()
 {
 	pDoc->BtnStatus.EngAuto.IsInit = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoInit);
 	pDoc->BtnStatus.EngAuto.IsMkSt = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeqMkSt);
-	pDoc->BtnStatus.EngAuto.IsOnMking = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeqOnMkIng);
-	pDoc->BtnStatus.EngAuto.IsMkDone = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeqMkDone);
+	pDoc->BtnStatus.EngAuto.IsOnMking = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeqOnMkIng); pDoc->SetStatus(_T("Engrave"), _T("IsOnMking"), pDoc->BtnStatus.EngAuto.IsOnMking);
+	pDoc->BtnStatus.EngAuto.IsMkDone = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeqMkDone); pDoc->SetStatus(_T("Engrave"), _T("IsMkDone"), pDoc->BtnStatus.EngAuto.IsMkDone);
 	pDoc->BtnStatus.EngAuto.IsRead2dSt = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeq2dReadSt);
-	pDoc->BtnStatus.EngAuto.IsOnRead2d = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeqOnReading2d);
-	pDoc->BtnStatus.EngAuto.IsRead2dDone = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeq2dReadDone);
+	pDoc->BtnStatus.EngAuto.IsOnRead2d = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeqOnReading2d); pDoc->SetStatus(_T("Engrave"), _T("IsOnRead2d"), pDoc->BtnStatus.EngAuto.IsOnRead2d);
+	pDoc->BtnStatus.EngAuto.IsRead2dDone = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeq2dReadDone); pDoc->SetStatus(_T("Engrave"), _T("IsRead2dDone"), pDoc->BtnStatus.EngAuto.IsRead2dDone);
 	pDoc->BtnStatus.EngAuto.IsFdDone = pDoc->GetCurrentInfoSignal(_SigInx::_EngAutoSeqFdDone);
 	
 	return TRUE;
@@ -29530,11 +28712,13 @@ UINT CGvisR2R_PunchView::ThreadProc10(LPVOID lpContext)	// UpdateReelmapYieldUp(
 			if (!pThread->m_bTHREAD_UPDATE_REELMAP_UP) // Write Reelmap
 			{
 				pThread->UpdateReelmapYieldUp(); // Yield Reelmap
-				pThread->m_bTHREAD_REELMAP_YIELD_UP = FALSE;
+				pThread->m_bTHREAD_REELMAP_YIELD_UP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_UP"), pThread->m_bTHREAD_REELMAP_YIELD_UP);
 				if (!pDoc->WorkingInfo.LastJob.bDualTest)
 				{
 					if (pDoc->GetTestMode() == MODE_OUTER)
-						pThread->m_bTHREAD_REELMAP_YIELD_ITS = TRUE;
+					{
+						pThread->m_bTHREAD_REELMAP_YIELD_ITS = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ITS"), pThread->m_bTHREAD_REELMAP_YIELD_ITS);
+					}
 				}
 
 				Sleep(0);
@@ -29571,9 +28755,9 @@ UINT CGvisR2R_PunchView::ThreadProc11(LPVOID lpContext)	// UpdateReelmapYieldDn(
 			if (!pThread->m_bTHREAD_UPDATE_REELMAP_DN && !pThread->m_bTHREAD_UPDATE_REELMAP_ALLUP && !pThread->m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
 			{
 				pThread->UpdateReelmapYieldDn(); // Yield Reelmap
-				pThread->m_bTHREAD_REELMAP_YIELD_DN = FALSE;
-				pThread->m_bTHREAD_REELMAP_YIELD_ALLUP = TRUE;
-				pThread->m_bTHREAD_REELMAP_YIELD_ALLDN = TRUE;
+				pThread->m_bTHREAD_REELMAP_YIELD_DN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_DN"), pThread->m_bTHREAD_REELMAP_YIELD_DN);
+				pThread->m_bTHREAD_REELMAP_YIELD_ALLUP = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ALLUP"), pThread->m_bTHREAD_REELMAP_YIELD_ALLUP);
+				pThread->m_bTHREAD_REELMAP_YIELD_ALLDN = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ALLDN"), pThread->m_bTHREAD_REELMAP_YIELD_ALLDN);
 				Sleep(0);
 			}
 			else
@@ -29608,9 +28792,11 @@ UINT CGvisR2R_PunchView::ThreadProc12(LPVOID lpContext)	// UpdateReelmapYieldAll
 			if (!pThread->m_bTHREAD_UPDATE_REELMAP_ALLUP) // Write Reelmap
 			{
 				pThread->UpdateReelmapYieldAllUp(); // Yield Reelmap
-				pThread->m_bTHREAD_REELMAP_YIELD_ALLUP = FALSE;
+				pThread->m_bTHREAD_REELMAP_YIELD_ALLUP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ALLUP"), pThread->m_bTHREAD_REELMAP_YIELD_ALLUP);
 				if (pDoc->GetTestMode() == MODE_OUTER)
-					pThread->m_bTHREAD_REELMAP_YIELD_ITS = TRUE;
+				{
+					pThread->m_bTHREAD_REELMAP_YIELD_ITS = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ITS"), pThread->m_bTHREAD_REELMAP_YIELD_ITS);
+				}
 				Sleep(0);
 			}
 			else
@@ -29645,7 +28831,7 @@ UINT CGvisR2R_PunchView::ThreadProc13(LPVOID lpContext)	// UpdateReelmapYieldAll
 			if (!pThread->m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
 			{
 				pThread->UpdateReelmapYieldAllDn(); // Yield Reelmap
-				pThread->m_bTHREAD_REELMAP_YIELD_ALLDN = FALSE;
+				pThread->m_bTHREAD_REELMAP_YIELD_ALLDN = FALSE;; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ALLDN"), pThread->m_bTHREAD_REELMAP_YIELD_ALLDN);
 				Sleep(0);
 			}
 			else
@@ -29942,7 +29128,6 @@ UINT CGvisR2R_PunchView::ThreadProc18(LPVOID lpContext) // WriteReelmapIts()
 	return 0;
 }
 
-
 UINT CGvisR2R_PunchView::ThreadProc19(LPVOID lpContext) // DispDefImgInner()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
@@ -29979,7 +29164,6 @@ UINT CGvisR2R_PunchView::ThreadProc19(LPVOID lpContext) // DispDefImgInner()
 	return 0;
 }
 
-
 UINT CGvisR2R_PunchView::ThreadProc20(LPVOID lpContext)	// UpdateReelmapYieldIts()
 {
 	// Turn the passed in 'this' pointer back into a CProgressMgr instance
@@ -29998,7 +29182,7 @@ UINT CGvisR2R_PunchView::ThreadProc20(LPVOID lpContext)	// UpdateReelmapYieldIts
 		if (pThread->m_bTHREAD_REELMAP_YIELD_ITS) // Yield Reelmap
 		{
 			pThread->UpdateReelmapYieldIts(); // Yield Reelmap
-			pThread->m_bTHREAD_REELMAP_YIELD_ITS = FALSE;
+			pThread->m_bTHREAD_REELMAP_YIELD_ITS = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_REELMAP_YIELD_ITS"), pThread->m_bTHREAD_REELMAP_YIELD_ITS);
 			Sleep(0);
 		}
 		else
@@ -30009,7 +29193,6 @@ UINT CGvisR2R_PunchView::ThreadProc20(LPVOID lpContext)	// UpdateReelmapYieldIts
 
 	return 0;
 }
-
 
 UINT CGvisR2R_PunchView::ThreadProc21(LPVOID lpContext)	// ReloadReelmapUpInner()
 {
@@ -30211,7 +29394,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 
 			if (m_nStepMk[0] < 13 && m_nStepMk[0] > 8) // Mk0();
 			{
-				m_nStepMk[0] = 8;	// 마킹완료Check
+				m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
 			}
 		}
 		return;
@@ -30239,8 +29422,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 		{
 			if ((nErrCode = GetErrCode0Its(nSerial)) != 1)
 			{
-				m_nMkPcs[0] = GetTotDefPcs0Its(nSerial);
-				m_nStepMk[0] = MK_END;
+				m_nMkPcs[0] = GetTotDefPcs0Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+				m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 			else
 			{
@@ -30250,7 +29433,6 @@ void CGvisR2R_PunchView::DoMark0Its()
 		else
 		{
 			StopFromThread();
-			//AsyncMsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 1);
 			MsgBox(_T("버퍼의 시리얼이 맞지않습니다."), 1);
 			BuzzerFromThread(TRUE, 0);
 			DispMain(_T("정 지"), RGB_RED);
@@ -30280,8 +29462,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 				{
 					if (m_bReview)
 					{
-						m_nMkPcs[0] = GetTotDefPcs0Its(nSerial);
-						m_nStepMk[0] = MK_END;
+						m_nMkPcs[0] = GetTotDefPcs0Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+						m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 						break;
 					}
 				}
@@ -30292,7 +29474,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 		}
 		else
 		{
-			m_nStepMk[0] = MK_END;
+			m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		}
 		break;
 	case 7:
@@ -30300,7 +29482,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 
 		if (!WaitDelay0(1))		// F:Done, T:On Waiting....		// Delay후에
 		{
-			m_nMkPcs[0] = 0;
+			m_nMkPcs[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
 
 			if (!IsNoMk0())										// Punching On이면
 			{
@@ -30316,8 +29498,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 				{
 					if (m_bReview)
 					{
-						m_nMkPcs[0] = GetTotDefPcs0Its(nSerial);
-						m_nStepMk[0] = MK_END;
+						m_nMkPcs[0] = GetTotDefPcs0Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+						m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 					}
 					else
 						m_nStepMk[0]++;
@@ -30346,7 +29528,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 			if (ptPnt.x < 0.0 && ptPnt.y < 0.0) // 양품화. (마킹하지 않음)
 			{
 				m_nMkPcs[0]++;
-				m_nStepMk[0] = MK_DONE_CHECK;
+				m_nStepMk[0] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 				break;
 			}
 
@@ -30356,7 +29538,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 				if (!IsMkStrip(nIdx)) // Strip[] Mk Off
 				{
 					m_nMkPcs[0]++;
-					m_nStepMk[0] = MK_DONE_CHECK;
+					m_nStepMk[0] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 					break;
 				}
 				else
@@ -30364,7 +29546,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 					if (m_nMkStrip[0][nIdx - 1] >= nStripOut)
 					{
 						m_nMkPcs[0]++;
-						m_nStepMk[0] = MK_DONE_CHECK;
+						m_nStepMk[0] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 						break;
 					}
 					else
@@ -30385,7 +29567,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 		}
 		else
 		{
-			m_nStepMk[0] = MK_END;
+			m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		}
 		break;
 	case 9:
@@ -30480,12 +29662,12 @@ void CGvisR2R_PunchView::DoMark0Its()
 				// One more MK On Start....
 				if (!m_nMkPcs[0] && !m_bAnswer[2])
 				{
-					m_bAnswer[2] = TRUE;
+					m_bAnswer[2] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[2]"), m_bAnswer[2]);
 					Mk0();
 				}
 				else
 				{
-					m_bAnswer[2] = FALSE;
+					m_bAnswer[2] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[2]"), m_bAnswer[2]);
 					m_nMkPcs[0]++;
 					m_nStepMk[0]++;
 					m_nStepMk[0]++;
@@ -30504,13 +29686,13 @@ void CGvisR2R_PunchView::DoMark0Its()
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[0] = 13;
+						m_nStepMk[0] = 13; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 					}
 					else if (nRtn < 0)
 						m_nStepMk[0]++; // Wait...
 					else
 					{
-						m_bAnswer[2] = FALSE;
+						m_bAnswer[2] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[2]"), m_bAnswer[2]);
 						m_nMkPcs[0]++;
 						m_nStepMk[0]++;
 						m_nStepMk[0]++;
@@ -30532,11 +29714,11 @@ void CGvisR2R_PunchView::DoMark0Its()
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[0] = 13;
+				m_nStepMk[0] = 13; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 			else
 			{
-				m_bAnswer[2] = FALSE;
+				m_bAnswer[2] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[2]"), m_bAnswer[2]);
 				m_nMkPcs[0]++;
 				m_nStepMk[0]++;
 				StopFromThread();
@@ -30544,7 +29726,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 		}
 		break;
 	case 19:
-		m_nStepMk[0] = MK_DONE_CHECK;
+		m_nStepMk[0] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		break;
 	case MK_DONE_CHECK:
 		nSerial = m_nBufUpSerial[0]; // Cam0
@@ -30562,17 +29744,23 @@ void CGvisR2R_PunchView::DoMark0Its()
 					}
 					else if (!pDoc->WorkingInfo.LastJob.bVerify)
 					{
-						m_nMkPcs[0] = GetTotDefPcs0Its(nSerial);
-						m_nStepMk[0] = MK_END;
+						m_nMkPcs[0] = GetTotDefPcs0Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+						m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 					}
 					else
-						m_nStepMk[0] = 8;	// 마킹완료Check
+					{
+						m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+					}
 				}
 				else
-					m_nStepMk[0] = 8;	// 마킹완료Check
+				{
+					m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+				}
 			}
 			else
-				m_nStepMk[0] = 8;	// 마킹완료Check
+			{
+				m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+			}
 		}
 		else
 		{
@@ -30581,15 +29769,19 @@ void CGvisR2R_PunchView::DoMark0Its()
 				if (IsReview0())
 				{
 					if (IsJogRtDn0())
-						m_nStepMk[0] = MK_END;
+					{
+						m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
+					}
 				}
 				else
 				{
-					m_nStepMk[0] = MK_END;
+					m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 				}
 			}
 			else
-				m_nStepMk[0] = MK_END;
+			{
+				m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
+			}
 		}
 		break;
 	case MK_DONE_CHECK + 1:
@@ -30602,20 +29794,24 @@ void CGvisR2R_PunchView::DoMark0Its()
 				if (IsReview0())
 				{
 					if (IsJogRtUp0())
-						m_nStepMk[0] = 8;	// 마킹완료Check
+					{
+						m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+					}
 				}
 				else
 				{
-					m_nMkPcs[0] = GetTotDefPcs0Its(nSerial);
-					m_nStepMk[0] = MK_END;
+					m_nMkPcs[0] = GetTotDefPcs0Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+					m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 				}
 			}
 			else
-				m_nStepMk[0] = 8;	// 마킹완료Check
+			{
+				m_nStepMk[0] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);	// 마킹완료Check
+			}
 		}
 		else
 		{
-			m_nStepMk[0] = MK_END;
+			m_nStepMk[0] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		}
 		break;
 
@@ -30663,19 +29859,18 @@ void CGvisR2R_PunchView::DoMark0Its()
 		{
 			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
 			{
-				m_nStepMk[0] = ERR_PROC;
+				m_nStepMk[0] = ERR_PROC; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 		}
 		break;
 	case 106: // MK Done....
-		m_bDoneMk[0] = TRUE;
-		m_bTHREAD_MK[0] = FALSE;
+		m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+		m_bTHREAD_MK[0] = FALSE; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
 		break;
 
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
 		m_pVoiceCoil[0]->SearchHomeSmac0();
-		//AsyncMsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		MsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		m_nStepMk[0]++;
 		break;
@@ -30700,7 +29895,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 		{
 			if (IDYES == nRtn)
 			{
-				m_nStepMk[0] = ERR_PROC + 10;
+				m_nStepMk[0] = ERR_PROC + 10; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 			else
 			{
@@ -30721,7 +29916,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 		{
 			if (IDYES == nRtn)
 			{
-				m_nStepMk[0] = ERR_PROC + 20;
+				m_nStepMk[0] = ERR_PROC + 20; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 			}
 			else
 			{
@@ -30731,13 +29926,13 @@ void CGvisR2R_PunchView::DoMark0Its()
 		}
 		break;
 	case ERR_PROC + 10:
-		m_bReMark[0] = TRUE;
-		m_bTHREAD_MK[0] = FALSE;
-		m_nStepMk[0] = 0;
+		m_bReMark[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bReMark[0]"), m_bReMark[0]);
+		m_bTHREAD_MK[0] = FALSE; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+		m_nStepMk[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
 		break;
 	case ERR_PROC + 20: // MK Done....
-		m_bDoneMk[0] = TRUE;
-		m_bTHREAD_MK[0] = FALSE;
+		m_bDoneMk[0] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+		m_bTHREAD_MK[0] = FALSE; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
 		break;
 	}
 }
@@ -30779,7 +29974,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 
 			if (m_nStepMk[1] < 13 && m_nStepMk[1] > 8) // Mk1();
 			{
-				m_nStepMk[1] = 8;	// 마킹완료Check
+				m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
 			}
 		}
 		return;
@@ -30808,8 +30003,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 		{
 			if ((nErrCode = GetErrCode1Its(nSerial)) != 1)
 			{
-				m_nMkPcs[1] = GetTotDefPcs1Its(nSerial);
-				m_nStepMk[1] = MK_END;
+				m_nMkPcs[1] = GetTotDefPcs1Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+				m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 			else
 			{
@@ -30851,8 +30046,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 				{
 					if (m_bReview)
 					{
-						m_nMkPcs[1] = GetTotDefPcs1Its(nSerial);
-						m_nStepMk[1] = MK_END;
+						m_nMkPcs[1] = GetTotDefPcs1Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+						m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 						break;
 					}
 				}
@@ -30862,7 +30057,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 		}
 		else
 		{
-			m_nStepMk[1] = MK_END;
+			m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		}
 		break;
 	case 7:
@@ -30870,7 +30065,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 
 		if (!WaitDelay1(6))		// F:Done, T:On Waiting....
 		{
-			m_nMkPcs[1] = 0;
+			m_nMkPcs[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
 
 			if (!IsNoMk1())
 			{
@@ -30886,8 +30081,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 				{
 					if (m_bReview)
 					{
-						m_nMkPcs[1] = GetTotDefPcs1Its(nSerial);
-						m_nStepMk[1] = MK_END;
+						m_nMkPcs[1] = GetTotDefPcs1Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+						m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 					}
 					else
 						m_nStepMk[1]++;
@@ -30916,7 +30111,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 			if (ptPnt.x < 0.0 && ptPnt.y < 0.0) // 양품화.
 			{
 				m_nMkPcs[1]++;
-				m_nStepMk[1] = MK_DONE_CHECK;
+				m_nStepMk[1] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 				break;
 			}
 
@@ -30926,7 +30121,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 				if (!IsMkStrip(nIdx)) // Strip[] Mk Off
 				{
 					m_nMkPcs[1]++;
-					m_nStepMk[1] = MK_DONE_CHECK;
+					m_nStepMk[1] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 					break;
 				}
 				else
@@ -30934,7 +30129,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 					if (m_nMkStrip[1][nIdx - 1] >= nStripOut)
 					{
 						m_nMkPcs[1]++;
-						m_nStepMk[1] = MK_DONE_CHECK;
+						m_nStepMk[1] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 						break;
 					}
 					else
@@ -30955,7 +30150,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 		}
 		else
 		{
-			m_nStepMk[1] = MK_END;
+			m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		}
 		break;
 	case 9:
@@ -31050,12 +30245,12 @@ void CGvisR2R_PunchView::DoMark1Its()
 				// One more MK On Start....
 				if (!m_nMkPcs[1] && !m_bAnswer[3])
 				{
-					m_bAnswer[3] = TRUE;
+					m_bAnswer[3] = TRUE; pDoc->SetStatus(_T("General"), _T("bAnswer[3]"), m_bAnswer[3]);
 					Mk1();
 				}
 				else
 				{
-					m_bAnswer[3] = FALSE;
+					m_bAnswer[3] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[3]"), m_bAnswer[3]);
 					m_nMkPcs[1]++;
 					m_nStepMk[1]++;
 					m_nStepMk[1]++;
@@ -31070,18 +30265,17 @@ void CGvisR2R_PunchView::DoMark1Its()
 					DispMain(_T("정 지"), RGB_RED);
 					m_pVoiceCoil[1]->SearchHomeSmac1();
 
-					//nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[1] = 13;
+						m_nStepMk[1] = 13; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 					}
 					else if (nRtn < 0)
 						m_nStepMk[1]++; // Wait...
 					else
 					{
-						m_bAnswer[3] = FALSE;
+						m_bAnswer[3] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[3]"), m_bAnswer[3]);
 						m_nMkPcs[1]++;
 						m_nStepMk[1]++;
 						m_nStepMk[1]++;
@@ -31103,11 +30297,11 @@ void CGvisR2R_PunchView::DoMark1Its()
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[1] = 13;
+				m_nStepMk[1] = 13; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 			else
 			{
-				m_bAnswer[3] = FALSE;
+				m_bAnswer[3] = FALSE; pDoc->SetStatus(_T("General"), _T("bAnswer[3]"), m_bAnswer[3]);
 				m_nMkPcs[1]++;
 				m_nStepMk[1]++;
 				StopFromThread();
@@ -31115,7 +30309,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 		}
 		break;
 	case 19:
-		m_nStepMk[1] = MK_DONE_CHECK;
+		m_nStepMk[1] = MK_DONE_CHECK; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		break;
 	case MK_DONE_CHECK:
 		nSerial = m_nBufUpSerial[1]; // Cam1
@@ -31133,17 +30327,23 @@ void CGvisR2R_PunchView::DoMark1Its()
 					}
 					else if (!pDoc->WorkingInfo.LastJob.bVerify)
 					{
-						m_nMkPcs[1] = GetTotDefPcs1Its(nSerial);
-						m_nStepMk[1] = MK_END;
+						m_nMkPcs[1] = GetTotDefPcs1Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+						m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 					}
 					else
-						m_nStepMk[1] = 8;	// 마킹완료Check
+					{
+						m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+					}
 				}
 				else
-					m_nStepMk[1] = 8;	// 마킹완료Check
+				{
+					m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+				}
 			}
 			else
-				m_nStepMk[1] = 8;	// 마킹완료Check
+			{
+				m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+			}
 		}
 		else
 		{
@@ -31152,15 +30352,19 @@ void CGvisR2R_PunchView::DoMark1Its()
 				if (IsReview1())
 				{
 					if (IsJogRtDn1())
-						m_nStepMk[1] = MK_END;
+					{
+						m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
+					}
 				}
 				else
 				{
-					m_nStepMk[1] = MK_END;
+					m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 				}
 			}
 			else
-				m_nStepMk[1] = MK_END;
+			{
+				m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
+			}
 		}
 		break;
 	case MK_DONE_CHECK + 1:
@@ -31173,20 +30377,24 @@ void CGvisR2R_PunchView::DoMark1Its()
 				if (IsReview1())
 				{
 					if (IsJogRtUp1())
-						m_nStepMk[1] = 8;	// 마킹완료Check
+					{
+						m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+					}
 				}
 				else
 				{
-					m_nMkPcs[1] = GetTotDefPcs1Its(nSerial);
-					m_nStepMk[1] = MK_END;
+					m_nMkPcs[1] = GetTotDefPcs1Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+					m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 				}
 			}
 			else
-				m_nStepMk[1] = 8;	// 마킹완료Check
+			{
+				m_nStepMk[1] = 8; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);	// 마킹완료Check
+			}
 		}
 		else
 		{
-			m_nStepMk[1] = MK_END;
+			m_nStepMk[1] = MK_END; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		}
 		break;
 
@@ -31233,19 +30441,18 @@ void CGvisR2R_PunchView::DoMark1Its()
 		{
 			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
 			{
-				m_nStepMk[1] = ERR_PROC;
+				m_nStepMk[1] = ERR_PROC; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 		}
 		break;
 	case 106: // MK Done....
-		m_bDoneMk[1] = TRUE;
-		m_bTHREAD_MK[1] = FALSE;
+		m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+		m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
 		break;
 
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
 		m_pVoiceCoil[1]->SearchHomeSmac1();
-		//AsyncMsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		MsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		m_nStepMk[1]++;
 		break;
@@ -31270,7 +30477,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 		{
 			if (IDYES == nRtn)
 			{
-				m_nStepMk[1] = ERR_PROC + 10;
+				m_nStepMk[1] = ERR_PROC + 10; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 			else
 			{
@@ -31292,7 +30499,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 		{
 			if (IDYES == nRtn)
 			{
-				m_nStepMk[1] = ERR_PROC + 20;
+				m_nStepMk[1] = ERR_PROC + 20; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 			}
 			else
 			{
@@ -31302,13 +30509,13 @@ void CGvisR2R_PunchView::DoMark1Its()
 		}
 		break;
 	case ERR_PROC + 10:
-		m_bReMark[1] = TRUE;
-		m_bTHREAD_MK[1] = FALSE;
-		m_nStepMk[1] = 0;
+		m_bReMark[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bReMark[1]"), m_bReMark[1]);
+		m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
+		m_nStepMk[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
 		break;
 	case ERR_PROC + 20: // MK Done....
-		m_bDoneMk[1] = TRUE;
-		m_bTHREAD_MK[1] = FALSE;
+		m_bDoneMk[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+		m_bTHREAD_MK[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
 		break;
 	}
 }
@@ -31913,6 +31120,7 @@ BOOL CGvisR2R_PunchView::SetMkIts(BOOL bRun)	// Marking Start
 {
 	CfPoint ptPnt;
 	int nSerial, nTot, a, b;
+	CString sItem;
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
@@ -31922,6 +31130,8 @@ BOOL CGvisR2R_PunchView::SetMkIts(BOOL bRun)	// Marking Start
 		{
 			m_nMkStrip[a][b] = 0;			// [nCam][nStrip]:[2][4] - [좌/우][] : 스트립에 펀칭한 피스 수 count
 			m_bRejectDone[a][b] = FALSE;	// [nCam][nStrip]:[2][4] - [좌/우][] : 스트립에 펀칭한 피스 수 count가 스트립 폐기 설정수 완료 여부 
+			sItem.Format(_T("bRejectDone[%d][%d]"), a, b);
+			pDoc->SetStatus(_T("General"), sItem, m_bRejectDone[a][b]);
 		}
 	}
 
@@ -31931,14 +31141,14 @@ BOOL CGvisR2R_PunchView::SetMkIts(BOOL bRun)	// Marking Start
 		{
 			if (!m_bTHREAD_MK[0])
 			{
-				m_nStepMk[0] = 0;
-				m_nMkPcs[0] = 0;
-				m_bDoneMk[0] = FALSE;
-				m_bTHREAD_MK[0] = TRUE;
+				m_nStepMk[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[0]"), m_nStepMk[0]);
+				m_nMkPcs[0] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+				m_bDoneMk[0] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[0]"), m_bDoneMk[0]);
+				m_bTHREAD_MK[0] = TRUE; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
 
 				nSerial = m_nBufUpSerial[0]; // Cam0
 
-				m_nTotMk[0] = nTot = GetTotDefPcs0Its(nSerial);
+				m_nTotMk[0] = nTot = GetTotDefPcs0Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nTotMk[0]"), m_nTotMk[0]);
 				m_nCurMk[0] = 0;
 				if (nTot > 0)
 				{
@@ -31971,14 +31181,14 @@ BOOL CGvisR2R_PunchView::SetMkIts(BOOL bRun)	// Marking Start
 		{
 			if (!m_bTHREAD_MK[1])
 			{
-				m_nStepMk[1] = 0;
-				m_nMkPcs[1] = 0;
-				m_bDoneMk[1] = FALSE;
-				m_bTHREAD_MK[1] = TRUE;
+				m_nStepMk[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nStepMk[1]"), m_nStepMk[1]);
+				m_nMkPcs[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
+				m_bDoneMk[1] = FALSE; pDoc->SetStatus(_T("General"), _T("bDoneMk[1]"), m_bDoneMk[1]);
+				m_bTHREAD_MK[1] = TRUE; pDoc->SetStatus(_T("General"), _T("bTHREAD_MK[1]"), m_bTHREAD_MK[1]);
 
 				nSerial = m_nBufUpSerial[1]; // Cam1
 
-				m_nTotMk[1] = nTot = GetTotDefPcs1Its(nSerial);
+				m_nTotMk[1] = nTot = GetTotDefPcs1Its(nSerial); pDoc->SetStatusInt(_T("General"), _T("nTotMk[1]"), m_nTotMk[1]);
 				m_nCurMk[1] = 0;
 				if (nTot > 0)
 				{
@@ -32009,194 +31219,14 @@ BOOL CGvisR2R_PunchView::SetMkIts(BOOL bRun)	// Marking Start
 	}
 	else
 	{
-		m_bTHREAD_MK[0] = FALSE;
-		m_bTHREAD_MK[1] = FALSE;
+		m_bTHREAD_MK[0] = FALSE; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[0]"), m_nMkPcs[0]);
+		m_bTHREAD_MK[1] = FALSE; pDoc->SetStatusInt(_T("General"), _T("nMkPcs[1]"), m_nMkPcs[1]);
 	}
 	return TRUE;
 }
 
-
-//BOOL CGvisR2R_PunchView::ReloadReelmapInner()
-//{
-//	double dRatio = 0.0;
-//	CString sVal = _T("");
-//	CDlgProgress dlg;
-//	sVal.Format(_T("On Reloading InnerReelmap."));
-//	dlg.Create(sVal);
-//	//dlg.SetRange(0, 500);
-//
-//	//GetCurrentInfoEng();
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTestInner;
-//
-//
-//	BOOL bRtn[7];
-//	if (pDoc->m_pReelMapInner)
-//		bRtn[0] = pDoc->m_pReelMapInner->ReloadReelmap();
-//	//dlg.SetPos(1);
-//	if (pDoc->m_pReelMapInnerUp)
-//		bRtn[1] = pDoc->m_pReelMapInnerUp->ReloadReelmap();
-//	//dlg.SetPos(2);
-//
-//	if (pDoc->m_pReelMapIts)
-//		bRtn[2] = pDoc->m_pReelMapIts->ReloadReelmap();
-//
-//	//if (pDoc->m_pReelMapInOuterUp)
-//	//	bRtn[2] = pDoc->m_pReelMapInOuterUp->ReloadReelmap();
-//
-//	//if (pDoc->m_pReelMapInOuterDn)
-//	//	bRtn[3] = pDoc->m_pReelMapInOuterDn->ReloadReelmap();
-//
-//	if (bDualTest)
-//	{
-//		if (pDoc->m_pReelMapInnerDn)
-//			bRtn[4] = pDoc->m_pReelMapInnerDn->ReloadReelmap();
-//		//dlg.SetPos(3);
-//		if (pDoc->m_pReelMapInnerAllUp)
-//			bRtn[5] = pDoc->m_pReelMapInnerAllUp->ReloadReelmap();
-//		//dlg.SetPos(4);
-//		if (pDoc->m_pReelMapInnerAllDn)
-//			bRtn[6] = pDoc->m_pReelMapInnerAllDn->ReloadReelmap();
-//		//dlg.SetPos(5);
-//	}
-//
-//	int nRatio[7] = { 0 };
-//	BOOL bDone[7] = { 0 };
-//	int nTo = 0;
-//	if (bDualTest)
-//		nTo = 600; //[%]
-//	else
-//		nTo = 300; //[%]
-//
-//	dlg.SetRange(0, nTo);
-//
-//	for (int nProc = 0; nProc < nTo;)
-//	{
-//		if (pDoc->m_pReelMapInner)
-//		{
-//			nRatio[0] = pDoc->m_pReelMapInner->GetProgressReloadReelmap();
-//			bDone[0] = pDoc->m_pReelMapInner->IsDoneReloadReelmap();
-//		}
-//		else
-//			bDone[0] = TRUE;
-//		if (!bRtn[0])
-//			bDone[0] = TRUE;
-//
-//		if (pDoc->m_pReelMapInnerUp)
-//		{
-//			nRatio[1] = pDoc->m_pReelMapInnerUp->GetProgressReloadReelmap();
-//			bDone[1] = pDoc->m_pReelMapInnerUp->IsDoneReloadReelmap();
-//		}
-//		else
-//			bDone[1] = TRUE;
-//		if (!bRtn[1])
-//			bDone[1] = TRUE;
-//
-//		//if (pDoc->m_pReelMapInOuterUp)
-//		//{
-//		//	nRatio[2] = pDoc->m_pReelMapInOuterUp->GetProgressReloadReelmap();
-//		//	bDone[2] = pDoc->m_pReelMapInOuterUp->IsDoneReloadReelmap();
-//		//}
-//		//else
-//		//	bDone[2] = TRUE;
-//		//if (!bRtn[2])
-//		//	bDone[2] = TRUE;
-//
-//		//if (pDoc->m_pReelMapInOuterDn)
-//		//{
-//		//	nRatio[3] = pDoc->m_pReelMapInOuterDn->GetProgressReloadReelmap();
-//		//	bDone[3] = pDoc->m_pReelMapInOuterDn->IsDoneReloadReelmap();
-//		//}
-//		//else
-//		//	bDone[3] = TRUE;
-//		//if (!bRtn[3])
-//			bDone[3] = TRUE;
-//
-//		if (pDoc->m_pReelMapIts)
-//		{
-//			nRatio[2] = pDoc->m_pReelMapIts->GetProgressReloadReelmap();
-//			bDone[2] = pDoc->m_pReelMapIts->IsDoneReloadReelmap();
-//		}
-//		else
-//			bDone[2] = TRUE;
-//		if (!bRtn[2])
-//			bDone[2] = TRUE;
-//
-//		if (bDualTest)
-//		{
-//			if (pDoc->m_pReelMapInnerDn)
-//			{
-//				nRatio[4] = pDoc->m_pReelMapInnerDn->GetProgressReloadReelmap();
-//				bDone[4] = pDoc->m_pReelMapInnerDn->IsDoneReloadReelmap();
-//			}
-//			else
-//				bDone[4] = TRUE;
-//			if (!bRtn[4])
-//				bDone[4] = TRUE;
-//
-//			if (pDoc->m_pReelMapInnerAllUp)
-//			{
-//				nRatio[5] = pDoc->m_pReelMapInnerAllUp->GetProgressReloadReelmap();
-//				bDone[5] = pDoc->m_pReelMapInnerAllUp->IsDoneReloadReelmap();
-//			}
-//			else
-//				bDone[5] = TRUE;
-//			if (!bRtn[5])
-//				bDone[5] = TRUE;
-//
-//			if (pDoc->m_pReelMapAllDn)
-//			{
-//				nRatio[6] = pDoc->m_pReelMapInnerAllDn->GetProgressReloadReelmap();
-//				bDone[6] = pDoc->m_pReelMapInnerAllDn->IsDoneReloadReelmap();
-//			}
-//			else
-//				bDone[6] = TRUE;
-//			if (!bRtn[6])
-//				bDone[6] = TRUE;
-//
-//		}
-//		else
-//		{
-//			bDone[4] = TRUE;
-//			bDone[5] = TRUE;
-//			bDone[6] = TRUE;
-//		}
-//
-//		nProc = nRatio[0] + nRatio[1] + nRatio[2] + nRatio[3] + nRatio[4] + nRatio[5] + nRatio[6];
-//
-//		if (bDone[0] && bDone[1] && bDone[2] && bDone[3] && bDone[4] && bDone[5] && bDone[6])
-//			break;
-//		else
-//		{
-//			dlg.SetPos(nProc);
-//			Sleep(30);
-//		}
-//	}
-//
-//	dlg.DestroyWindow();
-//
-//	if (bDualTest)
-//	{
-//		for (int i = 0; i < 7; i++)
-//		{
-//			if (!bRtn[i])
-//				return FALSE;
-//		}
-//	}
-//	else
-//	{
-//		for (int i = 0; i < 3; i++)
-//		{
-//			if (!bRtn[i])
-//				return FALSE;
-//		}
-//	}
-//
-//	return TRUE;
-//}
-
 BOOL CGvisR2R_PunchView::ReloadReelmapInner(int nSerial)
 {
-	//GetCurrentInfoEng();
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTestInner;
 
 	BOOL bRtn[7] = { 0 };
@@ -32663,7 +31693,7 @@ void CGvisR2R_PunchView::DispDefImgInner()
 			m_nStepTHREAD_DISP_DEF_INNER++;
 		break;
 	case 12:
-		m_bTHREAD_DISP_DEF_INNER = FALSE;
+		m_bTHREAD_DISP_DEF_INNER = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_DISP_DEF_INNER"), m_bTHREAD_DISP_DEF_INNER);
 		break;
 		// Disp DefImg End ============================================
 	}
@@ -32732,102 +31762,6 @@ CString CGvisR2R_PunchView::GetTimeIts()
 
 	return strVal;
 }
-
-//BOOL CGvisR2R_PunchView::UpdateReelmapInner(int nSerial)
-//{
-//	if (nSerial <= 0)
-//	{
-//		pView->ClrDispMsg();
-//		AfxMessageBox(_T("Serial Error.54"));
-//		return 0;
-//	}
-//
-//	if (!pDoc->MakeMkDir())
-//		return FALSE;
-//
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTestInner;
-//
-//	CString str;
-//	CString sPathRmap[4], sPathPcr[2]; //[Up/Dn]
-//	if (pDoc->m_pReelMap)
-//	{
-//		stModelInfo stInfo;
-//		CString sPath, sUpPath, sDnPath;
-//		if (!pDoc->GetInnerFolderPath(nSerial, sUpPath, sDnPath))
-//		{
-//			str.Format(_T("GetInnerFolderPath가 설정되지 않았습니다."));
-//			pView->MsgBox(str);
-//			//AfxMessageBox(strFileData);
-//			return FALSE;
-//		}
-//		sPathPcr[0].Format(_T("%s%04d.pcr"), sUpPath, nSerial);
-//		if (pDoc->WorkingInfo.LastJob.bDualTestInner)
-//			sPathPcr[1].Format(_T("%s%04d.pcr"), sDnPath, nSerial);
-//
-//
-//		if (!pDoc->GetPcrInfo(sPathPcr[0], stInfo)) // Up
-//		{
-//			pView->DispStsBar(_T("E(4)"), 5);
-//			pView->ClrDispMsg();
-//			AfxMessageBox(_T("Error-GetPcrInfo(4)"));
-//			return FALSE;
-//		}
-//
-//		if (!pDoc->MakeItsDir(stInfo.sModel, stInfo.sLot, stInfo.sLayer))
-//			return FALSE;
-//
-//		str = _T("ReelMapDataUp.txt"); // [0]:AOI-Up
-//		sPathRmap[0].Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,stInfo.sModel, 
-//			pDoc->WorkingInfo.LastJob.sEngItsCode, stInfo.sLot, stInfo.sLayer, str);
-//
-//		if (bDualTest)
-//		{
-//			str = _T("ReelMapDataAll.txt"); // [2]:AOI-AllUp
-//			sPathRmap[2].Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile, stInfo.sModel,
-//				pDoc->WorkingInfo.LastJob.sEngItsCode, stInfo.sLot, stInfo.sLayer, str);
-//
-//			if (!pDoc->GetPcrInfo(sPathPcr[1], stInfo)) // Dn
-//			{
-//				pView->DispStsBar(_T("E(5)"), 5);
-//				pView->ClrDispMsg();
-//				AfxMessageBox(_T("Error-GetPcrInfo(5)"));
-//				return FALSE;
-//			}
-//
-//			str = _T("ReelMapDataDn.txt"); // [1]:AOI-Dn
-//			sPathRmap[1].Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile, stInfo.sModel,
-//				pDoc->WorkingInfo.LastJob.sEngItsCode, stInfo.sLot, stInfo.sLayer, str);
-//
-//			str = _T("ReelMapDataAll.txt"); // [3]:AOI-AllDn
-//			sPathRmap[3].Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile, stInfo.sModel,
-//				pDoc->WorkingInfo.LastJob.sEngItsCode, stInfo.sLot, stInfo.sLayer, str);
-//		}
-//
-//		m_nSerialRmapInnerUpdate = nSerial;
-//		m_sPathRmapInnerUpdate[0] = sPathRmap[0];
-//		m_sPathRmapInnerUpdate[1] = sPathRmap[1];
-//		m_sPathRmapInnerUpdate[2] = sPathRmap[2];
-//		m_sPathRmapInnerUpdate[3] = sPathRmap[3];
-//
-//		m_bTHREAD_UPDATE_REELMAP_INNER_UP = TRUE;
-//		if (bDualTest)
-//		{
-//			m_bTHREAD_UPDATE_REELMAP_INNER_DN = TRUE;
-//			m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = TRUE;
-//			m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = TRUE;
-//		}
-//
-//		if (pDoc->GetTestMode() == MODE_OUTER)
-//			m_bTHREAD_UPDATE_REELMAP_ITS = TRUE;
-//
-//		Sleep(100);
-//		return TRUE;
-//	}
-//	else
-//		MsgBox(_T("Error-ReelMapWrite()"));
-//
-//	return FALSE;
-//}
 
 void CGvisR2R_PunchView::MakeItsFileUp(int nSerial)
 {
@@ -32947,13 +31881,13 @@ UINT CGvisR2R_PunchView::ThreadProc26(LPVOID lpContext)	// MakeItsFileUp()
 		if (pThread->m_bTHREAD_UPDATE_REELMAP_INNER_UP) // MakeReelmapInnerFile
 		{
 			pThread->UpdateRMapInnerUp();
-			pThread->m_bTHREAD_UPDATE_REELMAP_INNER_UP = FALSE;
+			pThread->m_bTHREAD_UPDATE_REELMAP_INNER_UP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_UP"), pThread->m_bTHREAD_UPDATE_REELMAP_INNER_UP);
 			Sleep(0);
 		}
 		if (pThread->m_bTHREAD_MAKE_ITS_FILE_UP) // MakeItsFile
 		{
 			pThread->MakeItsFileUp(pThread->m_nSerialMakeItsFile);
-			pThread->m_bTHREAD_MAKE_ITS_FILE_UP = FALSE;
+			pThread->m_bTHREAD_MAKE_ITS_FILE_UP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MAKE_ITS_FILE_UP"), pThread->m_bTHREAD_MAKE_ITS_FILE_UP);
 			Sleep(0);
 		}
 
@@ -32983,13 +31917,13 @@ UINT CGvisR2R_PunchView::ThreadProc27(LPVOID lpContext)	// MakeItsFileDn()
 		if (pThread->m_bTHREAD_UPDATE_REELMAP_INNER_DN) // MakeReelmapInnerFile
 		{
 			pThread->UpdateRMapInnerDn();
-			pThread->m_bTHREAD_UPDATE_REELMAP_INNER_DN = FALSE;
+			pThread->m_bTHREAD_UPDATE_REELMAP_INNER_DN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_DN"), pThread->m_bTHREAD_UPDATE_REELMAP_INNER_DN);
 			Sleep(0);
 		}
 		if (pThread->m_bTHREAD_MAKE_ITS_FILE_DN) // MakeItsFile
 		{
 			pThread->MakeItsFileDn(pThread->m_nSerialMakeItsFile);
-			pThread->m_bTHREAD_MAKE_ITS_FILE_DN = FALSE;
+			pThread->m_bTHREAD_MAKE_ITS_FILE_DN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MAKE_ITS_FILE_DN"), pThread->m_bTHREAD_MAKE_ITS_FILE_DN);
 			Sleep(0);
 		}
 
@@ -33019,7 +31953,7 @@ UINT CGvisR2R_PunchView::ThreadProc28(LPVOID lpContext)	// UpdateRMapAllUp()
 		if (pThread->m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP) // Write Reelmap
 		{
 			pThread->UpdateRMapInnerAllUp();
-			pThread->m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = FALSE;
+			pThread->m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_ALLUP"), pThread->m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP);
 			Sleep(0);
 		}
 		else
@@ -33049,7 +31983,7 @@ UINT CGvisR2R_PunchView::ThreadProc29(LPVOID lpContext)	// UpdateRMapInnerAllDn(
 		if (pThread->m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN) // Write Reelmap
 		{
 			pThread->UpdateRMapInnerAllDn();
-			pThread->m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = FALSE;
+			pThread->m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_ALLDN"), pThread->m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN);
 			Sleep(0);
 		}
 		else
@@ -33457,18 +32391,15 @@ BOOL CGvisR2R_PunchView::UpdateReelmap(int nSerial)
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	m_nSerialRmapUpdate = nSerial;
+	m_nSerialRmapUpdate = nSerial; pDoc->SetStatusInt(_T("Thread"), _T("nSerialRmapUpdate"), m_nSerialRmapUpdate);
 
-	m_bTHREAD_UPDATE_REELMAP_UP = TRUE;
+	m_bTHREAD_UPDATE_REELMAP_UP = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_UP"), m_bTHREAD_UPDATE_REELMAP_UP);
 	if (bDualTest)
 	{
-		m_bTHREAD_UPDATE_REELMAP_DN = TRUE;
-		m_bTHREAD_UPDATE_REELMAP_ALLUP = TRUE;
-		m_bTHREAD_UPDATE_REELMAP_ALLDN = TRUE;
+		m_bTHREAD_UPDATE_REELMAP_DN = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_DN"), m_bTHREAD_UPDATE_REELMAP_DN);
+		m_bTHREAD_UPDATE_REELMAP_ALLUP = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_ALLUP"), m_bTHREAD_UPDATE_REELMAP_ALLUP);
+		m_bTHREAD_UPDATE_REELMAP_ALLDN = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_ALLDN"), m_bTHREAD_UPDATE_REELMAP_ALLDN);
 	}
-
-	//if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
-	//	UpdateReelmapInner(nSerial);
 
 	Sleep(100);
 	return TRUE;
@@ -33489,14 +32420,14 @@ BOOL CGvisR2R_PunchView::UpdateReelmapInner(int nSerial)
 			return FALSE;
 
 		BOOL bDualTestInner = pDoc->WorkingInfo.LastJob.bDualTestInner;
-		m_nSerialRmapInnerUpdate = nSerial;
-		m_bTHREAD_UPDATE_REELMAP_INNER_UP = TRUE;
+		m_nSerialRmapInnerUpdate = nSerial; pDoc->SetStatusInt(_T("Thread"), _T("nSerialRmapInnerUpdate"), m_nSerialRmapInnerUpdate);
+		m_bTHREAD_UPDATE_REELMAP_INNER_UP = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_UP"), m_bTHREAD_UPDATE_REELMAP_INNER_UP);
 
 		if (bDualTestInner)
 		{
-			m_bTHREAD_UPDATE_REELMAP_INNER_DN = TRUE;
-			m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = TRUE;
-			m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = TRUE;
+			m_bTHREAD_UPDATE_REELMAP_INNER_DN = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_DN"), m_bTHREAD_UPDATE_REELMAP_INNER_DN);
+			m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_ALLUP"), m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP);
+			m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_REELMAP_INNER_ALLDN"), m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN);
 		}
 		m_bTHREAD_UPDATE_REELMAP_ITS = TRUE;
 	}
@@ -33521,10 +32452,10 @@ BOOL CGvisR2R_PunchView::MakeItsFile(int nSerial)
 
 	m_nSerialMakeItsFile = nSerial;
 
-	m_bTHREAD_MAKE_ITS_FILE_UP = TRUE;
+	m_bTHREAD_MAKE_ITS_FILE_UP = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MAKE_ITS_FILE_UP"), m_bTHREAD_MAKE_ITS_FILE_UP);
 	if (bDualTest)
 	{
-		m_bTHREAD_MAKE_ITS_FILE_DN = TRUE;
+		m_bTHREAD_MAKE_ITS_FILE_DN = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_MAKE_ITS_FILE_DN"), m_bTHREAD_MAKE_ITS_FILE_DN);
 	}
 
 	Sleep(100);
@@ -33810,7 +32741,7 @@ int CGvisR2R_PunchView::GetMkStAuto()
 	else
 		nStep = 0;
 
-	m_nMkStAuto = nStep;
+	m_nMkStAuto = nStep; pDoc->SetStatusInt(_T("General"), _T("nMkStAuto"), pView->m_nMkStAuto);
 
 	return nStep;
 }
@@ -33836,7 +32767,7 @@ BOOL CGvisR2R_PunchView::GetMkStSignal()
 	else
 		bMkSt = FALSE;
 
-	m_bMkSt = bMkSt;
+	m_bMkSt = bMkSt; pDoc->SetStatus(_T("General"), _T("bMkSt"), bMkSt);
 
 	return bMkSt;
 }
@@ -33857,33 +32788,28 @@ void CGvisR2R_PunchView::LoadSerial()
 	{
 		if (pDoc->m_ListBuf[1].nTot > 0) // AOI-Dn
 		{
-			m_nBufDnSerial[0] = pDoc->m_ListBuf[1].Pop();
-			m_nBufUpSerial[0] = m_nBufDnSerial[0];
+			m_nBufDnSerial[0] = pDoc->m_ListBuf[1].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[0]"), m_nBufDnSerial[0]);
+			m_nBufUpSerial[0] = m_nBufDnSerial[0]; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[0]"), m_nBufUpSerial[0]);
 			if (pDoc->m_ListBuf[1].nTot > 0) // AOI-Dn
 			{
-				m_nBufDnSerial[1] = pDoc->m_ListBuf[1].Pop();
-				m_nBufUpSerial[1] = m_nBufDnSerial[1];
+				m_nBufDnSerial[1] = pDoc->m_ListBuf[1].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[1]"), m_nBufDnSerial[1]);
+				m_nBufUpSerial[1] = m_nBufDnSerial[1]; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
 			}
 			else
 			{
-				m_nBufDnSerial[1] = 0;
-				m_nBufUpSerial[1] = 0;
+				m_nBufDnSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufDnSerial[1]"), m_nBufDnSerial[1]);
+				m_nBufUpSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
 			}
-		}
-		else
-		{
-			//m_bLotEnd = TRUE;
-			//m_nLotEndAuto = LOT_END;
 		}
 
 		if (pDoc->WorkingInfo.LastJob.bSampleTest)
 		{
 			if (m_nBufUpSerial[0] == 1)
 			{
-				m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);
-				m_bLastProcFromUp = FALSE;
-				m_bLastProcFromEng = FALSE;
-				m_bLastProc = TRUE;
+				m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum); pDoc->SetStatusInt(_T("General"), _T("nLotEndSerial"), m_nLotEndSerial);
+				m_bLastProcFromUp = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+				m_bLastProcFromEng = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+				m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 				if (m_pDlgMenu01)
 					m_pDlgMenu01->m_bLastProc = TRUE;
 				if (m_pMpe)
@@ -33898,26 +32824,25 @@ void CGvisR2R_PunchView::LoadSerial()
 	{
 		if (pDoc->m_ListBuf[0].nTot > 0) // AOI-Up
 		{
-			m_nBufUpSerial[0] = pDoc->m_ListBuf[0].Pop();
+			m_nBufUpSerial[0] = pDoc->m_ListBuf[0].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[0]"), m_nBufUpSerial[0]);
 			if (pDoc->m_ListBuf[0].nTot > 0) // AOI-Up
-				m_nBufUpSerial[1] = pDoc->m_ListBuf[0].Pop();
+			{
+				m_nBufUpSerial[1] = pDoc->m_ListBuf[0].Pop(); pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
+			}
 			else
-				m_nBufUpSerial[1] = 0;
-		}
-		else
-		{
-			//m_bLotEnd = TRUE;
-			//m_nLotEndAuto = LOT_END;
+			{
+				m_nBufUpSerial[1] = 0; pDoc->SetStatusInt(_T("General"), _T("nBufUpSerial[1]"), m_nBufUpSerial[1]);
+			}
 		}
 
 		if (pDoc->WorkingInfo.LastJob.bSampleTest)
 		{
 			if (m_nBufUpSerial[0] == 1)
 			{
-				m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);
-				m_bLastProcFromUp = FALSE;
-				m_bLastProcFromEng = FALSE;
-				m_bLastProc = TRUE;
+				m_nLotEndSerial = _tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum); pDoc->SetStatusInt(_T("General"), _T("nLotEndSerial"), m_nLotEndSerial);
+				m_bLastProcFromUp = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromUp"), m_bLastProcFromUp);
+				m_bLastProcFromEng = FALSE; pDoc->SetStatus(_T("General"), _T("bLastProcFromEng"), m_bLastProcFromEng);
+				m_bLastProc = TRUE; pDoc->SetStatus(_T("General"), _T("bLastProc"), m_bLastProc);
 				if (m_pDlgMenu01)
 					m_pDlgMenu01->m_bLastProc = TRUE;
 				if (m_pMpe)
@@ -33949,7 +32874,7 @@ UINT CGvisR2R_PunchView::ThreadProc30(LPVOID lpContext)	// UpdateYieldUp()
 		if (pThread->m_bTHREAD_UPDATE_YIELD_UP)
 		{
 			pThread->UpdateYieldUp(pThread->m_nSnTHREAD_UPDATAE_YIELD);
-			pThread->m_bTHREAD_UPDATE_YIELD_UP = FALSE;
+			pThread->m_bTHREAD_UPDATE_YIELD_UP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_UP"), pThread->m_bTHREAD_UPDATE_YIELD_UP);
 			Sleep(0);
 		}
 		else
@@ -33979,9 +32904,9 @@ UINT CGvisR2R_PunchView::ThreadProc31(LPVOID lpContext)	// UpdateYieldDn()
 		if (pThread->m_bTHREAD_UPDATE_YIELD_DN)
 		{
 			pThread->UpdateYieldDn(pThread->m_nSnTHREAD_UPDATAE_YIELD);
-			pThread->m_bTHREAD_UPDATE_YIELD_DN = FALSE;
-			pThread->m_bTHREAD_UPDATE_YIELD_ALLUP = TRUE;
-			pThread->m_bTHREAD_UPDATE_YIELD_ALLDN = TRUE;
+			pThread->m_bTHREAD_UPDATE_YIELD_DN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_DN"), pThread->m_bTHREAD_UPDATE_YIELD_DN);
+			pThread->m_bTHREAD_UPDATE_YIELD_ALLUP = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_ALLUP"), pThread->m_bTHREAD_UPDATE_YIELD_ALLUP);
+			pThread->m_bTHREAD_UPDATE_YIELD_ALLDN = TRUE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_ALLDN"), pThread->m_bTHREAD_UPDATE_YIELD_ALLDN);
 			Sleep(0);
 		}
 		else
@@ -34011,16 +32936,11 @@ UINT CGvisR2R_PunchView::ThreadProc32(LPVOID lpContext)	// UpdateYieldAllUp()
 		if (pThread->m_bTHREAD_UPDATE_YIELD_ALLUP && !pThread->m_bTHREAD_UPDATE_YIELD_UP)
 		{
 			pThread->UpdateYieldAllUp(pThread->m_nSnTHREAD_UPDATAE_YIELD);
-			pThread->m_bTHREAD_UPDATE_YIELD_ALLUP = FALSE;
+			pThread->m_bTHREAD_UPDATE_YIELD_ALLUP = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_ALLUP"), pThread->m_bTHREAD_UPDATE_YIELD_ALLUP);
 
 			if (pDoc->GetTestMode() == MODE_OUTER)
 			{
 				pThread->m_bTHREAD_UPDATE_YIELD_ITS = TRUE;
-				//pThread->m_bTHREAD_UPDATE_YIELD_INNER_UP = TRUE;
-				//if (pDoc->WorkingInfo.LastJob.bDualTestInner)
-				//{
-				//	pThread->m_bTHREAD_UPDATE_YIELD_INNER_DN = TRUE;
-				//}
 			}
 
 			Sleep(0);
@@ -34052,7 +32972,7 @@ UINT CGvisR2R_PunchView::ThreadProc33(LPVOID lpContext)	// UpdateYieldAllDn()
 		if (pThread->m_bTHREAD_UPDATE_YIELD_ALLDN && !pThread->m_bTHREAD_UPDATE_YIELD_UP)
 		{
 			pThread->UpdateYieldAllDn(pThread->m_nSnTHREAD_UPDATAE_YIELD);
-			pThread->m_bTHREAD_UPDATE_YIELD_ALLDN = FALSE;
+			pThread->m_bTHREAD_UPDATE_YIELD_ALLDN = FALSE; pDoc->SetStatus(_T("Thread"), _T("bTHREAD_UPDATE_YIELD_ALLDN"), pThread->m_bTHREAD_UPDATE_YIELD_ALLDN);
 			Sleep(0);
 		}
 		else
