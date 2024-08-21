@@ -4870,8 +4870,8 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 	nFileSize = nFileSize - nTemp - 1;
 	Status.PcrShare[0].sLayer = strLayer;
 
-	if (WorkingInfo.System.bUseITS)
-	{
+	//if (WorkingInfo.System.bUseITS)
+	//{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -4886,23 +4886,23 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		nFileSize = nFileSize - nTemp - 1;
 		Status.PcrShare[0].sItsCode = sItsCode;
 		//m_pPcr[0][nIdx]->m_sItsCode = sItsCode;
-	}
-	else
-	{
-		// Lot
-		nTemp = strFileData.Find(',', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		Status.PcrShare[0].sLot = strLot;
-
-		// Lot
-		nTemp = strFileData.Find('\n', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		Status.PcrShare[0].sLot = strLot;
-	}
+	//}
+	//else
+	//{
+	//	// Lot
+	//	nTemp = strFileData.Find(',', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	Status.PcrShare[0].sLot = strLot;
+	//
+	//	// Lot
+	//	nTemp = strFileData.Find('\n', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	Status.PcrShare[0].sLot = strLot;
+	//}
 
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
@@ -5082,8 +5082,8 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoDn(int nSerial, int *pNewLot, BOOL bFromBuf) /
 	nFileSize = nFileSize - nTemp - 1;
 	Status.PcrShare[1].sLayer = strLayer;
 
-	if (WorkingInfo.System.bUseITS)
-	{
+	//if (WorkingInfo.System.bUseITS)
+	//{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -5098,23 +5098,23 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoDn(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		nFileSize = nFileSize - nTemp - 1;
 		Status.PcrShare[1].sItsCode = sItsCode;
 		//m_pPcr[1][nIdx]->m_sItsCode = sItsCode;
-	}
-	else
-	{
-		// Lot
-		nTemp = strFileData.Find(',', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		Status.PcrShare[1].sLot = strLot;
-
-		// Lot
-		nTemp = strFileData.Find('\n', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		Status.PcrShare[1].sLot = strLot;
-	}
+	//}
+	//else
+	//{
+	//	// Lot
+	//	nTemp = strFileData.Find(',', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	Status.PcrShare[1].sLot = strLot;
+	//
+	//	// Lot
+	//	nTemp = strFileData.Find('\n', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	Status.PcrShare[1].sLot = strLot;
+	//}
 
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);
@@ -5876,8 +5876,8 @@ int CGvisR2R_PunchDoc::LoadPCRUp(int nSerial, BOOL bFromShare)	// return : 2(Fai
 	nFileSize = nFileSize - nTemp - 1;
 	m_pPcr[0][nIdx]->m_sLayer = strLayer;
 
-	if (WorkingInfo.System.bUseITS)
-	{
+	//if (WorkingInfo.System.bUseITS)
+	//{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -5891,23 +5891,23 @@ int CGvisR2R_PunchDoc::LoadPCRUp(int nSerial, BOOL bFromShare)	// return : 2(Fai
 		strFileData.Delete(0, nTemp + 1);
 		nFileSize = nFileSize - nTemp - 1;
 		m_pPcr[0][nIdx]->m_sItsCode = sItsCode;
-	}
-	else
-	{
-		// Lot
-		nTemp = strFileData.Find(',', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcr[0][nIdx]->m_sLot = strLot;
-
-		// Lot
-		nTemp = strFileData.Find('\n', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcr[0][nIdx]->m_sLot = strLot;
-	}
+	//}
+	//else
+	//{
+	//	// Lot
+	//	nTemp = strFileData.Find(',', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcr[0][nIdx]->m_sLot = strLot;
+	//
+	//	// Lot
+	//	nTemp = strFileData.Find('\n', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcr[0][nIdx]->m_sLot = strLot;
+	//}
 
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
@@ -6220,8 +6220,8 @@ int CGvisR2R_PunchDoc::LoadPCRDn(int nSerial, BOOL bFromShare)	// return : 2(Fai
 	nFileSize = nFileSize - nTemp - 1;
 	m_pPcr[1][nIdx]->m_sLayer = strLayer;
 
-	if (WorkingInfo.System.bUseITS)
-	{
+	//if (WorkingInfo.System.bUseITS)
+	//{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -6235,23 +6235,23 @@ int CGvisR2R_PunchDoc::LoadPCRDn(int nSerial, BOOL bFromShare)	// return : 2(Fai
 		strFileData.Delete(0, nTemp + 1);
 		nFileSize = nFileSize - nTemp - 1;
 		m_pPcr[1][nIdx]->m_sItsCode = sItsCode;
-	}
-	else
-	{
-		// Lot
-		nTemp = strFileData.Find(',', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcr[1][nIdx]->m_sLot = strLot;
-
-		// Lot
-		nTemp = strFileData.Find('\n', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcr[1][nIdx]->m_sLot = strLot;
-	}
+	//}
+	//else
+	//{
+	//	// Lot
+	//	nTemp = strFileData.Find(',', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcr[1][nIdx]->m_sLot = strLot;
+	//
+	//	// Lot
+	//	nTemp = strFileData.Find('\n', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcr[1][nIdx]->m_sLot = strLot;
+	//}
 
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
@@ -9456,8 +9456,8 @@ BOOL CGvisR2R_PunchDoc::GetPcrInfo(CString sPath, stModelInfo &stInfo)
 	nFileSize = nFileSize - nTemp - 1;
 	//Status.PcrShare[1].sLayer = strLayer;
 
-	if (WorkingInfo.System.bUseITS)
-	{
+	//if (WorkingInfo.System.bUseITS)
+	//{
 		// Lot
 		nTemp = strFileData.Find(_T(','), 0);
 		strLot = strFileData.Left(nTemp);
@@ -9470,23 +9470,23 @@ BOOL CGvisR2R_PunchDoc::GetPcrInfo(CString sPath, stModelInfo &stInfo)
 		sItsCode = strFileData.Left(nTemp);
 		strFileData.Delete(0, nTemp + 1);
 		nFileSize = nFileSize - nTemp - 1;
-	}
-	else
-	{
-		// Lot
-		nTemp = strFileData.Find(_T(','), 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		//Status.PcrShare[1].sLot = strLot;
-
-		// Lot
-		nTemp = strFileData.Find(_T('\n'), 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		//Status.PcrShare[1].sLot = strLot;
-	}
+	//}
+	//else
+	//{
+	//	// Lot
+	//	nTemp = strFileData.Find(_T(','), 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	//Status.PcrShare[1].sLot = strLot;
+	//
+	//	// Lot
+	//	nTemp = strFileData.Find(_T('\n'), 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	//Status.PcrShare[1].sLot = strLot;
+	//}
 
 	nTemp = strFileData.Find(_T('\n'), 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);
@@ -11923,8 +11923,8 @@ int CGvisR2R_PunchDoc::LoadPCRUpInner(int nSerial, BOOL bFromShare)	// return : 
 	nFileSize = nFileSize - nTemp - 1;
 	m_pPcrInner[0][nIdx]->m_sLayer = strLayer;
 
-	if (WorkingInfo.System.bUseITS)
-	{
+	//if (WorkingInfo.System.bUseITS)
+	//{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -11938,23 +11938,23 @@ int CGvisR2R_PunchDoc::LoadPCRUpInner(int nSerial, BOOL bFromShare)	// return : 
 		strFileData.Delete(0, nTemp + 1);
 		nFileSize = nFileSize - nTemp - 1;
 		m_pPcr[0][nIdx]->m_sItsCode = sItsCode;
-	}
-	else
-	{
-		// Lot
-		nTemp = strFileData.Find(',', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcrInner[0][nIdx]->m_sLot = strLot;
-
-		// Lot
-		nTemp = strFileData.Find('\n', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcrInner[0][nIdx]->m_sLot = strLot;
-	}
+	//}
+	//else
+	//{
+	//	// Lot
+	//	nTemp = strFileData.Find(',', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcrInner[0][nIdx]->m_sLot = strLot;
+	//
+	//	// Lot
+	//	nTemp = strFileData.Find('\n', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcrInner[0][nIdx]->m_sLot = strLot;
+	//}
 
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
@@ -12199,8 +12199,8 @@ int CGvisR2R_PunchDoc::LoadPCRDnInner(int nSerial, BOOL bFromShare)	// return : 
 	nFileSize = nFileSize - nTemp - 1;
 	m_pPcrInner[1][nIdx]->m_sLayer = strLayer;
 
-	if (WorkingInfo.System.bUseITS)
-	{
+	//if (WorkingInfo.System.bUseITS)
+	//{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -12214,23 +12214,23 @@ int CGvisR2R_PunchDoc::LoadPCRDnInner(int nSerial, BOOL bFromShare)	// return : 
 		strFileData.Delete(0, nTemp + 1);
 		nFileSize = nFileSize - nTemp - 1;
 		m_pPcr[0][nIdx]->m_sItsCode = sItsCode;
-	}
-	else
-	{
-		// Lot
-		nTemp = strFileData.Find(',', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcrInner[1][nIdx]->m_sLot = strLot;
-
-		// Lot
-		nTemp = strFileData.Find('\n', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcrInner[1][nIdx]->m_sLot = strLot;
-	}
+	//}
+	//else
+	//{
+	//	// Lot
+	//	nTemp = strFileData.Find(',', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcrInner[1][nIdx]->m_sLot = strLot;
+	//
+	//	// Lot
+	//	nTemp = strFileData.Find('\n', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcrInner[1][nIdx]->m_sLot = strLot;
+	//}
 
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
@@ -12245,7 +12245,7 @@ int CGvisR2R_PunchDoc::LoadPCRDnInner(int nSerial, BOOL bFromShare)	// return : 
 	//		WorkingInfo.LastJob.sModelDn = strModel;
 	//		WorkingInfo.LastJob.sLotDn = strLot;
 	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
+	//
 	//		if (WorkingInfo.LastJob.bDualTest)
 	//		{
 	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
@@ -12256,7 +12256,7 @@ int CGvisR2R_PunchDoc::LoadPCRDnInner(int nSerial, BOOL bFromShare)	// return : 
 	//		WorkingInfo.LastJob.sModelDn = strModel;
 	//		WorkingInfo.LastJob.sLotDn = strLot;
 	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
+	//
 	//		if (WorkingInfo.LastJob.bDualTest)
 	//		{
 	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
@@ -13279,11 +13279,11 @@ void CGvisR2R_PunchDoc::WriteChangedModel()
 
 	sData = WorkingInfo.LastJob.sLayerUp;
 	::WritePrivateProfileString(_T("Last Job"), _T("LayerUp Name"), sData, sPath);
-	SetMkMenu01(_T("Info"), _T("Lot"), sData);
+	SetMkMenu01(_T("Info"), _T("LayerUp"), sData);
 
 	sData = WorkingInfo.LastJob.sLotUp;
 	::WritePrivateProfileString(_T("Last Job"), _T("LotUp No"), sData, sPath);
-	SetMkMenu01(_T("Info"), _T("LayerUp"), sData);
+	SetMkMenu01(_T("Info"), _T("Lot"), sData);
 
 
 	if (bDualTest)
@@ -13573,8 +13573,8 @@ int CGvisR2R_PunchDoc::LoadPcrUp(CString sPath)	// return : 2(Failed), 1(정상), 
 	nFileSize = nFileSize - nTemp - 1;
 	m_pPcr[0][nIdx]->m_sLayer = strLayer;
 
-	if (WorkingInfo.System.bUseITS)
-	{
+	//if (WorkingInfo.System.bUseITS)
+	//{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -13588,23 +13588,23 @@ int CGvisR2R_PunchDoc::LoadPcrUp(CString sPath)	// return : 2(Failed), 1(정상), 
 		strFileData.Delete(0, nTemp + 1);
 		nFileSize = nFileSize - nTemp - 1;
 		m_pPcr[0][nIdx]->m_sItsCode = sItsCode;
-	}
-	else
-	{
-		// Lot
-		nTemp = strFileData.Find(',', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcr[0][nIdx]->m_sLot = strLot;
-
-		// Lot
-		nTemp = strFileData.Find('\n', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcr[0][nIdx]->m_sLot = strLot;
-	}
+	//}
+	//else
+	//{
+	//	// Lot
+	//	nTemp = strFileData.Find(',', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcr[0][nIdx]->m_sLot = strLot;
+	//
+	//	// Lot
+	//	nTemp = strFileData.Find('\n', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcr[0][nIdx]->m_sLot = strLot;
+	//}
 
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
@@ -13912,8 +13912,8 @@ int CGvisR2R_PunchDoc::LoadPcrDn(CString sPath)	// return : 2(Failed), 1(정상), 
 	nFileSize = nFileSize - nTemp - 1;
 	m_pPcr[1][nIdx]->m_sLayer = strLayer;
 
-	if (WorkingInfo.System.bUseITS)
-	{
+	//if (WorkingInfo.System.bUseITS)
+	//{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -13927,23 +13927,23 @@ int CGvisR2R_PunchDoc::LoadPcrDn(CString sPath)	// return : 2(Failed), 1(정상), 
 		strFileData.Delete(0, nTemp + 1);
 		nFileSize = nFileSize - nTemp - 1;
 		m_pPcr[1][nIdx]->m_sItsCode = sItsCode;
-	}
-	else
-	{
-		// Lot
-		nTemp = strFileData.Find(',', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcr[1][nIdx]->m_sLot = strLot;
-
-		// Lot
-		nTemp = strFileData.Find('\n', 0);
-		strLot = strFileData.Left(nTemp);
-		strFileData.Delete(0, nTemp + 1);
-		nFileSize = nFileSize - nTemp - 1;
-		m_pPcr[1][nIdx]->m_sLot = strLot;
-	}
+	//}
+	//else
+	//{
+	//	// Lot
+	//	nTemp = strFileData.Find(',', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcr[1][nIdx]->m_sLot = strLot;
+	//
+	//	// Lot
+	//	nTemp = strFileData.Find('\n', 0);
+	//	strLot = strFileData.Left(nTemp);
+	//	strFileData.Delete(0, nTemp + 1);
+	//	nFileSize = nFileSize - nTemp - 1;
+	//	m_pPcr[1][nIdx]->m_sLot = strLot;
+	//}
 
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
@@ -15003,10 +15003,10 @@ BOOL CGvisR2R_PunchDoc::LoadStatus()
 	else
 		pView->m_bEngFdWriteF = FALSE;
 
-	if (0 < ::GetPrivateProfileString(_T("General"), _T("bCycleStop"), NULL, szData, sizeof(szData), sPath))
-		pView->m_bCycleStop = _ttoi(szData) ? TRUE : FALSE;
-	else
-		pView->m_bCycleStop = FALSE;
+	//if (0 < ::GetPrivateProfileString(_T("General"), _T("bCycleStop"), NULL, szData, sizeof(szData), sPath))
+	//	pView->m_bCycleStop = _ttoi(szData) ? TRUE : FALSE;
+	//else
+	//	pView->m_bCycleStop = FALSE;
 
 	if (0 < ::GetPrivateProfileString(_T("General"), _T("bPcrInShare[0]"), NULL, szData, sizeof(szData), sPath))
 		pView->bPcrInShare[0] = _ttoi(szData) ? TRUE : FALSE;

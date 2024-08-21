@@ -2126,7 +2126,7 @@ BOOL CDlgMenu02::Move4PntAlign0(int nPos)
 		if (nPos == 0)
 		{
 			pPos[0] = pDoc->m_Master[0].m_stAlignMk2.X0 + pView->m_pMotion->m_dPinPosX[0];
-			pPos[1] = pDoc->m_Master[0].m_stAlignMk.Y0 + pView->m_pMotion->m_dPinPosY[0];
+			pPos[1] = pDoc->m_Master[0].m_stAlignMk2.Y0 + pView->m_pMotion->m_dPinPosY[0];
 		}
 		else if (nPos == 1)
 		{

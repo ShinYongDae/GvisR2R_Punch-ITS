@@ -779,7 +779,8 @@ struct stLastJob
 	CString sAoiLastShot[2]; // [Up/Dn]
 	CString sPartialSpd;
 	BOOL bOneMetal, bTwoMetal;
-	BOOL bDualTest,  bDualTestInner, bSampleTest, nTestMode;
+	BOOL bDualTest, bDualTestInner, bSampleTest;
+	int nTestMode;
 	BOOL bCore150Recoiler, bCore150Uncoiler;
 	CString sSampleTestShotNum;
 	BOOL bUse2Layer;

@@ -4275,18 +4275,18 @@ void CDlgMenu01::OnChkEjectBuffer()
 					try
 					{
 						lLastShot = (long)_ttoi(sLastShot);
+#ifdef USE_MPE					
+						pView->m_pMpe->Write(_T("ML45110"), lLastShot);			// 잔량처리 Last Serial
+						pView->m_pMpe->Write(_T("MB440181"), 1);				// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)
+	#endif
 					}
 					catch (_com_error e)
 					{
 						pView->DispMsg(_T("입력 범위를 벗어났습니다."), _T("주의"), RGB_YELLOW);
 						ResetLastProc();
 						sLastShot = _T("");
-						myBtn[3].SetCheck(TRUE);
+						myBtn[3].SetCheck(FALSE);
 					}
-#ifdef USE_MPE					
-					pView->m_pMpe->Write(_T("ML45110"), lLastShot);			// 잔량처리 Last Serial
-					pView->m_pMpe->Write(_T("MB440181"), 1);				// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)
-#endif
 				}
 			}
 			else // MODE_INNER
@@ -4326,18 +4326,18 @@ void CDlgMenu01::OnChkEjectBuffer()
 						try
 						{
 							lLastShot = (long)_ttoi(sLastShot);
+#ifdef USE_MPE					
+							pView->m_pMpe->Write(_T("ML45110"), lLastShot);			// 잔량처리 Last Serial
+							pView->m_pMpe->Write(_T("MB440181"), 1);				// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)
+#endif
 						}
 						catch (_com_error e)
 						{
 							pView->DispMsg(_T("입력 범위를 벗어났습니다."), _T("주의"), RGB_YELLOW);
 							ResetLastProc();
 							sLastShot = _T("");
-							myBtn[3].SetCheck(TRUE);
+							myBtn[3].SetCheck(FALSE);
 						}
-#ifdef USE_MPE					
-						pView->m_pMpe->Write(_T("ML45110"), lLastShot);			// 잔량처리 Last Serial
-						pView->m_pMpe->Write(_T("MB440181"), 1);				// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)
-#endif
 					}
 				}
 				else // 각인부부터 잔량처리
@@ -4357,20 +4357,19 @@ void CDlgMenu01::OnChkEjectBuffer()
 					try
 					{
 						lLastShot = (long)_ttoi(sLastShot);
+#ifdef USE_MPE
+						pView->m_pMpe->Write(_T("ML45110"), lLastShot);	// 잔량처리 Last Serial
+						pView->m_pMpe->Write(_T("MB440181"), 1);				// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)
+#endif
 					}
 					catch (_com_error e)
 					{
 						pView->DispMsg(_T("입력 범위를 벗어났습니다."), _T("주의"), RGB_YELLOW);
 						ResetLastProc();
 						sLastShot = _T("");
-						myBtn[3].SetCheck(TRUE);
+						myBtn[3].SetCheck(FALSE);
 					}
 
-#ifdef USE_MPE
-					pView->m_pMpe->Write(_T("ML45110"), lLastShot);	// 잔량처리 Last Serial
-					pView->m_pMpe->Write(_T("MB440181"), 1);				// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)
-
-#endif
 				}
 
 			}

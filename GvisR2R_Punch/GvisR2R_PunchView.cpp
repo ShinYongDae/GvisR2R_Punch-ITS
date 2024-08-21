@@ -20337,7 +20337,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			{
 				if (pDoc->WorkingInfo.LastJob.bDualTest)
 				{
-					if (m_bTHREAD_UPDATE_REELMAP_INNER_DN || m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP || m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN) // Write Reelmap
+					if (m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
 						break;
 				}
 			}
@@ -26485,7 +26485,7 @@ void CGvisR2R_PunchView::MonPlcAlm()
 		if (pDoc->m_sAlmMsg != pDoc->m_sPrevAlmMsg)
 		{
 			pDoc->m_sPrevAlmMsg = pDoc->m_sAlmMsg;
-			CycleStop();
+			CycleStop(); // 알람발생시
 		}
 	}
 }
