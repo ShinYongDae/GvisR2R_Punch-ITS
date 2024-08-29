@@ -1230,44 +1230,29 @@ void CDlgMenu04::DispBufEnc()
 		if (pDoc->WorkingInfo.Motion.bEngBuffJogCw && !m_bEngBuffJogCwF)
 		{
 			m_bEngBuffJogCwF = TRUE;
-#ifdef USE_MPE
-			if (pView->m_pMpe)
-				pView->m_pMpe->Write(_T("MB005513"), 1);		// 각인부 피딩 정회전 스위치
-#endif
+			pView->MpeWrite(pView->Plc.DlgMenu03.FeedCwPunch, 1);		// 각인부 피딩 정회전 스위치
 		}
 		else if (!pDoc->WorkingInfo.Motion.bEngBuffJogCw && m_bEngBuffJogCwF)
 		{
 			m_bEngBuffJogCwF = FALSE;
-#ifdef USE_MPE
-			if (pView->m_pMpe)
-				pView->m_pMpe->Write(_T("MB005513"), 0);		// 각인부 피딩 정회전 스위치
-#endif
+			pView->MpeWrite(pView->Plc.DlgMenu03.FeedCwPunch, 0);		// 각인부 피딩 정회전 스위치
 		}
 
 		if (pDoc->WorkingInfo.Motion.bEngBuffJogCcw && !m_bEngBuffJogCcwF)
 		{
 			m_bEngBuffJogCcwF = TRUE;
-#ifdef USE_MPE
-			if (pView->m_pMpe)
-				pView->m_pMpe->Write(_T("MB005513"), 1);		// 각인부 피딩 역회전 스위치
-#endif
+			pView->MpeWrite(pView->Plc.DlgMenu03.FeedCwPunch, 1);		// 각인부 피딩 역회전 스위치
 		}
 		else if (!pDoc->WorkingInfo.Motion.bEngBuffJogCcw && m_bEngBuffJogCcwF)
 		{
 			m_bEngBuffJogCcwF = FALSE;
-#ifdef USE_MPE
-			if (pView->m_pMpe)
-				pView->m_pMpe->Write(_T("MB005513"), 0);		// 각인부 피딩 역회전 스위치
-#endif
+			pView->MpeWrite(pView->Plc.DlgMenu03.FeedCwPunch, 0);		// 각인부 피딩 역회전 스위치
 		}
 
 		if (pDoc->WorkingInfo.Motion.bEngBuffHomming && !m_bEngBuffHommingF)
 		{
 			m_bEngBuffHommingF = TRUE;
-#ifdef USE_MPE
-			if (pView->m_pMpe)
-				pView->m_pMpe->Write(_T("MB440172"), 1);		// 각인부 버퍼롤러 홈동작 ON (PLC가 홈동작 완료 후 OFF)
-#endif
+			pView->MpeWrite(pView->Plc.DlgInfo.ModeInner, 1);		// 각인부 버퍼롤러 홈동작 ON (PLC가 홈동작 완료 후 OFF)
 		}
 		else if (!pDoc->WorkingInfo.Motion.bEngBuffHomming && m_bEngBuffHommingF)
 		{
@@ -1277,10 +1262,7 @@ void CDlgMenu04::DispBufEnc()
 		if (pDoc->WorkingInfo.Motion.bEngBuffInitMv && !m_bEngBuffInitMvF)
 		{
 			m_bEngBuffInitMvF = TRUE;
-#ifdef USE_MPE
-			if (pView->m_pMpe)
-				pView->m_pMpe->Write(_T("MB44017A"), 1);		// 각인부 버퍼 초기위치 이동(PC가 ON, PLC가 OFF)
-#endif
+			pView->MpeWrite(_T("MB44017A"), 1);		// 각인부 버퍼 초기위치 이동(PC가 ON, PLC가 OFF)
 		}
 		else if (!pDoc->WorkingInfo.Motion.bEngBuffInitMv && m_bEngBuffInitMvF)
 		{
@@ -1354,21 +1336,11 @@ void CDlgMenu04::SwMyBtnDown(int nCtrlID)
 	switch(nCtrlID)
 	{
 	case IDC_BTN_BUFF_UP2:
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB005513"), 1);		// 마킹부 피딩 정회전 스위치
-#endif
-// 		if(pView->m_pMotion)
-// 			pView->m_pMotion->VMove(MS_MKFD, M_CW);
+		pView->MpeWrite(pView->Plc.DlgMenu03.FeedCwPunch, 1);		// 마킹부 피딩 정회전 스위치
 		break;
 
 	case IDC_BTN_BUFF_DN2:
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB005514"), 1);		// 마킹부 피딩 역회전 스위치
-#endif
-// 		if(pView->m_pMotion)
-// 			pView->m_pMotion->VMove(MS_MKFD, M_CCW);
+		pView->MpeWrite(pView->Plc.DlgMenu03.FeedCcwPunch, 1);		// 마킹부 피딩 역회전 스위치
 		break;
 	}
 }
@@ -1386,16 +1358,10 @@ void CDlgMenu04::SwMyBtnUp(int nCtrlID)
 	switch(nCtrlID)
 	{
 	case IDC_BTN_BUFF_UP2:
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB005513"), 0);		// 마킹부 피딩 정회전 스위치
-#endif
+		pView->MpeWrite(pView->Plc.DlgMenu03.FeedCwPunch, 0);		// 마킹부 피딩 정회전 스위치
 		break;
 	case IDC_BTN_BUFF_DN2:
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB005514"), 0);		// 마킹부 피딩 역회전 스위치
-#endif
+		pView->MpeWrite(pView->Plc.DlgMenu03.FeedCcwPunch, 0);		// 마킹부 피딩 역회전 스위치
 		break;
 	}
 }
@@ -1456,10 +1422,7 @@ void CDlgMenu04::OnBtnBuffHome2()
 	if(pDoc->WorkingInfo.Motion.bBufHomming)
 	{
 		pView->DispMsg(_T("Homming"),_T("Searching Buffer Home Position..."),RGB_GREEN,2000,TRUE);
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB440152"), 1);	// 마킹부 버퍼롤러 홈동작 ON (PLC가 홈동작 완료 후 OFF)
-#endif
+		pView->MpeWrite(_T("MB440152"), 1);	// 마킹부 버퍼롤러 홈동작 ON (PLC가 홈동작 완료 후 OFF)
 		if(pView->m_pDlgMenu03)
 			pView->m_pDlgMenu03->ChkBufHomeDone();
 	}	
@@ -1469,49 +1432,9 @@ void CDlgMenu04::OnBtnBuffInitMove2()
 {
 	// TODO: Add your control notification handler code here
 	pView->DispMsg(_T("Moving"),_T("Searching Buffer Initial Position..."),RGB_GREEN,2000,TRUE);
-#ifdef USE_MPE
-	if(pView->m_pMpe)
-		pView->m_pMpe->Write(_T("MB44015A"), 1);	// 마킹부 버퍼 초기위치 이동(PC가 ON, PLC가 OFF)
-#endif
+	pView->MpeWrite(_T("MB44015A"), 1);	// 마킹부 버퍼 초기위치 이동(PC가 ON, PLC가 OFF)
 	if(pView->m_pDlgMenu03)
 		pView->m_pDlgMenu03->ChkBufInitDone();
-
-// 	if(!pView->m_pMotion)
-// 		return;
-// 
-// 	pView->SetMkFdSts();
-// 	Sleep(300);
-// 
-// 	double dDir;
-// 	double fLen, fVel, fAcc, fJerk;
-// 	double dStPos = pView->m_pMotion->m_dStBufPos;
-// 	double dCurPosMkFd = (double)pDoc->m_pMpeData[0][0];		// 마킹부 Feeding 엔코더 값(단위 mm )
-// 	double dCurPosBuf = (double)pDoc->m_pMpeData[0][1] / 1000.0;		// 마킹부 버퍼 엔코더 값(단위 mm * 1000)
-// 
-// 	fLen = dStPos - dCurPosBuf;
-// 
-// 	if(fLen > 0)
-// 	{
-// 		fLen = (dStPos-dCurPosBuf);
-// 		dDir = (double)M_CCW;
-// 	}
-// 	else
-// 	{
-// 		fLen = (dCurPosBuf-dStPos);
-// 		dDir = (double)M_CW;
-// 	}
-// 
-// 	if(fLen > 0.001)
-// 	{
-// // 		double dPos = dCurPosMkFd + dDir*fLen;
-// // 		pView->m_pMotion->GetSpeedProfile(TRAPEZOIDAL, AXIS_MKFD, fLen, fVel, fAcc, fJerk);
-// // 		pView->m_pMotion->Move(MS_MKFD, dPos, fVel/10.0, fAcc/10.0, fAcc/10.0);
-// 		fVel = pView->m_pMotion->m_pParamMotion[MS_MKFD].Home.f1stSpd;
-// 		fAcc = pView->m_pMotion->m_pParamMotion[MS_MKFD].Home.fAcc;
-// 		if(!pView->m_pMotion->Move(MS_MKFD, dDir*fLen, fVel, fAcc, fAcc, INC, WAIT))
-// 			if(!pView->m_pMotion->Move(MS_MKFD, dDir*fLen, fVel, fAcc, fAcc, INC, WAIT))
-// 				AfxMessageBox("Move XY Error...");
-// 	}	
 }
 
 void CDlgMenu04::OnBtnBuffInitSave2() 

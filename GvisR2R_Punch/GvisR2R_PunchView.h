@@ -358,6 +358,8 @@ public:
 public:
 	CGvisR2R_PunchDoc* GetDocument() const;
 
+	stGuiRegister Plc;
+
 	int m_nDebugStep; 	void DispThreadTick();
 
 	int m_nMkStrip[2][MAX_STRIP]; // [nCam][nStrip] - [좌/우][] : 스트립에 펀칭한 피스 수 count
@@ -621,7 +623,7 @@ public:
 	BOOL ChkShareVs(int &nSerial);
 	BOOL ChkShareVsUp(int &nSerial);
 	BOOL ChkShareVsDn(int &nSerial);
-	BOOL ChkShareVsIdx(int *pBufSerial, int nBufTot, int nShareSerial);
+	//BOOL ChkShareVsIdx(int *pBufSerial, int nBufTot, int nShareSerial);
 
 	void ChkShare();
 	void ChkShareUp();
@@ -718,11 +720,6 @@ public:
 	void Shift2Mk();
 	void CompletedMk(int nCam); // 0: Only Cam0, 1: Only Cam1, 2: Cam0 and Cam1, 3: None
 	void SetTestSts(int nStep);
-	void SetMkSts(int nStep);
-	void SetAoiFdSts();
-	void SetAoiStopSts();
-	void SetMkFdSts();
-	void SetMkStopSts();
 	BOOL IsMkFdSts();		// not used
 	void SetAoiFd();		// not used
 	void SetMkFd();			// not used
@@ -959,7 +956,6 @@ public:
 	unsigned long ChkDoor(); // 0: All Closed , Open Door Index : Doesn't all closed. (Bit3: F, Bit2: L, Bit1: R, Bit0; B)
 	BOOL ChkSaftySen();
 	BOOL ChkYield();
-	void SwAoiEmg(BOOL bOn);
 	BOOL IsVs();
 	BOOL IsVsUp();
 	BOOL IsVsDn();
@@ -994,7 +990,7 @@ public:
 	void SetAlignPos();
 	void SetAlignPosUp();
 	void SetAlignPosDn();
-	void MpeWrite();
+	//void MpeWrite();
 	void IoWrite(CString sMReg, long lData);
 	BOOL IsRdyTest();
 	BOOL IsRdyTest0();
@@ -1091,14 +1087,7 @@ public:
 	void StopFromThread();
 	void BuzzerFromThread(BOOL bOn, int nCh = 0);
 
-
-	BOOL IsEngraveFdSts();
 	BOOL IsEngraveFd();
-	void SetEngraveFdSts();
-	void SetEngraveStopSts();
-	void SetEngraveSts(int nStep);
-	void SetEngraveFd();
-	void SetEngraveFd(double dDist);
 	void MoveEngrave(double dOffset);
 
 	double GetEngraveFdLen();
@@ -1109,10 +1098,6 @@ public:
 
 	BOOL IsPinPos0();
 	BOOL IsPinPos1();
-
-
-	//BOOL LoadAoiSpec();
-	BOOL LoadMasterSpec();
 
 	void UpdateYield();
 	void UpdateYield(int nSerial);
@@ -1166,8 +1151,6 @@ public:
 	BOOL m_bEscape;
 	// ITS
 	BOOL m_bTHREAD_MAKE_ITS_FILE_UP, m_bTHREAD_MAKE_ITS_FILE_DN;
-	//BOOL m_bTHREAD_UPDATE_REELMAP_INOUTER_UP;// , m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP;
-	//BOOL m_bTHREAD_UPDATE_REELMAP_INOUTER_DN;// , m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN;
 	BOOL m_bTHREAD_UPDATE_REELMAP_INNER_UP, m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP;
 	BOOL m_bTHREAD_UPDATE_REELMAP_INNER_DN, m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN;
 	BOOL m_bTHREAD_UPDATE_REELMAP_ITS;
@@ -1223,9 +1206,6 @@ public:
 	BOOL SetSerialReelmapInner(int nSerial, BOOL bDumy = FALSE);
 	BOOL SetSerialMkInfoInner(int nSerial, BOOL bDumy = FALSE);
 
-	//BOOL LoadPcrInnerUp(int nSerial, BOOL bFromShare = FALSE);
-	//BOOL LoadPcrInnerDn(int nSerial, BOOL bFromShare = FALSE);
-
 	CString GetTimeIts();
 
 	int GetAoiUpAutoStep();
@@ -1261,8 +1241,8 @@ public:
 	int GetMkStAuto();
 	void SetMkStAuto();
 	BOOL GetMkStSignal();
-	void SetMkStSignal();
 	void LoadSerial();
+	BOOL MpeWrite(CString strRegAddr, long lData, BOOL bCheck = FALSE);
 
 // 재정의입니다.
 public:
@@ -1272,10 +1252,6 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 	virtual void OnInitialUpdate(); // 생성 후 처음 호출되었습니다.
-	//virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
-	//virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
-	//virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
-	//virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
 
 	afx_msg LRESULT wmClientReceived(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT wmClientReceivedSr(WPARAM wParam, LPARAM lParam);
