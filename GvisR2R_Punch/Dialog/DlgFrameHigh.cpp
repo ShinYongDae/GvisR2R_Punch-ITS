@@ -613,8 +613,12 @@ void CDlgFrameHigh::DispSigAoi()
 
 	BOOL bOn;
 	CString sName = pView->GetCurrentDBName();
+// 	bOn	= pView->m_pDlgMenu03->IsAoiTblVac();				// Out - 검사부 검사 테이블 진공 SOL
+	//bOn	= pView->IsAoiTblVac();								// Out - 검사부 검사 테이블 진공 SOL
 
 	// IDC_STC_SIG01
+	//bOn = (sName.MakeUpper() == _T("GVISDB")) ? TRUE : FALSE;
+	//bOn = (pView->GetAoiUpCamMstInfo() == 1) ? TRUE : FALSE; // AOI상 strpcs.bin 연결
 	bOn = (pDoc->m_nAoiCamInfoStrPcs[0] == 1) ? TRUE : FALSE; // AOI상 strpcs.bin 연결
 	if(bOn && myLabel[0].GetImageBk() != LBL_IMG_DN)
 		myLabel[0].SetImageBk(LBL_IMG_DN);
@@ -622,6 +626,7 @@ void CDlgFrameHigh::DispSigAoi()
 		myLabel[0].SetImageBk(LBL_IMG_UP);
 
 	// IDC_STC_SIG01
+// 	bOn	= pView->m_pDlgMenu03->IsAoiTest();					// Out - 검사부 검사 시작
 	bOn	= pView->IsTest();									// Out - 검사부 검사 시작
 	if(bOn && myLabel[1].GetImageBk() != LBL_IMG_DN)
 		myLabel[1].SetImageBk(LBL_IMG_DN);
@@ -629,19 +634,31 @@ void CDlgFrameHigh::DispSigAoi()
 		myLabel[1].SetImageBk(LBL_IMG_UP);
 
 	// IDC_STC_SIG02
-	//bOn	= pView->m_pDlgMenu03->IsAoiTblVacDone();			// In - 검사부 테이블 진공 완료
-	bOn	= pView->IsAoiTblVacDone();			// In - 검사부 테이블 진공 완료
+	bOn	= pView->m_pDlgMenu03->IsAoiTblVacDone();			// In - 검사부 테이블 진공 완료
 	if(bOn && myLabel[2].GetImageBk() != LBL_IMG_DN)
 		myLabel[2].SetImageBk(LBL_IMG_DN);
 	else if(!bOn && myLabel[2].GetImageBk() != LBL_IMG_UP)
 		myLabel[2].SetImageBk(LBL_IMG_UP);
 
+ 	//bOn	= pView->m_pDlgMenu03->IsAoiTestDone();				// In - 검사부 검사 완료
+	//bOn	= pView->IsTestDone();								// In - 검사부 검사 완료
+	//if(bOn && myLabel[3].GetImageBk() != LBL_IMG_DN)
+	//	myLabel[3].SetImageBk(LBL_IMG_DN);
+	//else if(!bOn && myLabel[3].GetImageBk() != LBL_IMG_UP)			
+	//	myLabel[3].SetImageBk(LBL_IMG_UP);
+
 	// IDC_STC_SIG03
+	//bOn = (pView->GetAoiDnCamMstInfo() == 1) ? TRUE : FALSE; // AOI하 strpcs.bin 연결
 	bOn = (pDoc->m_nAoiCamInfoStrPcs[1] == 1) ? TRUE : FALSE; // AOI하 strpcs.bin 연결
 	if(bOn && myLabel[3].GetImageBk() != LBL_IMG_DN)
 		myLabel[3].SetImageBk(LBL_IMG_DN);
 	else if(!bOn && myLabel[3].GetImageBk() != LBL_IMG_UP)			
 		myLabel[3].SetImageBk(LBL_IMG_UP);
+	//bOn	= pView->IsConnectedSr();								// In - SR-1000W TCP/IP 연결
+	//if(bOn && myLabel[3].GetImageBk() != LBL_IMG_DN)
+	//	myLabel[3].SetImageBk(LBL_IMG_DN);
+	//else if(!bOn && myLabel[3].GetImageBk() != LBL_IMG_UP)			
+	//	myLabel[3].SetImageBk(LBL_IMG_UP);
 
 	// IDC_STC_SIG04
 	bOn = pView->IsConnectedEng();								// In - 각인부 TCP/IP 연결
@@ -650,6 +667,7 @@ void CDlgFrameHigh::DispSigAoi()
 	else if (!bOn && myLabel[4].GetImageBk() != LBL_IMG_UP)
 		myLabel[4].SetImageBk(LBL_IMG_UP);
 
+	//pView->m_nDebugStep = pView->m_nMkStAuto;
 	pView->DispThreadTick();
 }
 

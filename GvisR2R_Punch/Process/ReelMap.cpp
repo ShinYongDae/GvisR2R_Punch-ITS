@@ -3840,173 +3840,173 @@ BOOL CReelMap::MakeDir(CString sModel, CString sLayer, CString sLot)
 	return TRUE;
 }
 
-//BOOL CReelMap::MakeDirRmap(CString sModel, CString sLayer, CString sLot)
-//{
-//	CString str, sPath, Path[5];
+BOOL CReelMap::MakeDirRmap(CString sModel, CString sLayer, CString sLot)
+{
+	CString str, sPath, Path[5];
+
+	switch (m_nLayer)
+	{
+	case RMAP_UP:
+		str = _T("ReelMapDataUp.txt");
+		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
+		Path[1] = sModel;
+		Path[2] = sLot;
+		Path[3] = sLayer;
+		Path[4] = _T("");
+		break;
+	case RMAP_ALLUP:
+		str = _T("ReelMapDataAll.txt");
+		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
+		Path[1] = sModel;
+		Path[2] = sLot;
+		Path[3] = sLayer;
+		Path[4] = _T("");
+		break;
+	case RMAP_DN:
+		str = _T("ReelMapDataDn.txt");
+		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
+		Path[1] = sModel;
+		Path[2] = sLot;
+		Path[3] = sLayer;
+		Path[4] = _T("");
+		break;
+	case RMAP_ALLDN:
+		str = _T("ReelMapDataAll.txt");
+		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
+		Path[1] = sModel;
+		Path[2] = sLot;
+		Path[3] = sLayer;
+		Path[4] = _T("");
+		break;
+	case RMAP_INNER_UP:
+		str = _T("YieldUp.txt");
+		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
+		Path[1] = sModel;
+		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
+		Path[3] = sLot;
+		Path[4] = sLayer;
+		break;
+	case RMAP_INNER_DN:
+		str = _T("YieldDn.txt");
+		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
+		Path[1] = sModel;
+		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
+		Path[3] = sLot;
+		Path[4] = sLayer;
+		break;
+	case RMAP_INNER_ALLUP:
+		str = _T("YieldAll.txt");
+		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
+		Path[1] = sModel;
+		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
+		Path[3] = sLot;
+		Path[4] = sLayer;
+		break;
+	case RMAP_INNER_ALLDN:
+		str = _T("YieldAll.txt");
+		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
+		Path[1] = sModel;
+		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
+		Path[3] = sLot;
+		Path[4] = sLayer;
+		break;
+	case RMAP_INOUTER_UP:
+		break;
+	case RMAP_INOUTER_DN:
+		break;
+	case RMAP_ITS:
+		str = _T("YieldIts.txt");
+		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
+		Path[1] = Path[1] = sModel;
+		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
+		Path[3] = _T("");
+		Path[4] = _T("");
+		break;
+	}
+
+	if (!Path[0].IsEmpty() && !Path[1].IsEmpty())
+	{
+		sPath.Format(_T("%s%s"), Path[0], Path[1]);
+		if (!pDoc->DirectoryExists(sPath))
+			CreateDirectory(sPath, NULL);
+
+		if (!Path[2].IsEmpty())
+		{
+			sPath.Format(_T("%s%s\\%s"), Path[0], Path[1], Path[2]);
+			if (!pDoc->DirectoryExists(sPath))
+				CreateDirectory(sPath, NULL);
+
+			if (!Path[3].IsEmpty())
+			{
+				sPath.Format(_T("%s%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3]);
+				if (!pDoc->DirectoryExists(sPath))
+					CreateDirectory(sPath, NULL);
+
+				if (!Path[4].IsEmpty())
+				{
+					sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], Path[4]);
+					if (!pDoc->DirectoryExists(sPath))
+						CreateDirectory(sPath, NULL);
+				}
+			}
+		}
+	}
+
+
+//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 //
-//	switch (m_nLayer)
+//#ifndef TEST_MODE
+//	CFileFind finder;
+//	CString str, sPath, Path[4];
+//
+//	if(bDualTest)
 //	{
-//	case RMAP_UP:
-//		str = _T("ReelMapDataUp.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = sModel;
-//		Path[2] = sLot;
-//		Path[3] = sLayer;
-//		Path[4] = _T("");
-//		break;
-//	case RMAP_ALLUP:
-//		str = _T("ReelMapDataAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = sModel;
-//		Path[2] = sLot;
-//		Path[3] = sLayer;
-//		Path[4] = _T("");
-//		break;
-//	case RMAP_DN:
-//		str = _T("ReelMapDataDn.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = sModel;
-//		Path[2] = sLot;
-//		Path[3] = sLayer;
-//		Path[4] = _T("");
-//		break;
-//	case RMAP_ALLDN:
-//		str = _T("ReelMapDataAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = sModel;
-//		Path[2] = sLot;
-//		Path[3] = sLayer;
-//		Path[4] = _T("");
-//		break;
-//	case RMAP_INNER_UP:
-//		str = _T("YieldUp.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = sModel;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
-//		Path[3] = sLot;
-//		Path[4] = sLayer;
-//		break;
-//	case RMAP_INNER_DN:
-//		str = _T("YieldDn.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = sModel;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
-//		Path[3] = sLot;
-//		Path[4] = sLayer;
-//		break;
-//	case RMAP_INNER_ALLUP:
-//		str = _T("YieldAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = sModel;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
-//		Path[3] = sLot;
-//		Path[4] = sLayer;
-//		break;
-//	case RMAP_INNER_ALLDN:
-//		str = _T("YieldAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = sModel;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
-//		Path[3] = sLot;
-//		Path[4] = sLayer;
-//		break;
-//	case RMAP_INOUTER_UP:
-//		break;
-//	case RMAP_INOUTER_DN:
-//		break;
-//	case RMAP_ITS:
-//		str = _T("YieldIts.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = Path[1] = sModel;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
-//		Path[3] = _T("");
-//		Path[4] = _T("");
-//		break;
-//	}
-//
-//	if (!Path[0].IsEmpty() && !Path[1].IsEmpty())
-//	{
-//		sPath.Format(_T("%s%s"), Path[0], Path[1]);
-//		if (!pDoc->DirectoryExists(sPath))
-//			CreateDirectory(sPath, NULL);
-//
-//		if (!Path[2].IsEmpty())
+//		switch(m_nLayer)
 //		{
-//			sPath.Format(_T("%s%s\\%s"), Path[0], Path[1], Path[2]);
-//			if (!pDoc->DirectoryExists(sPath))
-//				CreateDirectory(sPath, NULL);
-//
-//			if (!Path[3].IsEmpty())
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3]);
-//				if (!pDoc->DirectoryExists(sPath))
-//					CreateDirectory(sPath, NULL);
-//
-//				if (!Path[4].IsEmpty())
-//				{
-//					sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], Path[4]);
-//					if (!pDoc->DirectoryExists(sPath))
-//						CreateDirectory(sPath, NULL);
-//				}
-//			}
+//		case RMAP_UP:
+//			str = _T("ReelMapDataUp.txt");
+//			break;
+//		case RMAP_ALLUP:
+//			str = _T("ReelMapDataAll.txt");
+//			break;
+//		case RMAP_DN:
+//			str = _T("ReelMapDataDn.txt");
+//			break;
+//		case RMAP_ALLDN:
+//			str = _T("ReelMapDataAll.txt");
+//			break;
 //		}
 //	}
+//	else
+//		str = _T("ReelMapDataUp.txt");
+//	
+//	Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
+//	Path[1] = sModel;
+//	Path[2] = sLot;
+//	Path[3] = sLayer;
 //
+//	sPath.Format(_T("%s%s"), Path[0], Path[1]);
+//	//if(!finder.FindFile(sPath))
+//	if (!pDoc->DirectoryExists(sPath))
+//		CreateDirectory(sPath, NULL);
 //
-////	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-////
-////#ifndef TEST_MODE
-////	CFileFind finder;
-////	CString str, sPath, Path[4];
-////
-////	if(bDualTest)
-////	{
-////		switch(m_nLayer)
-////		{
-////		case RMAP_UP:
-////			str = _T("ReelMapDataUp.txt");
-////			break;
-////		case RMAP_ALLUP:
-////			str = _T("ReelMapDataAll.txt");
-////			break;
-////		case RMAP_DN:
-////			str = _T("ReelMapDataDn.txt");
-////			break;
-////		case RMAP_ALLDN:
-////			str = _T("ReelMapDataAll.txt");
-////			break;
-////		}
-////	}
-////	else
-////		str = _T("ReelMapDataUp.txt");
-////	
-////	Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-////	Path[1] = sModel;
-////	Path[2] = sLot;
-////	Path[3] = sLayer;
-////
-////	sPath.Format(_T("%s%s"), Path[0], Path[1]);
-////	//if(!finder.FindFile(sPath))
-////	if (!pDoc->DirectoryExists(sPath))
-////		CreateDirectory(sPath, NULL);
-////
-////	sPath.Format(_T("%s%s\\%s"), Path[0], Path[1], Path[2]);
-////	//if(!finder.FindFile(sPath))
-////	if (!pDoc->DirectoryExists(sPath))
-////		CreateDirectory(sPath, NULL);
-////
-////	sPath.Format(_T("%s%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3]);
-////	//if(!finder.FindFile(sPath))
-////	if (!pDoc->DirectoryExists(sPath))
-////		CreateDirectory(sPath, NULL);
-////
-////	sPath.Format(_T("%s%s\\%s\\%s\\Reelmap"), Path[0], Path[1], Path[2], Path[3]);
-////	//if(!finder.FindFile(sPath))
-////	if (!pDoc->DirectoryExists(sPath))
-////		CreateDirectory(sPath, NULL);
-////#endif
-//	return TRUE;
-//}
+//	sPath.Format(_T("%s%s\\%s"), Path[0], Path[1], Path[2]);
+//	//if(!finder.FindFile(sPath))
+//	if (!pDoc->DirectoryExists(sPath))
+//		CreateDirectory(sPath, NULL);
+//
+//	sPath.Format(_T("%s%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3]);
+//	//if(!finder.FindFile(sPath))
+//	if (!pDoc->DirectoryExists(sPath))
+//		CreateDirectory(sPath, NULL);
+//
+//	sPath.Format(_T("%s%s\\%s\\%s\\Reelmap"), Path[0], Path[1], Path[2], Path[3]);
+//	//if(!finder.FindFile(sPath))
+//	if (!pDoc->DirectoryExists(sPath))
+//		CreateDirectory(sPath, NULL);
+//#endif
+	return TRUE;
+}
 
 CString CReelMap::MakeDirRmapRestore(CString sModel, CString sLayer, CString sLot)
 {
@@ -7030,6 +7030,11 @@ BOOL CReelMap::IsFixPcsIts(int nSerial, int* pCol, int* pRow, int &nTot) // nTot
 
 BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
 {
+
+	int nPos = pDoc->WorkingInfo.LastJob.sSelUserName.Find(_T('\r'));
+	if (nPos > 0)
+		pDoc->WorkingInfo.LastJob.sSelUserName = pDoc->WorkingInfo.LastJob.sSelUserName.Left(nPos);
+
 	MakeDirIts();
 
 	CString sMsg;
@@ -7070,7 +7075,7 @@ BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_IN
 		}
 		else
 		{
-			sMsg.Format(_T("It is trouble to MakeItsFile.\r\n%s"), FileName);
+			sMsg.Format(_T("It is trouble to MakeItsFile.\r\n%s"), CharToString(FileName));
 			pView->MsgBox(sMsg);
 			return FALSE;
 		}
@@ -7124,11 +7129,6 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 			if (pDoc->m_pPcr[nLayer][nIdx])
 				nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
 		}
-		//if (pDoc->m_pPcrInner[0])
-		//{
-		//	if (pDoc->m_pPcrInner[0][nIdx])
-		//		nTotDefPcs = pDoc->m_pPcrInner[0][nIdx]->m_nTotDef;
-		//}
 		break;
 	case RMAP_INNER_DN:
 		nLayer = RMAP_DN;
@@ -7138,19 +7138,24 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 			if (pDoc->m_pPcr[nLayer][nIdx])
 				nTotDefPcs = pDoc->m_pPcr[nLayer][nIdx]->m_nTotDef;
 		}
-		//if (pDoc->m_pPcrInner[1])
-		//{
-		//	if (pDoc->m_pPcrInner[1][nIdx])
-		//		nTotDefPcs = pDoc->m_pPcrInner[1][nIdx]->m_nTotDef;
-		//}
 		break;
 	}
 
-	str.Format(_T("%d,%s,%04d\n"), nTotDefPcs, sItsCode, nSerial);
-	sItsData = str;
+	//str.Format(_T("%d,%s,%04d\n"), nTotDefPcs, sItsCode, nSerial);
+	//sItsData = str;
 
 	int nR, nRow, nCol, nDefCode;
-	int nTotStrip = 0;
+	//int nTotStrip = 0;
+	int nTotStrip[4] = { 0 }, nPcsId;
+
+	int nTotVerifyed = 0;
+	int nPcrLineNum;
+	CString sStripA = _T("");
+	CString sStripB = _T("");
+	CString sStripC = _T("");
+	CString sStripD = _T("");
+
+	CfPoint ptPnt;
 
 	// Strip A
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -7158,22 +7163,26 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		nR = nRow;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
-				nDefCode = m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
-				if (nDefCode > 0)
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			if (nPcrLineNum > -1)
+			{
+				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2)
 				{
-				nTotStrip++;
-					str.Format(_T("%s,%04d,%s,A,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
-				sTemp += str;
+					nDefCode = m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					if (nDefCode > 0)
+					{
+						nTotStrip[0]++;
+						str.Format(_T("%s,%04d,%s,A,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
+						sStripA += str;
+					}
+				}
+				else
+				{
+					nTotVerifyed++;
+				}
 			}
 		}
 	}
-	str.Format(_T("%d,%s,%04d,%s,A\n"), nTotStrip, sItsCode, nSerial, sSide);
-	sItsData += str;
-	sItsData += sTemp;
-	str.Format(_T("%s,%04d,%s,A,EOS\n"), sItsCode, nSerial, sSide);
-	sItsData += str;
-	sTemp = _T("");
-	nTotStrip = 0;
 
 	// Strip B
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -7181,22 +7190,26 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		nR = nRow + nStripY;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			if (nPcrLineNum > -1)
+			{
+				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2)
+				{
 					nDefCode = m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 					if (nDefCode > 0)
 					{
-				nTotStrip++;
+						nTotStrip[1]++;
 						str.Format(_T("%s,%04d,%s,B,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
-				sTemp += str;
+						sStripB += str;
+					}
+				}
+				else
+				{
+					nTotVerifyed++;
+				}
 			}
 		}
 	}
-	str.Format(_T("%d,%s,%04d,%s,B\n"), nTotStrip, sItsCode, nSerial, sSide);
-	sItsData += str;
-	sItsData += sTemp;
-	str.Format(_T("%s,%04d,%s,B,EOS\n"), sItsCode, nSerial, sSide);
-	sItsData += str;
-	sTemp = _T("");
-	nTotStrip = 0;
 
 	// Strip C
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -7204,22 +7217,26 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		nR = nRow + nStripY * 2;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			if (nPcrLineNum > -1)
+			{
+				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2)
+				{
 					nDefCode = m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 					if (nDefCode > 0)
 					{
-				nTotStrip++;
-						str.Format(_T("%s,%04d,%s,B,%d,%d,C%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
-				sTemp += str;
+						nTotStrip[2]++;
+						str.Format(_T("%s,%04d,%s,C,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
+						sStripC += str;
+					}
+				}
+				else
+				{
+					nTotVerifyed++;
+				}
 			}
 		}
 	}
-	str.Format(_T("%d,%s,%04d,%s,C\n"), nTotStrip, sItsCode, nSerial, sSide);
-	sItsData += str;
-	sItsData += sTemp;
-	str.Format(_T("%s,%04d,%s,C,EOS\n"), sItsCode, nSerial, sSide);
-	sItsData += str;
-	sTemp = _T("");
-	nTotStrip = 0;
 
 	// Strip D
 	for (nRow = 0; nRow < nStripY; nRow++)
@@ -7227,18 +7244,56 @@ CString CReelMap::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, R
 		nR = nRow + nStripY * 3;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			if (nPcrLineNum > -1)
+			{
+				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2)
+				{
 					nDefCode = m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 					if (nDefCode > 0)
 					{
-				nTotStrip++;
-						str.Format(_T("%s,%04d,%s,B,%d,%d,D%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
-				sTemp += str;
+						nTotStrip[3]++;
+						str.Format(_T("%s,%04d,%s,D,%d,%d,B%d\n"), sItsCode, nSerial, sSide, nCol + 1, nRow + 1, pDoc->GetItsDefCode(nDefCode));
+						sStripD += str;
+					}
+				}
+				else
+				{
+					nTotVerifyed++;
+				}
 			}
 		}
 	}
-	str.Format(_T("%d,%s,%04d,%s,D\n"), nTotStrip, sItsCode, nSerial, sSide);
+
+	// Header
+	str.Format(_T("%d,%s,%04d\n"), nTotDefPcs - nTotVerifyed, sItsCode, nSerial);
+	sItsData = str;
+
+	// Strip A
+	str.Format(_T("%d,%s,%04d,%s,A\n"), nTotStrip[0], sItsCode, nSerial, sSide);
 	sItsData += str;
-	sItsData += sTemp;
+	sItsData += sStripA;
+	str.Format(_T("%s,%04d,%s,A,EOS\n"), sItsCode, nSerial, sSide);
+	sItsData += str;
+
+	// Strip B
+	str.Format(_T("%d,%s,%04d,%s,B\n"), nTotStrip[1], sItsCode, nSerial, sSide);
+	sItsData += str;
+	sItsData += sStripB;
+	str.Format(_T("%s,%04d,%s,B,EOS\n"), sItsCode, nSerial, sSide);
+	sItsData += str;
+
+	// Strip C
+	str.Format(_T("%d,%s,%04d,%s,C\n"), nTotStrip[2], sItsCode, nSerial, sSide);
+	sItsData += str;
+	sItsData += sStripC;
+	str.Format(_T("%s,%04d,%s,C,EOS\n"), sItsCode, nSerial, sSide);
+	sItsData += str;
+
+	// Strip D
+	str.Format(_T("%d,%s,%04d,%s,D\n"), nTotStrip[3], sItsCode, nSerial, sSide);
+	sItsData += str;
+	sItsData += sStripD;
 	str.Format(_T("%s,%04d,%s,D,EOS\n"), sItsCode, nSerial, sSide);
 	sItsData += str;
 	str.Format(_T("%s,%04d,%s,EOP\n"), sItsCode, nSerial, sSide);

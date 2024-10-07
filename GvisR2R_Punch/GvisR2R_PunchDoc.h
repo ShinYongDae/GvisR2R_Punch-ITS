@@ -37,7 +37,6 @@ public:
 	int m_nDelayShow;
 	BOOL m_bBufEmpty[2]; // [0]: Up, [1]: Dn
 	BOOL m_bBufEmptyF[2]; // [0]: Up, [1]: Dn
-	BOOL m_bUseStatus;
 
 	// R2R Y Meander Adjusting....
 	BOOL m_bUseDts, m_bUseIts;
@@ -447,12 +446,6 @@ public:
 	void GetMkInfo();
 	void SetMkInfo(CString sMenu, CString sItem, BOOL bOn);
 	void SetMkInfo(CString sMenu, CString sItem, CString sData);
-
-	void SetStatus(CString sMenu, CString sItem, BOOL bOn);
-	void SetStatusInt(CString sMenu, CString sItem, int nData);
-	void SetStatus(CString sMenu, CString sItem, CString sData);
-	CString GetStatus(CString sMenu, CString sItem);
-	BOOL LoadStatus();
 
 	// PCS 인덱스를 예전방식의 인덱스로 변환함.
 	int MirrorLR(int nPcsId); // 좌우 미러링

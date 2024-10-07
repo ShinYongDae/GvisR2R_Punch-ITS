@@ -94,7 +94,7 @@ class CReelMap : public CWnd
 	BOOL MakeDir();
 	BOOL MakeDir(CString sModel, CString sLayer, CString sLot);
 	BOOL MakeDirRmap();
-	//BOOL MakeDirRmap(CString sModel, CString sLayer, CString sLot);
+	BOOL MakeDirRmap(CString sModel, CString sLayer, CString sLot);
 	CString MakeDirRmapRestore();
 	CString MakeDirRmapRestore(CString sModel, CString sLayer, CString sLot);
 	int GetLastRmapRestoreDir(CString strPath);

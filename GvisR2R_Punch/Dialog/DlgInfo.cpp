@@ -176,19 +176,6 @@ BOOL CDlgInfo::OnInitDialog()
 	// TODO: Add extra initialization here
 	InitStatic();
 	InitBtn();
-		
-	GetDlgItem(IDC_STC_65)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_CHK_2_POINT_ALIGN)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_CHK_4_POINT_ALIGN)->ShowWindow(SW_HIDE);
-
-	GetDlgItem(IDC_STC_40)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_STC_41)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_STC_42)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_STC_43)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_STC_186)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_STC_83)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_STC_185)->ShowWindow(SW_HIDE);
-	GetDlgItem(IDC_STC_82)->ShowWindow(SW_HIDE);
 
 // 	GetDlgItem(IDC_STC_0014)->ShowWindow(SW_HIDE);
 // 	GetDlgItem(IDC_CHK_001)->ShowWindow(SW_HIDE);
@@ -842,7 +829,7 @@ void CDlgInfo::OnStc0016()
 
 	pDoc->SetSeparateDist(_tstof(sVal));
 	//pView->IoWrite(_T("ML45002", long(_tstof(sVal)*1000.0));	// Lot 분리 길이 (단위 M * 1000)
-	//pView->MpeWrite(_T("ML45002", long(_tstof(sVal)*1000.0));
+	//pView->m_pMpe->Write(_T("ML45002", long(_tstof(sVal)*1000.0));
 
 	pView->SetLotLastShot();
 }
@@ -895,7 +882,7 @@ void CDlgInfo::OnStc0024()
 // 	::WritePrivateProfileString(_T("Last Job"), _T("Temporary Pause Length", sVal, PATH_WORKING_INFO);	
 // 
 // 	//pView->IoWrite(_T("ML45006", long(_tstof(sVal)*1000.0));	// 일시정지 길이 (단위 M * 1000)
-// 	pView->MpeWrite(_T("ML45006", long(_tstof(sVal)*1000.0));
+// 	pView->m_pMpe->Write(_T("ML45006", long(_tstof(sVal)*1000.0));
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -999,8 +986,13 @@ void CDlgInfo::OnStc32()
 
 	double dTime = _tstof(sVal) * 100.0;
 	int nTime = int(dTime);
-	pView->MpeWrite(pView->Plc.DlgInfo.UltraSonicStTimeAoiDn, (long)nTime);	// AOI_Dn (단위 [초] * 100) : 1 is 10 mSec.
-	pView->MpeWrite(pView->Plc.DlgInfo.UltraSonicStTimeAoiUp, (long)nTime);	// AOI_Up (단위 [초] * 100) : 1 is 10 mSec.
+#ifdef USE_MPE
+	if (pView->m_pMpe)
+	{
+		pView->m_pMpe->Write(_T("MW05940"), (long)nTime);	// AOI_Dn (단위 [초] * 100) : 1 is 10 mSec.
+		pView->m_pMpe->Write(_T("MW05942"), (long)nTime);	// AOI_Up (단위 [초] * 100) : 1 is 10 mSec.
+	}
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1038,13 +1030,19 @@ void CDlgInfo::OnChk001()
 	if(myBtn[1].GetCheck())
 	{
 		bUse = TRUE;
-		pView->MpeWrite(pView->Plc.DlgInfo.UseLotLength, 1);	// 로트분리사용(PC가 On시키고, PC가 확인하고 Off시킴)-20141031
+#ifdef USE_MPE
+		//pView->IoWrite(_T("MB440184", 1);	// 로트분리사용(PC가 On시키고, PC가 확인하고 Off시킴)-20141031
+		pView->m_pMpe->Write(_T("MB440184"), 1);
+#endif
 		pView->SetLotLastShot();
 	}
 	else
 	{
 		bUse = FALSE;
-		pView->MpeWrite(pView->Plc.DlgInfo.UseLotLength, 0);	// 로트분리사용(PC가 On시키고, PC가 확인하고 Off시킴)-20141031
+#ifdef USE_MPE
+		//pView->IoWrite(_T("MB440184", 0);	// 로트분리사용(PC가 On시키고, PC가 확인하고 Off시킴)-20141031
+		pView->m_pMpe->Write(_T("MB440184"), 0);
+#endif
 	}
 
 	pDoc->WorkingInfo.LastJob.bLotSep = bUse;
@@ -1067,18 +1065,30 @@ void CDlgInfo::OnChk002()
 	Sleep(100);
 	if (bUse)
 	{
-		pView->MpeWrite(pView->Plc.DlgInfo.UseStopLength, 1);	// 일시정지사용(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB440183"), 1);
+#endif
 		pView->ChkTempStop(TRUE);
 		if (!myBtn[2].GetCheck())
+		{
 			myBtn[2].SetCheck(TRUE);
+			//bUse = TRUE;
+			//pView->IoWrite(_T("MB440183", 1);	// 일시정지사용(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
+		}
 	}
 	else
 	{
-		pView->MpeWrite(pView->Plc.DlgInfo.UseStopLength, 0);	// 일시정지사용(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB440183"), 0);
+#endif
 		pView->ChkTempStop(FALSE);
 
 		if (myBtn[2].GetCheck())
+		{
 			myBtn[2].SetCheck(FALSE);
+			//bUse = FALSE;
+			//pView->IoWrite(_T("MB440183", 0);	// 일시정지사용(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
+		}
 	}
 
 	pDoc->WorkingInfo.LastJob.bTempPause = bUse;
@@ -1129,7 +1139,10 @@ void CDlgInfo::OnChk004()
 	::WritePrivateProfileString(_T("Last Job"), _T("Use Recoiler Door Sensor"), sData, PATH_WORKING_INFO);	
 	pDoc->SetMkInfo(_T("Signal"), _T("DoorSensRecoil"), pDoc->WorkingInfo.LastJob.bRclDrSen);
 
-	pView->MpeWrite(pView->Plc.DlgInfo.DoorSensorRecoiler, pDoc->WorkingInfo.LastJob.bRclDrSen ? 1 : 0);	// 리코일러Door센서 사용
+#ifdef USE_MPE
+	if (pView && pView->m_pMpe)
+		pView->m_pMpe->Write(_T("MB440163"), pDoc->WorkingInfo.LastJob.bRclDrSen ? 1 : 0);	// 리코일러Door센서 사용
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1157,7 +1170,10 @@ void CDlgInfo::OnChk005()
 	::WritePrivateProfileString(_T("Last Job"), _T("Use AoiUp Door Sensor"), sData, PATH_WORKING_INFO);	
 	pDoc->SetMkInfo(_T("Signal"), _T("DoorSensAoiUp"), pDoc->WorkingInfo.LastJob.bAoiUpDrSen);
 
-	pView->MpeWrite(pView->Plc.DlgInfo.DoorSensorAoiUp, pDoc->WorkingInfo.LastJob.bAoiUpDrSen ? 1 : 0);	// AOI(상) Door센서 사용
+#ifdef USE_MPE
+	if(pView && pView->m_pMpe)
+		pView->m_pMpe->Write(_T("MB440166"), pDoc->WorkingInfo.LastJob.bAoiUpDrSen ? 1 : 0);	// AOI(상) Door센서 사용
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1183,7 +1199,10 @@ void CDlgInfo::OnChk006()
 	::WritePrivateProfileString(_T("Last Job"), _T("Use Marking Door Sensor"), sData, PATH_WORKING_INFO);	
 	pDoc->SetMkInfo(_T("Signal"), _T("DoorSensPunch"), pDoc->WorkingInfo.LastJob.bMkDrSen);
 
-	pView->MpeWrite(pView->Plc.DlgInfo.DoorSensorPunch, pDoc->WorkingInfo.LastJob.bMkDrSen ? 1 : 0);	// 마킹Door센서 사용
+#ifdef USE_MPE
+	if (pView && pView->m_pMpe)
+		pView->m_pMpe->Write(_T("MB440164"), pDoc->WorkingInfo.LastJob.bMkDrSen ? 1 : 0);	// 마킹Door센서 사용
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1209,7 +1228,10 @@ void CDlgInfo::OnChk007()
 	::WritePrivateProfileString(_T("Last Job"), _T("Use Uncoiler Door Sensor"), sData, PATH_WORKING_INFO);	
 	pDoc->SetMkInfo(_T("Signal"), _T("DoorSensUncoil"), pDoc->WorkingInfo.LastJob.bUclDrSen);
 
-	pView->MpeWrite(pView->Plc.DlgInfo.DoorSensorUncoiler, pDoc->WorkingInfo.LastJob.bUclDrSen ? 1 : 0);	// 언코일러Door센서 사용
+#ifdef USE_MPE
+	if (pView && pView->m_pMpe)
+		pView->m_pMpe->Write(_T("MB440168"), pDoc->WorkingInfo.LastJob.bUclDrSen ? 1 : 0);	// 언코일러Door센서 사용
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1217,6 +1239,17 @@ void CDlgInfo::OnChk007()
 #endif
 }
 
+// void CDlgInfo::OnChk008() 
+// {
+// 	// TODO: Add your control notification handler code here
+// 	if(myBtn[8].GetCheck())
+// 		pDoc->WorkingInfo.LastJob.bDispMkPcs = TRUE;
+// 	else
+// 		pDoc->WorkingInfo.LastJob.bDispMkPcs = FALSE;
+// 
+// 	CString sData = pDoc->WorkingInfo.LastJob.bDispMkPcs ? "1" : "0";
+// 	::WritePrivateProfileString(_T("Last Job"), _T("Use Display Marked Piece", sData, PATH_WORKING_INFO);	
+// }
 void CDlgInfo::OnChk008() 
 {
 	if(myBtn[8].GetCheck())
@@ -1227,7 +1260,10 @@ void CDlgInfo::OnChk008()
 	CString sData = pDoc->WorkingInfo.LastJob.bUse380mm ? _T("1") : _T("0");
 	::WritePrivateProfileString(_T("Last Job"), _T("Use 380mm Roll"), sData, PATH_WORKING_INFO);
 
-	pView->MpeWrite(pView->Plc.DlgInfo.Use380mm, pDoc->WorkingInfo.LastJob.bUse380mm ? 1 : 0);	// EPC실린더(제품소->OFF/제품대->ON)
+#ifdef USE_MPE
+	if (pView && pView->m_pMpe)
+		pView->m_pMpe->Write(_T("MB440177"), pDoc->WorkingInfo.LastJob.bUse380mm ? 1 : 0);	// EPC실린더(제품소->OFF/제품대->ON)
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1254,12 +1290,23 @@ void CDlgInfo::OnChk009()
 	::WritePrivateProfileString(_T("Last Job"), _T("Use Engrave Door Sensor"), sData, PATH_WORKING_INFO);
 	pDoc->SetMkInfo(_T("Signal"), _T("DoorSensEngrave"), pDoc->WorkingInfo.LastJob.bEngvDrSen);
 
-	pView->MpeWrite(pView->Plc.DlgInfo.DoorSensorEngrave, pDoc->WorkingInfo.LastJob.bEngvDrSen ? 1 : 0);	// 각인부 Door센서 사용
+#ifdef USE_MPE
+	if (pView && pView->m_pMpe)
+		pView->m_pMpe->Write(_T("MB44019B"), pDoc->WorkingInfo.LastJob.bEngvDrSen ? 1 : 0);	// 각인부 Door센서 사용
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
 		pView->m_pEngrave->SetDoorEngrave();	//_stSigInx::_DoorEngrave
 #endif
+
+	//if(myBtn[9].GetCheck())
+	//	pDoc->WorkingInfo.LastJob.bStopFixDef = TRUE;
+	//else
+	//	pDoc->WorkingInfo.LastJob.bStopFixDef = FALSE;
+
+	//CString sData = pDoc->WorkingInfo.LastJob.bStopFixDef ? _T("1") : _T("0");
+	//::WritePrivateProfileString(_T("Last Job"), _T("Use Fix Defect Stop"), sData, PATH_WORKING_INFO);	
 }
 
 void CDlgInfo::OnChk010() 
@@ -1300,12 +1347,24 @@ void CDlgInfo::OnChk011()
 	::WritePrivateProfileString(_T("Last Job"), _T("Use AoiDn Door Sensor"), sData, PATH_WORKING_INFO);
 	pDoc->SetMkInfo(_T("Signal"), _T("DoorSensAoiDn"), pDoc->WorkingInfo.LastJob.bAoiDnDrSen);
 
-	pView->MpeWrite(pView->Plc.DlgInfo.DoorSensorAoiDn, pDoc->WorkingInfo.LastJob.bAoiDnDrSen ? 1 : 0);	// AOI(하) Door센서 사용
+#ifdef USE_MPE
+	if (pView && pView->m_pMpe)
+		pView->m_pMpe->Write(_T("MB440167"), pDoc->WorkingInfo.LastJob.bAoiDnDrSen ? 1 : 0);	// AOI(하) Door센서 사용
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
 		pView->m_pEngrave->SetDoorAoiDn();	//_stSigInx::_DoorAoiDn
 #endif
+
+
+	//if(myBtn[11].GetCheck())
+	//	pDoc->WorkingInfo.LastJob.bAoiSftySen = TRUE;
+	//else
+	//	pDoc->WorkingInfo.LastJob.bAoiSftySen = FALSE;
+
+	//CString sData = pDoc->WorkingInfo.LastJob.bAoiSftySen ? _T("1") : _T("0");
+	//::WritePrivateProfileString(_T("Last Job"), _T("Use Aoi Safty Sensor"), sData, PATH_WORKING_INFO);	
 }
 
 void CDlgInfo::OnBtnExit() 
@@ -1440,13 +1499,53 @@ int CDlgInfo::GetTestMode()
 void CDlgInfo::SetTestMode(int nMode)
 {
 	pDoc->WorkingInfo.LastJob.nTestMode = nMode; // MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2 .
-
+//
+//	CString sData;
+//	sData.Format(_T("%d"), nMode);
+//	::WritePrivateProfileString(_T("Last Job"), _T("Test Mode"), sData, PATH_WORKING_INFO);
+//
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
 		pView->m_pEngrave->SetTestMode();	//_ItemInx::_TestMode
 #endif
 
 	pDoc->SetTestMode(nMode);
+
+//#ifdef USE_MPE	
+//	if (pView && pView->m_pMpe)
+//	{
+//		if (pDoc->GetTestMode() == MODE_INNER)
+//		{
+//			pView->m_pMpe->Write(_T("MB440172"), 1);// 내층 검사 사용/미사용 
+//			pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
+//			pDoc->SetMkInfo(_T("Signal"), _T("Inner Test On"), TRUE);
+//			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), FALSE);
+//			if (pView->m_pDlgMenu01)
+//				pView->m_pDlgMenu01->EnableItsMode(FALSE);
+//		}
+//		else if (pDoc->GetTestMode() == MODE_OUTER)
+//		{
+//			pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
+//			pView->m_pMpe->Write(_T("MB440176"), 1);// 외층 검사 사용/미사용
+//			pDoc->SetMkInfo(_T("Signal"), _T("Inner Test On"), FALSE);
+//			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), TRUE);
+//			if (pView->m_pDlgMenu01)
+//				pView->m_pDlgMenu01->EnableItsMode();
+//
+//			//pView->m_bLoadMstInfo = TRUE; // LoadMstInfo()
+//			//pView->m_bLoadMstInfo = TRUE; // LoadMstInfo()
+//		}
+//		else
+//		{
+//			pView->m_pMpe->Write(_T("MB440172"), 0);// 내층 검사 사용/미사용
+//			pView->m_pMpe->Write(_T("MB440176"), 0);// 외층 검사 사용/미사용
+//			pDoc->SetMkInfo(_T("Signal"), _T("Inner Test On"), FALSE);
+//			pDoc->SetMkInfo(_T("Signal"), _T("Outer Test On"), FALSE);
+//			if (pView->m_pDlgMenu01)
+//				pView->m_pDlgMenu01->EnableItsMode(FALSE);
+//		}
+//	}
+//#endif
 
 	myBtn[23].RedrawWindow();
 	myBtn[24].RedrawWindow();
@@ -1628,7 +1727,9 @@ void CDlgInfo::OnChkSampleTest()
 		::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), _T("10000"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
 
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
-	pView->MpeWrite(pView->Plc.DlgInfo.SampleTest, (pDoc->WorkingInfo.LastJob.bSampleTest)?1:0);		// Sample 검사 On
+#ifdef USE_MPE
+	pView->m_pMpe->Write(_T("MB44017B"), (pDoc->WorkingInfo.LastJob.bSampleTest)?1:0);		// Sample 검사 On
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1648,13 +1749,17 @@ void CDlgInfo::OnChkOneMetal()
 	if (bOn)
 	{
 		pDoc->WorkingInfo.LastJob.bOneMetal = TRUE;
-		pView->MpeWrite(pView->Plc.DlgInfo.OneMetal, 1);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44017D"), 1);
+#endif
 		::WritePrivateProfileString(_T("Last Job"), _T("One Metal On"), _T("1"), PATH_WORKING_INFO);// IDC_CHK_ONE_METAL - Recoiler\r정방향 CW : FALSE
 	}
 	else
 	{
 		pDoc->WorkingInfo.LastJob.bOneMetal = FALSE;
-		pView->MpeWrite(pView->Plc.DlgInfo.OneMetal, 0);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44017D"), 0);
+#endif
 		::WritePrivateProfileString(_T("Last Job"), _T("One Metal On"), _T("0"), PATH_WORKING_INFO);// IDC_CHK_ONE_METAL - Recoiler\r정방향 CW : FALSE
 	}
 	pDoc->SetMkInfo(_T("Signal"), _T("RecoilerCcw"), bOn);
@@ -1681,13 +1786,17 @@ void CDlgInfo::OnChkTwoMetal()
 	if(bOn)
 	{
 		pDoc->WorkingInfo.LastJob.bTwoMetal = TRUE;
-		pView->MpeWrite(pView->Plc.DlgInfo.TwoMetal, 1);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44017C"), 1);
+#endif
 		::WritePrivateProfileString(_T("Last Job"), _T("Two Metal On"), _T("1"), PATH_WORKING_INFO);// IDC_CHK_TWO_METAL - Uncoiler\r역방향 ON : TRUE	
 	}
 	else
 	{
 		pDoc->WorkingInfo.LastJob.bTwoMetal = FALSE;
-		pView->MpeWrite(pView->Plc.DlgInfo.TwoMetal, 0);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44017C"), 0);
+#endif
 		::WritePrivateProfileString(_T("Last Job"), _T("Two Metal On"), _T("0"), PATH_WORKING_INFO);// IDC_CHK_TWO_METAL - Uncoiler\r역방향 ON : TRUE	
 	}
 	pDoc->SetMkInfo(_T("Signal"), _T("UncoilerCcw"), bOn);
@@ -1725,7 +1834,9 @@ void CDlgInfo::OnStc181()
 	::WritePrivateProfileString(_T("Infomation"), _T("Last Shot"), sVal, pDoc->WorkingInfo.System.sPathMkCurrInfo);
 	
 	long lData = (long)_tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);//atoi
-	pView->MpeWrite(pView->Plc.DlgInfo.SampleTestShotNum, lData);	// 샘플검사 Shot수
+#ifdef USE_MPE
+	pView->m_pMpe->Write(_T("ML45126"), lData);	// 샘플검사 Shot수
+#endif
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1819,12 +1930,16 @@ void CDlgInfo::OnBnClickedChk85()
 	if (myBtn[19].GetCheck()) //하면AOI 클린롤러
 	{
 		pDoc->WorkingInfo.LastJob.bUseAoiDnCleanRoler = TRUE;
-		pView->MpeWrite(pView->Plc.DlgInfo.CleanRollerAoiDn, 1);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44010F"), 1);
+#endif
 	}
 	else
 	{
 		pDoc->WorkingInfo.LastJob.bUseAoiDnCleanRoler = FALSE;
-		pView->MpeWrite(pView->Plc.DlgInfo.CleanRollerAoiDn, 0);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44010F"), 0);
+#endif
 	}
 
 	CString sData = pDoc->WorkingInfo.LastJob.bUseAoiDnCleanRoler ? _T("1") : _T("0");
@@ -1843,12 +1958,16 @@ void CDlgInfo::OnBnClickedChk86()
 	if (myBtn[20].GetCheck()) //상면AOI 클린롤러
 	{
 		pDoc->WorkingInfo.LastJob.bUseAoiUpCleanRoler = TRUE;
-		pView->MpeWrite(pView->Plc.DlgInfo.CleanRollerAoiUp, 1);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44010E"), 1);
+#endif
 	}
 	else
 	{
 		pDoc->WorkingInfo.LastJob.bUseAoiUpCleanRoler = FALSE;
-		pView->MpeWrite(pView->Plc.DlgInfo.CleanRollerAoiUp, 0);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44010E"), 0);
+#endif
 	}
 
 	CString sData = pDoc->WorkingInfo.LastJob.bUseAoiUpCleanRoler ? _T("1") : _T("0");
@@ -1868,12 +1987,16 @@ void CDlgInfo::OnBnClickedChk1187()
 	if (myBtn[21].GetCheck()) //AOI초음파세정기
 	{
 		pDoc->WorkingInfo.LastJob.bUseAoiDnUltrasonic= TRUE;
-		pView->MpeWrite(pView->Plc.DlgInfo.UltraSonicAoi, 1);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44016F"), 1);
+#endif
 	}
 	else
 	{
 		pDoc->WorkingInfo.LastJob.bUseAoiDnUltrasonic = FALSE;
-		pView->MpeWrite(pView->Plc.DlgInfo.UltraSonicAoi, 0);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44016F"), 0);
+#endif
 	}
 
 	CString sData = pDoc->WorkingInfo.LastJob.bUseAoiDnUltrasonic ? _T("1") : _T("0");
@@ -1893,12 +2016,16 @@ void CDlgInfo::OnBnClickedChk1188()
 	if (myBtn[22].GetCheck()) //각인부초음파세정기
 	{
 		pDoc->WorkingInfo.LastJob.bUseEngraveUltrasonic = TRUE;
-		pView->MpeWrite(pView->Plc.DlgInfo.UltraSonicEngrave, 1);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44016E"), 1);
+#endif
 	}
 	else
 	{
 		pDoc->WorkingInfo.LastJob.bUseEngraveUltrasonic = FALSE;
-		pView->MpeWrite(pView->Plc.DlgInfo.UltraSonicEngrave, 0);
+#ifdef USE_MPE
+		pView->m_pMpe->Write(_T("MB44016E"), 0);
+#endif
 	}
 
 	CString sData = pDoc->WorkingInfo.LastJob.bUseEngraveUltrasonic ? _T("1") : _T("0");
@@ -1967,54 +2094,95 @@ void CDlgInfo::OnStnClickedStc17()
 void CDlgInfo::OnStnClickedStc41()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//myStcData[17].SetBkColor(RGB_RED);
-	//myStcData[17].RedrawWindow();
+	myStcData[17].SetBkColor(RGB_RED);
+	myStcData[17].RedrawWindow();
 
-	//CPoint pt;	CRect rt;
-	//GetDlgItem(IDC_STC_41)->GetWindowRect(&rt);
-	//pt.x = rt.right; pt.y = rt.bottom;
-	//ShowKeypad(IDC_STC_41, pt, TO_BOTTOM | TO_RIGHT);
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_41)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_41, pt, TO_BOTTOM | TO_RIGHT);
 
-	//myStcData[17].SetBkColor(RGB_WHITE);
-	//myStcData[17].RedrawWindow();
+	myStcData[17].SetBkColor(RGB_WHITE);
+	myStcData[17].RedrawWindow();
 
-	//CString sData;
-	//GetDlgItem(IDC_STC_41)->GetWindowText(sData);
-	//pDoc->WorkingInfo.LastJob.sCurrentShotNum = sData;
-	//::WritePrivateProfileString(_T("Last Job"), _T("Current ShotNum"), sData, PATH_WORKING_INFO);
-	//pView->MpeWrite(_T("ML44098"), _ttoi(sData)); // Shot수 현재값
+	CString sData;
+	GetDlgItem(IDC_STC_41)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.sCurrentShotNum = sData;
+	::WritePrivateProfileString(_T("Last Job"), _T("Current ShotNum"), sData, PATH_WORKING_INFO);
+#ifdef USE_MPE
+	pView->m_pMpe->Write(_T("ML44098"), _ttoi(sData)); // Shot수 현재값
+#endif
 }
 
 
 void CDlgInfo::OnStnClickedStc43()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//myStcData[18].SetBkColor(RGB_RED);
-	//myStcData[18].RedrawWindow();
+	myStcData[18].SetBkColor(RGB_RED);
+	myStcData[18].RedrawWindow();
 
-	//CPoint pt;	CRect rt;
-	//GetDlgItem(IDC_STC_43)->GetWindowRect(&rt);
-	//pt.x = rt.right; pt.y = rt.bottom;
-	//ShowKeypad(IDC_STC_43, pt, TO_BOTTOM | TO_RIGHT);
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_43)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_43, pt, TO_BOTTOM | TO_RIGHT);
 
-	//myStcData[18].SetBkColor(RGB_WHITE);
-	//myStcData[18].RedrawWindow();
+	myStcData[18].SetBkColor(RGB_WHITE);
+	myStcData[18].RedrawWindow();
 
-	//CString sData;
-	//GetDlgItem(IDC_STC_43)->GetWindowText(sData);
-	//pDoc->WorkingInfo.LastJob.sSettingShotNum = sData;
-	//::WritePrivateProfileString(_T("Last Job"), _T("Setting ShotNum"), sData, PATH_WORKING_INFO);
-	//pView->MpeWrite(_T("ML45108"), _ttoi(sData)); // Shot수 설정값
+	CString sData;
+	GetDlgItem(IDC_STC_43)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.sSettingShotNum = sData;
+	::WritePrivateProfileString(_T("Last Job"), _T("Setting ShotNum"), sData, PATH_WORKING_INFO);
+#ifdef USE_MPE
+	pView->m_pMpe->Write(_T("ML45108"), _ttoi(sData)); // Shot수 설정값
+#endif
 }
 
 void CDlgInfo::OnStnClickedStc82()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	myStcData[19].SetBkColor(RGB_RED);
+	myStcData[19].RedrawWindow();
+
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_82)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_82, pt, TO_BOTTOM | TO_RIGHT);
+
+	myStcData[19].SetBkColor(RGB_WHITE);
+	myStcData[19].RedrawWindow();
+
+	CString sData;
+	GetDlgItem(IDC_STC_82)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.nAlarmTimeAoi = _ttoi(sData);
+	::WritePrivateProfileString(_T("Last Job"), _T("Alarm Time AOI"), sData, PATH_WORKING_INFO);
+#ifdef USE_MPE
+	pView->m_pMpe->Write(_T("ML44040"), _ttoi(sData)); // 검사부 AOI 상면 재작업 알람 시간 [초]
+	pView->m_pMpe->Write(_T("ML44042"), _ttoi(sData)); // 검사부 AOI 하면 재작업 알람 시간 [초]
+#endif
 }
 
 void CDlgInfo::OnStnClickedStc83()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	myStcData[20].SetBkColor(RGB_RED);
+	myStcData[20].RedrawWindow();
+
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_83)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_83, pt, TO_BOTTOM | TO_RIGHT);
+
+	myStcData[20].SetBkColor(RGB_WHITE);
+	myStcData[20].RedrawWindow();
+
+	CString sData;
+	GetDlgItem(IDC_STC_83)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.nAlarmTimePunch = _ttoi(sData);
+	::WritePrivateProfileString(_T("Last Job"), _T("Alarm Time Puncking"), sData, PATH_WORKING_INFO);
+#ifdef USE_MPE
+	pView->m_pMpe->Write(_T("ML44044"), _ttoi(sData)); // 마킹부 재작업 알람 시간 [초]
+#endif
 }
 
 

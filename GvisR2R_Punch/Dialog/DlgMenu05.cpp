@@ -2817,10 +2817,10 @@ void CDlgMenu05::MakeIts()
 	//		else
 	//			nLayer = RMAP_DN;
 	//	}
-	//
+
 	//CString sPathReelmapUp=_T(""), sPathReelmapDn=_T("");
 	//CString strPath;
-	//
+
 	//if (pDoc->m_pReelMapUp)
 	//{
 	//	strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_ALLUP);
@@ -2852,7 +2852,7 @@ void CDlgMenu05::MakeIts()
 	//	sPathReelmapDn.Format(_T("%s%s\\%s\\%s\\ReelMapDataDn.txt"),
 	//		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
 	//}
-	//
+
 	//int nLayer = -1; // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
 	//CFileFind cFile2;
 	//bExist = cFile2.FindFile(sPathReelmapUp);
