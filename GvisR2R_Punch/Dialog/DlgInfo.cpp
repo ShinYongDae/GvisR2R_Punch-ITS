@@ -1660,20 +1660,32 @@ void CDlgInfo::OnChkUseAoiInner()
 	bOn[2] = myBtn[25].GetCheck();
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T(""));
 
-	if (bOn[0] && ( bOn[1] || bOn[2] ))
+	if (bOn[0] && bOn[1])
 	{
 		myBtn[24].SetCheck(FALSE);
-		myBtn[25].SetCheck(FALSE);
 		SetTestMode(MODE_INNER);
 	}
-	else if (bOn[0] && !(bOn[1] || bOn[2]))
+	else if (bOn[0] && !bOn[1])
 		SetTestMode(MODE_INNER);
-	else if (!bOn[0] && bOn[1] && bOn[2])
-		SetTestMode(MODE_MIDDLE);
-	else if (!bOn[0] && bOn[1] && !bOn[2])
+	else if (!bOn[0] && bOn[1])
 		SetTestMode(MODE_OUTER);
 	else
 		SetTestMode(MODE_NONE);
+
+	//if (bOn[0] && ( bOn[1] || bOn[2] ))
+	//{
+	//	myBtn[24].SetCheck(FALSE);
+	//	myBtn[25].SetCheck(FALSE);
+	//	SetTestMode(MODE_INNER);
+	//}
+	//else if (bOn[0] && !(bOn[1] || bOn[2]))
+	//	SetTestMode(MODE_INNER);
+	//else if (!bOn[0] && bOn[1] && bOn[2])
+	//	SetTestMode(MODE_MIDDLE);
+	//else if (!bOn[0] && bOn[1] && !bOn[2])
+	//	SetTestMode(MODE_OUTER);
+	//else
+	//	SetTestMode(MODE_NONE);
 }
 
 void CDlgInfo::OnChkUseAoiOuter() 
@@ -1687,17 +1699,29 @@ void CDlgInfo::OnChkUseAoiOuter()
 	if (bOn[0] && bOn[1])
 	{
 		myBtn[23].SetCheck(FALSE);
-		myBtn[25].SetCheck(FALSE);
 		SetTestMode(MODE_OUTER);
 	}
-	else if (bOn[0] && !(bOn[1] || bOn[2]))
+	else if (bOn[0] && !bOn[1])
 		SetTestMode(MODE_INNER);
-	else if (!bOn[0] && bOn[1] && bOn[2])
-		SetTestMode(MODE_MIDDLE);
-	else if (!bOn[0] && bOn[1] && !bOn[2])
+	else if (!bOn[0] && bOn[1])
 		SetTestMode(MODE_OUTER);
 	else
 		SetTestMode(MODE_NONE);
+
+	//if (bOn[0] && bOn[1])
+	//{
+	//	myBtn[23].SetCheck(FALSE);
+	//	myBtn[25].SetCheck(FALSE);
+	//	SetTestMode(MODE_OUTER);
+	//}
+	//else if (bOn[0] && !(bOn[1] || bOn[2]))
+	//	SetTestMode(MODE_INNER);
+	//else if (!bOn[0] && bOn[1] && bOn[2])
+	//	SetTestMode(MODE_MIDDLE);
+	//else if (!bOn[0] && bOn[1] && !bOn[2])
+	//	SetTestMode(MODE_OUTER);
+	//else
+	//	SetTestMode(MODE_NONE);
 }
 
 void CDlgInfo::OnChkUseAoiDual() 

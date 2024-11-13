@@ -14825,8 +14825,8 @@ void CGvisR2R_PunchView::LotEnd()
 {
 	if (m_pDlgMenu01)
 		m_pDlgMenu01->LotEnd();
-	if (m_pDlgMenu03)
-		m_pDlgMenu03->SwAoiLotEnd(TRUE);
+	//if (m_pDlgMenu03)
+	//	m_pDlgMenu03->SwAoiLotEnd(TRUE);
 
 	m_bCont = FALSE;
 	SetLotEd();
