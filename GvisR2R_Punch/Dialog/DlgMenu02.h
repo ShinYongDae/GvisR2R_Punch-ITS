@@ -111,14 +111,11 @@ public:
 	double m_dAoiUpFdOffsetX, m_dAoiUpFdOffsetY;
 	double m_dAoiDnFdOffsetX, m_dAoiDnFdOffsetY;
 	double m_dEngFdOffsetX, m_dEngFdOffsetY;
-// 	BOOL m_bMkDnSolOff;
 
 	double m_dOneShotRemainLen;
-	void DispOneShotRemainLen();
+	//void DispOneShotRemainLen();
 
 	CDlgUtil03 *m_pDlgUtil03;
-	//CDlgUtil06 *m_pDlgUtil06;
-
 
 	BOOL Create();
 	void AtDlgShow();
@@ -198,7 +195,9 @@ public:
 	void Grab4PntAlign2();
 
 	// ITS
+#ifdef USE_MIL
 	MIL_ID m_MilSys;
+#endif
 
 // Dialog Data
 	//{{AFX_DATA(CDlgMenu02)
@@ -241,8 +240,8 @@ protected:
 	afx_msg void OnBtnAlignMove();
 	afx_msg void OnBtnAlign();
 	afx_msg void OnBtnGrab();
-	afx_msg void OnBtnBuffHome();
-	afx_msg void OnBtnBuffInitMove();
+	//afx_msg void OnBtnBuffHome();
+	//afx_msg void OnBtnBuffInitMove();
 	afx_msg void OnBtnBuffInitSave();
 	afx_msg void OnBtnHomeSave();
 	afx_msg void OnStcAlignStdScr();

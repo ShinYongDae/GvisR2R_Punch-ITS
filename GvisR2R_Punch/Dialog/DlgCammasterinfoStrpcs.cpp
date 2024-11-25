@@ -61,6 +61,12 @@ CDlgCammasterinfoStrpcs::CDlgCammasterinfoStrpcs(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DLG_CAMMASTERINFO_STRPCS, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_bTIM_DISP_STS = FALSE;
+}
+
+CDlgCammasterinfoStrpcs::~CDlgCammasterinfoStrpcs()
+{
+	m_bTIM_DISP_STS = FALSE;
 }
 
 void CDlgCammasterinfoStrpcs::DoDataExchange(CDataExchange* pDX)
@@ -73,6 +79,7 @@ BEGIN_MESSAGE_MAP(CDlgCammasterinfoStrpcs, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CDlgCammasterinfoStrpcs::OnBnClickedButton1)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -121,6 +128,8 @@ BOOL CDlgCammasterinfoStrpcs::OnInitDialog()
 
 	GetDlgItem(IDC_STATIC_PATH)->SetWindowText(sPath);
 
+	m_bTIM_DISP_STS = TRUE;
+	SetTimer(TIM_DISP_STS, 100, NULL);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -1015,4 +1024,22 @@ char* CDlgCammasterinfoStrpcs::StringToChar(CString str) // char* returned must 
 							   //3. wchar_t* to char* conversion
 	WideCharToMultiByte(CP_ACP, 0, wszStr, -1, szStr, nLenth, 0, 0);
 	return szStr;
+}
+
+
+void CDlgCammasterinfoStrpcs::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (this->IsWindowVisible())
+	{
+		m_bTIM_DISP_STS = FALSE;
+	}
+	else
+	{
+		this->ShowWindow(SW_SHOW);
+	}
+	if (m_bTIM_DISP_STS)
+		SetTimer(TIM_DISP_STS, 100, NULL);
+
+	CDialogEx::OnTimer(nIDEvent);
 }

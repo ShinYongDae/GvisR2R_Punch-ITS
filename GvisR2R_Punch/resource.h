@@ -1264,8 +1264,10 @@
 #define IDC_CHECK2                      1415
 #define IDC_BTN_GD_RA_3                 1416
 #define IDC_STATIC_13                   1416
+#define IDC_CHECK3                      1416
 #define IDC_BTN_GD_RA_4                 1417
 #define IDC_STC_DEF_0                   1417
+#define IDC_CHECK4                      1417
 #define IDC_BTN_GD_RA_ALL               1418
 #define IDC_STC_DEF_1                   1418
 #define IDC_EDIT_REGISTER               1418
@@ -1273,13 +1275,16 @@
 #define IDC_BTN_MEAS_MOVE               1419
 #define IDC_STC_DEF_3                   1420
 #define IDC_BTN_MEAS_SAVE               1420
+#define IDC_CHECK7                      1420
 #define IDC_CHK_USE_AOI_DUAL            1421
 #define IDC_STC_DEF_4                   1421
 #define IDC_BTN_MEAS_DOWN               1421
+#define IDC_CHECK8                      1421
 #define IDC_CHK_USE_AOI_SINGLE          1422
 #define IDC_STC_DEF_5                   1422
 #define IDC_CHECK_YSHIFT                1422
 #define IDC_BTN_MEAS_MOVE2              1422
+#define IDC_CHECK9                      1422
 #define IDC_CHK_SAMPLE_TEST             1423
 #define IDC_STC_DEF_6                   1423
 #define IDC_BTN_MEAS_SAVE2              1423

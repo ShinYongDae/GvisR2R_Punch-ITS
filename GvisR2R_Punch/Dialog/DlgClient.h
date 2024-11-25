@@ -7,6 +7,7 @@
 #include "../Device/TcpIpClient.h"
 #include <afxwin.h>
 
+#define TIM_DISP_STS				450
 
 // CDlgClient 대화 상자
 class CDlgClient : public CDialog
@@ -15,6 +16,7 @@ class CDlgClient : public CDialog
 	CString	m_strAddrCli;
 	CTcpIpClient* m_pClient;
 	int m_nServerID;
+	BOOL m_bTIM_DISP_STS;
 
 	void StartClient(CString sAddrCli, CString sAddrSvr, CString sPortSvr);
 	void StopClient();
@@ -55,4 +57,5 @@ public:
 	afx_msg void OnBnClickedBtnSend();
 	afx_msg void OnBnClickedCheckSr1000w();
 	afx_msg void OnBnClickedCheckEngrave();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

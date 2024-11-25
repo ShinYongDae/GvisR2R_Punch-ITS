@@ -86,5 +86,7 @@ public:
 
 	BOOL LoadPieceOut(CString strLotName, int nSerial, int* pPieceOutIndex, int& nTotalPieceOut);
 	BOOL GetCurrentDBName(CString &sName);
+
+	BOOL InsertPunchingData(CString sLot, int nSerial, CString sProcess, double dPosX, double dPosY, int nPunchCode);
 };
 

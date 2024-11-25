@@ -104,8 +104,8 @@ protected:
 	afx_msg void OnStc25();
 	afx_msg void OnStc28();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);// (UINT nIDEvent);
-	afx_msg void OnBtnBuffHome2();
-	afx_msg void OnBtnBuffInitMove2();
+	//afx_msg void OnBtnBuffHome2();
+	//afx_msg void OnBtnBuffInitMove2();
 	afx_msg void OnBtnBuffInitSave2();
 	afx_msg void OnStc48();
 	afx_msg void OnStc52();

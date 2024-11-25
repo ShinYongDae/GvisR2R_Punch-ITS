@@ -61,6 +61,12 @@ CDlgCammasterinfoMst::CDlgCammasterinfoMst(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DLG_CAMMASTERINFO_MST, pParent)
 {
 	//m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_bTIM_DISP_STS = FALSE;
+}
+
+CDlgCammasterinfoMst::~CDlgCammasterinfoMst()
+{
+	m_bTIM_DISP_STS = FALSE;
 }
 
 void CDlgCammasterinfoMst::DoDataExchange(CDataExchange* pDX)
@@ -73,6 +79,7 @@ BEGIN_MESSAGE_MAP(CDlgCammasterinfoMst, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CDlgCammasterinfoMst::OnBnClickedButton1)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -120,6 +127,9 @@ BOOL CDlgCammasterinfoMst::OnInitDialog()
 		sPath.Format(_T("%s%s\\%s.mst"), sCamSpecLoc, sModel, sLayer);
 
 	GetDlgItem(IDC_STATIC_PATH)->SetWindowText(sPath);
+
+	m_bTIM_DISP_STS = TRUE;
+	SetTimer(TIM_DISP_STS, 100, NULL);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -384,4 +394,23 @@ void CDlgCammasterinfoMst::OnBnClickedButton1()
 		pView->ClrDispMsg(); AfxMessageBox(_T("LoadStripRgnFromCam failed!"));
 	}
 	GetDlgItem(IDC_EDIT1)->SetWindowText(sData);
+}
+
+
+void CDlgCammasterinfoMst::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	KillTimer(TIM_DISP_STS);
+	if (this->IsWindowVisible())
+	{
+		m_bTIM_DISP_STS = FALSE;
+	}
+	else
+	{
+		this->ShowWindow(SW_SHOW);
+	}
+	if (m_bTIM_DISP_STS)
+		SetTimer(TIM_DISP_STS, 100, NULL);
+
+	CDialogEx::OnTimer(nIDEvent);
 }

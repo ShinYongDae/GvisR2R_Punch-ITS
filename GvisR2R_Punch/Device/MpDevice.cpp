@@ -1460,6 +1460,7 @@ void CMpDevice::GetMpeIO()
 	//char cAddr[MAX_PATH];
 	//TCHAR cAddr[MAX_PATH];
 	char* cAddr;
+	char cType;
 	DWORD dwRC;
 	HREGISTERDATA	hRegisterData[15] = { 0 };
 	REGISTER_INFO	RegInfo[15];
@@ -1472,13 +1473,21 @@ void CMpDevice::GetMpeIO()
 	for (nLoop = 0; nLoop < nGrpIn; nLoop++)
 	{
 		sAddr = pDoc->MkIo.MpeIo.pAddrIn[nSt][0];
+		cType = sAddr.GetAt(0);
 		sAddr.SetAt(1, 'W');
 		//strcpy(cAddr, sAddr.Left(7));
 		//wsprintf(cAddr, TEXT("%s"), sAddr.Left(7));
-		cAddr = StringToChar(sAddr.Left(7));
+		if(cType == 'M' || cType == 'm')
+			cAddr = StringToChar(sAddr.Left(7));
+		else
+			cAddr = StringToChar(sAddr.Left(6));
 
 		dwRC = ymcGetRegisterDataHandle((LPBYTE)cAddr, &hRegisterData[nLoop]);
 		delete cAddr;
+		if (dwRC != MP_SUCCESS)
+		{
+			AfxMessageBox(_T("ymcGetRegisterDataHandle ERROR"));
+		}
 
 		RegInfo[nLoop].hRegisterData = hRegisterData[nLoop];	// Register handle
 		RegInfo[nLoop].RegisterDataNumber = nGrpStep;		// The number of register data
@@ -1494,13 +1503,22 @@ void CMpDevice::GetMpeIO()
 	for (nLoop = 0; nLoop < nGrpOut; nLoop++)
 	{
 		sAddr = pDoc->MkIo.MpeIo.pAddrOut[nSt][0];
+		cType = sAddr.GetAt(0);
 		sAddr.SetAt(1, 'W');
 		//strcpy(cAddr, sAddr.Left(7));
 		//wsprintf(cAddr, TEXT("%s"), sAddr.Left(7));
-		cAddr = StringToChar(sAddr.Left(7));
+		if (cType == 'M' || cType == 'm')
+			cAddr = StringToChar(sAddr.Left(7));
+		else
+			cAddr = StringToChar(sAddr.Left(6));
 
 		dwRC = ymcGetRegisterDataHandle((LPBYTE)cAddr, &hRegisterData[nLoop + nGrpIn]);
 		delete cAddr;
+
+		if (dwRC != MP_SUCCESS)
+		{
+			AfxMessageBox(_T("ymcGetRegisterDataHandle ERROR"));
+		}
 
 		RegInfo[nLoop + nGrpIn].hRegisterData = hRegisterData[nLoop + nGrpIn];	// Register handle
 		RegInfo[nLoop + nGrpIn].RegisterDataNumber = nGrpStep;		// The number of register data
@@ -1640,7 +1658,7 @@ void CMpDevice::GetMpeSignal()
 {
 #ifdef USE_MPE
 	// MpeIO-I
-	int nSize, nIdx, nLoop, nSt, k;
+	int nSize, nIdx, nLoop, nStIn, nStOut, k;
 	int nInSeg = pDoc->MkIo.MpeIo.nInSeg;
 	int nOutSeg = pDoc->MkIo.MpeIo.nOutSeg;
 	int nGrpStep = pDoc->MkIo.MpeIo.nGrpStep;
@@ -1651,33 +1669,45 @@ void CMpDevice::GetMpeSignal()
 	//char cAddr[MAX_PATH];
 	//TCHAR cAddr[MAX_PATH];
 	char* cAddr;
+	char cType;
 	DWORD dwRC;
-	HREGISTERDATA	hRegisterData[15] = { 0 };
-	REGISTER_INFO	RegInfo[15];
-	WORD RegisterWData[15][4];
+	HREGISTERDATA	hRegisterData[MAX_PATH] = { 0 };
+	REGISTER_INFO	RegInfo[MAX_PATH];
+	WORD RegisterWData[MAX_PATH][4];
 	WORD RegWData;
-	long RegisterLData[15][64];
+	long RegisterLData[MAX_PATH][64];
 	long RegLData;
 
 	// Group Read...
 	//nSt = pDoc->MkIo.MpeIo.nGrpInSt;
-	nSt = 0;
+	nStIn = 0;
 	for (nLoop = 0; nLoop < nGrpIn; nLoop++)
 	{
-		sAddr = pDoc->MkIo.MpeIo.pSymIn[nSt][0];
+		sAddr = pDoc->MkIo.MpeIo.pSymIn[nStIn][0];
+		cType = sAddr.GetAt(0);
 		sAddr.SetAt(1, 'W');
 		//strcpy(cAddr, sAddr.Left(6));
 		//wsprintf(cAddr, TEXT("%s"), sAddr.Left(6));
+		if (cType == 'M' || cType == 'm')
+			cAddr = StringToChar(sAddr.Left(7));
+		else
 		cAddr = StringToChar(sAddr.Left(6));
+
 		dwRC = ymcGetRegisterDataHandle((LPBYTE)cAddr, &hRegisterData[nLoop]);
 		delete cAddr;
+
+		if (dwRC != MP_SUCCESS)
+		{
+			AfxMessageBox(_T("ymcGetRegisterDataHandle ERROR"));
+		}
+		//Sleep(10);
 
 		RegInfo[nLoop].hRegisterData = hRegisterData[nLoop];	// Register handle
 		RegInfo[nLoop].RegisterDataNumber = nGrpStep;			// The number of register data
 		RegInfo[nLoop].pRegisterData = RegisterWData[nLoop];	// The number of register data
 
 		dwRC = ymcGetGroupRegisterData(1, &RegInfo[nLoop]);
-		Sleep(10);
+		//Sleep(10);
 
 		// Error check processing
 		if (dwRC != MP_SUCCESS)
@@ -1686,29 +1716,44 @@ void CMpDevice::GetMpeSignal()
 			AfxMessageBox(_T("ymcGetGroupRegisterData ERROR"));
 			return;
 		}
-		
+		//Sleep(10);
 		for (nIdx = 0; nIdx < nGrpStep; nIdx++)
 		{
 			RegWData = *((WORD*)RegInfo[nLoop].pRegisterData + nIdx);
-			pDoc->m_pMpeIb[nIdx + nSt] = (unsigned short)RegWData;
+			pDoc->m_pMpeIb[nIdx + nStIn] = (unsigned short)RegWData;
 		}
-		nSt += nGrpStep;
+		nStIn += nGrpStep;
 	}
 
-	sAddr = pDoc->MkIo.MpeSignal.pAddrIn[0][0];
+	// MpeSignal-I
+	nInSeg = pDoc->MkIo.MpeSignal.nInSeg;
+	nOutSeg = pDoc->MkIo.MpeSignal.nOutSeg;
+	nGrpStep = pDoc->MkIo.MpeSignal.nGrpStep;
+	nGrpIn = pDoc->MkIo.MpeSignal.nGrpIn;
+	nGrpOut = pDoc->MkIo.MpeSignal.nGrpOut;
+
+	nStIn = 0;
+	for (nLoop = 0; nLoop < nGrpIn; nLoop++)
+	{
+		sAddr = pDoc->MkIo.MpeSignal.pAddrIn[nStIn][0];
+	cType = sAddr.GetAt(1);
 	sAddr.SetAt(1, 'W');
 	//strcpy(cAddr, sAddr.Left(7));
 	//wsprintf(cAddr, TEXT("%s"), sAddr.Left(7));
 	cAddr = StringToChar(sAddr.Left(7));
 	dwRC = ymcGetRegisterDataHandle((LPBYTE)cAddr, &hRegisterData[nLoop]);
 	delete cAddr;
-
+	if (dwRC != MP_SUCCESS)
+	{
+		AfxMessageBox(_T("ymcGetRegisterDataHandle ERROR"));
+	}
+	//Sleep(10);
 	RegInfo[nLoop].hRegisterData = hRegisterData[nLoop];	// Register handle
 	RegInfo[nLoop].RegisterDataNumber = nGrpStep;			// The number of register data
 	RegInfo[nLoop].pRegisterData = RegisterWData[nLoop];	// The number of register data
 
 	dwRC = ymcGetGroupRegisterData(1, &RegInfo[nLoop]);
-	Sleep(10);
+	//Sleep(10);
 
 	// Error check processing
 	if (dwRC != MP_SUCCESS)
@@ -1718,60 +1763,87 @@ void CMpDevice::GetMpeSignal()
 		return;
 	}
 
-	nSt = pDoc->MkIo.MpeSignal.nGrpInSt;
+	//nSt = pDoc->MkIo.MpeSignal.nGrpInSt;
 	for (nIdx = 0; nIdx < nGrpStep; nIdx++)
 	{
 		RegWData = *((WORD*)RegInfo[nLoop].pRegisterData + nIdx);
-		pDoc->m_pMpeSignal[nIdx + nSt] = (unsigned short)RegWData;
+		pDoc->m_pMpeSignal[nIdx + nStIn] = (unsigned short)RegWData;
+	}
+		nStIn += nGrpStep;
+	}	
+	//nLoop++;
+
+	nStIn = 0;
+	for (nLoop = 0; nLoop < nGrpOut; nLoop++)
+	{
+		sAddr = pDoc->MkIo.MpeSignal.pAddrOut[nStIn][0];
+		cType = sAddr.GetAt(1);
+		sAddr.SetAt(1, 'W');
+		//strcpy(cAddr, sAddr.Left(7));
+		//wsprintf(cAddr, TEXT("%s"), sAddr.Left(7));
+		cAddr = StringToChar(sAddr.Left(7));
+		dwRC = ymcGetRegisterDataHandle((LPBYTE)cAddr, &hRegisterData[nLoop]);
+		delete cAddr;
+
+		if (dwRC != MP_SUCCESS)
+		{
+			AfxMessageBox(_T("ymcGetRegisterDataHandle ERROR"));
+		}
+		//Sleep(10);
+
+		RegInfo[nLoop].hRegisterData = hRegisterData[nLoop];	// Register handle
+		RegInfo[nLoop].RegisterDataNumber = nGrpStep;			// The number of register data
+		RegInfo[nLoop].pRegisterData = RegisterWData[nLoop];	// The number of register data
+
+		dwRC = ymcGetGroupRegisterData(1, &RegInfo[nLoop]);
+		//Sleep(10);
+
+		// Error check processing
+		if (dwRC != MP_SUCCESS)
+		{
+			pView->ClrDispMsg();
+			AfxMessageBox(_T("ymcGetGroupRegisterData ERROR"));
+			return;
+		}
+		//Sleep(10);
+		nStOut = pDoc->MkIo.MpeSignal.nGrpOutSt + nStIn;
+		for (nIdx = 0; nIdx < nGrpStep; nIdx++)
+		{
+			RegWData = *((WORD*)RegInfo[nLoop].pRegisterData + nIdx);
+			pDoc->m_pMpeSignal[nIdx + nStOut] = (unsigned short)RegWData;
+		}
+		nStIn += nGrpStep;
 	}
 	
-	nLoop++;
+	//nLoop++;
 
-	sAddr = pDoc->MkIo.MpeSignal.pAddrOut[0][0];
-	sAddr.SetAt(1, 'W');
-	//strcpy(cAddr, sAddr.Left(7));
-	//wsprintf(cAddr, TEXT("%s"), sAddr.Left(7));
-	cAddr = StringToChar(sAddr.Left(7));
-	dwRC = ymcGetRegisterDataHandle((LPBYTE)cAddr, &hRegisterData[nLoop]);
-	delete cAddr;
+	// MpeData-I
+	nInSeg = pDoc->MkIo.MpeData.nInSeg;
+	nOutSeg = pDoc->MkIo.MpeData.nOutSeg;
+	nGrpStep = pDoc->MkIo.MpeData.nGrpStep;
+	nGrpIn = pDoc->MkIo.MpeData.nGrpIn;
+	nGrpOut = pDoc->MkIo.MpeData.nGrpOut;
 
-	RegInfo[nLoop].hRegisterData = hRegisterData[nLoop];	// Register handle
-	RegInfo[nLoop].RegisterDataNumber = nGrpStep;			// The number of register data
-	RegInfo[nLoop].pRegisterData = RegisterWData[nLoop];	// The number of register data
-
-	dwRC = ymcGetGroupRegisterData(1, &RegInfo[nLoop]);
-	Sleep(10);
-
-	// Error check processing
-	if (dwRC != MP_SUCCESS)
+	nStIn = 0;
+	for (nLoop = 0; nLoop < nGrpIn; nLoop++)
 	{
-		pView->ClrDispMsg();
-		AfxMessageBox(_T("ymcGetGroupRegisterData ERROR"));
-		return;
-	}
-
-	nSt = pDoc->MkIo.MpeSignal.nGrpOutSt;
-	for (nIdx = 0; nIdx < nGrpStep; nIdx++)
-	{
-		RegWData = *((WORD*)RegInfo[nLoop].pRegisterData + nIdx);
-		pDoc->m_pMpeSignal[nIdx + nSt] = (unsigned short)RegWData;
-	}
-	
-	nLoop++;
-
-	sAddr = pDoc->MkIo.MpeData.pAddrIn[0][0];
+		sAddr = pDoc->MkIo.MpeData.pAddrIn[nStIn][0];
 	//strcpy(cAddr, sAddr);
 	//wsprintf(cAddr, TEXT("%s"), sAddr);
 	cAddr = StringToChar(sAddr);
 	dwRC = ymcGetRegisterDataHandle((LPBYTE)cAddr, &hRegisterData[nLoop]);
 	delete cAddr;
-
+	if (dwRC != MP_SUCCESS)
+	{
+		AfxMessageBox(_T("ymcGetRegisterDataHandle ERROR"));
+	}
+	//Sleep(10);
 	RegInfo[nLoop].hRegisterData = hRegisterData[nLoop];	// Register handle
 	RegInfo[nLoop].RegisterDataNumber = nGrpStep * 16;		// The number of register data
 	RegInfo[nLoop].pRegisterData = RegisterLData[nLoop];	// The number of register data
 
 	dwRC = ymcGetGroupRegisterData(1, &RegInfo[nLoop]);
-	Sleep(10);
+	//Sleep(10);
 
 	// Error check processing
 	if (dwRC != MP_SUCCESS)
@@ -1780,34 +1852,43 @@ void CMpDevice::GetMpeSignal()
 		AfxMessageBox(_T("ymcGetGroupRegisterData ERROR"));
 		return;
 	}
-
-	nSt = pDoc->MkIo.MpeData.nGrpInSt;
+	//Sleep(10);
+		//nSt = pDoc->MkIo.MpeData.nGrpInSt;
 	for (nIdx = 0; nIdx < nGrpStep; nIdx++)
 	{
 		for (k = 0; k < 16; k++)
 		{
 			RegLData = *((long*)RegInfo[nLoop].pRegisterData + (k + 16 * nIdx));
-			pDoc->m_pMpeData[nIdx + nSt][k] = (long)RegLData;
+				pDoc->m_pMpeData[nIdx + nStIn][k] = (long)RegLData;
+			}
 		}
+		nStIn += nGrpStep;
 	}
 
-	nLoop++;
+	//nLoop++;
 
 	pView->m_bChkMpeIoOut = FALSE;
 
-	sAddr = pDoc->MkIo.MpeData.pAddrOut[0][0];
+	nStIn = 0;
+	for (nLoop = 0; nLoop < nGrpIn; nLoop++)
+	{
+		sAddr = pDoc->MkIo.MpeData.pAddrOut[nStIn][0];
 	//strcpy(cAddr, sAddr);
 	//wsprintf(cAddr, TEXT("%s"), sAddr);
 	cAddr = StringToChar(sAddr);
 	dwRC = ymcGetRegisterDataHandle((LPBYTE)cAddr, &hRegisterData[nLoop]);
 	delete cAddr;
+	if (dwRC != MP_SUCCESS)
+	{
+		AfxMessageBox(_T("ymcGetRegisterDataHandle ERROR"));
+	}
+	//Sleep(10);
 
 	RegInfo[nLoop].hRegisterData = hRegisterData[nLoop];	// Register handle
 	RegInfo[nLoop].RegisterDataNumber = nGrpStep * 16;		// The number of register data
 	RegInfo[nLoop].pRegisterData = RegisterLData[nLoop];	// The number of register data
 
 	dwRC = ymcGetGroupRegisterData(1, &RegInfo[nLoop]);
-	Sleep(10);
 
 	// Error check processing
 	if (dwRC != MP_SUCCESS)
@@ -1816,15 +1897,18 @@ void CMpDevice::GetMpeSignal()
 		AfxMessageBox(_T("ymcGetGroupRegisterData ERROR"));
 		return;
 	}
+	//Sleep(10);
 
-	nSt = pDoc->MkIo.MpeData.nGrpOutSt;
+		nStOut = pDoc->MkIo.MpeData.nGrpOutSt + nStIn;
 	for (nIdx = 0; nIdx < nGrpStep; nIdx++)
 	{
 		for (k = 0; k < 16; k++)
 		{
 			RegLData = *((long*)RegInfo[nLoop].pRegisterData + (k + 16 * nIdx));
-			pDoc->m_pMpeData[nIdx + nSt][k] = (long)RegLData;
+				pDoc->m_pMpeData[nIdx + nStOut][k] = (long)RegLData;
 		}
+		}
+		nStIn += nGrpStep;
 	}
 
 

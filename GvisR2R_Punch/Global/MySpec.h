@@ -23,7 +23,6 @@ public:
 
 // Attributes
 public:
-// 	double m_dPcsOffsetX, m_dPcsOffsetY;
 	double m_dPinPosX[2], m_dPinPosY[2];
 
 // Operations
@@ -32,14 +31,10 @@ public:
 	BOOL MakeDir();
 	BOOL MakeDir(CString sModel, CString sLayer);
 	BOOL Save();
-// 	BOOL SavePcsOffset();
-// 	BOOL SavePcsOffset(CfPoint fPt);
 	BOOL SavePinPos();
 	BOOL SavePinPos(int nCam, CfPoint fPt);
-// 	BOOL Shift2Mk(int nSerial);
 	BOOL IsPinMkData();
 	BOOL IsPinData();
-// 	BOOL IsMkOffsetData();
 
 // Overrides
 	// ClassWizard generated virtual function overrides

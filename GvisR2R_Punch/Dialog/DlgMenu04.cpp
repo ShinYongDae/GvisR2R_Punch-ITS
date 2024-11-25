@@ -83,8 +83,8 @@ BEGIN_MESSAGE_MAP(CDlgMenu04, CDialog)
 	ON_BN_CLICKED(IDC_STC_25, OnStc25)
 	ON_BN_CLICKED(IDC_STC_28, OnStc28)
 	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_BTN_BUFF_HOME2, OnBtnBuffHome2)
-	ON_BN_CLICKED(IDC_BTN_BUFF_INIT_MOVE2, OnBtnBuffInitMove2)
+	//ON_BN_CLICKED(IDC_BTN_BUFF_HOME2, OnBtnBuffHome2)
+	//ON_BN_CLICKED(IDC_BTN_BUFF_INIT_MOVE2, OnBtnBuffInitMove2)
 	ON_BN_CLICKED(IDC_BTN_BUFF_INIT_SAVE2, OnBtnBuffInitSave2)
 	ON_BN_CLICKED(IDC_STC_48, OnStc48)
 	ON_BN_CLICKED(IDC_STC_52, OnStc52)
@@ -238,9 +238,12 @@ BOOL CDlgMenu04::OnInitDialog()
 	GetDlgItem(IDC_CHK_1)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_STC_00_5)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_CHK_2)->ShowWindow(SW_HIDE);
-	
-	m_bTIM_BUF_ENC = TRUE;
-	SetTimer(TIM_BUF_ENC_, 100, NULL);
+
+	GetDlgItem(IDC_BTN_BUFF_HOME2)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BTN_BUFF_INIT_MOVE2)->ShowWindow(SW_HIDE);
+
+	//m_bTIM_BUF_ENC = TRUE;
+	//SetTimer(TIM_BUF_ENC_, 100, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -1214,6 +1217,8 @@ BOOL CDlgMenu04::PreTranslateMessage(MSG* pMsg)
 
 void CDlgMenu04::DispBufEnc()
 {
+	return;
+
 	if (!pDoc->m_pMpeData)
 		return;
 
@@ -1447,72 +1452,29 @@ void CDlgMenu04::ResetMotion(int nMsId)
 }
 
 
-void CDlgMenu04::OnBtnBuffHome2() 
-{
-	// TODO: Add your control notification handler code here
-	if (!pDoc)
-		return;
-
-	if(pDoc->WorkingInfo.Motion.bBufHomming)
-	{
-		pView->DispMsg(_T("Homming"),_T("Searching Buffer Home Position..."),RGB_GREEN,2000,TRUE);
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB440152"), 1);	// 마킹부 버퍼롤러 홈동작 ON (PLC가 홈동작 완료 후 OFF)
-#endif
-		if(pView->m_pDlgMenu03)
-			pView->m_pDlgMenu03->ChkBufHomeDone();
-	}	
-}
-
-void CDlgMenu04::OnBtnBuffInitMove2() 
-{
-	// TODO: Add your control notification handler code here
-	pView->DispMsg(_T("Moving"),_T("Searching Buffer Initial Position..."),RGB_GREEN,2000,TRUE);
-#ifdef USE_MPE
-	if(pView->m_pMpe)
-		pView->m_pMpe->Write(_T("MB44015A"), 1);	// 마킹부 버퍼 초기위치 이동(PC가 ON, PLC가 OFF)
-#endif
-	if(pView->m_pDlgMenu03)
-		pView->m_pDlgMenu03->ChkBufInitDone();
-
-// 	if(!pView->m_pMotion)
+//void CDlgMenu04::OnBtnBuffHome2() 
+//{
+//	// TODO: Add your control notification handler code here
+//	if (!pDoc)
 // 		return;
-// 
-// 	pView->SetMkFdSts();
-// 	Sleep(300);
-// 
-// 	double dDir;
-// 	double fLen, fVel, fAcc, fJerk;
-// 	double dStPos = pView->m_pMotion->m_dStBufPos;
-// 	double dCurPosMkFd = (double)pDoc->m_pMpeData[0][0];		// 마킹부 Feeding 엔코더 값(단위 mm )
-// 	double dCurPosBuf = (double)pDoc->m_pMpeData[0][1] / 1000.0;		// 마킹부 버퍼 엔코더 값(단위 mm * 1000)
-// 
-// 	fLen = dStPos - dCurPosBuf;
-// 
-// 	if(fLen > 0)
+//
+//	if(pDoc->WorkingInfo.Motion.bBufHomming)
 // 	{
-// 		fLen = (dStPos-dCurPosBuf);
-// 		dDir = (double)M_CCW;
-// 	}
-// 	else
-// 	{
-// 		fLen = (dCurPosBuf-dStPos);
-// 		dDir = (double)M_CW;
-// 	}
-// 
-// 	if(fLen > 0.001)
-// 	{
-// // 		double dPos = dCurPosMkFd + dDir*fLen;
-// // 		pView->m_pMotion->GetSpeedProfile(TRAPEZOIDAL, AXIS_MKFD, fLen, fVel, fAcc, fJerk);
-// // 		pView->m_pMotion->Move(MS_MKFD, dPos, fVel/10.0, fAcc/10.0, fAcc/10.0);
-// 		fVel = pView->m_pMotion->m_pParamMotion[MS_MKFD].Home.f1stSpd;
-// 		fAcc = pView->m_pMotion->m_pParamMotion[MS_MKFD].Home.fAcc;
-// 		if(!pView->m_pMotion->Move(MS_MKFD, dDir*fLen, fVel, fAcc, fAcc, INC, WAIT))
-// 			if(!pView->m_pMotion->Move(MS_MKFD, dDir*fLen, fVel, fAcc, fAcc, INC, WAIT))
-// 				AfxMessageBox("Move XY Error...");
+//		pView->DispMsg(_T("Homming"),_T("Searching Buffer Home Position..."),RGB_GREEN,2000,TRUE);
+//			pView->MpeWrite(pView->Plc.DlgMenu04.BufferHomming, 1);	// 마킹부 버퍼롤러 홈동작 ON (PLC가 홈동작 완료 후 OFF)
+//		if(pView->m_pDlgMenu03)
+//			pView->m_pDlgMenu03->ChkBufHomeDone();
 // 	}	
-}
+//}
+
+//void CDlgMenu04::OnBtnBuffInitMove2() 
+//{
+//	// TODO: Add your control notification handler code here
+//	pView->DispMsg(_T("Moving"),_T("Searching Buffer Initial Position..."),RGB_GREEN,2000,TRUE);
+//		pView->MpeWrite(pView->Plc.DlgMenu04.BufferInitPosMove, 1);	// 마킹부 버퍼 초기위치 이동(PC가 ON, PLC가 OFF)
+//	if(pView->m_pDlgMenu03)
+//		pView->m_pDlgMenu03->ChkBufInitDone();
+//}
 
 void CDlgMenu04::OnBtnBuffInitSave2() 
 {

@@ -88,12 +88,20 @@
 //	#define	USE_FLUCK
 //	#define	USE_XMP
 
-	#define PATH_PIN_IMG			_T("C:\\R2RSet\\Pin\\Pin.TIF")
+	//#define PATH_PIN_IMG			_T("C:\\R2RSet\\Pin\\Pin.TIF")
 	#define PATH_ALIGN0_IMG			_T("C:\\R2RSet\\Align\\Align0.TIF")
 	#define PATH_ALIGN1_IMG			_T("C:\\R2RSet\\Align\\Align1.TIF")
 	#define PATH_ALIGN2_IMG			_T("C:\\R2RSet\\Align\\Align2.TIF")
 	#define PATH_ALIGN3_IMG			_T("C:\\R2RSet\\Align\\Align3.TIF")
 	#define PATH_PCS_IMG			_T("C:\\R2RSet\\Pcs\\Piece.tif")
+
+	#define PATH_PIN_IMG_			_T("C:\\R2RSet\\Test\\Pin-330.tif")
+	#define PATH_CELL_RGN			_T("C:\\R2RSet\\Test\\Cell.rgn")			// CAM PCS Region
+	#define PATH_CELL_MST			_T("C:\\R2RSet\\Test\\1STRIP-2-050.mst")	// CAM Cell Img Region Data
+	#define PATH_PCS_IMG_			_T("C:\\R2RSet\\Test\\Piece.tif")
+	#define PATH_CAD_IMG			_T("C:\\R2RSet\\Test\\CORGO1.tif")
+	#define PATH_PCR				_T("C:\\R2RSet\\Test\\0004.pcr")
+
 #endif
 
 
@@ -512,22 +520,8 @@ enum SAPP3_CODE{	SAPP3_OPEN = 0,
 					SAPP3_PAD = 8,
 					SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF = 9
 				};
-/*
-enum SliceDI_0{	DI_ESTOP=0, DI_START=1, DI_FOOT=2, DI_READY=3, DI_VACUUM=4, 
-				DI_FDOOR=7, DI_LDOOR=8, DI_RDOOR=9, DI_BDOOR=10 };
 
-enum SliceDI_1{	DI_COVER1F=16, DI_COVER1B=17, DI_COVER2F=18, DI_COVER2B=19, DI_PD_ERROR=23, DI_LDI0=28, 
-				DI_LDI1=29, DI_LDI2=30, DI_LDI3=31 };
 
-enum SliceDO_2{	DO_STARTFLY=0, DO_STOPFLY=1, DO_LAMP1=2, DO_LAMP2=3, DO_LAMP3=4,
-				DO_LAMP4=5, DO_LAMP5=6, DO_LAMP6=7, DO_STARTLAMP=8, DO_READYLAMP=9,
-				DO_SOLSMOG=10, DO_SOL3=11, DO_SOLCOVER1=12, DO_SOLCOVER2=13 };
-
-enum SliceDO_3{ DO_MC=16, DO_RINGBLOWER=17, DO_SOLPANEL=19, DO_TOWERR=20, DO_TOWERY=21, DO_TOWERG=22, 
-				DO_DSP_PWR=25, DO_BUZZER=26, DO_LASER_OFF=27, DO_LDO0=28, DO_LDO1=29, DO_LDO2=30, DO_LDO3=31 };
-
-enum SliceDO_4{ DO_INK_MK=0 };
-*/
 #define DLY_INK_MK			300
 
 #define  MAX_PROCNODENUM			60    // Max ProcNodeNum : 600mm/2.5um = 48 
@@ -583,34 +577,6 @@ typedef struct {
 #define MAX_DISP_PNL				6
 #define MAX_PCR_PNL					24
 
-// #define RGN_STRIP_VARIABLE_NUM	23		// REGION_STRIP 구조체에서 배열을 제외한 변수의 갯수
-// #define MAX_NodeNumX			200
-// #define MAX_NodeNumY			200
-// #define MAX_NMSWATH				100
-// 
-// typedef struct {
-// 	int nMode;											// 0 : Full Mode, 1 : Strip Mode
-// 	int nMSwath;										// 모터가 움직일 회수.
-// 	int NodeNumX, NodeNumY;								// 각 축당 셀 갯수
-// 	int PanelPixelX, PanelPixelY;						// 전체 판넬 이미지의 크기
-// 	int OvrXPix, OvrYPix;								// 각 축으로 오버랩되는 부분의 크기
-// 	int ProcSizeX, ProcSizeY;							// 각 축당 셀의 크기
-// 	int nCell;											// 전체 셀 갯수
-// 	int nIPU;											// AOI의 IPU 갯수
-// 	int CameraValidPixel;								// 실제 검사하기 위해 사용되는 이미지의 X축 크기
-// 	int nScanMarginX, nScanMarginY;						// 실제 사용되는 이미지에 각 축방향으로 더해지는 여분 이미지의 크기 Ex) nScanMarginX = (8192 ? CameraValidPixel)/2
-// 	int nRegionX, nRegionY;								// Reserved Data
-// 	int nCellDivideX, nCellDivideY;						// 한 스트립당 각 축 방향 셀 갯수
-// 	int nCADPinPosPixX, nCADPinPosPixY;					// Pin Position X, y
-// 	int nProcMarginX, nProcMarginY;						// Reserved Data
-// 	int StPosX[MAX_NodeNumX * MAX_NodeNumY];			// 각 셀의 왼쪽 윗부분의 X 위치
-// 	int StPosY[MAX_NodeNumX * MAX_NodeNumY];			// 각 셀의 왼쪽 윗부분의 Y 위치
-// 	int EdPosX[MAX_NodeNumX * MAX_NodeNumY];			// 각 셀의 오른쪽 아래부분의 X 위치
-// 	int EdPosY[MAX_NodeNumX * MAX_NodeNumY];			// 각 셀의 오른쪽 아래부분의 Y 위치
-// 	int XSwathPixPos[MAX_NMSWATH];						// 모터가 움직이기 시작하는 위치
-// } REGION_STRIP;		//Total 100476 Byte
-
-
 #define MENU01_STC_DEFINFO_HARF		6
 #define MAX_PCR						4
 
@@ -638,7 +604,6 @@ enum ALIGN_METHODE { ONE_POINT = 1, TWO_POINT, THREE_POINT, FOUR_POINT };
 enum WORK_MODE { MODE_NONE = 0, MODE_INNER = 1, MODE_OUTER = 2, MODE_MIDDLE = 3 };
 
 
-
 struct stSystem
 {
 	CString sMcName;
@@ -661,7 +626,7 @@ struct stSystem
 	CString sPathOldFile, sPathItsFile, sPathIts;
 	CString sIpPathOldFile, sIpPathItsFile, sIpPathIts;
 	CString sPathSapp3;
-	BOOL bSaveLog;
+	BOOL bSaveLog, bSaveReelmapTable, bRemakeReelmapInner, bDuplicateRmap, bInsertPunchingToDts;
 	BOOL bNoMk;	// 0 : 마킹모드, 1 : 비젼모드
 	CString sReViewMkLen;
 	BOOL bReViewMk;
@@ -705,6 +670,10 @@ struct stSystem
 		sIpPathItsFile = _T("");
 		sIpPathIts = _T("");
 		bSaveLog = FALSE;
+		bSaveReelmapTable = FALSE;
+		bRemakeReelmapInner = FALSE;
+		bDuplicateRmap = FALSE;
+		bInsertPunchingToDts = FALSE;
 		bNoMk = FALSE;	// 0 : 마킹모드, 1 : 비젼모드
 		sReViewMkLen = _T("");
 		bReViewMk = FALSE;
@@ -779,6 +748,7 @@ struct stLastJob
 	CString sAoiLastShot[2]; // [Up/Dn]
 	CString sPartialSpd;
 	BOOL bOneMetal, bTwoMetal;
+	BOOL bFeedRecoilerCcw, bFeedUncoilerCcw;
 	BOOL bDualTest,  bDualTestInner, bSampleTest, nTestMode;
 	BOOL bCore150Recoiler, bCore150Uncoiler;
 	CString sSampleTestShotNum;
@@ -830,6 +800,7 @@ struct stLastJob
 		sPartialSpd = _T("10");
 
 		bOneMetal = FALSE; bTwoMetal = FALSE;
+		bFeedRecoilerCcw = FALSE; bFeedUncoilerCcw = FALSE;
 		bDualTest = TRUE; bDualTestInner = TRUE; bSampleTest = FALSE; nTestMode = 0;
 		bCore150Recoiler = FALSE; bCore150Uncoiler = FALSE;
 		sSampleTestShotNum = _T("");
@@ -850,73 +821,6 @@ struct stLastJob
 		bDispContRun = FALSE; bDispLotEnd = FALSE;
 	}
 };
-
-//struct stMotion
-//{
-//	BOOL bBufHomming;
-//	CString sLmtFdAdjOffSet;	// Feeding량 Offset보정용 초과값설정. [mm]
-//	CString sLmtFdOvrNum;		// Feeding량 연속 초과값 초과횟수 설정. [회]
-//	CString sLmtFdErr;			// Feeding량 Offset보정(설비정지) 한계값 설정. [mm]
-//	CString sMkTq;				// Tension Servo 0 Gain Torque Value. Plus Value is Feeding direction torque[Kgf].
-//	CString sAoiTq;				// Tension Servo 0 Gain Torque Value. Plus Value is Feeding direction torque[Kgf].
-//	CString sMkFdDist, sMkFdVel, sMkFdAcc;
-//	CString sMkJogVel, sMkJogAcc;
-//	CString sMkFdTotLen, sMkTotVel, sMkPatlVel; //
-//	CString sAoiFdDist, sAoiFdVel, sAoiFdAcc;
-//	CString sAoiJogVel, sAoiJogAcc;
-//	CString sAoiFdTotLen, sAoiTotVel, sAoiPatlVel; //
-//	CString sPinPosX[2], sPinPosY[2];
-//	CString sStPosX[2], sStPosY[2];
-//	CString sMkEdPosX[2], sMkEdPosY[2];
-//	CString sStBufPos, sBufHomeSpd, sBufHomeAcc;
-//	CString sMkFdLead, sAoiFdLead;
-//	CString sFdInitDist, sFdAoiAoiDistShot;//, sBufStdPosDist;
-//	BOOL bStNewPrdt, bMkTq, bAoiTq;
-//	CString sMkFdVacOff, sAoiFdVacOff;
-//	CString sSafeZone, sCollisionLength, sCollisionMargin;
-//	CString sAlignResultPosX[2][2], sAlignResultPosY[2][2], sAlignResultTheta[2][2], sAlignResultScore[2][2]; // [Cam][Pos]
-//
-//	stMotion()
-//	{
-//		bBufHomming = FALSE;
-//		sLmtFdAdjOffSet = _T("");		// Feeding량 Offset보정용 초과값설정. [mm]
-//		sLmtFdOvrNum = _T("");		// Feeding량 연속 초과값 초과횟수 설정. [회]
-//		sLmtFdErr = _T("");			// Feeding량 Offset보정(설비정지) 한계값 설정. [mm]
-//		sMkTq = _T("");				// Tension Servo 0 Gain Torque Value. Plus Value is Feeding direction torque[Kgf].
-//		sAoiTq = _T("");				// Tension Servo 0 Gain Torque Value. Plus Value is Feeding direction torque[Kgf].
-//		sMkFdDist = _T(""); sMkFdVel = _T(""); sMkFdAcc = _T("");
-//		sMkJogVel = _T(""); sMkJogAcc = _T("");
-//		sMkFdTotLen = _T(""); sMkTotVel = _T(""); sMkPatlVel = _T("");
-//		sAoiFdDist = _T(""); sAoiFdVel = _T(""); sAoiFdAcc = _T("");
-//		sAoiJogVel = _T(""); sAoiJogAcc = _T("");
-//		sAoiFdTotLen = _T(""); sAoiTotVel = _T(""); sAoiPatlVel = _T("");
-//		sPinPosX[0] = _T(""); sPinPosY[0] = _T("");
-//		sPinPosX[1] = _T(""); sPinPosY[1] = _T("");
-//		sStPosX[0] = _T(""); sStPosY[0] = _T("");
-//		sStPosX[1] = _T(""); sStPosY[1] = _T("");
-//		sMkEdPosX[0] = _T(""); sMkEdPosY[0] = _T("");
-//		sMkEdPosX[1] = _T(""); sMkEdPosY[1] = _T("");
-//		sStBufPos = _T(""); sBufHomeSpd = _T(""); sBufHomeAcc = _T("");
-//		sMkFdLead = _T(""); sAoiFdLead = _T("");
-//		sFdInitDist = _T(""); sFdAoiAoiDistShot = _T("");//sBufStdPosDist="");
-//		bStNewPrdt = FALSE; bMkTq = FALSE; bAoiTq = FALSE;
-//		sMkFdVacOff = _T(""); sAoiFdVacOff = _T("");
-//		sSafeZone = _T("");
-//		sCollisionLength = _T("");
-//		sCollisionMargin = _T("");
-//
-//		for (int k = 0; k < 2; k++)
-//		{
-//			for (int i = 0; i < 2; i++)
-//			{
-//				sAlignResultPosX[k][i] = _T("");
-//				sAlignResultPosY[k][i] = _T("");
-//				sAlignResultTheta[k][i] = _T("");
-//				sAlignResultScore[k][i] = _T("");
-//			}
-//		}
-//	}
-//};
 
 struct stMarking
 {
@@ -1155,21 +1059,6 @@ struct stYield
 };
 
 
-// struct stMasterInfo
-// {
-// 	double dPixelSize;
-// 	CString strMasterLocation, strCADImgPath, strCADImgBackUpPath, strTwoMetalOppLayer;
-// 	int nImageCompression;
-// 	BOOL bTwoMetalInspection;
-// 
-// 	stMasterInfo()
-// 	{
-// 		dPixelSize=0.0;
-// 		strMasterLocation=""); strCADImgPath=""); strCADImgBackUpPath=""); strTwoMetalOppLayer="");
-// 		nImageCompression=0;
-// 		bTwoMetalInspection=FALSE;
-// 	}
-// };
 
 struct stSliceIo
 {
@@ -1656,11 +1545,11 @@ struct stBtnUncoiler
 
 struct stBtnEngAuto
 {
-	BOOL Init, MkSt, OnMking, MkDone, Read2dSt, OnRead2d, Read2dDone, FdDone;
-	BOOL InitF, MkStF, OnMkingF, MkDoneF, Read2dStF, OnRead2dF, Read2dDoneF, FdDoneF;
+	BOOL Init, MkSt, OnMking, MkDone, Read2dSt, OnRead2d, Read2dDone, FdDone, GetCurrentInfoSignal, GetMonDispMainSignal;
+	BOOL InitF, MkStF, OnMkingF, MkDoneF, Read2dStF, OnRead2dF, Read2dDoneF, FdDoneF, GetCurrentInfoSignalF, GetMonDispMainSignalF;
 
-	BOOL IsInit, IsMkSt, IsOnMking, IsMkDone, IsRead2dSt, IsOnRead2d, IsRead2dDone, IsFdDone;
-	BOOL IsInitF, IsMkStF, IsOnMkingF, IsMkDoneF, IsRead2dStF, IsOnRead2dF, IsRead2dDoneF, IsFdDoneF;
+	BOOL IsInit, IsMkSt, IsOnMking, IsMkDone, IsRead2dSt, IsOnRead2d, IsRead2dDone, IsFdDone, IsGetCurrentInfoSignal, IsGetMonDispMainSignal;
+	BOOL IsInitF, IsMkStF, IsOnMkingF, IsMkDoneF, IsRead2dStF, IsOnRead2dF, IsRead2dDoneF, IsFdDoneF, IsGetCurrentInfoSignalF, IsGetMonDispMainSignalF;
 
 	stBtnEngAuto()
 	{
@@ -1669,11 +1558,11 @@ struct stBtnEngAuto
 
 	void _Init()
 	{
-		Init = FALSE; MkSt = FALSE; OnMking = FALSE; MkDone = FALSE; Read2dSt = FALSE; OnRead2d = FALSE; Read2dDone = FALSE; FdDone = FALSE;
-		InitF = FALSE; MkStF = FALSE; OnMkingF = FALSE; MkDoneF = FALSE; Read2dStF = FALSE; OnRead2dF = FALSE; Read2dDoneF = FALSE; FdDoneF = FALSE;
+		Init = FALSE; MkSt = FALSE; OnMking = FALSE; MkDone = FALSE; Read2dSt = FALSE; OnRead2d = FALSE; Read2dDone = FALSE; FdDone = FALSE; GetCurrentInfoSignal = FALSE; GetMonDispMainSignal = FALSE;
+		InitF = FALSE; MkStF = FALSE; OnMkingF = FALSE; MkDoneF = FALSE; Read2dStF = FALSE; OnRead2dF = FALSE; Read2dDoneF = FALSE; FdDoneF = FALSE; GetCurrentInfoSignalF = FALSE; GetMonDispMainSignalF = FALSE;
 
-		IsInit = FALSE; IsMkSt = FALSE; IsOnMking = FALSE; IsMkDone = FALSE; IsRead2dSt = FALSE; IsOnRead2d = FALSE; IsRead2dDone = FALSE; IsFdDone = FALSE;
-		IsInitF = FALSE; IsMkStF = FALSE; IsOnMkingF = FALSE; IsMkDoneF = FALSE; IsRead2dStF = FALSE; IsOnRead2dF = FALSE; IsRead2dDoneF = FALSE; IsFdDoneF = FALSE;
+		IsInit = FALSE; IsMkSt = FALSE; IsOnMking = FALSE; IsMkDone = FALSE; IsRead2dSt = FALSE; IsOnRead2d = FALSE; IsRead2dDone = FALSE; IsFdDone = FALSE; IsGetCurrentInfoSignal = FALSE; IsGetMonDispMainSignal = FALSE;
+		IsInitF = FALSE; IsMkStF = FALSE; IsOnMkingF = FALSE; IsMkDoneF = FALSE; IsRead2dStF = FALSE; IsOnRead2dF = FALSE; IsRead2dDoneF = FALSE; IsFdDoneF = FALSE; IsGetCurrentInfoSignalF = FALSE; IsGetMonDispMainSignalF = FALSE;
 	}
 };
 
@@ -1994,29 +1883,6 @@ struct stStatus
 		bDoorReF[0] = FALSE; bDoorReF[1] = FALSE; bDoorReF[2] = FALSE; bDoorReF[3] = FALSE; bDoorReF[4] = FALSE;
 	}
 };
-
-
-// struct stAlignMark
-// {
-// 	float X1, Y1;
-// 	float X2, Y2;
-// 
-// 	stAlignMark()
-// 	{
-// 		X1=0.0; Y1=0.0;
-// 		X2=0.0; Y2=0.0;
-// 	}
-// };
-
-// struct stPieceMark
-// {
-// 	float X, Y;
-// 
-// 	stPieceMark()
-// 	{
-// 		X=0.0; Y=0.0;
-// 	}
-// };
 
 struct stMpeIoWrite
 {

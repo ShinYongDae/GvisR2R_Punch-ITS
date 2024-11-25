@@ -80,6 +80,8 @@ typedef struct stRcvSig
 	BOOL _IsEngAutoInit, _IsEngAutoSeqMkSt, _IsEngAutoSeqOnMkIng, _IsEngAutoSeqMkDone, _IsEngAutoSeq2dReadSt, _IsEngAutoSeqOnReading2d, _IsEngAutoSeq2dReadDone;
 	// Is DlgMyMsg
 	BOOL _IsMyMsgYes, _IsMyMsgNo, _IsMyMsgCancel, _IsMyMsgOk;
+	// Is GetCurrentInfoSignal
+	BOOL _IsGetCurrentInfoSignal, _IsGetMonDispMainSignal;
 
 	stRcvSig()
 	{
@@ -160,6 +162,8 @@ typedef struct stRcvSig
 		_IsEngAutoInit = FALSE; _IsEngAutoSeqMkSt = FALSE; _IsEngAutoSeqOnMkIng = FALSE; _IsEngAutoSeqMkDone = FALSE; _IsEngAutoSeq2dReadSt = FALSE; _IsEngAutoSeqOnReading2d = FALSE; _IsEngAutoSeq2dReadDone = FALSE;
 		// Is DlgMyMsg
 		_IsMyMsgYes = FALSE; _IsMyMsgNo = FALSE; _IsMyMsgCancel = FALSE; _IsMyMsgOk = FALSE;
+		// Is GetCurrentInfoSignal
+		_IsGetCurrentInfoSignal = FALSE; _IsGetMonDispMainSignal = FALSE;
 	}
 
 }RcvSig;
@@ -181,7 +185,7 @@ typedef enum _stSigInx {
 	_DispDualSample, _DispDualTest, _DispSingleSample, _DispSingleTest, _DispInitRun, _DispRun, _DispStop, _DispReady,
 	// Dlg Info 
 	_DualTest, _SampleTest, _TestMode, _RecoilerCcw, _UncoilerCcw, _AlignMethode,
-	_DoorRecoiler, _DoorAoiUp, _DoorAoiDn, _DoorMk, _DoorEngrave, _DoorUncoiler, _SaftyMk, _CleannerAoiUp, _CleannerAoiDn, 
+	_DoorRecoiler, _DoorAoiUp, _DoorAoiDn, _DoorMk, _DoorEngrave, _DoorUncoiler, _SaftyMk, _CleannerAoiUp, _CleannerAoiDn,
 	_UltraSonicAoiDn, _UltraSonicEngrave, _FixDef, _Use380mm, _DispContRun, _DispLotEnd,
 	// Menu01
 	_TempStop, _TempPause, _LotCut, _MkPosMv, _MkVerify, _ReelmapUp, _ReelmapDn, _ReelmapTot,
@@ -216,6 +220,8 @@ typedef enum _stSigInx {
 	_MyMsgYes, _MyMsgNo, _MyMsgCancel, _MyMsgOk,
 	// PLC
 	_Buzzer, _TowerLamp, _ErrorRead2dCode,
+	// GetCurrentInfoSignal
+	_GetCurrentInfoSignal, _GetMonDispMainSignal,
 	// Is Normal
 	_IsIdle, _IsBusy, _IsConnect,
 	// Is Display
@@ -256,6 +262,8 @@ typedef enum _stSigInx {
 	_IsMyMsgYes, _IsMyMsgNo, _IsMyMsgCancel, _IsMyMsgOk,
 	// Is PLC
 	_IsBuzzer, _IsTowerLamp, _IsErrorRead2dCode, _IsDispContRun,
+	// Is GetCurrentInfoSignal
+	_IsGetCurrentInfoSignal, _IsGetMonDispMainSignal,
 	// EndIdx
 	_EndIdx
 }_SigInx;

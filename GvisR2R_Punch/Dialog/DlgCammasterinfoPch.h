@@ -7,10 +7,13 @@
 #include "../Process/CamMasterDefine.h"
 #include "../Global/GlobalDefine.h"
 
+#define TIM_DISP_STS				450
 
 // CDlgCammasterinfoPch 대화 상자
 class CDlgCammasterinfoPch : public CDialogEx
 {
+	BOOL m_bTIM_DISP_STS;
+
 	BOOL FileBrowse(CString& sPath);
 	BOOL LoadPchFromCam(CString sPath, CString& sData);
 	BOOL LoadCadMk2PntAlign(CString sPath, CString& sData);
@@ -19,6 +22,7 @@ class CDlgCammasterinfoPch : public CDialogEx
 // 생성입니다.
 public:
 	CDlgCammasterinfoPch(CWnd* pParent = NULL);	// 표준 생성자입니다.
+	~CDlgCammasterinfoPch();
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -41,4 +45,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

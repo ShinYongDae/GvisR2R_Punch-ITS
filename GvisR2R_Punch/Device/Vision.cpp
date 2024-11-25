@@ -166,28 +166,24 @@ CVision::~CVision()
 	// Temperary Buf for Pin View
 	if(MilBufPinTemp != M_NULL)
 	{
-		pView->m_nDebugStep = 200; pView->DispThreadTick();
 		MbufFree(MilBufPinTemp);
 		MilBufPinTemp = M_NULL;
 	}
 
 	if(MilPinImgBuf != M_NULL)
 	{
-		pView->m_nDebugStep = 201; pView->DispThreadTick();
 		MbufFree(MilPinImgBuf);
 		MilPinImgBuf = M_NULL;
 	}
 
 	if(m_pMilBufPin)
 	{
-		pView->m_nDebugStep = 202; pView->DispThreadTick();
 		delete m_pMilBufPin;
 		m_pMilBufPin = NULL;
 	}
 
 	if(m_pMilDispPin)
 	{
-		pView->m_nDebugStep = 203; pView->DispThreadTick();
 		delete m_pMilDispPin;
 		m_pMilDispPin = NULL;
 	}
@@ -195,50 +191,42 @@ CVision::~CVision()
 	// Temperary Buf for Align View
 	if(MilBufAlignTemp[0] != M_NULL)
 	{
-		pView->m_nDebugStep = 204; pView->DispThreadTick();
 		MbufFree(MilBufAlignTemp[0]);
 		MilBufAlignTemp[0] = M_NULL;
 	}
 	if(MilBufAlignTemp[1] != M_NULL)
 	{
-		pView->m_nDebugStep = 205; pView->DispThreadTick();
 		MbufFree(MilBufAlignTemp[1]);
 		MilBufAlignTemp[1] = M_NULL;
 	}
 	if (MilBufAlignTemp[2] != M_NULL)
 	{
-		pView->m_nDebugStep = 206; pView->DispThreadTick();
 		MbufFree(MilBufAlignTemp[2]);
 		MilBufAlignTemp[2] = M_NULL;
 	}
 	if (MilBufAlignTemp[3] != M_NULL)
 	{
-		pView->m_nDebugStep = 207; pView->DispThreadTick();
 		MbufFree(MilBufAlignTemp[3]);
 		MilBufAlignTemp[3] = M_NULL;
 	}
 
 	if(MilAlignImgBuf[0] != M_NULL)
 	{
-		pView->m_nDebugStep = 208; pView->DispThreadTick();
 		MbufFree(MilAlignImgBuf[0]);
 		MilAlignImgBuf[0] = M_NULL;
 	}
 	if(MilAlignImgBuf[1] != M_NULL)
 	{
-		pView->m_nDebugStep = 209; pView->DispThreadTick();
 		MbufFree(MilAlignImgBuf[1]);
 		MilAlignImgBuf[1] = M_NULL;
 	}
 	if (MilAlignImgBuf[2] != M_NULL)
 	{
-		pView->m_nDebugStep = 210; pView->DispThreadTick();
 		MbufFree(MilAlignImgBuf[2]);
 		MilAlignImgBuf[2] = M_NULL;
 	}
 	if (MilAlignImgBuf[3] != M_NULL)
 	{
-		pView->m_nDebugStep = 211; pView->DispThreadTick();
 		MbufFree(MilAlignImgBuf[3]);
 		MilAlignImgBuf[3] = M_NULL;
 	}
@@ -277,14 +265,12 @@ CVision::~CVision()
 	// Temperary Buf for Def View
 	if(MilBufCADTemp != M_NULL)
 	{
-		pView->m_nDebugStep = 212; pView->DispThreadTick();
 		MbufFree(MilBufCADTemp);
 		MilBufCADTemp = M_NULL;
 	}
 
 	if(MilCADImgBuf != M_NULL)
 	{
-		pView->m_nDebugStep = 213; pView->DispThreadTick();
 		MbufFree(MilCADImgBuf);
 		MilCADImgBuf = M_NULL;
 	}
@@ -2671,15 +2657,12 @@ void CVision::LoadPinBuf(int nLayer)
 		MimResize(MilPinImgBuf, MilOriginDisp->m_MilImage, (double)PIN_IMG_DISP_SIZEX/1024.0, (double)PIN_IMG_DISP_SIZEY/1024.0, M_DEFAULT);
 		MbufChild2d(MilOriginDisp->m_MilImage, 0, 0, PIN_IMG_DISP_SIZEX, PIN_IMG_DISP_SIZEY, &MilBufPinCld);
 
-
-
 		MbufChild2d(MilBufPinTemp, 0, 0, PIN_IMG_DISP_SIZEX, PIN_IMG_DISP_SIZEY, &MilBufPinTempCld);
 
 // 		MimRotate(MilBufPinCld, MilPatRtImg->m_MilImage, 90.0, M_DEFAULT, M_DEFAULT, M_DEFAULT, M_DEFAULT, M_DEFAULT);
 		MimRotate(MilBufPinCld, MilPatRtImg->m_MilImage, 0.0, M_DEFAULT, M_DEFAULT, M_DEFAULT, M_DEFAULT, M_DEFAULT);
 		if(MilPatRtImg->m_MilImage != M_NULL && MilBufPinTempCld != M_NULL)
 			MbufCopy(MilPatRtImg->m_MilImage, MilBufPinTempCld);
-
 
 		if(MilPatRtImg != NULL)
 		{
@@ -2858,70 +2841,16 @@ void CVision::LoadAlignBuf()
 	}
 }
 
-// void CVision::LoadAlignBuf()
-// {
-// 	InitAlignBuf();
-// 
-// 	TiffData tdat;
-// 	if(VicFileLoadFromMem(MilAlignImgBuf, pDoc->m_Master[m_nIdx].m_pAlignImg[m_nIdx], tdat))
-// 	{
-// 		MIL_ID MilBufAlignCld = M_NULL, MilBufAlignTempCld = M_NULL;
-// 
-// 		MbufChild2d(MilAlignImgBuf, (1024-ALIGN_IMG_DISP_SIZEX)/2, (1024-ALIGN_IMG_DISP_SIZEY)/2, ALIGN_IMG_DISP_SIZEX, ALIGN_IMG_DISP_SIZEY, &MilBufAlignCld);
-// 		MbufChild2d(MilBufAlignTemp, 0, 0, ALIGN_IMG_DISP_SIZEX, ALIGN_IMG_DISP_SIZEY, &MilBufAlignTempCld);
-// 
-// // 		CGvisMilBuffer *MilPatRtImg=NULL;
-// // 		MilPatRtImg = new CGvisMilBuffer(m_pMil, ALIGN_IMG_DISP_SIZEX, ALIGN_IMG_DISP_SIZEY, 1L+M_UNSIGNED, M_IMAGE+M_PROC);
-// // 		MimRotate(MilBufAlignCld, MilPatRtImg->m_MilImage, 90.0, M_DEFAULT, M_DEFAULT, M_DEFAULT, M_DEFAULT, M_DEFAULT);
-// // 		if(MilPatRtImg->m_MilImage != M_NULL && MilBufAlignTempCld != M_NULL)
-// // 			MbufCopy(MilPatRtImg->m_MilImage, MilBufAlignTempCld);
-// 
-// 		if(MilBufAlignCld != M_NULL && MilBufAlignTempCld != M_NULL)
-// 			MbufCopy(MilBufAlignCld, MilBufAlignTempCld);
-// 
-// 
-// // 		if(MilPatRtImg != M_NULL)
-// // 		{
-// // 			delete (MilPatRtImg);
-// // 			MilPatRtImg = M_NULL;
-// // 		}
-// 
-// 		if (MilBufAlignTempCld)
-// 		{
-// 			MbufFree(MilBufAlignTempCld);
-// 			MilBufAlignTempCld = M_NULL;
-// 		}
-// 		
-// 		if (MilBufAlignCld)
-// 		{
-// 			MbufFree(MilBufAlignCld);
-// 			MilBufAlignCld = M_NULL;
-// 		}
-// 	}
-// }
-
 
 void CVision::ClearOverlay()
 {
 	if (m_pMil)
 		m_pMil->ClearLiveOverlay();
-// 	switch(nId)
-// 	{
-// 	case -1: // Live View...
-// 		m_pMilDisplay->ClearOverlay();
-// 		break;
-// 	}
 }
 
 void CVision::DrawCenterMark(int nMode) // 0: Cross, 1: Rect, 2: None
 {
 	DrawCross();
-// 	if(nMode == 0)
-// 		DrawCross();
-// 	else if(nMode == 1)
-// 		DrawRect();
-// 	else
-// 		DrawNone();
 }
 
 void CVision::DrawCross()
@@ -3028,7 +2957,7 @@ void CVision::SetDispAxisPos()
 
 void CVision::DispAxisPos(BOOL bForceWrite)
 {
-	double dFdEnc;
+	double dFdEnc = 0.0;
 
 // 	if(!m_bDrawOverlayModeEnable)
 // 		return;
@@ -3067,7 +2996,8 @@ void CVision::DispAxisPos(BOOL bForceWrite)
 			m_pMil->DrawText(szText, m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*1, M_COLOR_GREEN);
 		}
 #ifdef USE_MPE
-		dFdEnc = (double)pDoc->m_pMpeData[0][0];	// 마킹부 Feeding 엔코더 값(단위 mm )
+		if(pDoc->m_pMpeData)
+			dFdEnc = (double)pDoc->m_pMpeData[0][0];	// 마킹부 Feeding 엔코더 값(단위 mm )
 		if(fabs(m_dFdEnc-dFdEnc)>0.05 || bForceWrite)
 		{
 			m_dFdEnc = dFdEnc;
@@ -3076,7 +3006,8 @@ void CVision::DispAxisPos(BOOL bForceWrite)
 			//m_pMilDrawOverlay->DrawText(m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+(m_nDisplayAxisPosLineHeight*2), szText);
 			m_pMil->DrawText(szText, m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*2, M_COLOR_GREEN);
 		}
-		dFdEnc = (double)pDoc->m_pMpeData[1][0];	// 각인부 Feeding 엔코더 값(단위 mm)
+		if(pDoc->m_pMpeData)
+			dFdEnc = (double)pDoc->m_pMpeData[1][0];	// 각인부 Feeding 엔코더 값(단위 mm)
 		if (fabs(m_dFdEnc - dFdEnc) > 0.05 || bForceWrite)
 		{
 			m_dFdEnc = dFdEnc;

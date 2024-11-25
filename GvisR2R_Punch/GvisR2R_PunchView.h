@@ -84,6 +84,8 @@
 #define TIM_SAFTY_STOP			21
 #define TIM_CAMMASTER_UPDATE	22
 #define TIM_START_UPDATE		100
+#define TIM_CHK_RCV_CURR_INFO_SIG	200
+#define TIM_CHK_RCV_MON_DISP_MAIN_SIG	201
 
 #define MAX_THREAD				39
 
@@ -167,6 +169,7 @@ class CGvisR2R_PunchView : public CFormView
 	BOOL m_bDestroyedView;
 	BOOL m_bBufEmpty[2];
 
+	CString m_sMonDispMain;
 	CDlgMyMsg* m_pDlgMyMsg;
 	CCriticalSection m_csMyMsgBox;
 	CCriticalSection m_csDispMain;
@@ -199,7 +202,6 @@ class CGvisR2R_PunchView : public CFormView
 	BOOL m_bTIM_DISP_STATUS, m_bTIM_MPE_IO;
 
 	CString m_sPrevMyMsg;
-	//stMyMsgBox stMyMsgData;
 	CString m_sTick, m_sDispTime;
 	DWORD m_dwSetDlySt[10], m_dwSetDlyEd[10];
 	DWORD m_dwSetDlySt0[10], m_dwSetDlyEd0[10];
@@ -217,9 +219,6 @@ class CGvisR2R_PunchView : public CFormView
 	BOOL m_bTIM_CAMMASTER_UPDATE;
 	CString m_sMyMsg; int m_nTypeMyMsg;
 	int m_nVsBufLastSerial[2];
-	//BOOL m_bOpenShareUp, m_bOpenShareDn;
-
-	//	int m_nMsgShiftX, m_nMsgShiftY;
 
 	int m_nStepElecChk;
 	BOOL m_bStopFeeding;
@@ -230,6 +229,7 @@ class CGvisR2R_PunchView : public CFormView
 
 	double m_dElecChkVal;
 	BOOL m_bContEngraveF;
+	CString m_sMsg;
 
 
 	void InitMyMsg();
@@ -345,7 +345,7 @@ class CGvisR2R_PunchView : public CFormView
 	BOOL SortingOutDn(int* pSerial, int nTot);
 	void SwapDn(__int64 *num1, __int64 *num2);
 
-	BOOL LoadMstInfo();
+	BOOL LoadMstInfo();			// Reelmap 초기화
 
 	void DoAutoEng();
 	void DoAtuoGetEngStSignal();
@@ -369,6 +369,12 @@ public:
 
 	int m_nDebugStep; 	void DispThreadTick();
 
+	//int m_nMkStrip[2][MAX_STRIP]; // [nCam][nStrip] - [좌/우][] : 스트립에 펀칭한 피스 수 count
+	//int m_nStepMk[4], m_nMkPcs[4]; 	// [0] Auto-Left, [1] Auto-Right, [2] Manual-Left, [3] Manual-Right  ; m_nStepMk(마킹Sequence), nMkOrderIdx(마킹한 count)
+	//int m_nTotMk[2], m_nCurMk[2]; // [0]: 좌 MK, [1]: 우 MK
+	//int m_nPrevTotMk[2], m_nPrevCurMk[2]; // [0]: 좌 MK, [1]: 우 MK
+	//int m_nPrevStepAuto, m_nPrevMkStAuto;
+	BOOL m_bPcrInShare[2], m_bPcrInShareVs[2];
 	BOOL m_bRcvSig[_SigInx::_EndIdx];
 	//stRcvSig m_stRcvSig;
 	CMpDevice* m_pMpe;
@@ -402,6 +408,9 @@ public:
 	BOOL m_bTIM_INIT_VIEW;
 	BOOL m_bCam, m_bReview;
 
+	BOOL m_bTIM_CHK_RCV_CURR_INFO_SIG;
+	BOOL m_bTIM_CHK_RCV_MON_DISP_MAIN_SIG;
+
 	DWORD m_dwThreadTick[MAX_THREAD];
 	BOOL m_bThread[MAX_THREAD];
 	CThreadTask m_Thread[MAX_THREAD];
@@ -421,7 +430,7 @@ public:
 	BOOL m_nAoiDnAutoSerial, m_nAoiDnAutoSerialPrev;
 
 	// Auto Sequence
-	BOOL m_bAuto, m_bManual, m_bOneCycle;
+	BOOL m_bAuto, m_bManual;// , m_bOneCycle;
 	BOOL m_bMkTmpStop, m_bAoiLdRun, m_bAoiLdRunF;
 	BOOL m_bTHREAD_MK[4];	// [0] Auto-Left, [1] Auto-Right, [2] Manual-Left, [3] Manual-Right
 	BOOL m_bTHREAD_DISP_DEF;
@@ -493,6 +502,7 @@ public:
 	int m_nBufUpCnt;
 	int m_nBufDnCnt;
 
+	//BOOL m_bAnswer[10];
 	//BOOL m_bFailAlign[2][2]; // [nCam][nPos] 
 	//BOOL m_bReAlign[2][2]; // [nCam][nPos] 
 	//BOOL m_bSkipAlign[2][2]; // [nCam][nPos] 
@@ -545,7 +555,6 @@ public:
 	CDts* m_pDts;
 
 	int m_nNewLot;
-	int m_nSaveMk0Img, m_nSaveMk1Img;
 
 	//CString m_sPathRmapUpdate[4];
 	int m_nSerialRmapUpdate;
@@ -559,6 +568,7 @@ public:
 
 // 작업입니다.
 public:
+	int m_nSaveMk0Img, m_nSaveMk1Img;
 	BOOL m_bShift2Mk, m_bUpdateYield, m_bUpdateYieldOnRmap;
 
 	void SetLastSerialEng(int nSerial);
@@ -574,11 +584,8 @@ public:
 	void RestoreReelmap();
 	CString GetProcessNum();
 
-	//CString GetRmapPath(int nRmap, stModelInfo stInfo);
-	//CString GetRmapPath(int nRmap);
 	void DispMain(CString sMsg, COLORREF rgb = RGB(0, 255, 0));
 	int DoDispMain();
-	//	CString GetDispMain();
 	void GetDispMsg(CString &strMsg, CString &strTitle);
 	void DispMsg(CString strMsg, CString strTitle = _T(""), COLORREF color = RGB(255, 0, 0), DWORD dwDispTime = 0, BOOL bOverWrite = TRUE);
 	void ClrDispMsg();
@@ -594,15 +601,12 @@ public:
 
 	void TowerLamp(COLORREF color, BOOL bOn, BOOL bWink = FALSE);
 	void DispTowerWinker();
-	// 	void DispBtnWinker(int nDly=0);
 	void Buzzer(BOOL bOn, int nCh = 0);
 	int MyPassword(CString strMsg, int nCtrlId = 0);
 
 	void GetInput();
 	void GetEnc();
-	// 	void GetIO();
-	// 	void SetIO();
-	// 	void ChkTqSpd();
+	void SetEngFdPitch(double dPitch);
 	void SetAoiFdPitch(double dPitch);
 	void SetMkFdPitch(double dPitch);
 
@@ -616,6 +620,7 @@ public:
 	BOOL SaveMk0Img(int nMkPcsIdx);
 	BOOL SaveMk1Img(int nMkPcsIdx);
 
+	void InsertPunchingData(int nCam);
 
 	void ChkShareVs();
 	void ChkShareVsUp();
@@ -623,7 +628,7 @@ public:
 	BOOL ChkShareVs(int &nSerial);
 	BOOL ChkShareVsUp(int &nSerial);
 	BOOL ChkShareVsDn(int &nSerial);
-	BOOL ChkShareVsIdx(int *pBufSerial, int nBufTot, int nShareSerial);
+	//BOOL ChkShareVsIdx(int *pBufSerial, int nBufTot, int nShareSerial);
 
 	void ChkShare();
 	void ChkShareUp();
@@ -651,6 +656,8 @@ public:
 	void SetBufHomeParam(double dVel, double dAcc);
 	void DispLotStTime();
 	void SetListBuf();
+
+	void DispMainOnAutoStart();
 
 	static UINT ThreadProc0(LPVOID lpContext); // DoMark0(), DoMark1()
 	static UINT ThreadProc1(LPVOID lpContext); // ChkCollision()
@@ -719,18 +726,6 @@ public:
 	void Shift2DummyBuf();
 	void Shift2Mk();
 	void CompletedMk(int nCam); // 0: Only Cam0, 1: Only Cam1, 2: Cam0 and Cam1, 3: None
-	void SetTestSts(int nStep);
-	void SetMkSts(int nStep);
-	void SetAoiFdSts();
-	void SetAoiStopSts();
-	void SetMkFdSts();
-	void SetMkStopSts();
-	BOOL IsMkFdSts();		// not used
-	void SetAoiFd();		// not used
-	void SetMkFd();			// not used
-	BOOL IsMkFd();			// not used
-	BOOL IsAoiFd();			// not used
-	void SetMkFd(double dDist);
 	void SetDelay(int mSec, int nId = 0);
 	BOOL WaitDelay(int nId = 0);				// F:Done, T:On Waiting....
 	void SetDelay0(int mSec, int nId = 0);
@@ -740,8 +735,8 @@ public:
 	BOOL GetDelay(int &mSec, int nId = 0);	// F:Done, T:On Waiting....
 	BOOL GetDelay0(int &mSec, int nId = 0);	// F:Done, T:On Waiting....
 	BOOL GetDelay1(int &mSec, int nId = 0);	// F:Done, T:On Waiting....
-	BOOL IsMkFdDone();
-	BOOL IsAoiFdDone();
+	//BOOL IsMkFdDone();
+	//BOOL IsAoiFdDone();
 	double GetAoi2InitDist();
 	double GetMkInitDist();
 	void UpdateWorking();
@@ -760,7 +755,6 @@ public:
 	void InitAuto(BOOL bInit = TRUE);
 	void Mk0();
 	void Mk1();
-	//BOOL IsMk();
 	BOOL IsReMk();
 	BOOL IsMkDone();
 	BOOL IsAoiTblVac();
@@ -780,18 +774,27 @@ public:
 	double GetPartVel();
 	void SetCycTime();
 	int GetCycTime(); // [mSec]
+	void CheckCurrentInfoSignal();
+	void CheckMonDispMainSignal();
 
 	BOOL IsShare();
 	BOOL IsShareUp();
 	BOOL IsShareDn();
 	int GetShareUp();
 	int GetShareDn();
+	//void CheckShareUp(int nSerial);
+	//void CheckShareDn(int nSerial);
 
 	BOOL IsShareVs();
 	BOOL IsShareVsUp();
 	BOOL IsShareVsDn();
 	int GetShareVsUp();
 	int GetShareVsDn();
+	void CheckShareVsUp(int nSerial);
+	void CheckShareVsDn(int nSerial);
+
+	void TurnLastProc();
+	void TurnLastProcVs();
 
 	BOOL IsBuffer(int nNum = 0);
 	BOOL IsBufferUp();
@@ -814,8 +817,6 @@ public:
 	int GetBufferUp1(int *pPrevSerial = NULL);
 	int GetBufferDn1(int *pPrevSerial = NULL);
 
-	//	BOOL ChkLotEnd(CString sPath);
-	BOOL ChkMkTmpStop(); // 사용하지않음.
 	BOOL IsMkTmpStop();
 	BOOL IsAuto();
 	void Marking();
@@ -847,12 +848,11 @@ public:
 	int GetTotDefPcsUp1(int nSerial);
 	int GetTotDefPcsDn1(int nSerial);
 
-	CfPoint GetMkPnt(int nMkPcs);
-	CfPoint GetMkPnt0(int nMkPcs);
-	CfPoint GetMkPnt1(int nMkPcs);
-	// 	CfPoint GetMkPnt(int nSerial, int nMkPcs);
-	CfPoint GetMkPnt0(int nSerial, int nMkPcs);
-	CfPoint GetMkPnt1(int nSerial, int nMkPcs);
+	CfPoint GetMkPnt(int nIdx);						// CamMaster의 피스순서 인덱스
+	CfPoint GetMkPnt0(int nIdx);					// CamMaster의 피스순서 인덱스
+	CfPoint GetMkPnt1(int nIdx);					// CamMaster의 피스순서 인덱스
+	CfPoint GetMkPnt0(int nSerial, int nMkPcs);		// pcr 시리얼, pcr 불량 피스 읽은 순서 인덱스
+	CfPoint GetMkPnt1(int nSerial, int nMkPcs);		// pcr 시리얼, pcr 불량 피스 읽은 순서 인덱스
 
 	// 	void Move(CfPoint pt, BOOL bCam=FALSE);
 	void Move0(CfPoint pt, BOOL bCam = FALSE);
@@ -860,19 +860,17 @@ public:
 	BOOL IsMoveDone();
 	BOOL IsMoveDone0();
 	BOOL IsMoveDone1();
-	void Ink(BOOL bOn = TRUE);
+
 	BOOL UpdateReelmap(int nSerial);
 	BOOL UpdateReelmapInner(int nSerial);
 	BOOL MakeItsFile(int nSerial);
 
-	// 	void LoadMstInfo();
 	void InitInfo();
 	void InitReelmap();
 	void InitReelmapUp();
 	void InitReelmapDn();
 	BOOL IsPinMkData();
 	BOOL IsPinData();
-	// 	BOOL IsMkOffsetData();
 	BOOL CopyDefImg(int nSerial);
 	BOOL CopyDefImg(int nSerial, CString sNewLot);
 	BOOL CopyDefImgUp(int nSerial, CString sNewLot = _T(""));
@@ -907,7 +905,6 @@ public:
 	BOOL IsInitPos0();
 	BOOL IsInitPos1();
 	BOOL IsMkEdPos1();
-	// 	void MkDnSol(BOOL bDn);
 	void LotEnd();
 	void Winker(int nId, int nDly = 20); // 0:Ready, 1:Reset, 2:Run, 3:Stop
 	void ResetWinker(); // 0:Ready, 1:Reset, 2:Run, 3:Stop
@@ -932,15 +929,10 @@ public:
 	void StopTimWinker(int nId);
 	BOOL IsShowLive();
 	BOOL IsChkTmpStop();
-	// 	void ResetReelmap();
 	BOOL ChkLastProc();
-	//	double GetAoiFdLen();
 	double GetAoiUpFdLen();
 	double GetAoiDnFdLen();
 	BOOL IsVerify();
-	//BOOL IsFixPcs();
-	//BOOL IsFixPcsUp();
-	//BOOL IsFixPcsDn();
 	BOOL IsFixPcsUp(int nSerial);
 	BOOL IsFixPcsDn(int nSerial);
 	BOOL IsReview();
@@ -952,23 +944,14 @@ public:
 	BOOL IsJogRtUp0();
 	BOOL IsJogRtDn1();
 	BOOL IsJogRtUp1();
-	//void OpenShareUp(BOOL bOpen = TRUE);
-	//void OpenShareDn(BOOL bOpen = TRUE);
-	//BOOL IsOpenShareUp();
-	//BOOL IsOpenShareDn();
 	void ResetMotion();
 	void ResetMotion(int nMsId);
 	unsigned long ChkDoor(); // 0: All Closed , Open Door Index : Doesn't all closed. (Bit3: F, Bit2: L, Bit1: R, Bit0; B)
 	BOOL ChkSaftySen();
 	BOOL ChkYield();
-	void SwAoiEmg(BOOL bOn);
 	BOOL IsVs();
 	BOOL IsVsUp();
 	BOOL IsVsDn();
-	void SetDummyUp();
-	void SetDummyDn();
-	//BOOL MakeDummyUp(int nErr);
-	//BOOL MakeDummyDn(int nErr);
 	int GetAoiUpSerial();
 	int GetAoiDnSerial();
 	BOOL GetAoiUpVsStatus();
@@ -996,7 +979,7 @@ public:
 	void SetAlignPos();
 	void SetAlignPosUp();
 	void SetAlignPosDn();
-	void MpeWrite();
+	//void MpeWrite();
 	void IoWrite(CString sMReg, long lData);
 	BOOL IsRdyTest();
 	BOOL IsRdyTest0();
@@ -1008,8 +991,6 @@ public:
 	BOOL IsMk0Done();
 	BOOL IsMk1Done();
 	void InitIoWrite();
-	void SetTestSts0(BOOL bOn);
-	void SetTestSts1(BOOL bOn);
 
 	void SetLastProc();
 	BOOL IsLastProc();
@@ -1042,9 +1023,6 @@ public:
 	void CycleStop();
 	BOOL ChkLotCutPos();
 	BOOL OpenReelmapFromBuf(int nSerial);
-	int GetAoiUpDummyShot();
-	int GetAoiDnDummyShot();
-	void SetAoiDummyShot(int nAoi, int nDummy);
 
 	void SetPathAtBuf();
 	void SetPathAtBufUp();
@@ -1093,14 +1071,7 @@ public:
 	void StopFromThread();
 	void BuzzerFromThread(BOOL bOn, int nCh = 0);
 
-
-	BOOL IsEngraveFdSts();
 	BOOL IsEngraveFd();
-	void SetEngraveFdSts();
-	void SetEngraveStopSts();
-	void SetEngraveSts(int nStep);
-	void SetEngraveFd();
-	void SetEngraveFd(double dDist);
 	void MoveEngrave(double dOffset);
 
 	double GetEngraveFdLen();
@@ -1111,10 +1082,6 @@ public:
 
 	BOOL IsPinPos0();
 	BOOL IsPinPos1();
-
-
-	//BOOL LoadAoiSpec();
-	BOOL LoadMasterSpec();
 
 	void UpdateYield();
 	void UpdateYield(int nSerial);
@@ -1128,7 +1095,7 @@ public:
 	void UpdateYieldInnerAllDn(int nSerial);
 	void UpdateYieldIts(int nSerial);
 
-	void SetEngFd();
+	//void SetEngFd();
 	void MoveEng(double dOffset);
 	BOOL GetEngOffset(CfPoint &OfSt);
 
@@ -1168,8 +1135,6 @@ public:
 	BOOL m_bEscape;
 	// ITS
 	BOOL m_bTHREAD_MAKE_ITS_FILE_UP, m_bTHREAD_MAKE_ITS_FILE_DN;
-	//BOOL m_bTHREAD_UPDATE_REELMAP_INOUTER_UP;// , m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP;
-	//BOOL m_bTHREAD_UPDATE_REELMAP_INOUTER_DN;// , m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN;
 	BOOL m_bTHREAD_UPDATE_REELMAP_INNER_UP, m_bTHREAD_UPDATE_REELMAP_INNER_ALLUP;
 	BOOL m_bTHREAD_UPDATE_REELMAP_INNER_DN, m_bTHREAD_UPDATE_REELMAP_INNER_ALLDN;
 	BOOL m_bTHREAD_UPDATE_REELMAP_ITS;
@@ -1225,9 +1190,6 @@ public:
 	BOOL SetSerialReelmapInner(int nSerial, BOOL bDumy = FALSE);
 	BOOL SetSerialMkInfoInner(int nSerial, BOOL bDumy = FALSE);
 
-	//BOOL LoadPcrInnerUp(int nSerial, BOOL bFromShare = FALSE);
-	//BOOL LoadPcrInnerDn(int nSerial, BOOL bFromShare = FALSE);
-
 	CString GetTimeIts();
 
 	int GetAoiUpAutoStep();
@@ -1262,9 +1224,10 @@ public:
 	void DuplicateRmap(int nRmap);
 	int GetMkStAuto();
 	void SetMkStAuto();
-	BOOL GetMkStSignal();
-	void SetMkStSignal();
+	//BOOL GetMkStSignal();
 	void LoadSerial();
+	BOOL MpeWrite(CString strRegAddr, long lData, BOOL bCheck = FALSE);
+	long MpeRead(CString strRegAddr);
 
 // 재정의입니다.
 public:
@@ -1274,10 +1237,6 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 	virtual void OnInitialUpdate(); // 생성 후 처음 호출되었습니다.
-	//virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
-	//virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
-	//virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
-	//virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
 
 	afx_msg LRESULT wmClientReceived(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT wmClientReceivedSr(WPARAM wParam, LPARAM lParam);

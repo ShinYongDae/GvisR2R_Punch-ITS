@@ -25,6 +25,7 @@
 #define TIM_KILL_FOCUS_	1
 
 #define MAX_STATIC_KEYPAD	4
+#define TIM_DISP_STS				450
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgKeyNum dialog
@@ -34,7 +35,8 @@ class CDlgKeyNum : public CDialog
 	CWnd* m_pParent;
 	CPoint m_ptSt;
 	int m_nDir;
-	
+	BOOL m_bTIM_DISP_STS;
+
 	HBITMAP m_hBmpNum0, m_hBmpNum1, m_hBmpNum2, m_hBmpNum3, m_hBmpNum4, m_hBmpNum5, m_hBmpNum6,
 			m_hBmpNum7, m_hBmpNum8, m_hBmpNum9, m_hBmpBs, m_hBmpDel, m_hBmpDot, m_hBmpLeft,
 			m_hBmpMinus, m_hBmpRight, m_hBmpEsc, m_hBmpEnter;

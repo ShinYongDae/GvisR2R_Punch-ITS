@@ -85,10 +85,12 @@ CDlgKeyNum::CDlgKeyNum(CString *strFileName, CRect* rect, CPoint ptSt, int nDir,
 
 	m_bTIM_DLG_KEYBDNUM_Lock = FALSE;
 	m_bTIM_DLG_KEYBDNUM = FALSE;
+	m_bTIM_DISP_STS = FALSE;
 }
 
 CDlgKeyNum::~CDlgKeyNum()
 {
+	m_bTIM_DISP_STS = FALSE;
 	m_bTIM_DLG_KEYBDNUM = FALSE;
 	DelImg();
 

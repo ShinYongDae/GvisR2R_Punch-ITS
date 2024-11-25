@@ -27,11 +27,12 @@ CDlgUser::CDlgUser(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CDlgUser)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+	m_bTIM_DISP_STS = FALSE;
 }
 
 CDlgUser::~CDlgUser()
 {
-
+	m_bTIM_DISP_STS = FALSE;
 }
 
 void CDlgUser::DoDataExchange(CDataExchange* pDX)
@@ -50,6 +51,7 @@ BEGIN_MESSAGE_MAP(CDlgUser, CDialog)
 	ON_BN_CLICKED(IDC_CHK_02, OnChk02)
 	ON_BN_CLICKED(IDC_CHK_01, OnChk01)
 	//}}AFX_MSG_MAP
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -76,7 +78,10 @@ BOOL CDlgUser::OnInitDialog()
 	int nFileSize = ReadUserNameListFile();
 
 	DisplayUserNameList();
-	
+
+	m_bTIM_DISP_STS = TRUE;
+	SetTimer(TIM_DISP_STS, 100, NULL);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -292,4 +297,22 @@ BOOL CDlgUser::PreTranslateMessage(MSG* pMsg)
 	}
 	
 	return CDialog::PreTranslateMessage(pMsg);
+}
+
+
+void CDlgUser::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (this->IsWindowVisible())
+	{
+		m_bTIM_DISP_STS = FALSE;
+	}
+	else
+	{
+		this->ShowWindow(SW_SHOW);
+	}
+	if (m_bTIM_DISP_STS)
+		SetTimer(TIM_DISP_STS, 100, NULL);
+
+	CDialog::OnTimer(nIDEvent);
 }
