@@ -6,7 +6,6 @@
 #endif // _MSC_VER > 1000
 // DlgUser.h : header file
 //
-#define TIM_DISP_STS				450
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgUser dialog
@@ -15,7 +14,6 @@ class CDlgUser : public CDialog
 {
 	CFont m_FontOfListCtrl;
 	CString m_strOrgUserName;
-	BOOL m_bTIM_DISP_STS;
 
 	int ReadUserNameListFile();
 	void WriteUserNameListFile();
@@ -54,8 +52,6 @@ protected:
 	afx_msg void OnChk01();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 
 //{{AFX_INSERT_LOCATION}}

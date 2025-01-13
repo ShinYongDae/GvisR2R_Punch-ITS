@@ -13,9 +13,9 @@
 #include "Global/Yield.h"
 #include "Process/CamMaster.h"
 
-#define PATH_LOG		_T("C:\\Debuging\\Log")
-#define PATH_LOG_AUTO	_T("C:\\Debuging\\Log\\Auto")
-#define PATH_LOG_PLC	_T("C:\\Debuging\\Log\\PLC")
+#define PATH_LOG		_T("C:\Debuging\Log")
+#define PATH_LOG_AUTO	_T("C:\Debuging\Log\Auto")
+#define PATH_LOG_PLC	_T("C:\Debuging\Log\PLC")
 
 class CGvisR2R_PunchDoc : public CDocument
 {
@@ -33,7 +33,6 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
-	BOOL m_bVsStatusUp, m_bVsStatusDn;
 	BOOL m_bOffLogAuto, m_bOffLogPLC;
 	int m_nDelayShow;
 	BOOL m_bBufEmpty[2]; // [0]: Up, [1]: Dn
@@ -177,8 +176,6 @@ public:
 	double GetOnePnlVel();
 	void SetOnePnlAcc(double dAcc);
 	double GetOnePnlAcc();
-	void SetEngFdPitch(double dPitch);
-	double GetEngFdPitch();
 	void SetAoiFdPitch(double dPitch);
 	double GetAoiFdPitch();
 	void SetMkFdPitch(double dPitch);
@@ -309,6 +306,8 @@ public:
 	BOOL MakeMkDir(stModelInfo stInfo);
 	BOOL MakeMkDir(CString sModel, CString sLot, CString sLayer);
 	BOOL MakeMkDir();
+	BOOL MakeMkDirUp();
+	BOOL MakeMkDirDn();
 	BOOL Shift2Mk(int nSerial);
 	void SetLastSerial(int nSerial);								// 릴맵 텍스트 파일의 수율정보를 업데이트함.
 	void SetCompletedSerial(int nSerial);
@@ -402,8 +401,8 @@ public:
 	double GetAoiReaderDist();
 	void SetMkReaderDist(double dLen);
 	double GetMkReaderDist();
-	//void SetOffsetInitPos(double dLen);
-	//double GetOffsetInitPos();
+	void SetOffsetInitPos(double dLen);
+	double GetOffsetInitPos();
 	void Set2DReaderPosMoveVel(double dVel);
 	void Set2DReaderPosMoveAcc(double dAcc);
 	double Get2DReaderPosMoveVel();
@@ -437,7 +436,7 @@ public:
 	void SetCurrentInfoBufDnTot(int nTotal);
 	void SetCurrentInfoBufDn(int nIdx, int nData);
 
-	//CString GetMonDispMain();
+	CString GetMonDispMain();
 	void SetMonDispMain(CString sDisp);
 	//void GetMkMenu01();
 	void SetMkMenu01(CString sMenu, CString sItem, CString sData);
@@ -461,8 +460,8 @@ public:
 	CString m_sEngLayerDn;
 	int m_nWritedItsSerial;
 
-	//BOOL MakeLayerMappingHeader();
-	//BOOL MakeLayerMappingSerial(int nIdx, int nItsSerial);
+	BOOL MakeLayerMappingHeader();
+	BOOL MakeLayerMappingSerial(int nIdx, int nItsSerial);
 
 	int SearchFirstShotOnIts();
 	BOOL GetItsSerialInfo(int nItsSerial, BOOL &bDualTest, CString &sLot, CString &sLayerUp, CString &sLayerDn, int nOption=0);		// 내층에서의 ITS 시리얼의 정보
@@ -471,9 +470,8 @@ public:
 	int GetLastItsSerial();																											// 내외층 머징된 릴맵 데이타의 Last 시리얼
 	CString GetItsFolderPath();
 	CString GetItsTargetFolderPath();
-	//CString GetItsReelmapPath();
+	CString GetItsReelmapPath();
 	BOOL GetInnerFolderPath(int nItsSerial, CString  &sUp, CString &sDn);
-	BOOL GetInnerReelmapPath(int nItsSerial, CString  &sUp, CString &sDn, CString  &sAllUp, CString &sAllDn);
 
 	char* StrToChar(CString str);
 	void StrToChar(CString str, char* pCh);

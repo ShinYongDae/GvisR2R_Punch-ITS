@@ -2888,22 +2888,3 @@ BOOL CQuery::GetCurrentDBName(CString &sName)
 
 	return FALSE;
 }
-
-BOOL CQuery::InsertPunchingData(CString sLot, int nSerial, CString sProcess, double dPosX, double dPosY, int nPunchCode)
-{
-	CString sLCode3 = _T("L01"); // Layer-Top
-	CString sQuery;
-
-	//strQuery.Format(_T("UPDATE RSTD_PUNCH SET LOT_CODE='%s',SERIAL_CODE='%d',DATE=GETDATE() where EQUIP_CODE='%s'"), nAlarmID, nAlarmSet, strEquipcode);
-	sQuery.Format(_T("INSERT INTO RSTD_PUNCH (LOT_CODE,SERIAL_CODE,LAYER_CODE,PROC_CODE,X_POS,Y_POS,PUNCH_CODE,DATE)")
-		_T("VALUES('%s','%d','%s','%s','%.3f','%.3f','%d',GETDATE())"), sLot, nSerial, sLCode3, sProcess, dPosX, dPosY, nPunchCode);
-
-	if (!m_dataSource.ExecuteQuery((LPCTSTR)sQuery))
-	{
-		CString strMsg;
-		strMsg.Format(_T("Error occur at m_dataSource.ExecuteQuery() at InsertPunchingData()\r\n%s"), m_dataSource.GetLastError());
-		Log(strMsg); pView->ClrDispMsg(); AfxMessageBox(strMsg, MB_ICONSTOP);
-		return FALSE;
-	}
-	return TRUE;
-}

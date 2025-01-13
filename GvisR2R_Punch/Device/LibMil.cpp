@@ -159,18 +159,21 @@ CLibMil::~CLibMil()
 
 	if(MilImageCamFlip)
 	{
+		pView->m_nDebugStep = 100; pView->DispThreadTick();
 		MbufFree(MilImageCamFlip);
 		MilImageCamFlip = M_NULL;
 	}
 
 	if(MilImageCamRotate)
 	{
+		pView->m_nDebugStep = 101; pView->DispThreadTick();
 		MbufFree(MilImageCamRotate);
 		MilImageCamRotate = M_NULL;
 	}
 
 	if(MilImageCam)
 	{
+		pView->m_nDebugStep = 102; pView->DispThreadTick();
 		MbufFree(MilImageCam);
 		MilImageCam = M_NULL;
 	}
@@ -197,6 +200,7 @@ CLibMil::~CLibMil()
 
 	if(!m_nIdx)
 	{
+		pView->m_nDebugStep = 300; pView->DispThreadTick();
 		MsysFree(MilSystem);
 		MappFree(MilApplication);
 	}

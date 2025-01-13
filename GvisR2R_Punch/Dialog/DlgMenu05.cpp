@@ -287,7 +287,8 @@ BOOL CDlgMenu05::OnInitDialog()
 	memset(&lf, 0, sizeof(LOGFONT));
 	lf.lfHeight = 22; // 22 point
 	lf.lfWeight = FW_EXTRABOLD;
-	wsprintf(lf.lfFaceName, TEXT("%s"), TEXT("굴림")); // 굴림체로 font setting
+	//strcpy(lf.lfFaceName, "굴림"); // 굴림체로 font setting
+	wsprintf(lf.lfFaceName, TEXT("%s"), TEXT("굴림"));
 
 	m_FontOfListCtrl.CreateFontIndirect(&lf); 
 
@@ -305,11 +306,14 @@ BOOL CDlgMenu05::OnInitDialog()
 	InitModel();
 
 	GetDlgItem(IDC_BTN_MES)->ShowWindow(SW_HIDE);
+	//GetDlgItem(IDC_BTN_SAVE4)->ShowWindow(SW_HIDE);
 
 	ShowDlg(IDD_DLG_UTIL_01);
 	OnCheck1();
 
+// 	GetDlgItem(IDC_CHK_REELMAP)->ShowWindow(SW_HIDE);
 	return TRUE;  // return TRUE unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CDlgMenu05::InitStc()
@@ -388,7 +392,7 @@ int CDlgMenu05::CntLotNamesInModelFolder()
 	BOOL bExist;
 
 	strPath = pDoc->WorkingInfo.System.sPathOldFile;
-	strPath += m_sModel;
+	strPath += m_sModel; // pDoc->WorkingInfo.LastJob.sModel
 	strPath += _T("\\*.*");
 	
 	bExist = cFile.FindFile(strPath);
@@ -409,6 +413,8 @@ void CDlgMenu05::ModifyModelData()
 {
 	((CComboBox*)GetDlgItem(IDC_COMBO_MODEL))->ResetContent();
 
+	//char FN[100];
+	//sprintf(FN, "%s*.*", pDoc->WorkingInfo.System.sPathOldFile);
 	TCHAR FN[100];
 	_stprintf(FN, _T("%s*.*"), pDoc->WorkingInfo.System.sPathOldFile);//sprintf
 
@@ -444,6 +450,8 @@ void CDlgMenu05::ModifyLotData()
 	CString Dir, strFileName;
 	Dir = pDoc->WorkingInfo.System.sPathOldFile + m_sModel + _T("\\");
 
+	//char FN[100];
+	//sprintf(FN, "%s*.*", Dir);
 	TCHAR FN[100];
 	_stprintf(FN, _T("%s*.*"), Dir);
 
@@ -478,6 +486,8 @@ void CDlgMenu05::ModifyLotData()
 
 void CDlgMenu05::DispTestMode()
 {
+	//m_pPcr[0][nIdx]->m_sItsCode
+
 	BOOL bOn;
 
 	bOn = (pDoc->GetTestMode() == MODE_INNER) ? TRUE : FALSE; // 내층 검사 모드
@@ -501,6 +511,8 @@ void CDlgMenu05::ModifyLayerData()
 	CString Dir, strFileName;
 	Dir = pDoc->WorkingInfo.System.sPathOldFile + m_sModel + _T("\\") + m_sLot + _T("\\");
 
+	//char FN[100];
+	//sprintf(FN, "%s*.*"), Dir);
 	TCHAR FN[100];
 	_stprintf(FN, _T("%s*.*"), Dir);
 
@@ -529,6 +541,126 @@ void CDlgMenu05::ModifyLayerData()
 	}
 }
 
+// void CDlgMenu05::ModifyLayerData()
+// {
+// 	((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->ResetContent();
+// 
+// 	CString Dir, strFileName;
+// 	Dir = pDoc->WorkingInfo.System.sPathOldFile + m_sModel + "\\" + m_sLot + "\\");
+// 
+// 	char FN[100];
+// 	sprintf(FN, "%s*.*"), Dir);
+// 
+// 	((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->Dir(0x8010, FN);
+// 	int t=0;
+// 	
+// //	"[..]"를 제거 
+// 	((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->DeleteString(0);
+// 	int nIndex = ((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->FindStringExact(-1, "[..]");
+// 	((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->DeleteString(nIndex);
+// 
+// 	int nCount  = ((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->GetCount();
+// 
+// 	CString strBuf, strBuf2;
+// 	int i;
+// 
+// 	for (i = nCount; i > 0 ; i--)
+// 	{
+// 		((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->GetText(i-1, strBuf);
+// 
+// 		if (strBuf.GetLength() < 3)
+// 			continue;
+// //		기종이름에서 "[]"를 제거 
+// 		CString strBuf2 = strBuf.Mid(1, strBuf.GetLength() - 2);
+// 		((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->InsertString(t+nCount, strBuf2);	//090211-ndy
+// 		t++;
+// 	}
+// 
+// // 	for (i = 0; i < nCount ; i++)
+// // 		((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->DeleteString(0);
+// }
+
+// CString CDlgMenu05::SearchLayerName()
+// {
+// 	CString strPanelFacePath, strPath;
+// 
+// 	strPanelFacePath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile, 
+// 											m_sModel, m_sLot, m_sLayer);
+// 
+// 	int nTemp, nFileSize, nRSize;
+// 	CString strFileData, strHeaderErrorInfo, strModel, strLayer, strLot, strTotalBadPieceNum, strMsg;
+// 	char FileD[200];
+// 	CFileFind findfile;
+// 	FILE *fp;
+// 	char *FileData;
+// 	
+// 	strPath.Format(_T("%s\\%04d.pcr"), strPanelFacePath, 1); // 첫번째 샷의 파일.
+// 
+// 	if(findfile.FindFile(strPath)) //find file.
+// 	{
+// 		strcpy(FileD, strPath);
+// 		if((fp = fopen((LPCTSTR)FileD, "r")) != NULL)
+// 		{
+// 			fseek(fp, 0, SEEK_END);
+// 			nFileSize = ftell(fp);
+// 			fseek(fp, 0, SEEK_SET);
+// 
+// 			/* Allocate space for a path name */
+// 			//FileData = (char*)malloc( nFileSize );
+// 			FileData = (char*)calloc(nFileSize+1, sizeof(char));
+// 			
+// 			nRSize = fread(FileData, sizeof(char), nFileSize, fp);
+// 			strFileData.Format(_T("%s"), FileData);
+// 			fclose(fp);
+// 			free( FileData );
+// 		}
+// 		else
+// 		{
+// 			strMsg.Format(_T("%s 위치의 파일이 오픈되지 않습니다."), strPath);
+// 			AfxMessageBox(strMsg,MB_ICONWARNING|MB_OK);
+// 			strLayer = _T("");
+// 		}
+// 
+// 		// Error Code
+// 		nTemp = strFileData.Find(',', 0);
+// 		strHeaderErrorInfo = strFileData.Left(nTemp);
+// 		strFileData.Delete(0, nTemp+1);
+// 		nFileSize = nFileSize - nTemp - 1;
+// 		
+// 		// Model
+// 		nTemp = strFileData.Find(',', 0);
+// 		strModel = strFileData.Left(nTemp);
+// 		strFileData.Delete(0, nTemp+1);
+// 		nFileSize = nFileSize - nTemp - 1;
+// 
+// 		// Layer
+// 		nTemp = strFileData.Find(',', 0);
+// 		strLayer = strFileData.Left(nTemp);
+// 		strFileData.Delete(0, nTemp+1);
+// 		nFileSize = nFileSize - nTemp - 1;
+// 
+// 		// Lot
+// 		nTemp = strFileData.Find('\n', 0);
+// 		strLot = strFileData.Left(nTemp);
+// 		strFileData.Delete(0, nTemp+1);
+// 		nFileSize = nFileSize - nTemp - 1;
+// 
+// 		//strTotalBadPieceNum = strFileData;
+// 		nTemp = strFileData.Find('\n', 0);
+// 		strTotalBadPieceNum = strFileData.Left(nTemp);;
+// 		strFileData.Delete(0, nTemp+1);
+// 		nFileSize = nFileSize - nTemp - 1;
+// 		
+// 	}
+// 	else
+// 	{
+// 		strMsg.Format(_T("%s 위치의 파일이 없습니다."), strPath);
+// 		AfxMessageBox(strMsg,MB_ICONWARNING|MB_OK);
+// 		strLayer = _T("");
+// 	}
+// 
+// 	return strLayer;
+// }
 
 BOOL CDlgMenu05::PreTranslateMessage(MSG* pMsg) 
 {
@@ -571,6 +703,10 @@ void CDlgMenu05::DisplayResultData()
 BOOL CDlgMenu05::GetResult() // TRUE: Make Result, FALSE: Load Result or Failed.
 {
 	//파일을 읽어옴. ======================================================================
+
+	// 작업 시간을 읽어옴.
+// 	LoadLotWorkingTime();
+
 	// 불량관련 데이타를 읽어옴.
 	int i, k;
 	CString strAddedDefectFP;
@@ -1296,6 +1432,97 @@ void CDlgMenu05::InsertLine(CString sPath)
 
 }
 
+//void CDlgMenu05::DisplayReelMapData()
+//{
+//	//char FileD[MAX_PATH];
+//	TCHAR FileD[MAX_PATH];
+//	char *FileData;
+//	CString strReelMapPath, strReelMapData, DsipMsg;
+// 	int nFileSize, nRSize, i;	//, nSizeTemp	
+//	FILE *fp;
+//
+//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+//
+//	strReelMapData = _T("");
+//	if(bDualTest)
+//	{
+//		strReelMapPath.Format(_T("%s%s\\%s\\%s\\ReelMapDataAll.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
+//															   m_sModel, m_sLot, m_sLayer);
+//	}
+//	else
+//	{
+//		strReelMapPath.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
+//															   m_sModel, m_sLot, m_sLayer);
+//	}
+//
+//	InsertLine(strReelMapPath);
+//
+//	//파일을 불러옴. 
+//	//strcpy(FileD, strReelMapPath);
+//	wsprintf(FileD, TEXT("%s"), strReelMapPath);
+//	char* pRtn = NULL;
+//	if((fp = fopen(pRtn=TCHARToChar(FileD), "r")) != NULL)
+//	{
+//		fseek(fp, 0, SEEK_END);
+//		nFileSize = ftell(fp);
+//		fseek(fp, 0, SEEK_SET);
+//
+//		// Allocate space for a path name
+//		FileData = (char*)calloc(nFileSize, sizeof(char));	
+//		
+//		nRSize = 0;
+//		for( i=0; i < nFileSize ; i++ )
+//		{
+//			if( feof( fp ) != 0 )
+//				break;
+//
+//			FileData[i] = fgetc(fp);
+//
+//			if(FileData[i] == '\n')
+//			{
+//				if(FileData[i-1] != '\r')
+//				{
+//					nFileSize++;
+//					FileData = (char*)realloc(FileData, nFileSize);
+//					FileData[i] = '\r';
+//					i++;
+//					nRSize++;
+//					FileData[i] = '\n';
+//				}
+//			}
+//
+//			nRSize++;
+//		}
+//
+//		strReelMapData.Format(_T("%s"), CharToString(FileData));
+//
+//
+//		//fseek(fp, 0, SEEK_END);
+//		//nFileSize = ftell(fp);
+//		//fseek(fp, 0, SEEK_SET);
+//		//
+//		//// Allocate space for a path name
+//		////FileData = (char*)malloc( nFileSize );
+//		//FileData = (char*)calloc(nFileSize+1, sizeof(char));
+//
+//		//nRSize = fread(FileData, sizeof(char), nFileSize, fp);
+//		//strReelMapData.Format(_T("%s"), FileData);
+//
+//		fclose(fp);
+//		free( FileData );
+//	}
+//	else
+//	{
+//		DsipMsg.Format(_T("파일이 존재하지 않습니다.\r\n%s"), strReelMapPath);
+//		pView->ClrDispMsg();
+//		AfxMessageBox(DsipMsg);
+//	}
+//
+//	if(pRtn)
+//		delete pRtn;
+//	GetDlgItem(IDC_EDIT_RESULT)->SetWindowText(strReelMapData);
+//}
+
 void CDlgMenu05::DisplayReelMapUser()
 {
 	CString strReelMapPath, strReelMapData, sReelmapSrc;
@@ -1309,13 +1536,21 @@ void CDlgMenu05::DisplayReelMapUser()
 
 	if(bDualTest)
 	{
-		sReelmapSrc.Format(_T("%s%s\\%s\\%s\\ReelMapDataAll.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
-															   m_sModel, m_sLot, m_sLayer);
+		if(0)
+			sReelmapSrc.Format(_T("%s%s\\%s\\%s\\Reelmap\\ReelMap-TOTAL_SIDE.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
+				m_sModel, m_sLot, m_sLayer);
+		else
+			sReelmapSrc.Format(_T("%s%s\\%s\\%s\\ReelMapDataAll.txt"), pDoc->WorkingInfo.System.sPathOldFile,
+				m_sModel, m_sLot, m_sLayer);
 	}
 	else
 	{
-		sReelmapSrc.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
-														   m_sModel, m_sLot, m_sLayer);
+		if(0)
+			sReelmapSrc.Format(_T("%s%s\\%s\\%s\\Reelmap\\ReelMap-TOP_SIDE.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
+				m_sModel, m_sLot, m_sLayer);
+		else
+			sReelmapSrc.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"), pDoc->WorkingInfo.System.sPathOldFile,
+				m_sModel, m_sLot, m_sLayer);
 	}
 
 	if (0 < ::GetPrivateProfileString(_T("Info"), _T("모      델"), NULL, szData, sizeof(szData), sReelmapSrc))
@@ -1323,6 +1558,7 @@ void CDlgMenu05::DisplayReelMapUser()
 	else
 	{
 		pView->MsgBox(_T("Model 정보가 없습니다."));
+		//AfxMessageBox(_T("Model 정보가 없습니다."));
 		return;
 	}
 
@@ -1331,6 +1567,7 @@ void CDlgMenu05::DisplayReelMapUser()
 	else
 	{
 		pView->MsgBox(_T("Lot 정보가 없습니다."));
+		//AfxMessageBox(_T("Lot 정보가 없습니다."));
 		return;
 	}
 	
@@ -1339,6 +1576,7 @@ void CDlgMenu05::DisplayReelMapUser()
 	else
 	{
 		pView->MsgBox(_T("상면레이어 정보가 없습니다."));
+		//AfxMessageBox(_T("상면레이어 정보가 없습니다."));
 		return;
 	}
 	
@@ -1349,6 +1587,7 @@ void CDlgMenu05::DisplayReelMapUser()
 		else
 		{
 			pView->MsgBox(_T("하면레이어 정보가 없습니다."));
+			//AfxMessageBox(_T("하면레이어 정보가 없습니다."));
 			return;
 		}
 	}
@@ -1356,6 +1595,7 @@ void CDlgMenu05::DisplayReelMapUser()
 	if (0 >= ::GetPrivateProfileString(_T("Info"), _T("Marked Shot"), NULL, szData, sizeof(szData), sReelmapSrc))
 	{
 		pView->MsgBox(_T("릴맵에 Marked Shot 정보가 없습니다."));
+		//AfxMessageBox(_T("릴맵에 Marked Shot 정보가 없습니다."));
 		return;
 	}
 
@@ -1365,50 +1605,78 @@ void CDlgMenu05::DisplayReelMapUser()
 	sVal.Format(_T("On remaking Reelmap."));
 	dlg.Create(sVal);
 
-	pDoc->m_pReelMapUp->m_bThreadAliveRemakeReelmap = FALSE;
-	pDoc->m_pReelMapDn->m_bThreadAliveRemakeReelmap = FALSE;
-	pDoc->m_pReelMapAllUp->m_bThreadAliveRemakeReelmap = FALSE;
+	if(pDoc->m_pReelMapUp)
+		pDoc->m_pReelMapUp->m_bThreadAliveRemakeReelmap = FALSE;
+	if(pDoc->m_pReelMapDn)
+		pDoc->m_pReelMapDn->m_bThreadAliveRemakeReelmap = FALSE;
+	if(pDoc->m_pReelMapAllUp)
+		pDoc->m_pReelMapAllUp->m_bThreadAliveRemakeReelmap = FALSE;
 	
+//	pView->MyMsgBox(_T("On converting Reelmap....."));
+	
+	//sReelmapSrc.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
+	//													   sModel, sLot, sLayer[0]);
 	if (pDoc->m_pReelMapUp)
 		pDoc->m_pReelMapUp->StartThreadRemakeReelmap(); // RemakeReelmap(sReelmapSrc);
 
 	if(bDualTest)
 	{
+		//sReelmapSrc.Format(_T("%s%s\\%s\\%s\\ReelMapDataDn.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
+		//													   m_sModel, sLot, sLayer[1]);
 		if(pDoc->m_pReelMapDn)
 			pDoc->m_pReelMapDn->StartThreadRemakeReelmap(); //RemakeReelmap(sReelmapSrc);
+
+		//sReelmapSrc.Format(_T("%s%s\\%s\\%s\\ReelMapDataAll.txt"), pDoc->WorkingInfo.System.sPathOldFile, 
+		//													   m_sModel, m_sLot, sLayer[0]);
 		if(pDoc->m_pReelMapAllUp)
 			pDoc->m_pReelMapAllUp->StartThreadRemakeReelmap(); // RemakeReelmap(sReelmapSrc);
 	}
 
 	DWORD dwSt = GetTickCount();
-	do
-	{
-		if(dlg.GetSafeHwnd())
+	if (bDualTest)
+	{ 
+		do
 		{
-			if(bDualTest)	
+			if (dlg.GetSafeHwnd())
 			{
 				dRatio = pDoc->m_pReelMapAllUp->m_dProgressRatio + pDoc->m_pReelMapUp->m_dProgressRatio + pDoc->m_pReelMapDn->m_dProgressRatio;
 				dRatio = (dRatio / 3.0);
+
+				if (!(int(dRatio) % 10))
+					dlg.SetPos(int(dRatio));
 			}
-			else
+
+			if (GetTickCount() - dwSt > 1200000)
+				break;
+		} while (pDoc->m_pReelMapUp->m_bThreadAliveRemakeReelmap || pDoc->m_pReelMapDn->m_bThreadAliveRemakeReelmap || pDoc->m_pReelMapAllUp->m_bThreadAliveRemakeReelmap);
+	}
+	else
+	{
+		do
+		{
+			if (dlg.GetSafeHwnd())
+			{
 				dRatio = pDoc->m_pReelMapUp->m_dProgressRatio;
 
-			if(!(int(dRatio)%10))
-				dlg.SetPos(int(dRatio));
-		}	
+				if (!(int(dRatio) % 10))
+					dlg.SetPos(int(dRatio));
+			}
 
-		if(GetTickCount()-dwSt > 1200000)
-			break;
-	}while(pDoc->m_pReelMapUp->m_bThreadAliveRemakeReelmap || pDoc->m_pReelMapDn->m_bThreadAliveRemakeReelmap || pDoc->m_pReelMapAllUp->m_bThreadAliveRemakeReelmap);
-
+			if (GetTickCount() - dwSt > 1200000)
+				break;
+		} while (pDoc->m_pReelMapUp->m_bThreadAliveRemakeReelmap);
+	}
 
 	dlg.DestroyWindow();
 
 	if(bDualTest)
 	{
-		bSuccess[0] = pDoc->m_pReelMapUp->m_bRtnThreadRemakeReelmap;	
-		bSuccess[1] = pDoc->m_pReelMapDn->m_bRtnThreadRemakeReelmap;	
-		bSuccess[2] = pDoc->m_pReelMapAllUp->m_bRtnThreadRemakeReelmap;	
+		if(pDoc->m_pReelMapUp)
+			bSuccess[0] = pDoc->m_pReelMapUp->m_bRtnThreadRemakeReelmap;	
+		if(pDoc->m_pReelMapDn)
+			bSuccess[1] = pDoc->m_pReelMapDn->m_bRtnThreadRemakeReelmap;	
+		if(pDoc->m_pReelMapAllUp)
+			bSuccess[2] = pDoc->m_pReelMapAllUp->m_bRtnThreadRemakeReelmap;	
 
 		if(!bSuccess[0] || !bSuccess[1] || !bSuccess[2])
 		{
@@ -1417,7 +1685,7 @@ void CDlgMenu05::DisplayReelMapUser()
 		}
 
 		strReelMapPath.Format(_T("%s%s\\%s\\%s\\ReelMap\\ReelMap-TOTAL_SIDE.txt"), pDoc->WorkingInfo.System.sPathOldFile,
-																			sModel, sLot, sLayer[0]);
+			sModel, sLot, sLayer[0]);
 	}
 	else
 	{
@@ -1427,16 +1695,20 @@ void CDlgMenu05::DisplayReelMapUser()
 			return;
 		}
 
-		strReelMapPath.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"), pDoc->WorkingInfo.System.sPathOldFile,
-																			sModel, sLot, sLayer[0]);
+		strReelMapPath.Format(_T("%s%s\\%s\\%s\\ReelMap\\ReelMap-TOP_SIDE.txt"), pDoc->WorkingInfo.System.sPathOldFile,
+			sModel, sLot, sLayer[0]);
 	}
 
 	strReelMapData = LoadFile(strReelMapPath);
 	GetDlgItem(IDC_EDIT_RESULT)->SetWindowText(strReelMapData);
+
+//	pView->MsgBox(_T("Done converting Reelmap....."));
+
 }
 
 CString CDlgMenu05::LoadFile(CString sPath)
 {
+	//char FileD[MAX_PATH];
 	TCHAR FileD[MAX_PATH];
 	char *FileData;
 	CString DsipMsg=_T(""), sData=_T("");
@@ -1458,6 +1730,7 @@ CString CDlgMenu05::LoadFile(CString sPath)
 	dlg.Create(sVal);
 
 	//파일을 불러옴. 
+	//strcpy(FileD, sPath);
 	_stprintf(FileD, TEXT("%s"), sPath);
 	
 	char* pRtn = NULL;
@@ -1520,6 +1793,7 @@ void CDlgMenu05::OnBtnSearch()
 {
 	// TODO: Add your control notification handler code here
 	CString strLot;
+	//char lpszItem[MAX_PATH];
 	TCHAR lpszItem[MAX_PATH];
 
 	GetDlgItem(IDC_STC_LOT)->GetWindowText(strLot);
@@ -1529,9 +1803,12 @@ void CDlgMenu05::OnBtnSearch()
 	if(LB_ERR == nSel)
 	{
 		pView->MsgBox(_T("해당 로트를 찾지 못했습니다."));
+		//AfxMessageBox(_T("해당 로트를 찾지 못했습니다."));
 		return;
 	}
 	((CListBox*)GetDlgItem(IDC_LIST_LOT))->SetCurSel(nSel);
+
+// 	DisplayResultData();
 
 	((CListBox*)GetDlgItem(IDC_LIST_LOT))->SetTopIndex(nSel);
 }
@@ -1545,17 +1822,20 @@ void CDlgMenu05::OnChkReelmap()
 		if(m_nCurSelLotIdx < 0)
 		{
 			pView->MsgBox(_T("로트를 선택해 주세요."));
+			//AfxMessageBox(_T("로트를 선택해 주세요."));
 			((CButton*)GetDlgItem(IDC_CHK_REELMAP))->SetCheck(FALSE);
 			return;
 		}
 		if(m_nCurSelLayerIdx < 0)
 		{
 			pView->MsgBox(_T("레이어를 선택해 주세요."));
+			//AfxMessageBox(_T("레이어를 선택해 주세요."));
 			((CButton*)GetDlgItem(IDC_CHK_REELMAP))->SetCheck(FALSE);
 			return;
 		}
 		((CListBox*)GetDlgItem(IDC_LIST_LOT))->SetCurSel(m_nCurSelLotIdx);
 		((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->SetCurSel(m_nCurSelLayerIdx);
+// 		DisplayReelMapData();
 		DisplayReelMapUser();
 	}
 	else
@@ -1617,6 +1897,17 @@ BOOL CDlgMenu05::ShowMyKeypad(int nCtlID, CPoint ptSt, int nDir)
 void CDlgMenu05::OnStcLot() 
 {
 	// TODO: Add your control notification handler code here
+// 	myStcLot.SetBkColor(RGB_RED);
+// 	myStcLot.RedrawWindow();
+// 
+// 	CPoint pt;	CRect rt;
+// 	GetDlgItem(IDC_STC_LOT)->GetWindowRect(&rt);
+// 	pt.x = rt.right; pt.y = rt.bottom;
+// 	ShowKeypad(IDC_STC_LOT, pt, TO_BOTTOM|TO_RIGHT);
+// 
+// 	myStcLot.SetBkColor(RGB_WHITE);
+// 	myStcLot.RedrawWindow();
+
 	myStcLot.SetBkColor(RGB_RED);
 	myStcLot.RedrawWindow();
 
@@ -1720,6 +2011,8 @@ void CDlgMenu05::SelchangeComboLayer(int nIndex)
 			bDualTest = TRUE;
 		}
 		
+
+		//char szData[MAX_PATH];
 		TCHAR szData[MAX_PATH];
 		if (0 < ::GetPrivateProfileString(_T("Info"), _T("Start Serial"), NULL, szData, sizeof(szData), m_sRmapPath))
 			m_nSerialSt = _tstoi(szData);
@@ -1759,17 +2052,20 @@ void CDlgMenu05::SelchangeComboLayer(int nIndex)
 			if (m_nCurSelLotIdx < 0)
 			{
 				pView->MsgBox(_T("로트를 선택해 주세요."));
+				//AfxMessageBox(_T("로트를 선택해 주세요."));
 				((CButton*)GetDlgItem(IDC_CHK_REELMAP))->SetCheck(FALSE);
 				return;
 			}
 			if (m_nCurSelLayerIdx < 0)
 			{
 				pView->MsgBox(_T("레이어를 선택해 주세요."));
+				//AfxMessageBox(_T("레이어를 선택해 주세요."));
 				((CButton*)GetDlgItem(IDC_CHK_REELMAP))->SetCheck(FALSE);
 				return;
 			}
 			((CListBox*)GetDlgItem(IDC_LIST_LOT))->SetCurSel(m_nCurSelLotIdx);
 			((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->SetCurSel(m_nCurSelLayerIdx);
+			//DisplayReelMapData();
 			DisplayReelMapUser();
 		}
 		else
@@ -1848,6 +2144,7 @@ void CDlgMenu05::OnSelchangeComboLayer()
 		else
 			m_sRmapPath.Format(_T("%s\\ReelMapDataUp.txt"), sPath);
 
+		//char szData[MAX_PATH];
 		TCHAR szData[MAX_PATH];
 		if (0 < ::GetPrivateProfileString(_T("Info"), _T("Start Serial"), NULL, szData, sizeof(szData), m_sRmapPath))
 			m_nSerialSt = _tstoi(szData);
@@ -1887,23 +2184,28 @@ void CDlgMenu05::OnSelchangeComboLayer()
 			if(m_nCurSelLotIdx < 0)
 			{
 				pView->MsgBox(_T("로트를 선택해 주세요."));
+				//AfxMessageBox(_T("로트를 선택해 주세요."));
 				((CButton*)GetDlgItem(IDC_CHK_REELMAP))->SetCheck(FALSE);
 				return;
 			}
 			if(m_nCurSelLayerIdx < 0)
 			{
 				pView->MsgBox(_T("레이어를 선택해 주세요."));
+				//AfxMessageBox(_T("레이어를 선택해 주세요."));
 				((CButton*)GetDlgItem(IDC_CHK_REELMAP))->SetCheck(FALSE);
 				return;
 			}
 			((CListBox*)GetDlgItem(IDC_LIST_LOT))->SetCurSel(m_nCurSelLotIdx);
 			((CComboBox*)GetDlgItem(IDC_COMBO_LAYER))->SetCurSel(m_nCurSelLayerIdx);
+			//DisplayReelMapData();
 			DisplayReelMapUser();
 		}
 		else
 		{
 			DisplayResultData();
 		}
+
+		//DispTestMode();
 
 	}
 }
@@ -1916,6 +2218,7 @@ void CDlgMenu05::OnBtnSave()
 		pView->MsgBox(_T("작업중입니다."));
 		return;
 	}
+//	if(IDNO == pView->DoMyMsgBox(_T("검사결과를 저장하시겠습니까?"), MB_YESNO))
 	if(IDNO == pView->MsgBox(_T("검사결과를 저장하시겠습니까?"), 0, MB_YESNO))
 		return;
 	
@@ -1960,6 +2263,8 @@ void CDlgMenu05::OnBtnSave()
 	CString strData;
 	strData = TxtDataMDS();
 	TCHAR lpszCurDirPathFile[MAX_PATH];
+	//char lpszCurDirPathFile[MAX_PATH];
+	//strcpy(lpszCurDirPathFile, strDestPath);	
 	_stprintf(lpszCurDirPathFile, _T("%s"), strDestPath);
 	
 	CFile file;
@@ -2209,6 +2514,7 @@ BOOL CDlgMenu05::ReloadReelmap()
 
 	int nDefStrip[4];
 	int nPnl, nRow, nCol, nDefCode, i, k, nStrip, nC, nR;
+	//char sep[] = {",/;\r\n\t"};
 	TCHAR sep[] = { _T(",/;\r\n\t") };
 	int nTotPcs, nGoodPcs, nBadPcs, nDef[MAX_DEF];	// [DefCode] : Total Num.
 
@@ -2249,16 +2555,19 @@ BOOL CDlgMenu05::ReloadReelmap()
 		{
 			sPnl.Format(_T("%d"), nPnl+1);
 			sRow.Format(_T("%02d"), nRow);
+// 			sRow.Format(_T("%d"), nRow+1);
 			if (0 < ::GetPrivateProfileString(sPnl, sRow, NULL, szData, sizeof(szData), sRmapPath))
 			{
 				for(nCol=0; nCol<nNodeY; nCol++)
 				{
 					if(nCol==0)
 						sVal = _tcstok(szData,sep);
+						//sVal = strtok(szData,sep);
 					else
 						sVal = _tcstok(NULL,sep);
 
 					nDefCode = _tstoi(sVal);
+ 					//pPnlBuf[nPnl][nRow][nCol] = nDefCode;
 					nDef[nDefCode]++;
 					nTotPcs++;
 					if(nDefCode > 0)
@@ -2402,6 +2711,7 @@ void CDlgMenu05::OnStcProc()
 	GetDlgItem(IDC_STC_PROC)->GetWindowRect(&rt);
 	pt.x = rt.right; pt.y = rt.bottom;
 	ShowMyKeypad(IDC_STC_PROC, pt, TO_TOP|TO_RIGHT);
+	//ShowKeypad(IDC_STC_PROC, pt, TO_BOTTOM|TO_RIGHT);
 	
 	myStcProc.SetBkColor(RGB_WHITE);
 	myStcProc.RedrawWindow();
@@ -2414,16 +2724,20 @@ void CDlgMenu05::OnStcProc()
 
 	if(m_sModel.IsEmpty())
 		pView->MsgBox(_T("모델 정보가 없습니다."));
+		//AfxMessageBox(_T("모델 정보가 없습니다."));
 
 	if(m_sLot.IsEmpty())
 		pView->MsgBox(_T("로트 정보가 없습니다."));
+		//AfxMessageBox(_T("로트 정보가 없습니다."));
 
 	if(sData.IsEmpty())
 		pView->MsgBox(_T("공정코드 정보가 없습니다."));
+		//AfxMessageBox(_T("공정코드 정보가 없습니다."));
 
 	if(m_sProcessNum.Compare(sData)) // FALSE: Ideal Equal, TRUE: Different. 
 	{
 		sMsg.Format(_T("기존 공종코드: %s\r\n새로운 공종코드: %s\r\n기존의 공종코드를 새로운 공종코드로 바꾸시겠습니까?"), m_sProcessNum, sData);
+//		if(IDYES == pView->DoMyMsgBox(sMsg, MB_YESNO))
 		if(IDYES == pView->MsgBox(sMsg, 0, MB_YESNO))
 		{
 			CFileFind findfile;
@@ -2442,6 +2756,7 @@ void CDlgMenu05::OnStcProc()
 			
 			m_sProcessNum = sData;
 			pDoc->UpdateProcessNum(m_sProcessNum);
+			//::WritePrivateProfileString(_T("Info"), _T("Process Code"), m_sProcessNum, m_sRmapPath);
 		}
 		else
 			myStcProc.SetText(m_sProcessNum);
@@ -2456,6 +2771,7 @@ void CDlgMenu05::DispProcCode(CString sPath)
 CString CDlgMenu05::GetProcCode(CString sPath)
 {
 	CString str;
+	//char szData[MAX_PATH];
 	TCHAR szData[MAX_PATH];
 
 	if (0 < ::GetPrivateProfileString(_T("Info"), _T("Process Code"), NULL, szData, sizeof(szData), sPath))
@@ -2513,9 +2829,85 @@ void CDlgMenu05::MakeIts()
 	}
 
 	int nLayer = GetLayer(m_sLayer);
+	//int nLayer = -1; // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
+	//if (m_sLayer == m_sLayerUp)
+	//{
+	//	if (pDoc->GetTestMode() == MODE_INNER)
+	//		nLayer = RMAP_INNER_UP;
+	//	else
+	//		nLayer = RMAP_UP;
+	//}
+	//else if (m_sLayer == m_sLayerDn)
+	//	{
+	//		if (pDoc->GetTestMode() == MODE_INNER)
+	//			nLayer = RMAP_INNER_DN;
+	//		else
+	//			nLayer = RMAP_DN;
+	//	}
+
+	//CString sPathReelmapUp=_T(""), sPathReelmapDn=_T("");
+	//CString strPath;
+
+	//if (pDoc->m_pReelMapUp)
+	//{
+	//	strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_ALLUP);
+	//	if (!cFile.FindFile(strPath))
+	//	{
+	//		strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
+	//		if (!cFile.FindFile(strPath))
+	//		{
+	//			sPathReelmapUp.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"),
+	//				pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+	//			sPathReelmapDn.Format(_T("%s%s\\%s\\%s\\ReelMapDataDn.txt"),
+	//				pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+	//		}
+	//		else
+	//		{
+	//			sPathReelmapUp = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
+	//		}
+	//	}
+	//	else
+	//	{
+	//		sPathReelmapUp = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
+	//		sPathReelmapDn = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_DN);
+	//	}
+	//}
+	//else
+	//{
+	//	sPathReelmapUp.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"),
+	//		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+	//	sPathReelmapDn.Format(_T("%s%s\\%s\\%s\\ReelMapDataDn.txt"),
+	//		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
+	//}
+
+	//int nLayer = -1; // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
+	//CFileFind cFile2;
+	//bExist = cFile2.FindFile(sPathReelmapUp);
+	//if (bExist)
+	//{
+	//	if (pDoc->GetTestMode() == MODE_INNER)
+	//		nLayer = RMAP_INNER_UP;
+	//	else
+	//		nLayer = RMAP_UP;
+	//}
+	//else
+	//{
+	//	bExist = cFile2.FindFile(sPathReelmapDn);
+	//	if (bExist)
+	//	{
+	//		if (pDoc->GetTestMode() == MODE_INNER)
+	//			nLayer = RMAP_INNER_DN;
+	//		else
+	//			nLayer = RMAP_DN;
+	//	}
+	//	else
+	//		return; // Layer속성의 릴맵이 존재하지 않음.
+	//}
+
 
 	pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir, m_sModel, m_sLayer);
 	pDoc->m_Master[0].LoadMstInfo();
+
 
 	int nPos, nSerial;
 
@@ -2584,12 +2976,17 @@ void CDlgMenu05::MakeItsFile(int nSerial, int nLayer)
 
 CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
 {
+	//CString sItsCode = pDoc->m_sItsCode;
+	//CString sPath = pDoc->GetItsPath(nSerial, nLayer);
+
 	CString str = _T(""), sSide = _T(""), sTemp = _T(""), sItsData = _T("");
 	CString sItsCode = pDoc->m_sItsCode;
+	//CString sItsCode = pDoc->WorkingInfo.LastJob.sEngItsCode;
+	//CString sItsCode = m_sLot;
 
 	int nNodeX = pDoc->m_Master[0].m_pPcsRgn->nCol;
 	int nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow;
-	int nStripY = pDoc->m_Master[0].m_pPcsRgn->nRow / MAX_STRIP; // Strip(1~4);
+	int nStripY = pDoc->m_Master[0].m_pPcsRgn->nRow / 4; // Strip(1~4);
 	int nIdx = pDoc->GetPcrIdx0(nSerial);
 
 	int nTotDefPcs = 0;
@@ -2617,6 +3014,11 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 	case RMAP_INNER_UP:
 		nLayer = RMAP_UP;
 		sSide = _T("T");
+		//if (pDoc->m_pPcrInner[0])
+		//{
+		//	if (pDoc->m_pPcrInner[0][nIdx])
+		//		nTotDefPcs = pDoc->m_pPcrInner[0][nIdx]->m_nTotDef;
+		//}
 		if (pDoc->m_pPcr[nLayer])
 		{
 			if (pDoc->m_pPcr[nLayer][nIdx])
@@ -2626,6 +3028,11 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 	case RMAP_INNER_DN:
 		nLayer = RMAP_DN;
 		sSide = _T("B");
+		//if (pDoc->m_pPcrInner[1])
+		//{
+		//	if (pDoc->m_pPcrInner[1][nIdx])
+		//		nTotDefPcs = pDoc->m_pPcrInner[1][nIdx]->m_nTotDef;
+		//}
 		if (pDoc->m_pPcr[nLayer])
 		{
 			if (pDoc->m_pPcr[nLayer][nIdx])
@@ -2653,6 +3060,7 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 		nR = nRow;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
+			//pDoc->m_Master[0].m_pPcsRgn->GetMkPnt(nCol, nRow, nPcsId, ptPnt);
 			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
 			if (nPcrLineNum > -1)
 			{
@@ -2754,7 +3162,6 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 				}
 			}
 		}
-
 	// Strip A
 	str.Format(_T("%d,%s,%04d\n"), nTotDefPcs - nTotVerifyed, sItsCode, nSerial);
 	sItsData = str;
@@ -2800,6 +3207,7 @@ void CDlgMenu05::OnBtnSave3()
 		return;
 	}
 
+	//	if(IDYES==pView->DoMyMsgBox(_T("Sap3용의 파일을 저장하시겠습니까?"), MB_YESNO))
 	if (IDYES == pView->MsgBox(_T("Sap3용의 파일을 저장하시겠습니까?"), 0, MB_YESNO))
 		MakeSapp3();
 }
@@ -2807,6 +3215,7 @@ void CDlgMenu05::OnBtnSave3()
 void CDlgMenu05::MakeSapp3() // With ReelmapDataAll.txt파일에서 정보를 취합함.
 {
 	FILE *fp = NULL;
+	//char FileName[MAX_PATH];
 	TCHAR FileName[MAX_PATH];
 	CString sPath;
 	TCHAR szData[MAX_PATH];
@@ -2821,6 +3230,7 @@ void CDlgMenu05::MakeSapp3() // With ReelmapDataAll.txt파일에서 정보를 취합함.
 
 	}
 	sPath.Format(_T("%s%9s_%4s_%5s.txt"), pDoc->WorkingInfo.System.sPathSapp3, m_sLot, m_sProcessNum, pDoc->WorkingInfo.System.sMcName);
+	//strcpy(FileName, sPath);
 	_stprintf(FileName, _T("%s"), sPath);
 	char* pRtn = NULL;
 	fp = fopen(pRtn=TCHARToChar(FileName), "w+");
@@ -2879,6 +3289,12 @@ CString CDlgMenu05::Sapp3Data()
 		else
 			dEntireSpeed = 0.0;
 
+		// 레이어
+		// m_sLayer;
+ 		//if (0 < ::GetPrivateProfileString(_T("WorkInfo"), _T("LAYER_NAME"), NULL, szData, sizeof(szData), strPath))
+ 		//	m_strLayer = CString(szData);
+ 		//else
+ 		//	m_strLayer = SearchLayerName();
 	}
 	else
 	{
@@ -2963,6 +3379,13 @@ CString CDlgMenu05::Sapp3Data()
 			strFileData += strData;
 		}
 
+ 		//nSum = m_nDefPerStrip[0][DEF_PINHOLE] + m_nDefPerStrip[0][DEF_PAD];
+ 		//if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD] > 0)
+ 		//{
+ 		//	strData.Format(_T("B%d,%d\r\n"), pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD], nSum); // 핀홀+패드(B134)
+ 		//	strFileData += strData;
+ 		//}
+
 		nSum = m_nDefPerStrip[0][DEF_PINHOLE];
 		if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE] > 0)
 		{
@@ -3031,6 +3454,13 @@ CString CDlgMenu05::Sapp3Data()
 			strData.Format(_T("B%d,%d\r\n"), pDoc->m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION], nSum); // 선간폭+잔동+돌기(B160)
 			strFileData += strData;
 		}
+
+	// 			nSum = m_nDefPerStrip[1][DEF_PINHOLE] + m_nDefPerStrip[1][DEF_PAD];
+	// 			if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD] > 0)
+	// 			{
+	// 				strData.Format(_T("B%d,%d\r\n"), pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD], nSum); // 핀홀+패드(B134)
+	// 				strFileData += strData;
+	// 			}
 
 		nSum = m_nDefPerStrip[1][DEF_PINHOLE];
 		if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE] > 0)
@@ -3102,6 +3532,13 @@ CString CDlgMenu05::Sapp3Data()
 			strFileData += strData;
 		}
 
+	// 			nSum = m_nDefPerStrip[2][DEF_PINHOLE] + m_nDefPerStrip[2][DEF_PAD];
+	// 			if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD] > 0)
+	// 			{
+	// 				strData.Format(_T("B%d,%d\r\n"), pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD], nSum); // 핀홀+패드(B134)
+	// 				strFileData += strData;
+	// 			}
+
 		nSum = m_nDefPerStrip[2][DEF_PINHOLE];
 		if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE] > 0)
 		{
@@ -3172,6 +3609,13 @@ CString CDlgMenu05::Sapp3Data()
 			strFileData += strData;
 		}
 
+	// 			nSum = m_nDefPerStrip[3][DEF_PINHOLE] + m_nDefPerStrip[3][DEF_PAD];
+	// 			if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD] > 0)
+	// 			{
+	// 				strData.Format(_T("B%d,%d\r\n"),pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD], nSum); // 핀홀+패드(B134)
+	// 				strFileData += strData;
+	// 			}
+
 		nSum = m_nDefPerStrip[3][DEF_PINHOLE];
 		if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE] > 0)
 		{
@@ -3233,8 +3677,10 @@ CString CDlgMenu05::Sapp3Data()
 		strData.Format(_T("%d,%d,%.1f,%.1f\r\n"), nStripPcs, nStripPcs-m_nDefStrip[0], dRateBeforeVerify, dRateAfterVerify); // 투입수량, 완성수량, Verify전 수량, Verify후 수량
 		strFileData += strData;
 
+
 		strFileData += _T("\r\n");
 			
+
 		// 열별 불량 Data.
 		strFileData += _T("1X\r\n");
 
@@ -3347,6 +3793,13 @@ CString CDlgMenu05::Sapp3Data()
 			strFileData += strData;
 		}
 
+	// 			nSum = m_nDefPerStrip[2][DEF_PINHOLE] + m_nDefPerStrip[2][DEF_PAD];
+	// 			if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD] > 0)
+	// 			{
+	// 				strData.Format(_T("B%d,%d\r\n"), pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD], nSum); // 핀홀+패드(B134)
+	// 				strFileData += strData;
+	// 			}
+
 		nSum = m_nDefPerStrip[2][DEF_PINHOLE];
 		if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE] > 0)
 		{
@@ -3417,6 +3870,13 @@ CString CDlgMenu05::Sapp3Data()
 			strFileData += strData;
 		}
 
+	// 			nSum = m_nDefPerStrip[1][DEF_PINHOLE] + m_nDefPerStrip[1][DEF_PAD];
+	// 			if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD] > 0)
+	// 			{
+	// 				strData.Format(_T("B%d,%d\r\n"), pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD], nSum); // 핀홀+패드(B134)
+	// 				strFileData += strData;
+	// 			}
+
 		nSum = m_nDefPerStrip[1][DEF_PINHOLE];
 		if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE] > 0)
 		{
@@ -3486,6 +3946,13 @@ CString CDlgMenu05::Sapp3Data()
 			strData.Format(_T("B%d,%d\r\n"),pDoc->m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION], nSum); // 선간폭+잔동+돌기(B160)
 			strFileData += strData;
 		}
+
+	// 			nSum = m_nDefPerStrip[0][DEF_PINHOLE] + m_nDefPerStrip[0][DEF_PAD];
+	// 			if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD] > 0)
+	// 			{
+	// 				strData.Format(_T("B%d,%d\r\n"),pDoc->m_nSapp3Code[SAPP3_PINHOLE_PAD], nSum); // 핀홀+패드(B134)
+	// 				strFileData += strData;
+	// 			}
 
 		nSum = m_nDefPerStrip[0][DEF_PINHOLE];
 		if(nSum > 0 && pDoc->m_nSapp3Code[SAPP3_PINHOLE] > 0)
@@ -3607,7 +4074,7 @@ void CDlgMenu05::PrintData(HDC hPrtdc, int xpage, int ypage)
 	int nCharHight = ypage / 70; // 한페이지를 70 Line으로 설정.
 	int nHorizOffset = xpage / 48; // 한Line을 48등분의 Offset 설정.
 
-	int nStripNumY = MAX_STRIP; // pGlobalDoc->m_aryStripRegion.NodeNumY/pGlobalDoc->m_aryStripRegion.nCellDivideY; // 4
+	int nStripNumY = MAX_STRIP_NUM; // pGlobalDoc->m_aryStripRegion.NodeNumY/pGlobalDoc->m_aryStripRegion.nCellDivideY; // 4
 	int nEntireStripNum = m_nMarkedShot*nStripNumY;
 	int nTot;
 
@@ -3936,6 +4403,7 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	nFileSize = nFileSize - nTemp - 1;
 	pDoc->m_pPcr[0][nIdx]->m_nErrPnl = _tstoi(strHeaderErrorInfo);
 
+
 	// Model
 	nTemp = strFileData.Find(',', 0);
 	strModel = strFileData.Left(nTemp);
@@ -3950,6 +4418,8 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	nFileSize = nFileSize - nTemp - 1;
 	pDoc->m_pPcr[0][nIdx]->m_sLayer = strLayer;
 
+	if (pDoc->WorkingInfo.System.bUseITS)
+	{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -3963,8 +4433,24 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 		strFileData.Delete(0, nTemp + 1);
 		nFileSize = nFileSize - nTemp - 1;
 		pDoc->m_pPcr[0][nIdx]->m_sItsCode = sItsCode;
+	}
+	else
+	{
+		// Lot
+		nTemp = strFileData.Find(',', 0);
+		strLot = strFileData.Left(nTemp);
+		strFileData.Delete(0, nTemp + 1);
+		nFileSize = nFileSize - nTemp - 1;
+		pDoc->m_pPcr[0][nIdx]->m_sLot = strLot;
 
-	// Total Defect Numbers
+		// Lot
+		nTemp = strFileData.Find('\n', 0);
+		strLot = strFileData.Left(nTemp);
+		strFileData.Delete(0, nTemp + 1);
+		nFileSize = nFileSize - nTemp - 1;
+		pDoc->m_pPcr[0][nIdx]->m_sLot = strLot;
+	}
+
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
 	strFileData.Delete(0, nTemp + 1);
@@ -3975,6 +4461,7 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 		pDoc->m_sEngModel = strModel;
 		pDoc->m_sEngLotNum = strLot;
 		pDoc->m_sEngLayerUp = strLayer;
+		//pDoc->m_sEngLayerDn = strModel;
 		if (pDoc->WorkingInfo.System.bUseITS)
 			pDoc->m_sItsCode = sItsCode;
 	}
@@ -4005,6 +4492,22 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
 			{
 				pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+
+				//switch (pDoc->m_Master[0].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+				//{
+				//case 0:
+				//	pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+				//	break;
+				//case 1:
+				//	pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = pDoc->MirrorLR(_tstoi(strPieceID));
+				//	break;
+				//case 3:
+				//	pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = pDoc->Rotate180(_tstoi(strPieceID));
+				//	break;
+				//default:
+				//	pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+				//	break;
+				//}
 			}
 			else
 				pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
@@ -4068,6 +4571,7 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	}
 
 	return (1); // 1(정상)
+				// 	return(m_pPcr[0][nIdx]->m_nErrPnl);
 }
 
 int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
@@ -4090,6 +4594,7 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	{
 		strFileData.Format(_T("PCR파일이 설정되지 않았습니다."));
 		pView->MsgBox(strFileData);
+		//AfxMessageBox(strFileData);
 		return(2);
 	}
 
@@ -4097,6 +4602,7 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	{
 		strFileData.Format(_T("PCR[1]관련 메모리가 할당되지 않았습니다."));
 		pView->MsgBox(strFileData);
+		//AfxMessageBox(strFileData);
 		return(2);
 	}
 
@@ -4119,6 +4625,8 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 		}
 	}
 
+	//strcpy(FileD, sPath);
+	//_tcscpy(FileD, sPath);
 	StringToChar(sPath, FileD);
 
 	if ((fp = fopen(FileD, "r")) != NULL)
@@ -4128,9 +4636,11 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 		fseek(fp, 0, SEEK_SET);
 
 		/* Allocate space for a path name */
+		//FileData = (char*)malloc( nFileSize );
 		FileData = (char*)calloc(nFileSize + 1, sizeof(char));
 
 		nRSize = fread(FileData, sizeof(char), nFileSize, fp);
+		//strFileData.Format(_T("%s"), CharToString(FileData));
 		strFileData = CharToString(FileData);
 		fclose(fp);
 		free(FileData);
@@ -4139,6 +4649,7 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	{
 		strFileData.Format(_T("PCR[Dn] 파일이 존재하지 않습니다.\r\n%s"), sPath);
 		pView->MsgBox(strFileData);
+		//		AfxMessageBox(strFileData);
 		return(2);
 	}
 
@@ -4157,6 +4668,12 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	nFileSize = nFileSize - nTemp - 1;
 	pDoc->m_pPcr[1][nIdx]->m_nErrPnl = _tstoi(strHeaderErrorInfo);
 
+	//if (m_pPcrInner[1][nIdx]->m_nErrPnl == -1)
+	//{
+	//	int syd = 1;
+	//}
+
+
 	// Model
 	nTemp = strFileData.Find(',', 0);
 	strModel = strFileData.Left(nTemp);
@@ -4171,6 +4688,8 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	nFileSize = nFileSize - nTemp - 1;
 	pDoc->m_pPcr[1][nIdx]->m_sLayer = strLayer;
 
+	if (pDoc->WorkingInfo.System.bUseITS)
+	{
 		// Lot
 		nTemp = strFileData.Find(',', 0);
 		strLot = strFileData.Left(nTemp);
@@ -4184,8 +4703,24 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 		strFileData.Delete(0, nTemp + 1);
 		nFileSize = nFileSize - nTemp - 1;
 		pDoc->m_pPcr[1][nIdx]->m_sItsCode = sItsCode;
+	}
+	else
+	{
+		// Lot
+		nTemp = strFileData.Find(',', 0);
+		strLot = strFileData.Left(nTemp);
+		strFileData.Delete(0, nTemp + 1);
+		nFileSize = nFileSize - nTemp - 1;
+		pDoc->m_pPcr[1][nIdx]->m_sLot = strLot;
 
-	// Total Defect Numbers
+		// Lot
+		nTemp = strFileData.Find('\n', 0);
+		strLot = strFileData.Left(nTemp);
+		strFileData.Delete(0, nTemp + 1);
+		nFileSize = nFileSize - nTemp - 1;
+		pDoc->m_pPcr[1][nIdx]->m_sLot = strLot;
+	}
+
 	nTemp = strFileData.Find('\n', 0);
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
 	strFileData.Delete(0, nTemp + 1);
@@ -4196,6 +4731,7 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 	{
 		pDoc->m_sEngModel = strModel;
 		pDoc->m_sEngLotNum = strLot;
+		//pDoc->m_sEngLayerUp = strLayer;
 		pDoc->m_sEngLayerDn = strLayer;
 		if (pDoc->WorkingInfo.System.bUseITS)
 			pDoc->m_sItsCode = sItsCode;
@@ -4226,6 +4762,22 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
 			{
 				pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+
+				//switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+				//{
+				//case 0:
+				//	pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+				//	break;
+				//case 1:
+				//	pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = pDoc->MirrorLR(_tstoi(strPieceID));
+				//	break;
+				//case 3:
+				//	pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = pDoc->Rotate180(_tstoi(strPieceID));
+				//	break;
+				//default:
+				//	pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = _tstoi(strPieceID);
+				//	break;
+				//}
 			}
 			else
 				pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i] = pDoc->MirrorLR(_tstoi(strPieceID));	// 초기 양면검사기용
@@ -4254,6 +4806,7 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			pDoc->m_pPcr[1][nIdx]->m_pDefType[i] = _tstoi(strBadName);
 
 			// Temp for ITS - m_pPcr[0][nIdx]->m_pDefPcs[i] = Rotate180(_tstoi(strPieceID));
+			//pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->Rotate180(pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i]), nC, nR);
 			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i], nC, nR);
 			pDoc->m_pPcr[1][nIdx]->m_arDefType[nR][nC] = pDoc->m_pPcr[1][nIdx]->m_pDefType[i];
 			pDoc->m_pPcr[1][nIdx]->m_arPcrLineNum[nR][nC] = i;
@@ -4285,10 +4838,12 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			strFileData.Delete(0, nTemp + 1);
 			nFileSize = nFileSize - nTemp - 1;
 			pDoc->m_pPcr[1][nIdx]->m_pMk[i] = _tstoi(strMarkingCode);
+
 		}
 	}
 
 	return (1); // 1(정상)
+				//return(m_pPcr[1][nIdx]->m_nErrPnl);
 }
 
 
@@ -4344,6 +4899,12 @@ void CDlgMenu05::OnStnClickedStcIts()
 
 	CString sMsg;
 
+	//if (m_sModel.IsEmpty())
+	//	pView->MsgBox(_T("모델 정보가 없습니다."));
+
+	//if (m_sLot.IsEmpty())
+	//	pView->MsgBox(_T("로트 정보가 없습니다."));
+
 	if (sData.IsEmpty())
 		pView->MsgBox(_T("ITS코드 정보가 없습니다."));
 
@@ -4355,17 +4916,7 @@ void CDlgMenu05::OnStnClickedStcIts()
 		{
 			pDoc->m_sItsCode = sData;
 #ifndef TEST_MODE
-			CFileFind finder;
-			if (finder.FindFile(sPath))
-			{
 			::WritePrivateProfileString(_T("Infomation"), _T("Its Code"), pDoc->m_sItsCode, sPath);
-			}
-			else
-			{
-				sMsg.Format(_T("%s파일의 Infomation에 Its Code 정보가 없습니다."), sPath);
-				pView->ClrDispMsg();
-				AfxMessageBox(sMsg);
-			}
 #endif
 		}
 		else
@@ -4385,29 +4936,15 @@ CString CDlgMenu05::GetItsCode()
 	//char szData[MAX_PATH];
 	TCHAR szData[MAX_PATH];
 
-
-	CString sMsg, sPath = pDoc->WorkingInfo.System.sPathEngCurrInfo;
-
-	CFileFind finder;
-	if (finder.FindFile(sPath))
-	{
-		if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Its Code"), NULL, szData, sizeof(szData), sPath))
+	if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Its Code"), NULL, szData, sizeof(szData), pDoc->WorkingInfo.System.sPathEngCurrInfo))
 		str = CString(szData);
 	else
 		str = _T("");
 
 	return str;
-	}
-	else
-	{
-		sMsg.Format(_T("%s파일의 Infomation에 Its Code 정보가 없습니다."), sPath);
-		pView->ClrDispMsg();
-		AfxMessageBox(sMsg);
-	}
 #else
 	return (_T(""));
 #endif
-	return (_T(""));
 }
 
 int CDlgMenu05::GetLayer(CString strLayer) // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1

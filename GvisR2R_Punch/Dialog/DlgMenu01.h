@@ -117,7 +117,7 @@ public:
 
 	void SetRgbStcDef();
 	void SetTitleStcDef();
-	void ChkAoiVsStatus();
+
 	void SelMap(int nSel);
 	//BOOL OpenReelmap(CString sPath); // for Test
 	void OpenReelmap(int nSelRmap);
@@ -152,6 +152,7 @@ public:
 	void ClrDefImg();
 	void ClrDefImgUp();
 	void ClrDefImgDn();
+//	void ClrRmap();
 	void SetPnlNum();
 	void SetPnlDefNum();
 	void ClrInfo();

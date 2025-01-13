@@ -70,12 +70,14 @@ CDlgMenu02::CDlgMenu02(CWnd* pParent /*=NULL*/)
 	m_nBtnAlignCam0Pos = 0;
 	m_nBtnAlignCam1Pos = 0;
 	m_nSpd = 1;
+// 	m_bMkDnSolOff = FALSE;
 
 	m_nSelectCam0Pos = 0;
 	m_nSelectCam1Pos = 0;
 
 	m_lChk = 0L;
 	m_pDlgUtil03 = NULL;
+	//m_pDlgUtil06 = NULL;
 
 	m_bLockTimer = FALSE;
 }
@@ -168,8 +170,8 @@ BEGIN_MESSAGE_MAP(CDlgMenu02, CDialog)
 	ON_BN_CLICKED(IDC_BTN_ALIGN_MOVE, OnBtnAlignMove)
 	ON_BN_CLICKED(IDC_BTN_ALIGN, OnBtnAlign)
 	ON_BN_CLICKED(IDC_BTN_GRAB, OnBtnGrab)
-	//ON_BN_CLICKED(IDC_BTN_BUFF_HOME, OnBtnBuffHome)
-	//ON_BN_CLICKED(IDC_BTN_BUFF_INIT_MOVE, OnBtnBuffInitMove)
+	ON_BN_CLICKED(IDC_BTN_BUFF_HOME, OnBtnBuffHome)
+	ON_BN_CLICKED(IDC_BTN_BUFF_INIT_MOVE, OnBtnBuffInitMove)
 	ON_BN_CLICKED(IDC_BTN_BUFF_INIT_SAVE, OnBtnBuffInitSave)
 	ON_BN_CLICKED(IDC_BTN_START_SAVE, OnBtnHomeSave)
 	ON_BN_CLICKED(IDC_STC_ALIGN_STD_SCR, OnStcAlignStdScr)
@@ -513,6 +515,12 @@ BOOL CDlgMenu02::OnInitDialog()
 
 	myStcData2[3].SetText(pDoc->WorkingInfo.Vision[1].sResX);
 	myStcData2[4].SetText(pDoc->WorkingInfo.Vision[1].sResY);
+
+// 	if(pDoc->m_pSpecLocal)
+// 	{
+// 		CfPoint ptOfst(pDoc->m_pSpecLocal->m_dPcsOffsetX, pDoc->m_pSpecLocal->m_dPcsOffsetY);
+// 		SetMkPos(ptOfst);
+// 	}
 
 	m_bTIM_BUF_ENC = TRUE;
  	SetTimer(TIM_BUF_ENC, 100, NULL);
@@ -2319,10 +2327,17 @@ void CDlgMenu02::SetPinPos(int nCam, CfPoint ptPnt)
 void CDlgMenu02::OnBtnPinSave() 
 {
 	// TODO: Add your control notification handler code here
+//	pView->ShiftMsgPos(0, -430);
+//	if(IDNO == pView->MessageBox(_T("Do you want to save Pin Position?"), "",  MB_YESNO))
+//	if(IDNO == pView->DoMyMsgBox(_T("Do you want to save Pin Position?"), MB_YESNO))
 	if(IDNO == pView->MsgBox(_T("Do you want to save Pin Position?"), 0, MB_YESNO))
 	{
+//		pView->ShiftMsgPos(0, 0);
 		return;
 	}
+//	pView->ShiftMsgPos(0, 0);
+
+// 	pView->MyMsgBox(_T("Do you want to save Pin Position?"), MB_YESNO, (long)200);
 
 	CfPoint ptPnt;
 	ptPnt.x = pView->m_dEnc[AXIS_X0];
@@ -2339,17 +2354,31 @@ void CDlgMenu02::OnBtnPinSave()
  	if(pDoc->m_pSpecLocal)
  	{
  		pDoc->SetMkPnt(CAM_LF);
+// 		if(myBtn[16].GetCheck())
+// 		{
+// 			if(m_pDlgUtil03)
+// 				m_pDlgUtil03->Disp(ROT_NONE);
+// // 				m_pDlgUtil03->Disp(ROT_CCW_90);
+// 		}
  	}
+
 }
 
 void CDlgMenu02::OnBtnPinSave2() 
 {
 	// TODO: Add your control notification handler code here
 
+//	pView->ShiftMsgPos(0, -430);
+//	if(IDNO == pView->MessageBox(_T("Do you want to save Pin Position?"), "",  MB_YESNO))
+//	if(IDNO == pView->DoMyMsgBox(_T("Do you want to save Pin Position?"), MB_YESNO))
 	if(IDNO == pView->MsgBox(_T("Do you want to save Pin Position?"), 0, MB_YESNO))
 	{
+//		pView->ShiftMsgPos(0, 0);
 		return;
 	}
+//	pView->ShiftMsgPos(0, 0);
+
+// 	pView->MyMsgBox(_T("Do you want to save Pin Position?"), MB_YESNO, (long)200);
 
 	CfPoint ptPnt;
 	ptPnt.x = pView->m_dEnc[AXIS_X1];
@@ -2364,6 +2393,7 @@ void CDlgMenu02::OnBtnPinSave2()
 		{
 			if(m_pDlgUtil03)
 				m_pDlgUtil03->Disp(ROT_NONE);
+// 				m_pDlgUtil03->Disp(ROT_CCW_90);
 		}
 	}	
 
@@ -2374,6 +2404,26 @@ void CDlgMenu02::OnBtnPinSave2()
 	}
 }
 
+// void CDlgMenu02::PinSave() 
+// {
+// 	CfPoint ptPnt;
+// 	ptPnt.x = pView->m_dEnc[AXIS_X];
+// 	ptPnt.y = pView->m_dEnc[AXIS_Y];
+// 
+// 	SetPinPos(ptPnt);
+// 
+// 	if(pDoc->m_pSpecLocal)
+// 	{
+// //		pDoc->SetMkPnt(CfPoint(pDoc->m_pSpecLocal->m_dPcsOffsetX, pDoc->m_pSpecLocal->m_dPcsOffsetY));
+// 		if(myBtn[16].GetCheck())
+// 		{
+// 			if(pView->m_pDlgUtil03)
+// 				pView->m_pDlgUtil03->Disp(ROT_NONE);
+// // 				pView->m_pDlgUtil03->Disp(ROT_CCW_90);
+// 		}
+// 	}
+// }
+
 void CDlgMenu02::OnBtnHomeMove() 
 {
 	// TODO: Add your control notification handler code here
@@ -2382,8 +2432,8 @@ void CDlgMenu02::OnBtnHomeMove()
 	double pTgtPos[2];
 	pTgtPos[1] = _tstof(pDoc->WorkingInfo.Motion.sStPosY[0]);
 	pTgtPos[0] = _tstof(pDoc->WorkingInfo.Motion.sStPosX[0]);
-	double dCurrX = pView->m_dEnc[AXIS_X0];
-	double dCurrY = pView->m_dEnc[AXIS_Y0];
+	double dCurrX = pView->m_dEnc[AXIS_X0]; // pView->m_pMotion->GetActualPosition(AXIS_X);
+	double dCurrY = pView->m_dEnc[AXIS_Y0]; // pView->m_pMotion->GetActualPosition(AXIS_Y);
 
 	if(pView->ChkCollision(AXIS_X0, pTgtPos[0]))
 	{
@@ -2568,6 +2618,14 @@ void CDlgMenu02::OnChkMkOffsetSt()
 		m_dStOffsetX = pView->m_dEnc[AXIS_X0];
 		m_dStOffsetY = pView->m_dEnc[AXIS_Y0];
 
+// 		bOn = pDoc->m_pSliceIo[7] & (0x01<<10) ? TRUE : FALSE;	// 마킹부 토크 클램프 스위치 램프 -> 마킹부 마킹 실린더 SOL
+// 		if(!bOn)
+// 		{
+// 			if(pView->m_pDlgMenu03)
+// 				pView->m_pDlgMenu03->SwMkDnSol(TRUE);
+// 			Sleep(300);
+// 		}
+
 		SwMarking();
 
 		CString str = _T("Find mark with jog button.");
@@ -2594,6 +2652,14 @@ void CDlgMenu02::OnChkMkOffsetSt2()
 		myBtn2[19].EnableWindow(FALSE);	// IDC_CHK_MK_OFFSET_ST
 		m_dStOffsetX = pView->m_dEnc[AXIS_X1];
 		m_dStOffsetY = pView->m_dEnc[AXIS_Y1];
+
+// 		bOn = pDoc->m_pSliceIo[7] & (0x01<<10) ? TRUE : FALSE;	// 마킹부 토크 클램프 스위치 램프 -> 마킹부 마킹 실린더 SOL
+// 		if(!bOn)
+// 		{
+// 			if(pView->m_pDlgMenu03)
+// 				pView->m_pDlgMenu03->SwMkDnSol(TRUE);
+// 			Sleep(300);
+// 		}
 
 		SwMarking2();
 
@@ -3297,6 +3363,78 @@ void CDlgMenu02::MarkingOff2()
 	}
 }
 
+void CDlgMenu02::OnBtnBuffHome() 
+{
+	// TODO: Add your control notification handler code here
+// 	if(!pView->m_pMotion)
+// 		return;
+// 
+// 	pView->SetMkFdSts();
+// 	Sleep(300);
+	if(pDoc->WorkingInfo.Motion.bBufHomming)
+	{
+		pView->DispMsg(_T("Homming"),_T("Searching Buffer Home Position..."),RGB_GREEN,2000,TRUE);
+		//pView->m_pMotion->SearchHomeBuf(FALSE);
+#ifdef USE_MPE
+		if(pView->m_pMpe)
+			pView->m_pMpe->Write(_T("MB440152"), 1);	// 마킹부 버퍼롤러 홈동작 ON
+#endif
+		pView->m_bBufHomeDone = FALSE;
+		if(pView->m_pDlgMenu03)
+			pView->m_pDlgMenu03->ChkBufHomeDone();
+	}	
+}
+
+void CDlgMenu02::OnBtnBuffInitMove() 
+{
+	// TODO: Add your control notification handler code here
+	pView->DispMsg(_T("Moving"),_T("Searching Buffer Initial Position..."),RGB_GREEN,2000,TRUE);
+#ifdef USE_MPE
+	if(pView->m_pMpe)
+		pView->m_pMpe->Write(_T("MB44015A"), 1);	// 마킹부 버퍼 초기위치 이동(PC가 ON, PLC가 OFF)
+#endif
+	if(pView->m_pDlgMenu03)
+		pView->m_pDlgMenu03->ChkBufInitDone();
+
+// 	if(!pView->m_pMotion)
+// 		return;
+// 
+// 	pView->SetMkFdSts();
+// 	Sleep(300);
+// 
+// 	double dDir;
+// 	double fLen, fVel, fAcc, fJerk;
+// 	double dStPos = pView->m_pMotion->m_dStBufPos;
+// 	double dCurPosMkFd = (double)pDoc->m_pMpeData[0][0];	// 마킹부 Feeding 엔코더 값(단위 mm )
+// 	double dCurPosBuf = (double)pDoc->m_pMpeData[0][1] / 1000.0;	// 마킹부 버퍼 엔코더 값(단위 mm * 1000)
+// 
+// 	fLen = dStPos - dCurPosBuf;
+// 
+// 	if(fLen > 0)
+// 	{
+// 		fLen = (dStPos-dCurPosBuf);
+// 		dDir = (double)M_CCW;
+// 	}
+// 	else
+// 	{
+// 		fLen = (dCurPosBuf-dStPos);
+// 		dDir = (double)M_CW;
+// 	}
+// 
+// 	if(fLen > 0.001)
+// 	{
+// 		double dPos = dCurPosMkFd + dDir*fLen;
+// 		pView->m_pMotion->GetSpeedProfile(TRAPEZOIDAL, AXIS_MKFD, fLen, fVel, fAcc, fJerk);
+// 		pView->m_pMotion->Move(MS_MKFD, dPos, fVel/10.0, fAcc/10.0, fAcc/10.0);
+// 		fVel = pView->m_pMotion->m_pParamMotion[MS_MKFD].Home.f1stSpd;
+// 		fAcc = pView->m_pMotion->m_pParamMotion[MS_MKFD].Home.fAcc;
+// 		if(!pView->m_pMotion->Move(MS_MKFD, dDir*fLen, fVel, fAcc, fAcc, INC, WAIT))
+// 		{
+// 			if(!pView->m_pMotion->Move(MS_MKFD, dDir*fLen, fVel, fAcc, fAcc, INC, WAIT))
+// 				AfxMessageBox(_T("Move XY Error..."));
+// 		}
+// 	}	
+}
 
 void CDlgMenu02::OnBtnBuffInitSave() 
 {
@@ -3308,17 +3446,30 @@ void CDlgMenu02::OnBtnBuffInitSave()
 	if(bOn)
 	{
 		myBtn[16].SetCheck(FALSE);
+		//if(m_pDlgUtil06)
+		//{
+		//	if(m_pDlgUtil06->IsWindowVisible())
+		//	{
+		//		m_pDlgUtil06->ShowWindow(SW_HIDE);
+		//	}
+		//}
 	}
 
+//	if(IDNO == pView->DoMyMsgBox(_T("Do you want to save Buffer Position?"), MB_YESNO))
 	if(IDNO == pView->MsgBox(_T("Do you want to save Buffer Position?"), 0, MB_YESNO))
 		return;
 
 	double dBufEnc = (double)pDoc->m_pMpeData[0][1]	/ 1000.0;	// 마킹부 버퍼 엔코더 값(단위 mm * 1000)
 	pView->SetBufInitPos(dBufEnc);
+// 	pView->SetBufInitPos(pView->m_dEnc[AXIS_BUF]);
 }
 
 void CDlgMenu02::DispBufEnc()
 {
+// 	CString str;
+// 	double dBufEnc = (double)pDoc->m_pMpeData[0][1]	/ 1000.0	// 마킹부 버퍼 엔코더 값(단위 mm * 1000)
+// 	str.Format(_T("%.3f"), dBufEnc);
+//	myStcData[11].SetText(str);
 }
 
 void CDlgMenu02::DispCenterMark()
@@ -3360,6 +3511,33 @@ void CDlgMenu02::DispAxisPos()
 }
 
 
+// void CDlgMenu02::SetMkPos(CfPoint ptOfst)
+// {
+// 	if(!pView->m_pVision[0])
+// 		return;
+// 	int nSzCtrlX, nSzCtrlY, nSzImgX, nSzImgY;
+// // 	m_pPcsGL->GetPixelInfo(nSzCtrlX, nSzCtrlY, nSzImgX, nSzImgY);
+// 	pView->m_pVision[0]->GetPixelInfo(nSzCtrlX, nSzCtrlY, nSzImgX, nSzImgY);
+// 	double dImgPixelRes = pDoc->m_Master[0].MasterInfo.dPixelSize / 1000.0; // [mm]
+// // 	double dImgPixelRes = pDoc->MasterInfo.dPixelSize / 1000.0; // [mm]
+// 	int nPixX = int(ptOfst.x/dImgPixelRes);
+// 	int nPixY = int(ptOfst.y/dImgPixelRes);
+// 	CfPoint ptPnt;
+// 	ptPnt.x = nSzImgX/2 + nPixX;
+// 	ptPnt.y = nSzImgY/2 + nPixY;
+// // 	m_pPcsGL->SetMkPos(ptPnt);
+// 	pView->m_pVision[0]->SetMkPos(ptPnt);
+// }
+
+// void CDlgMenu02::DispLocalSpec()
+// {
+// 	CString str;
+// 	str.Format(_T("%.3f"), pDoc->m_pSpecLocal->m_dPcsOffsetX);
+// 	myStcData[0].SetText(str);
+// 	str.Format(_T("%.3f"), pDoc->m_pSpecLocal->m_dPcsOffsetY);
+// 	myStcData[1].SetText(str);
+// }
+
 void CDlgMenu02::ChgModel()
 {
 // 	m_pPcsGL->LoadPcsImg(PATH_PCS_IMG);
@@ -3374,6 +3552,7 @@ void CDlgMenu02::ChgModel()
 
 	if(pView->m_pVision[1])
 	{
+// 		pView->m_pVision[0]->ShowDispPcs(nLayer);
  		pView->m_pVision[1]->ShowDispPin(0);
 		pView->m_pVision[1]->ShowDispAlign();
 	}
@@ -3385,6 +3564,7 @@ void CDlgMenu02::ChgModelUp()
 #ifdef USE_VISION
 	if(pView->m_pVision[0])
 	{
+// 		pView->m_pVision[0]->ShowDispPcs(nLayer);
  		pView->m_pVision[0]->ShowDispPin(0);
 		pView->m_pVision[0]->ShowDispAlign();
 	}
@@ -3396,6 +3576,7 @@ void CDlgMenu02::ChgModelDn()
 #ifdef USE_VISION
 	if(pView->m_pVision[1])
 	{
+// 		pView->m_pVision[0]->ShowDispPcs(nLayer);
  		pView->m_pVision[1]->ShowDispPin(0);
 		pView->m_pVision[1]->ShowDispAlign();
 	}
@@ -3570,6 +3751,8 @@ void CDlgMenu02::OnChkLtOn2()
 		myBtn2[2].EnableWindow(FALSE);
 	}	
 }
+
+
 
 void CDlgMenu02::OnChkMk0Pos1() 
 {
@@ -4070,8 +4253,17 @@ void CDlgMenu02::ShowDlg(int nID)
 
 void CDlgMenu02::ResetMkTestBtn()
 {
+//	m_lChk &= ~(0x01<<0);
 	m_lChk = 0;
 	SetTimer(TIM_SHOW_MK_TEST, 30, NULL);
+
+// 	BOOL bOn0 = myBtn[16].GetCheck();
+// 	if(bOn0)
+// 		myBtn[16].SetCheck(FALSE);
+// 
+// 	BOOL bOn1 = myBtn2[16].GetCheck();
+// 	if(bOn1)
+// 		myBtn2[16].SetCheck(FALSE);
 }
 
 void CDlgMenu02::ChkElecTest() 
@@ -4082,6 +4274,50 @@ void CDlgMenu02::ChkElecTest()
 	{
 		CRect rt;		
 		GetDlgItem(IDC_STATIC_MK_TEST)->GetWindowRect(&rt);
+		//if(m_pDlgUtil06)
+		//{
+		//	if(!m_pDlgUtil06->IsWindowVisible())
+		//	{
+		//		m_pDlgUtil06->ShowWindow(SW_SHOW);
+		//	}
+		//	m_pDlgUtil06->MoveWindow(rt, TRUE);
+		//}
+	}
+	else
+	{
+		//if(m_pDlgUtil06)
+		//{
+		//	if(m_pDlgUtil06->IsWindowVisible())
+		//	{
+		//		m_pDlgUtil06->ShowWindow(SW_HIDE);
+
+		//		if(pView->m_bProbDn[0])
+		//		{
+		//			if(pView->m_pVoiceCoil[0])
+		//			{
+		//				pView->m_pVoiceCoil[0]->SearchHomeSmac(0);
+		//				pView->m_pVoiceCoil[0]->MoveSmacShiftPos(0);
+		//				pView->m_bProbDn[0] = FALSE;
+		//				if(m_pDlgUtil06)
+		//					m_pDlgUtil06->myBtn[2].SetCheck(FALSE);
+		//			}
+		//		}
+
+		//		if(pView->m_bProbDn[1])
+		//		{
+		//			if(pView->m_pVoiceCoil[1])
+		//			{
+		//				pView->m_pVoiceCoil[1]->SearchHomeSmac(1);
+		//				pView->m_pVoiceCoil[1]->MoveSmacShiftPos(1);
+		//				pView->m_bProbDn[1] = FALSE;
+		//				if(m_pDlgUtil06)
+		//					m_pDlgUtil06->myBtn[6].SetCheck(FALSE);
+		//			}
+		//		}
+
+		//	}
+		//}
+		//m_lChk = 0;
 	}
 }
 
@@ -4093,6 +4329,10 @@ void CDlgMenu02::OnChkElecTest()
 		pView->m_bLoadMstInfo = TRUE;
 
 	myBtn[16].SetCheck(FALSE);
+	//m_lChk = 2;
+	//SetTimer(TIM_SHOW_ELEC_TEST, 150, NULL);
+	
+	//ChkElecTest();
 }
 
 
@@ -4165,11 +4405,13 @@ BOOL CDlgMenu02::OnePointAlign(CfPoint &ptPnt)
 	dTgtPinY = pView->m_pMotion->m_dPinPosY[0] + (dY - double(nCamSzY / 2)) * dResY;
 	m_dMkFdOffsetX[0][0] = (double(nCamSzX / 2) - dX) * dResX;
 	m_dMkFdOffsetY[0][0] = (double(nCamSzY / 2) - dY) * dResY;
+	// 	dTgtPinY = pView->m_pMotion->m_dPinPosY + m_dMkFdOffsetX;
 
 	ptPnt.x = dTgtPinX;
 	ptPnt.y = dTgtPinY;
 
 	pView->m_Align[0].SetAlignData(dRefPinX, dRefPinY, dTgtPinX, dTgtPinY);
+	//	pDoc->m_pPcsRgn->SetMkPnt();
 #endif
 	return TRUE;
 }
@@ -4229,11 +4471,13 @@ BOOL CDlgMenu02::OnePointAlign2(CfPoint &ptPnt)
 	dTgtPinY = pView->m_pMotion->m_dPinPosY[1] + (dY - double(nCamSzY / 2)) * dResY;
 	m_dMkFdOffsetX[1][0] = (double(nCamSzX / 2) - dX) * dResX;
 	m_dMkFdOffsetY[1][0] = (double(nCamSzY / 2) - dY) * dResY;
+	// 	dTgtPinY = pView->m_pMotion->m_dPinPosY + m_dMkFdOffsetX;
 
 	ptPnt.x = dTgtPinX;
 	ptPnt.y = dTgtPinY;
 
 	pView->m_Align[1].SetAlignData(dRefPinX, dRefPinY, dTgtPinX, dTgtPinY);
+	//	pDoc->m_pPcsRgn->SetMkPnt();
 #endif
 	return TRUE;
 }
@@ -4399,6 +4643,7 @@ BOOL CDlgMenu02::Do2PtAlign0(int nPos, BOOL bDraw)
 #endif
 	return TRUE;
 }
+
 
 BOOL CDlgMenu02::TwoPointAlign1(int nPos)
 {
@@ -4711,6 +4956,8 @@ BOOL CDlgMenu02::Do4PtAlign0(int nPos, BOOL bDraw)
 			nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow;
 		}
 
+		//pView->m_Align[0].SetAlignData(dRefAlignX0, dRefAlignY0, dRefAlignX1, dRefAlignY1, dRefAlignX2, dRefAlignY2, dRefAlignX3, dRefAlignY3,
+		//								dTgtAlignX0, dTgtAlignY0, dTgtAlignX1, dTgtAlignY1, dTgtAlignX2, dTgtAlignY2, dTgtAlignX3, dTgtAlignY3);
 
 		CfPoint ptRef, ptTgt;
 		int nCol, nRow, idx = 0;
@@ -4880,6 +5127,7 @@ BOOL CDlgMenu02::Do4PtAlign1(int nPos, BOOL bDraw)
 			nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow;
 		}
 
+		//pView->m_Align[1].SetAlignData(dRefAlignX0, dRefAlignY0, dRefAlignX1, dRefAlignY1, dTgtAlignX0, dTgtAlignY0, dTgtAlignX1, dTgtAlignY1);
 
 		CfPoint ptRef, ptTgt;
 		int nCol, nRow, idx = 0;

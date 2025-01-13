@@ -7,7 +7,7 @@
 
 #define TIM_CONNECT			1
 #define TIM_CHECK_CONNECT	10
-//#define TIM_MPE_OFFSET_INITPOS_MOVE	20
+#define TIM_MPE_OFFSET_INITPOS_MOVE	20
 
 #define DELAY_CHECK_CONNECT	5000
 #define DELAY_RESPONSE		10000
@@ -29,7 +29,7 @@ class CEngrave : public CWnd
 	SOCKET_DATA m_SocketData;
 	BOOL m_bAutoConnect;
 	BOOL m_bTIM_CHECK_CONNECT;
-	//BOOL m_bTIM_MPE_OFFSET_INITPOS_MOVE;
+	BOOL m_bTIM_MPE_OFFSET_INITPOS_MOVE;
 	
 	void StartClient(CString sAddrCli, CString sAddrSvr, CString sPortSvr);
 	void StopClient();
@@ -92,7 +92,6 @@ public:
 	void GetSignalEngraveAutoSequence(SOCKET_DATA SockData);
 	void GetSignalMyMsg(SOCKET_DATA SockData);
 	void GetSignal2dEng(SOCKET_DATA SockData);
-	void GetCurrentInfoSignal(SOCKET_DATA SockData);
 
 	// GetSysData
 	void GetSysData(SOCKET_DATA SockData);
@@ -376,6 +375,8 @@ public:
 	// Etc
 	void SwAoiEmg(BOOL bOn);
 	void IsSwAoiEmg(BOOL bOn);
+	//void SwBufRolSol(BOOL bOn);
+	//void SwMkDnSol(BOOL bOn);
 
 	// Recoiler
 	void SwRcRelation(BOOL bOn);
@@ -562,14 +563,6 @@ public:
 	void IsSetMyMsgYes();
 	void IsSetMyMsgNo();
 	void IsSetMyMsgOk();
-
-	// CurrentInfoSigna
-	void SetCurrentInfoSignal();
-	void IsSetCurrentInfoSignal();
-
-	// MonDispMain
-	void SetMonDispMainSignal();
-	void IsSetMonDispMainSignal();
 
 	// Engrave Auto Sequence
 	void SwEngAutoInit(BOOL bOn); // 각인부 초기화(Reset)

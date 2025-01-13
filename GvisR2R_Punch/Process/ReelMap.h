@@ -22,6 +22,7 @@
 #pragma warning(disable: 4477)
 
 
+
 struct stResult
 {
 	CString sMachin, sOpName, sProcessNum;
@@ -81,13 +82,19 @@ class CReelMap : public CWnd
 	int m_nStripOut[MAX_STRIP_NUM], m_nTotStOut;
 	CString m_sPathShare, m_sPathBuf, m_sIpPath;
 	CString m_sPathYield;
+	//double m_dAdjRatio; // Master Image의 Pixel 해상도에 따른 Reelmap에서의 식별용 간격 비율.
 	int m_nIdxDefInfo;	// MAX_DEFINFO에 들어가는 정보의 Index.
 	int m_nWritedSerial; // In Share folder Serial.
 	BOOL m_bContFixDef;
 	int m_nBeforeSerial;
 
+	//int m_nCntFixPcs;
+
 	void LoadConfig();
+	BOOL MakeDir();
+	BOOL MakeDir(CString sModel, CString sLayer, CString sLot);
 	BOOL MakeDirRmap();
+	BOOL MakeDirRmap(CString sModel, CString sLayer, CString sLot);
 	CString MakeDirRmapRestore();
 	CString MakeDirRmapRestore(CString sModel, CString sLayer, CString sLot);
 	int GetLastRmapRestoreDir(CString strPath);
@@ -132,6 +139,8 @@ public:
 	int m_nOdr[MAX_DEF];
 	int m_nBkColor[3]; //RGB
 
+// 	CString *pMkInfo;
+
 	int m_nSelMarkingPnl;
 	double m_dTotLen, m_dPnlLen, m_dLotLen, m_dTempPauseLen, m_dLotCutPosLen;
 	BOOL m_bUseLotSep, m_bUseTempPause;
@@ -160,7 +169,6 @@ public:
 	BOOL OpenUser(CString sPath, CString sModel, CString sLayer, CString sLot);
 	//int Read(CString &sRead);
 	BOOL Write(int nSerial);
-	BOOL Read(int nSerial);
 	BOOL Disp(int nMkPnl, BOOL bDumy=FALSE);
 	void SetLastSerial(int nSerial);
 	void SetCompletedSerial(int nSerial);
@@ -169,6 +177,7 @@ public:
 	BOOL InitRst();
 	void CloseRst();
 	void ClrRst();
+// 	BOOL SetRst(int nSerial);
 	BOOL GetRst(int nFrom, int nTo);
 	BOOL GetRst(int nSerial);
 	int GetDefNum(int nDefCode);
@@ -180,6 +189,7 @@ public:
 	int GetLastSerial();
 	void InitPcs();
 	void ClrPcs();
+//	void ResetReelmap();
 
 	void ClrFixPcs();
 	void ClrFixPcs(int nCol, int nRow);
@@ -254,6 +264,36 @@ public:
 	CString GetIpPath();
 
 	void ResetYield();
+
+	//short ***m_pPnlBufIts;		// DefCode 3D Array : [nSerial-1][nRow][nCol] on File -> [nSerial-1][NodeX][NodeY] : Rotated Cw 90 
+	//int m_nPnlBufIts;			// 메모리에 할당된 총 Shot수
+	//int m_nTotPcsIts, m_nGoodPcsIts, m_nBadPcsIts, m_nDefIts[MAX_DEF];	// [DefCode] : Total Num.
+	//int m_nDefStripIts[MAX_STRIP_NUM], m_nDefPerStripIts[MAX_STRIP_NUM][MAX_DEF];
+	//int m_nStripOutIts[MAX_STRIP_NUM], m_nTotStOutIts;
+	//BOOL m_FixPcsIts[FIX_PCS_SHOT_MAX][FIX_PCS_COL_MAX][FIX_PCS_ROW_MAX]; // [Col][Row]
+	//int m_FixPcsPrevIts[FIX_PCS_COL_MAX][FIX_PCS_ROW_MAX]; // [Col][Row]
+
+	//void CloseRstIts();
+	//BOOL InitRstIts();
+	//BOOL IsFixPcsIts(int nSerial, int* pCol, int* pRow, int &nTot);
+	//BOOL IsFixPcsIts(int nSerial, int &Col, int &Row);
+	//void ClrFixPcsIts(int nCol, int nRow);
+	//void ClrFixPcsIts();
+	//void SetFixPcsIts(int nSerial, int nCol, int nRow);
+	//void SetFixPcsIts(int nSerial);
+	//BOOL InitRstIts();
+	//void CloseRstIts();
+
+	//int m_nProgressRemakeReelmapFromPcr, m_nTotalProgressRemakeReelmapFromPcr;
+	//BOOL m_bThreadAliveRemakeReelmapFromPcr, m_bRtnThreadRemakeReelmapFromPcr, m_bDoneRemakeReelmapFromPcr;
+	//CThreadTask m_ThreadTaskRemakeReelmapFromPcr; // CThreadTask class, handles the threading code
+	//BOOL RemakeReelmapFromPcrWithThread();
+	//BOOL RemakeReelmapFromPcr();
+	//void StartThreadRemakeReelmapFromPcr();
+	//static BOOL ThreadProcRemakeReelmapFromPcr(LPVOID lpContext);
+	//void StopThreadRemakeReelmapFromPcr();
+	//int GetProgressRemakeReelmapFromPcr();
+	//BOOL IsDoneRemakeReelmapFromPcr();
 
 	void SetLastSerialOnOffline(int nSerial);
 	CString GetRmapPathOnOffline(int nRmap);

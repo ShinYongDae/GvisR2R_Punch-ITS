@@ -86,12 +86,10 @@ CDlgKeyNum1::CDlgKeyNum1(CString *strFileName, CString sMsg/*=_T("")*/, CWnd* pP
 
 	m_bTIM_DLG_KEYBDNUM_Lock = FALSE;
 	m_bTIM_DLG_KEYBDNUM = FALSE;
-	m_bTIM_DISP_STS = FALSE;
 }
 
 CDlgKeyNum1::~CDlgKeyNum1()
 {
-	m_bTIM_DISP_STS = FALSE;
 	m_bTIM_DLG_KEYBDNUM = FALSE;
 	DelImg();
 
