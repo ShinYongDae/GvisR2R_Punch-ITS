@@ -14,6 +14,8 @@
 #define MAX_INFO_STC_DATA			21
 #define MAX_INFO_BTN				26
 
+#define TIM_DISP_STS				450
+
 /////////////////////////////////////////////////////////////////////////////
 // CDlgInfo dialog
 
@@ -24,6 +26,7 @@ class CDlgInfo : public CDialog
 	CMyStatic myStcData[MAX_INFO_STC_DATA];
 
 	BOOL m_bLoadImg;
+	BOOL m_bTIM_DISP_STS;
 
 	void LoadImg();
 	void DelImg();
@@ -123,6 +126,7 @@ public:
 	afx_msg void OnStnClickedStc82();
 	afx_msg void OnStnClickedStc83();
 	afx_msg void OnBnClickedChkUseAoiMiddle();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 
 //{{AFX_INSERT_LOCATION}}

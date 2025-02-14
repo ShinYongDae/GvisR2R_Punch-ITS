@@ -22,10 +22,12 @@ CDlgOption01::CDlgOption01(CWnd* pParent /*=NULL*/)
 	: CDialog(CDlgOption01::IDD, pParent)
 {
 	m_pRect = NULL;
+	m_bTIM_DISP_STS = FALSE;
 }
 
 CDlgOption01::~CDlgOption01()
 {
+	m_bTIM_DISP_STS = FALSE;
 	if (m_pRect)
 	{
 		delete m_pRect;
@@ -48,6 +50,7 @@ BEGIN_MESSAGE_MAP(CDlgOption01, CDialog)
 	ON_WM_SHOWWINDOW()
 	ON_BN_CLICKED(IDC_CHECK1, &CDlgOption01::OnBnClickedCheck1)
 	ON_BN_CLICKED(IDC_CHECK2, &CDlgOption01::OnBnClickedCheck2)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -98,6 +101,8 @@ BOOL CDlgOption01::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
+	m_bTIM_DISP_STS = TRUE;
+	SetTimer(TIM_DISP_STS, 100, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -135,4 +140,27 @@ void CDlgOption01::OnBnClickedCheck2()
 	{
 		::WritePrivateProfileString(_T("System"), _T("OffLogPLC"), _T("0"), PATH_WORKING_INFO);
 	}
+}
+
+
+void CDlgOption01::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (nIDEvent == TIM_DISP_STS)
+	{
+		KillTimer(TIM_DISP_STS);
+		if (this->IsWindowVisible())
+		{
+			m_bTIM_DISP_STS = FALSE;
+		}
+		else
+		{
+			this->ShowWindow(SW_SHOW);
+		}
+		if (m_bTIM_DISP_STS)
+			SetTimer(TIM_DISP_STS, 100, NULL);
+	}
+
+
+	CDialog::OnTimer(nIDEvent);
 }

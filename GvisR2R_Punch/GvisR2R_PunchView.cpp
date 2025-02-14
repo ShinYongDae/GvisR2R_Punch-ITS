@@ -11462,8 +11462,11 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 	m_nLotEndAuto = 0;
 
 	m_bLastProc = FALSE;
-	if(MODE_INNER != pDoc->GetTestMode())
+	if (MODE_INNER != pDoc->GetTestMode())
+	{
 		m_bLastProcFromUp = TRUE;
+		pView->m_bWaitPcr[0] = FALSE;
+	}
 	else
 		m_bLastProcFromEng = TRUE;
 
@@ -11523,7 +11526,10 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 		m_pDlgMenu01->m_bLastProc = FALSE;
 
 		if (MODE_INNER != pDoc->GetTestMode())
+		{
 			m_pDlgMenu01->m_bLastProcFromUp = TRUE;
+			pView->m_bWaitPcr[0] = FALSE;
+		}
 		else
 			m_pDlgMenu01->m_bLastProcFromEng = TRUE;
 
@@ -14929,6 +14935,7 @@ void CGvisR2R_PunchView::SetLotEnd(int nSerial)
 		return;
 	}
 
+	//m_bWaitPcr[0] = FALSE;
 	m_nLotEndSerial = nSerial;
 	m_nAoiLastSerial[0] = nSerial;
 
@@ -24925,7 +24932,7 @@ BOOL CGvisR2R_PunchView::ReloadReelmapInner()
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTestInner;
 
-	BOOL bRtn[7] = { 1 };
+	BOOL bRtn[7] = { 1,1,1,1,1,1,1 };
 	//if (pDoc->m_pReelMapInner)
 	//	bRtn[0] = pDoc->m_pReelMapInner->ReloadReelmap();
 
@@ -25031,7 +25038,7 @@ BOOL CGvisR2R_PunchView::ReloadReelmap()
 	BOOL bDualTestInner = pDoc->WorkingInfo.LastJob.bDualTestInner;
 
 
-	BOOL bRtn[5] = { 1 };
+	BOOL bRtn[5] = {1,1,1,1,1};
 	int nSt = 0;
 
 	if (pDoc->m_pReelMapUp)
@@ -25187,6 +25194,12 @@ BOOL CGvisR2R_PunchView::IsDoneReloadReelmap(int& nProc)
 		}
 		else
 			bDone[4] = TRUE;
+	}
+	else
+	{
+		bDone[2] = TRUE;
+		bDone[3] = TRUE;
+		bDone[4] = TRUE;
 	}
 
 	nProc = nRatio[1] + nRatio[2] + nRatio[3] + nRatio[4];
@@ -33254,7 +33267,7 @@ BOOL CGvisR2R_PunchView::IsDoneRemakeReelmapInner()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTestInner;
 	BOOL bAlive[4] = { FALSE };
-	BOOL bSuccess[4] = { TRUE };
+	BOOL bSuccess[4] = { 1,1,1,1 };
 	BOOL bWait = TRUE;
 	DWORD dwSt = GetTickCount();
 

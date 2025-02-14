@@ -5225,13 +5225,14 @@ int CGvisR2R_PunchDoc::LoadPCR0(int nSerial, BOOL bFromShare)	// return : 2(Fail
 		return 0;
 	}
 
-	int nRtn[4] = { 1 };
+	int nRtn[4] = { 1,1,1,1 };
 	nRtn[0] = LoadPCRUp(nSerial, bFromShare);
 	if (nRtn[0] != 1)
 		return nRtn[0];
 	if (pView->GetAoiUpVsStatus())
 	{
-		if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
+		//if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
+		if (pDoc->m_ListBuf[0].nTot < pDoc->m_ListBuf[1].nTot)
 		{
 			nRtn[1] = LoadPCRAllDn(nSerial, bFromShare);
 			if (nRtn[1] != 1)
@@ -5252,7 +5253,7 @@ int CGvisR2R_PunchDoc::LoadPCR0(int nSerial, BOOL bFromShare)	// return : 2(Fail
 		{
 			if (GetTestMode() == MODE_OUTER)
 			{
-				int nRtnInner[5] = { 1 };
+				int nRtnInner[5] = { 1,1,1,1,1 };
 				nRtnInner[0] = LoadPCRUpInner(nSerial, bFromShare);
 				nRtnInner[1] = LoadPCRDnInner(nSerial, bFromShare);
 				nRtnInner[2] = LoadPCRAllUpInner(nSerial, bFromShare);
@@ -5280,7 +5281,7 @@ int CGvisR2R_PunchDoc::LoadPCR0(int nSerial, BOOL bFromShare)	// return : 2(Fail
 	{
 		if (GetTestMode() == MODE_OUTER)
 		{
-			int nRtnInner[5] = { 1 };
+			int nRtnInner[5] = { 1,1,1,1,1 };
 			nRtnInner[0] = LoadPCRUpInner(nSerial, bFromShare);
 			nRtnInner[1] = LoadPCRDnInner(nSerial, bFromShare);
 			nRtnInner[2] = LoadPCRAllUpInner(nSerial, bFromShare);
@@ -5320,7 +5321,7 @@ int CGvisR2R_PunchDoc::LoadPCR1(int nSerial, BOOL bFromShare)	// return : 2(Fail
 	if (!bDualTest)
 		return 0;
 
-	int nRtn[4] = { 1 };
+	int nRtn[4] = { 1,1,1,1 };
 	nRtn[0] = LoadPCRDn(nSerial, bFromShare);
 	if (nRtn[0] != 1)
 		return nRtn[0];
@@ -5348,7 +5349,7 @@ int CGvisR2R_PunchDoc::LoadPCR1(int nSerial, BOOL bFromShare)	// return : 2(Fail
 		{
 			if (GetTestMode() == MODE_OUTER)
 			{
-				int nRtnInner[5] = { 1 };
+				int nRtnInner[5] = { 1,1,1,1,1 };
 				nRtnInner[0] = LoadPCRUpInner(nSerial, bFromShare);
 				nRtnInner[1] = LoadPCRDnInner(nSerial, bFromShare);
 				nRtnInner[2] = LoadPCRAllUpInner(nSerial, bFromShare);

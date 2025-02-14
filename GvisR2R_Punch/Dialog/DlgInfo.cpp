@@ -31,10 +31,12 @@ CDlgInfo::CDlgInfo(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 
 	m_bLoadImg = FALSE;
+	m_bTIM_DISP_STS = FALSE;
 }
 
 CDlgInfo::~CDlgInfo()
 {
+	m_bTIM_DISP_STS = FALSE;
 	if (pView->m_pDlgMenu01)
 		pView->m_pDlgMenu01->UpdateData();
 }
@@ -106,6 +108,7 @@ BEGIN_MESSAGE_MAP(CDlgInfo, CDialog)
 	ON_STN_CLICKED(IDC_STC_82, &CDlgInfo::OnStnClickedStc82)
 	ON_STN_CLICKED(IDC_STC_83, &CDlgInfo::OnStnClickedStc83)
 	ON_BN_CLICKED(IDC_CHK_USE_AOI_MIDDLE, &CDlgInfo::OnBnClickedChkUseAoiMiddle)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -197,7 +200,10 @@ BOOL CDlgInfo::OnInitDialog()
 	GetDlgItem(IDC_CHK_USE_AOI_MIDDLE)->ShowWindow(SW_HIDE);
 
 	GetDlgItem(IDC_STC_181)->SetWindowText(_T("")); // 샘플검사 Shot수
-	
+
+	m_bTIM_DISP_STS = TRUE;
+	SetTimer(TIM_DISP_STS, 100, NULL);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -700,10 +706,20 @@ void CDlgInfo::Disp()
 	else
 		myBtn[21].SetCheck(FALSE);
 
+	if (pView->m_pMpe->Read(_T("MB003664")) ? TRUE : FALSE) //AOI초음파세정기
+		myStcTitle[51].SetBkColor(RGB_LTDKORANGE);
+	else
+		myStcTitle[52].SetBkColor(RGB_LTYELLOW);
+
 	if (pDoc->WorkingInfo.LastJob.bUseEngraveUltrasonic) //각인부초음파세정기
 		myBtn[22].SetCheck(TRUE);
 	else
 		myBtn[22].SetCheck(FALSE);
+
+	if (pView->m_pMpe->Read(_T("MB003644")) ? TRUE : FALSE) //각인부초음파세정기
+		myStcTitle[52].SetBkColor(RGB_LTDKORANGE);
+	else
+		myStcTitle[52].SetBkColor(RGB_LTYELLOW);
 
 	switch (pDoc->WorkingInfo.LastJob.nTestMode) // GetTestMode()
 	{
@@ -2209,4 +2225,38 @@ void CDlgInfo::OnBnClickedChkUseAoiMiddle()
 		SetTestMode(MODE_OUTER);
 	else
 		SetTestMode(MODE_NONE);
+}
+
+
+void CDlgInfo::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (nIDEvent == TIM_DISP_STS)
+	{
+		KillTimer(TIM_DISP_STS);
+		if (this->IsWindowVisible())
+		{
+			m_bTIM_DISP_STS = FALSE;
+
+			if (pView->m_pMpe->Read(_T("MB003644")) ? TRUE : FALSE) //각인부초음파세정기
+				myStcTitle[52].SetBkColor(RGB_LTDKORANGE);
+			else
+				myStcTitle[52].SetBkColor(RGB_LTYELLOW);
+
+			if (pView->m_pMpe->Read(_T("MB003664")) ? TRUE : FALSE) //AOI초음파세정기
+				myStcTitle[51].SetBkColor(RGB_LTDKORANGE);
+			else
+				myStcTitle[52].SetBkColor(RGB_LTYELLOW);
+
+			SetTimer(TIM_DISP_STS, 500, NULL);
+		}
+		else
+		{
+			this->ShowWindow(SW_SHOW);
+		}
+		if (m_bTIM_DISP_STS)
+			SetTimer(TIM_DISP_STS, 100, NULL);
+	}
+
+	CDialog::OnTimer(nIDEvent);
 }

@@ -3100,7 +3100,10 @@ void CDlgMenu06::ResetSerial()
 	{
 		myBtn[3].SetCheck(FALSE);
 		if (MODE_INNER != pDoc->GetTestMode())
+		{
 			m_bLastProcFromUp = TRUE;
+			pView->m_bWaitPcr[0] = FALSE;
+		}
 		else
 			m_bLastProcFromEng = TRUE;
 		m_bLastProc = FALSE;
@@ -4036,7 +4039,10 @@ void CDlgMenu06::LotEnd()
 	if(m_bLastProc)
 	{
 		if (MODE_INNER != pDoc->GetTestMode())
+		{
 			m_bLastProcFromUp = TRUE;
+			pView->m_bWaitPcr[0] = FALSE;
+		}
 		else
 			m_bLastProcFromEng = TRUE;
 		m_bLastProc = FALSE;
@@ -4069,7 +4075,10 @@ void CDlgMenu06::SetLastProc()
 	if(!m_bLastProc)
 	{
 		if (MODE_INNER != pDoc->GetTestMode())
+		{
 			m_bLastProcFromUp = TRUE;
+			pView->m_bWaitPcr[0] = FALSE;
+		}
 		else
 			m_bLastProcFromEng = TRUE;
 		m_bLastProc = TRUE;
@@ -4118,6 +4127,7 @@ void CDlgMenu06::OnChkEjectBuffer()
 				else // AOI 상면부터 잔량처리
 				{
 					m_bLastProcFromUp = TRUE;
+					pView->m_bWaitPcr[0] = FALSE;
 					m_bLastProc = TRUE;
 #ifdef USE_MPE
 					pView->m_pMpe->Write(_T("MB440185"), 1);				// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
@@ -4150,6 +4160,7 @@ void CDlgMenu06::OnChkEjectBuffer()
 					else // AOI 상면부터 잔량처리 
 					{
 						m_bLastProcFromUp = TRUE;
+						pView->m_bWaitPcr[0] = FALSE;
 						m_bLastProc = TRUE;
 #ifdef USE_MPE
 						pView->m_pMpe->Write(_T("MB440185"), 1);				// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112

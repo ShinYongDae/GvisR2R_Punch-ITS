@@ -402,7 +402,7 @@ BOOL CFileOperation::DoDelete(CString sPath)
 	BOOL bRtn=FALSE;
 
 	CString sTemp=_T(""), strPath=_T("");
-	int nPos[3] = {-1};
+	int nPos[3] = {-1,-1,-1};
 
 	nPos[0] = sPath.ReverseFind(_T('\\'));
 	nPos[1] = sPath.Find(_T("*.*"), nPos[0]);
@@ -1137,7 +1137,7 @@ BOOL CFileOperation::DoCopy(CString destPath, BOOL bOverWrite, int nAttr, CStrin
 	BOOL bRtn = FALSE;
 
 	CString sTemp=_T(""), strPath=_T("");
-	int nPos[3] = {-1};
+	int nPos[3] = {-1,-1,-1};
 	
 	nPos[0] = srcPath.ReverseFind(_T('\\'));
 	nPos[1] = srcPath.Find(_T("*.*"), nPos[0]);
@@ -1321,7 +1321,7 @@ BOOL CFileOperation::ApiCopyFile(CString srcPath, CString destPath, BOOL bOverWr
 		}
 	}
 
-	int pPos[3] = {-1};
+	int pPos[3] = {-1,-1,-1};
 	CFileFind finder;
 	BOOL bWorking = finder.FindFile(sFrom);
 
@@ -1673,7 +1673,7 @@ BOOL CFileOperation::CanIfind(CString sPath)
 		return FALSE;
 
 	CString strPath=_T("");
-	int nPos[3] = {-1};
+	int nPos[3] = {-1,-1,-1};
 	CFileFind ff;
 	BOOL bFind;
 

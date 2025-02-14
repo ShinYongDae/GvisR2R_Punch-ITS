@@ -2911,8 +2911,6 @@ BOOL CReelMap::UpdateYield(int nSerial)
 			m_nBeforeSerial = _tstoi(szData);
 	}
 
-	int nPnl = m_nBeforeSerial;//nSerial - 1;
-
 	if (pView->m_bSerialDecrese)
 	{
 		if (nSerial >= m_nBeforeSerial)
@@ -2951,6 +2949,8 @@ BOOL CReelMap::UpdateYield(int nSerial)
 	//	if(bExist)
 	//		ReadYield(nPnl, sPath);
 	//}
+
+	int nPnl = m_nBeforeSerial;//nSerial - 1;
 
 	if (bExist && nPnl > 0)
 		ReadYield(nPnl, sPath);

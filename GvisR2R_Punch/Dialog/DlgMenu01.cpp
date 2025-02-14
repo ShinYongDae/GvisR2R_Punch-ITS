@@ -3260,7 +3260,10 @@ void CDlgMenu01::ResetSerial()
 	{
 		myBtn[3].SetCheck(FALSE);
 		if (MODE_INNER != pDoc->GetTestMode())
+		{
 			m_bLastProcFromUp = TRUE;
+			pView->m_bWaitPcr[0] = FALSE;
+		}
 		else
 			m_bLastProcFromEng = TRUE;
 		m_bLastProc = FALSE;
@@ -3522,14 +3525,23 @@ void CDlgMenu01::UpdateRst() // Menu01 화면에서의 수율정보를 업데이트함.
 
 void CDlgMenu01::DispTotRatio()
 {
-	if (!pDoc->m_pReelMapUp || !pDoc->m_pReelMapDn)
-		return;
+	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+
+	if (bDualTest)
+	{
+		if (!pDoc->m_pReelMapUp || !pDoc->m_pReelMapDn)
+			return;
+	}
+	else
+	{
+		if (!pDoc->m_pReelMapUp)
+			return;
+	}
 
 	CString str;
 	int nGood=0, nBad=0, nTot=0, nVal;
 	int nPnl = m_nSerial - 1;
 	double dRatio=0.0;
-	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
 	// < 전체 수율 >
 	// 상면
@@ -4223,7 +4235,10 @@ void CDlgMenu01::LotEnd()
 	if(m_bLastProc)
 	{
 		if (MODE_INNER != pDoc->GetTestMode())
+		{
 			m_bLastProcFromUp = TRUE;
+			pView->m_bWaitPcr[0] = FALSE;
+		}
 		else
 			m_bLastProcFromEng = TRUE;
 		m_bLastProc = FALSE;
@@ -4256,7 +4271,10 @@ void CDlgMenu01::SetLastProc()
 	if(!m_bLastProc)
 	{
 		if (MODE_INNER != pDoc->GetTestMode())
+		{
 			m_bLastProcFromUp = TRUE;
+			pView->m_bWaitPcr[0] = FALSE;
+		}
 		else
 			m_bLastProcFromEng = TRUE;
 		m_bLastProc = TRUE;
@@ -4308,6 +4326,7 @@ void CDlgMenu01::OnChkEjectBuffer()
 				else // AOI 상면부터 잔량처리
 				{
 					m_bLastProcFromUp = TRUE;
+					pView->m_bWaitPcr[0] = FALSE;
 					m_bLastProc = TRUE;
 #ifdef USE_MPE
 					pView->m_pMpe->Write(_T("MB440185"), 1);				// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
@@ -4359,6 +4378,7 @@ void CDlgMenu01::OnChkEjectBuffer()
 					else // AOI 상면부터 잔량처리 
 					{
 						m_bLastProcFromUp = TRUE;
+						pView->m_bWaitPcr[0] = FALSE;
 						m_bLastProc = TRUE;
 #ifdef USE_MPE
 						pView->m_pMpe->Write(_T("MB440185"), 1);				// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112

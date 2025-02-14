@@ -3,9 +3,13 @@
 
 // CDlgOption01 대화 상자입니다.
 
+#define TIM_DISP_STS				450
+
 class CDlgOption01 : public CDialog
 {
 	//DECLARE_DYNAMIC(CDlgOption01)
+
+	BOOL m_bTIM_DISP_STS;
 
 public:
 	CDlgOption01(CWnd* pParent = NULL);   // 표준 생성자입니다.
@@ -31,4 +35,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedCheck1();
 	afx_msg void OnBnClickedCheck2();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
