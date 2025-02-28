@@ -1911,11 +1911,11 @@ BOOL CDlgMenu01::SaveDefImgPosUp(int nSerial, int nIdxMkInfo, int nIdxImg) // (n
 		nSerial,
 		nIdxImg);
 
-	strDefImgPathD.Format(_T("%s%s\\%s\\%s\\DefImagePos\\%d\\%05d_%s_%c_%d_%d.tif"), pDoc->WorkingInfo.System.sPathOldFile,
+	strDefImgPathD.Format(_T("%s%s\\%s\\%s\\DefImagePos\\%d\\%d_%05d_%s_%c_%d_%d.tif"), pDoc->WorkingInfo.System.sPathOldFile,
 		pDoc->WorkingInfo.LastJob.sModelUp,
 		pDoc->WorkingInfo.LastJob.sLotUp,
 		pDoc->WorkingInfo.LastJob.sLayerUp,
-		nSerial,
+		nSerial, nSerial,
 		nIdxImg, pDoc->m_pReelMap->m_sKorDef[nDefCode], nStrip + 'A', nCol + 1, nRow + 1);
 
 	CFileFind finder;
@@ -1955,11 +1955,11 @@ BOOL CDlgMenu01::SaveDefImgPosDn(int nSerial, int nIdxMkInfo, int nIdxImg) // (n
 		nSerial,
 		nIdxImg);
 
-	strDefImgPathD.Format(_T("%s%s\\%s\\%s\\DefImagePos\\%d\\%05d_%s_%c_%d_%d.tif"), pDoc->WorkingInfo.System.sPathOldFile,
+	strDefImgPathD.Format(_T("%s%s\\%s\\%s\\DefImagePos\\%d\\%d_%05d_%s_%c_%d_%d.tif"), pDoc->WorkingInfo.System.sPathOldFile,
 		pDoc->WorkingInfo.LastJob.sModelUp,
 		pDoc->WorkingInfo.LastJob.sLotUp,
 		pDoc->WorkingInfo.LastJob.sLayerDn,
-		nSerial,
+		nSerial, nSerial,
 		nIdxImg, pDoc->m_pReelMap->m_sKorDef[nDefCode], nStrip + 'A', nCol + 1, nRow + 1);
 
 	CFileFind finder;

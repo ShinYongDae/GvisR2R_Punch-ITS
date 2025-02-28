@@ -4799,6 +4799,8 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 	CString strCamID, strPieceID, strBadPointPosX, strBadPointPosY, strBadName,
 		strCellNum, strImageSize, strImageNum, strMarkingCode;
 
+	*pNewLot = 0;
+
 	if (nSerial < 1)
 	{
 		strFileData.Format(_T("PCR파일이 설정되지 않았습니다."));
@@ -4913,6 +4915,7 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		bUpdate = TRUE;
 		WorkingInfo.LastJob.sLotUp = Status.PcrShare[0].sLot;
 		m_sItsCode = WorkingInfo.LastJob.sEngItsCode = Status.PcrShare[0].sItsCode;
+		*pNewLot = 1;
 	}
 
 	if (WorkingInfo.LastJob.sModelUp != Status.PcrShare[0].sModel || WorkingInfo.LastJob.sLayerUp != Status.PcrShare[0].sLayer || pView->m_bInitAutoLoadMstInfo)
@@ -4920,6 +4923,7 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		bUpdate = TRUE;
 		WorkingInfo.LastJob.sModelUp = Status.PcrShare[0].sModel;
 		WorkingInfo.LastJob.sLayerUp = Status.PcrShare[0].sLayer;
+		*pNewLot = 1;
 
 		if (m_bBufEmptyF[0])
 		{
@@ -4938,7 +4942,6 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 					return FALSE;
 				}
 			}
-
 			pView->m_bInitAutoLoadMstInfo = FALSE;
 			return TRUE;
 		}
@@ -4991,6 +4994,8 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 
 BOOL CGvisR2R_PunchDoc::GetAoiInfoDn(int nSerial, int *pNewLot, BOOL bFromBuf) // TRUE: CHANGED, FALSE: NO CHANGED 
 {
+	*pNewLot = 0;
+
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	if (!bDualTest)
 		return TRUE;
@@ -5128,6 +5133,7 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoDn(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		bUpdate = TRUE;
 		WorkingInfo.LastJob.sLotDn = Status.PcrShare[1].sLot;
 		m_sItsCode = WorkingInfo.LastJob.sEngItsCode = Status.PcrShare[1].sItsCode;
+		*pNewLot = 1;
 	}
 
 	if (WorkingInfo.LastJob.sModelDn != Status.PcrShare[1].sModel || WorkingInfo.LastJob.sLayerDn != Status.PcrShare[1].sLayer)
@@ -5135,6 +5141,7 @@ BOOL CGvisR2R_PunchDoc::GetAoiInfoDn(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		bUpdate = TRUE;
 		WorkingInfo.LastJob.sModelDn = Status.PcrShare[1].sModel;
 		WorkingInfo.LastJob.sLayerDn = Status.PcrShare[1].sLayer;
+		*pNewLot = 1;
 
 		if (m_bBufEmptyF[1])
 		{
@@ -6748,11 +6755,11 @@ BOOL CGvisR2R_PunchDoc::CopyDefImgUp(int nSerial, CString sNewLot)
 			}
 			else
 			{
-				strDefImgPathD.Format(_T("%s\\%s\\%s\\%s\\DefImagePos\\%d\\%05d_%s_%c_%d_%d.tif"), WorkingInfo.System.sPathOldFile,
+				strDefImgPathD.Format(_T("%s\\%s\\%s\\%s\\DefImagePos\\%d\\%d_%05d_%s_%c_%d_%d.tif"), WorkingInfo.System.sPathOldFile,
 					WorkingInfo.LastJob.sModelUp,
 					sLot,
 					WorkingInfo.LastJob.sLayerUp,
-					nSerial,
+					nSerial, nSerial,
 					nDefImg, pDoc->m_pReelMap->m_sKorDef[nDefCode], nStrip + 'A', nCol + 1, nRow + 1);
 			}
 
@@ -7073,11 +7080,11 @@ BOOL CGvisR2R_PunchDoc::CopyDefImgDn(int nSerial, CString sNewLot)
 			}
 			else
 			{
-				strDefImgPathD.Format(_T("%s\\%s\\%s\\%s\\DefImagePos\\%d\\%05d_%s_%c_%d_%d.tif"), WorkingInfo.System.sPathOldFile,
+				strDefImgPathD.Format(_T("%s\\%s\\%s\\%s\\DefImagePos\\%d\\%d_%05d_%s_%c_%d_%d.tif"), WorkingInfo.System.sPathOldFile,
 					WorkingInfo.LastJob.sModelUp,
 					sLot,
 					WorkingInfo.LastJob.sLayerDn,
-					nSerial,
+					nSerial, nSerial,
 					nDefImg, pDoc->m_pReelMap->m_sKorDef[nDefCode], nStrip + 'A', nCol + 1, nRow + 1);
 			}
 
@@ -11327,6 +11334,13 @@ BOOL CGvisR2R_PunchDoc::GetItsSerialInfo(int nItsSerial, BOOL &bDualTest, CStrin
 			sLot = CString(szData);
 		else
 			sLot = _T("");
+
+		if (sLot.IsEmpty())
+		{
+			strTemp.Format(_T("내층 작업정보에 %d 시리얼에 대한 정보가 없습니다.\r\n%s"), nItsSerial, sPath);
+			pView->MsgBox(strTemp);
+			return FALSE;
+		}
 
 		WorkingInfo.LastJob.sInnerLotUp = WorkingInfo.LastJob.sInnerLotDn = sLot;
 	}

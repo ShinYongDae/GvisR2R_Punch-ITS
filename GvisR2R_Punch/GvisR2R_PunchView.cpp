@@ -616,6 +616,7 @@ CGvisR2R_PunchView::~CGvisR2R_PunchView()
 	}
 #endif
 
+	m_bTIM_START_UPDATE = FALSE;
 	m_bTIM_MPE_IO = FALSE;
 	m_bTIM_DISP_STATUS = FALSE;
 	m_bTIM_INIT_VIEW = FALSE;
@@ -19334,8 +19335,13 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 			}
 
 			bNewModel = GetAoiUpInfo(m_nShareUpS, &nNewLot); // Buffer에서 PCR파일의 헤드 정보를 얻음.
-
-			if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+			if (bNewModel)
+			{
+				Stop();
+				break;
+			}
+			//if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+			if(nNewLot)
 			{
 				m_bNewModel = TRUE;
 				InitInfo();
@@ -19582,8 +19588,14 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 
 
 			bNewModel = GetAoiDnInfo(m_nShareDnS, &nNewLot);
+			if (bNewModel)
+			{
+				Stop();
+				break;
+			}
 
-			if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+			//if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+			if (nNewLot)
 			{
 				//MsgBox(_T("신규 모델에 의한 AOI(하)에서 로트 분리가 되었습니다.\r\n이전 로트를 잔량처리 합니다.");
 				InitInfo();
@@ -20268,8 +20280,14 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			}
 
 			bNewModel = GetAoiUpInfo(m_nShareUpS, &nNewLot); // Buffer에서 PCR파일의 헤드 정보를 얻음.
+			if (bNewModel)
+			{
+				Stop();
+				break;
+			}
 
-			if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+			//if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+			if (nNewLot)
 			{
 				m_bNewModel = TRUE;
 				InitInfo();
@@ -20572,8 +20590,14 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 
 			bNewModel = GetAoiDnInfo(m_nShareDnS, &nNewLot);
+			if (bNewModel)
+			{
+				Stop();
+				break;
+			}
 
-			if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+			//if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+			if (nNewLot)
 			{
 				//MsgBox(_T("신규 모델에 의한 AOI(하)에서 로트 분리가 되었습니다.\r\n이전 로트를 잔량처리 합니다.");
 				InitInfo();
@@ -21219,12 +21243,13 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 					}
 				}
 
-				if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+				if (bNewModel)
 				{
-					;
+					Stop();
+					break;
 				}
 				if (nNewLot)
-				{
+				{	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
 					// Lot Change.
 					ChgLot();
 #ifdef USE_MPE
@@ -22969,11 +22994,12 @@ void CGvisR2R_PunchView::Mk4PtChkSerial()
 					}
 				}
 
-				if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+				if (bNewModel)
 				{
-					;
+					Stop();
+					break;
 				}
-				if (nNewLot)
+				if (nNewLot)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
 				{
 					// Lot Change.
 					ChgLot();
