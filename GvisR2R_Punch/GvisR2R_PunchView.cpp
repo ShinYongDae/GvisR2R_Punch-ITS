@@ -1415,6 +1415,13 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == TIM_CAMMASTER_UPDATE)
 	{
 		KillTimer(TIM_CAMMASTER_UPDATE);
+		if (pDoc->GetTestMode() == MODE_OUTER)
+		{
+			if (!pDoc->IsOfflineFolder()) // 0 : Not exist, 1 : Exist only Up, 2 : Exist only Dn, 3 : Exist Up and Dn
+			{
+				MsgBox(_T("³»Ãþ ¸ðµ¨ÀÇ OFFLINE Æú´õ°¡ ¾ø½À´Ï´Ù."));
+			}
+		}
 		if (LoadMstInfo())
 		{
 			if (m_pDlgMenu01)
@@ -11928,6 +11935,14 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 
 		if (IsLastJob(0)) // Up
 		{
+			if (pDoc->GetTestMode() == MODE_OUTER)
+			{
+				if (!pDoc->IsOfflineFolder()) // 0 : Not exist, 1 : Exist only Up, 2 : Exist only Dn, 3 : Exist Up and Dn
+				{
+					MsgBox(_T("³»Ãþ ¸ðµ¨ÀÇ OFFLINE Æú´õ°¡ ¾ø½À´Ï´Ù."));
+				}
+			}
+
 			pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
 				pDoc->WorkingInfo.LastJob.sModelUp,
 				pDoc->WorkingInfo.LastJob.sLayerUp);
@@ -14296,6 +14311,13 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 
 	if (IsLastJob(0)) // Up
 	{
+		if (pDoc->GetTestMode() == MODE_OUTER)
+		{
+			if (!pDoc->IsOfflineFolder()) // 0 : Not exist, 1 : Exist only Up, 2 : Exist only Dn, 3 : Exist Up and Dn
+			{
+				MsgBox(_T("³»Ãþ ¸ðµ¨ÀÇ OFFLINE Æú´õ°¡ ¾ø½À´Ï´Ù."));
+			}
+		}
 		if (bGetCurrentInfoEng)
 		{
 			pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
@@ -19351,6 +19373,13 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// ÀÜ·®Ã³¸® ½Ã °è¼ÓÀûÀ¸·Î ¹Ýº¹
 
 				if (IsLastJob(0)) // Up
 				{
+					if (pDoc->GetTestMode() == MODE_OUTER)
+					{
+						if (!pDoc->IsOfflineFolder()) // 0 : Not exist, 1 : Exist only Up, 2 : Exist only Dn, 3 : Exist Up and Dn
+						{
+							MsgBox(_T("³»Ãþ ¸ðµ¨ÀÇ OFFLINE Æú´õ°¡ ¾ø½À´Ï´Ù."));
+						}
+					}
 					pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
 						pDoc->WorkingInfo.LastJob.sModelUp,
 						pDoc->WorkingInfo.LastJob.sLayerUp);
@@ -20297,6 +20326,13 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-ÀÜ·®Ã³¸® ½Ã °è¼ÓÀûÀ¸
 
 				if (IsLastJob(0)) // Up
 				{
+					if (pDoc->GetTestMode() == MODE_OUTER)
+					{
+						if (!pDoc->IsOfflineFolder()) // 0 : Not exist, 1 : Exist only Up, 2 : Exist only Dn, 3 : Exist Up and Dn
+						{
+							MsgBox(_T("³»Ãþ ¸ðµ¨ÀÇ OFFLINE Æú´õ°¡ ¾ø½À´Ï´Ù."));
+						}
+					}
 					pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
 						pDoc->WorkingInfo.LastJob.sModelUp,
 						pDoc->WorkingInfo.LastJob.sLayerUp);
