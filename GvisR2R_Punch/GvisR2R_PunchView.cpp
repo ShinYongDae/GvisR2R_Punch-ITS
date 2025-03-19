@@ -3688,7 +3688,8 @@ void CGvisR2R_PunchView::ChkShare()
 {
 	ChkShareUp();
 	ChkShareDn();
-	if (GetAoiUpVsStatus())
+	//if (GetAoiUpVsStatus())
+	if(pDoc->m_bVsStatusUp)
 		ChkShareVs();
 }
 
@@ -3748,7 +3749,8 @@ void CGvisR2R_PunchView::ChkShareUp()
 		str.Format(_T("US: "));
 	}
 
-	if (!GetAoiUpVsStatus() && !GetAoiDnVsStatus())
+	//if (!GetAoiUpVsStatus() && !GetAoiDnVsStatus())
+	if(!pDoc->m_bVsStatusUp && !pDoc->m_bVsStatusDn)
 	{
 		if (pFrm)
 		{
@@ -3817,7 +3819,8 @@ void CGvisR2R_PunchView::ChkShareDn()
 		str.Format(_T("DS: "));
 	}
 
-	if (!GetAoiUpVsStatus() && !GetAoiDnVsStatus())
+	//if (!GetAoiUpVsStatus() && !GetAoiDnVsStatus())
+	if(!pDoc->m_bVsStatusUp && !pDoc->m_bVsStatusDn)
 	{
 		if (pFrm)
 		{
@@ -9243,7 +9246,8 @@ void CGvisR2R_PunchView::Shift2Buf()	// 버퍼폴더의 마지막 시리얼과 Share폴더의 �
 	//	}
 	//}
 
-	if (GetAoiUpVsStatus())
+	//if (GetAoiUpVsStatus())
+	if(pDoc->m_bVsStatusUp)
 	{
 		sSrc = pDoc->WorkingInfo.System.sPathVsShareUp;
 		sDest = pDoc->WorkingInfo.System.sPathVrsBufUp;
@@ -10836,7 +10840,8 @@ BOOL CGvisR2R_PunchView::IsBuffer(int nNum)
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (GetAoiUpVsStatus())
+	//if (GetAoiUpVsStatus())
+	if(pDoc->m_bVsStatusUp)
 	{
 		if(!m_bLotEnd)
 			nNum = 1;
@@ -11543,6 +11548,7 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 
 		m_pDlgMenu01->ResetSerial();
 		m_pDlgMenu01->ResetLastProc();
+		m_pDlgMenu01->ChkAoiVsStatus();
 	}
 
 
@@ -11947,6 +11953,8 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 				pDoc->WorkingInfo.LastJob.sModelUp,
 				pDoc->WorkingInfo.LastJob.sLayerUp);
 			pDoc->m_Master[0].LoadMstInfo();
+			if (m_pDlgMenu01)
+				m_pDlgMenu01->ChkAoiVsStatus();
 			//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
 
 			if (m_pEngrave)
@@ -14324,6 +14332,8 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 				pDoc->m_sEngModel,
 				pDoc->m_sEngLayerUp);
 			pDoc->m_Master[0].LoadMstInfo();
+			if (m_pDlgMenu01)
+				m_pDlgMenu01->ChkAoiVsStatus();
 			//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
 
 			if (pDoc->GetTestMode() == MODE_OUTER)
@@ -14346,6 +14356,8 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 				pDoc->WorkingInfo.LastJob.sModelUp,
 				pDoc->WorkingInfo.LastJob.sLayerUp);
 			pDoc->m_Master[0].LoadMstInfo();
+			if (m_pDlgMenu01)
+				m_pDlgMenu01->ChkAoiVsStatus();
 			//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
 		}
 	}
@@ -15394,14 +15406,17 @@ BOOL CGvisR2R_PunchView::IsVs()
 		BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 		if (bDualTest)
 		{
-			if (GetAoiDnVsStatus())
+			//if (GetAoiDnVsStatus())
+			if(pDoc->m_bVsStatusDn)
 				return TRUE;
-			else if (GetAoiUpVsStatus())
+			//else if (GetAoiUpVsStatus())
+			else if(pDoc->m_bVsStatusUp)
 				return TRUE;
 		}
 		else
 		{
-			if (GetAoiUpVsStatus())
+			//if (GetAoiUpVsStatus())
+			if(pDoc->m_bVsStatusUp)
 				return TRUE;
 		}
 	}
@@ -15411,12 +15426,14 @@ BOOL CGvisR2R_PunchView::IsVs()
 
 BOOL CGvisR2R_PunchView::IsVsUp()
 {
-	return GetAoiUpVsStatus();
+	return pDoc->m_bVsStatusUp;
+	//return GetAoiUpVsStatus();
 }
 
 BOOL CGvisR2R_PunchView::IsVsDn()
 {
-	return GetAoiDnVsStatus();
+	return pDoc->m_bVsStatusDn;
+	//return GetAoiDnVsStatus();
 }
 
 void CGvisR2R_PunchView::SetDummyUp()
@@ -15751,9 +15768,23 @@ BOOL CGvisR2R_PunchView::GetAoiUpVsStatus()
 #ifndef TEST_MODE
 	TCHAR szData[200];
 	CString sPath = pDoc->WorkingInfo.System.sPathAoiUpCurrInfo;
-	if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Current VS Status"), NULL, szData, sizeof(szData), sPath))
-		bVsStatus = _tstoi(szData) > 0 ? TRUE : FALSE;
+	CString sMsg;
+
+	CFileFind finder;
+	if (finder.FindFile(sPath))
+	{
+		if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Current VS Status"), NULL, szData, sizeof(szData), sPath))
+			bVsStatus = _tstoi(szData) > 0 ? TRUE : FALSE;
+	}
+	else
+	{
+		sMsg.Format(_T("%s파일의 Infomation에 Current VS Status 정보가 없습니다.\r\n상면 AOI가 꺼진 것 같습니다."), sPath);
+		pView->ClrDispMsg();
+		MsgBox(sMsg);
+		//AfxMessageBox(sMsg);
+	}
 #endif
+	pDoc->m_bVsStatusUp = bVsStatus;
 	return bVsStatus;
 }
 
@@ -15779,9 +15810,23 @@ BOOL CGvisR2R_PunchView::GetAoiDnVsStatus()
 #ifndef TEST_MODE
 	TCHAR szData[200];
 	CString sPath = pDoc->WorkingInfo.System.sPathAoiDnCurrInfo;
-	if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Current VS Status"), NULL, szData, sizeof(szData), sPath))
-		bVsStatus = _tstoi(szData) > 0 ? TRUE : FALSE;
+	CString sMsg;
+
+	CFileFind finder;
+	if (finder.FindFile(sPath))
+	{
+		if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Current VS Status"), NULL, szData, sizeof(szData), sPath))
+			bVsStatus = _tstoi(szData) > 0 ? TRUE : FALSE;
+	}
+	else
+	{
+		sMsg.Format(_T("%s파일의 Infomation에 Current VS Status 정보가 없습니다.\r\n하면 AOI가 꺼진 것 같습니다."), sPath);
+		pView->ClrDispMsg();
+		MsgBox(sMsg);
+		//AfxMessageBox(sMsg);
+	}
 #endif
+	pDoc->m_bVsStatusDn = bVsStatus;
 	return bVsStatus;
 }
 
@@ -18259,7 +18304,8 @@ void CGvisR2R_PunchView::DoAuto()
 	DoAutoDispMsg();
 
 	// Check Share Folder Start
-	if(GetAoiUpVsStatus())
+	//if(GetAoiUpVsStatus())
+	if(pDoc->m_bVsStatusUp)
 		DoAutoChkShareVsFolder();
 	else
 		DoAutoChkShareFolder();
@@ -18286,7 +18332,8 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 
 	if (!IsBuffer(0) && m_bLastProc && m_nLotEndAuto < LOT_END)
 	{
-		if (!GetAoiUpVsStatus())
+		//if (!GetAoiUpVsStatus())
+		if(pDoc->m_bVsStatusUp)
 		{
 			m_bLotEnd = TRUE;
 			m_nLotEndAuto = LOT_END;
@@ -18294,7 +18341,8 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 	}
 	else if(!IsBuffer(0) && m_nMkStAuto > MK_ST + (Mk2PtIdx::DoneMk) + 4)
 	{
-		if (!GetAoiUpVsStatus())
+		//if (!GetAoiUpVsStatus())
+		if(pDoc->m_bVsStatusUp)
 		{
 			m_nMkStAuto = 0;
 			m_bLotEnd = TRUE;
@@ -19357,11 +19405,11 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 			}
 
 			bNewModel = GetAoiUpInfo(m_nShareUpS, &nNewLot); // Buffer에서 PCR파일의 헤드 정보를 얻음.
-			if (bNewModel)
-			{
-				Stop();
-				break;
-			}
+			//if (bNewModel)
+			//{
+			//	Stop();
+			//	break;
+			//}
 			//if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
 			if(nNewLot)
 			{
@@ -19384,6 +19432,8 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 						pDoc->WorkingInfo.LastJob.sModelUp,
 						pDoc->WorkingInfo.LastJob.sLayerUp);
 					pDoc->m_Master[0].LoadMstInfo();
+					if (m_pDlgMenu01)
+						m_pDlgMenu01->ChkAoiVsStatus();
 
 					if (m_pEngrave)
 						m_pEngrave->SwMenu01UpdateWorking(TRUE);
@@ -19617,11 +19667,11 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 
 
 			bNewModel = GetAoiDnInfo(m_nShareDnS, &nNewLot);
-			if (bNewModel)
-			{
-				Stop();
-				break;
-			}
+			//if (bNewModel)
+			//{
+			//	Stop();
+			//	break;
+			//}
 
 			//if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
 			if (nNewLot)
@@ -20309,11 +20359,11 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			}
 
 			bNewModel = GetAoiUpInfo(m_nShareUpS, &nNewLot); // Buffer에서 PCR파일의 헤드 정보를 얻음.
-			if (bNewModel)
-			{
-				Stop();
-				break;
-			}
+			//if (bNewModel)
+			//{
+			//	Stop();
+			//	break;
+			//}
 
 			//if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
 			if (nNewLot)
@@ -20337,6 +20387,8 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 						pDoc->WorkingInfo.LastJob.sModelUp,
 						pDoc->WorkingInfo.LastJob.sLayerUp);
 					pDoc->m_Master[0].LoadMstInfo();
+					if (m_pDlgMenu01)
+						m_pDlgMenu01->ChkAoiVsStatus();
 					//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
 
 
@@ -20626,11 +20678,11 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 
 			bNewModel = GetAoiDnInfo(m_nShareDnS, &nNewLot);
-			if (bNewModel)
-			{
-				Stop();
-				break;
-			}
+			//if (bNewModel)
+			//{
+			//	Stop();
+			//	break;
+			//}
 
 			//if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
 			if (nNewLot)
@@ -21047,7 +21099,8 @@ void CGvisR2R_PunchView::Mk2PtReady()
 				}
 				else
 				{
-					if (!GetAoiUpVsStatus())
+					//if (!GetAoiUpVsStatus())
+					if(!pDoc->m_bVsStatusUp)
 					{
 						m_bLotEnd = TRUE;
 						m_nLotEndAuto = LOT_END;
@@ -21095,7 +21148,8 @@ void CGvisR2R_PunchView::Mk2PtReady()
 				}
 				else
 				{
-					if (!GetAoiUpVsStatus())
+					//if (!GetAoiUpVsStatus())
+					if(pDoc->m_bVsStatusUp)
 					{
 						m_bLotEnd = TRUE;
 						m_nLotEndAuto = LOT_END;
@@ -21279,11 +21333,11 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 					}
 				}
 
-				if (bNewModel)
-				{
-					Stop();
-					break;
-				}
+				//if (bNewModel)
+				//{
+				//	Stop();
+				//	break;
+				//}
 				if (nNewLot)
 				{	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
 					// Lot Change.
@@ -22889,7 +22943,8 @@ void CGvisR2R_PunchView::Mk4PtReady()
 				}
 				else
 				{
-					if (!GetAoiUpVsStatus())
+					//if (!GetAoiUpVsStatus())
+					if(pDoc->m_bVsStatusUp)
 					{
 						m_bLotEnd = TRUE;
 						m_nLotEndAuto = LOT_END;
@@ -22928,7 +22983,8 @@ void CGvisR2R_PunchView::Mk4PtReady()
 				}
 				else
 				{
-					if (!GetAoiUpVsStatus())
+					//if (!GetAoiUpVsStatus())
+					if(pDoc->m_bVsStatusUp)
 					{
 						m_bLotEnd = TRUE;
 						m_nLotEndAuto = LOT_END;
@@ -23030,11 +23086,11 @@ void CGvisR2R_PunchView::Mk4PtChkSerial()
 					}
 				}
 
-				if (bNewModel)
-				{
-					Stop();
-					break;
-				}
+				//if (bNewModel)
+				//{
+				//	Stop();
+				//	break;
+				//}
 				if (nNewLot)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
 				{
 					// Lot Change.

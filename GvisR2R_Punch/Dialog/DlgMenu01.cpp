@@ -2834,10 +2834,10 @@ void CDlgMenu01::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 		ChkMkLimit();
 		ChkPartialSpd();
 
-		if (pView->GetAoiUpVsStatus() && !GetDlgItem(IDC_STC_VS)->IsWindowVisible())
-			GetDlgItem(IDC_STC_VS)->ShowWindow(SW_SHOW);
-		else if(!pView->GetAoiUpVsStatus() && GetDlgItem(IDC_STC_VS)->IsWindowVisible())
-			GetDlgItem(IDC_STC_VS)->ShowWindow(SW_HIDE);
+		//if (pView->GetAoiUpVsStatus() && !GetDlgItem(IDC_STC_VS)->IsWindowVisible())
+		//	GetDlgItem(IDC_STC_VS)->ShowWindow(SW_SHOW);
+		//else if(!pView->GetAoiUpVsStatus() && GetDlgItem(IDC_STC_VS)->IsWindowVisible())
+		//	GetDlgItem(IDC_STC_VS)->ShowWindow(SW_HIDE);
 
 		if(m_bTIM_DISP_MK_CNT)
 			SetTimer(TIM_DISP_MK_CNT, 300, NULL);
@@ -6502,4 +6502,23 @@ void CDlgMenu01::OnStnClickedStcTqDisp2ValR()
 
 	pDoc->WorkingInfo.Marking[1].sMarkingDisp2Toq = sData;
 	::WritePrivateProfileString(_T("Marking1"), _T("MARKING_DISP2_TOQ"), sData, PATH_WORKING_INFO);
+}
+
+void CDlgMenu01::ChkAoiVsStatus()
+{
+	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+	if (bDualTest)
+	{
+		if ((pView->GetAoiUpVsStatus() && pView->GetAoiDnVsStatus()) && !GetDlgItem(IDC_STC_VS)->IsWindowVisible())
+			GetDlgItem(IDC_STC_VS)->ShowWindow(SW_SHOW);
+		else if (!pView->GetAoiUpVsStatus() && !pView->GetAoiDnVsStatus() && GetDlgItem(IDC_STC_VS)->IsWindowVisible())
+			GetDlgItem(IDC_STC_VS)->ShowWindow(SW_HIDE);
+	}
+	else
+	{
+		if (pView->GetAoiUpVsStatus() && !GetDlgItem(IDC_STC_VS)->IsWindowVisible())
+			GetDlgItem(IDC_STC_VS)->ShowWindow(SW_SHOW);
+		else if (!pView->GetAoiUpVsStatus() && GetDlgItem(IDC_STC_VS)->IsWindowVisible())
+			GetDlgItem(IDC_STC_VS)->ShowWindow(SW_HIDE);
+	}
 }

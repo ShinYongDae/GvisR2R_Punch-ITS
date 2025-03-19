@@ -33,6 +33,7 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
+	BOOL m_bVsStatusUp, m_bVsStatusDn;
 	BOOL m_bOffLogAuto, m_bOffLogPLC;
 	int m_nDelayShow;
 	BOOL m_bBufEmpty[2]; // [0]: Up, [1]: Dn

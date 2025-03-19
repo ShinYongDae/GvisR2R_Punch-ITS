@@ -133,6 +133,8 @@ void CDlgInfo::AtDlgShow()
 {
 	LoadImg();
 	Disp();
+	//if (pView->m_pDlgMenu01)
+	//	pView->m_pDlgMenu01->ChkAoiVsStatus();
 }
 
 void CDlgInfo::AtDlgHide()

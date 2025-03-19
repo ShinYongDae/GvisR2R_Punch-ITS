@@ -51,6 +51,9 @@ CGvisR2R_PunchDoc::CGvisR2R_PunchDoc()
 	int i, k;
 	pDoc = this;
 
+	m_bVsStatusUp = FALSE;
+	m_bVsStatusDn = FALSE;
+
 	m_bOffLogAuto = FALSE;
 	m_bOffLogPLC = FALSE;
 	m_strUserNameList = _T("");
@@ -5236,7 +5239,8 @@ int CGvisR2R_PunchDoc::LoadPCR0(int nSerial, BOOL bFromShare)	// return : 2(Fail
 	nRtn[0] = LoadPCRUp(nSerial, bFromShare);
 	if (nRtn[0] != 1)
 		return nRtn[0];
-	if (pView->GetAoiUpVsStatus())
+	//if (pView->GetAoiUpVsStatus())
+	if(pDoc->m_bVsStatusUp)
 	{
 		//if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
 		if (pDoc->m_ListBuf[0].nTot < pDoc->m_ListBuf[1].nTot)
@@ -5333,7 +5337,8 @@ int CGvisR2R_PunchDoc::LoadPCR1(int nSerial, BOOL bFromShare)	// return : 2(Fail
 	if (nRtn[0] != 1)
 		return nRtn[0];
 
-	if (pView->GetAoiUpVsStatus())
+	//if (pView->GetAoiUpVsStatus())
+	if(pDoc->m_bVsStatusUp)
 	{
 		if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
 		{
