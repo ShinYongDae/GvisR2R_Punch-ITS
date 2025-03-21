@@ -18333,7 +18333,7 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 	if (!IsBuffer(0) && m_bLastProc && m_nLotEndAuto < LOT_END)
 	{
 		//if (!GetAoiUpVsStatus())
-		if(pDoc->m_bVsStatusUp)
+		if(!pDoc->m_bVsStatusUp)
 		{
 			m_bLotEnd = TRUE;
 			m_nLotEndAuto = LOT_END;
@@ -18342,7 +18342,7 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 	else if(!IsBuffer(0) && m_nMkStAuto > MK_ST + (Mk2PtIdx::DoneMk) + 4)
 	{
 		//if (!GetAoiUpVsStatus())
-		if(pDoc->m_bVsStatusUp)
+		if(!pDoc->m_bVsStatusUp)
 		{
 			m_nMkStAuto = 0;
 			m_bLotEnd = TRUE;
