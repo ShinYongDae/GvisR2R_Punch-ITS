@@ -12947,68 +12947,243 @@ int CGvisR2R_PunchView::GetMkStripIdx1(int nDefPcsId) // 0 : Fail , 1~4 : Strip 
 
 CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 : "Serial_Strip_Col_Row"
 {
+	CString sInfo;
+	//int nRef = 100 - pDoc->WorkingInfo.LastJob.nJudgeMkRatio[0];
+	//int nJudge = 0;
+
+	//if (pDoc->WorkingInfo.LastJob.bUseJudgeMk)
+	//	nJudge = m_pVision[0]->MkMtRst.dScore;
+
 	if (nSerial <= 0)
 	{
-		AfxMessageBox(_T("Serial Error.48"));
-		return 0;
+		//pView->SetAlarmToPlc(UNIT_PUNCH);
+		pView->ClrDispMsg();
+		MsgBox(_T("좌측 마킹위치 정보 실패."));
+
+		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		return sInfo;
 	}
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	CString sInfo;
 	int nStrip = -1, nCol = -1, nRow = -1;
-	int nPcsIdx, nDefCode;
+	int nPcsIdx = -1, nDefCode = -1;
 	int nPcrIdx = pDoc->GetPcrIdx0(nSerial);
-	if (bDualTest)
+
+	if (pDoc->GetTestMode() == MODE_OUTER)
 	{
-		nPcsIdx = pDoc->m_pPcr[2][nPcrIdx]->m_pDefPcs[nMkPcs];
-		nDefCode = pDoc->m_pPcr[2][nPcrIdx]->m_pDefType[nMkPcs];
+		if (pDoc->m_pPcrIts)
+		{
+			nPcsIdx = pDoc->m_pPcrIts[nPcrIdx]->m_pDefPcs[nMkPcs];
+			nDefCode = pDoc->m_pPcrIts[nPcrIdx]->m_pDefType[nMkPcs];
+		}
+
+		if (nPcsIdx < 0)
+		{
+			MsgBox(_T("외층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
+			//pDoc->LogAuto(_T("외층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+			//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			return sInfo;
+		}
 	}
 	else
 	{
-		nPcsIdx = pDoc->m_pPcr[0][nPcrIdx]->m_pDefPcs[nMkPcs];
-		nDefCode = pDoc->m_pPcr[0][nPcrIdx]->m_pDefType[nMkPcs];
+		if (bDualTest)
+		{
+			if (pDoc->m_pPcr[2])
+			{
+				nPcsIdx = pDoc->m_pPcr[2][nPcrIdx]->m_pDefPcs[nMkPcs];
+				nDefCode = pDoc->m_pPcr[2][nPcrIdx]->m_pDefType[nMkPcs];
+			}
+		}
+		else
+		{
+			if (pDoc->m_pPcr[0])
+			{
+				nPcsIdx = pDoc->m_pPcr[0][nPcrIdx]->m_pDefPcs[nMkPcs];
+				nDefCode = pDoc->m_pPcr[0][nPcrIdx]->m_pDefType[nMkPcs];
+			}
+		}
+
+		if (nPcsIdx < 0)
+		{
+			MsgBox(_T("양면or내층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
+			//pDoc->LogAuto(_T("양면or내층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+			//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			return sInfo;
+		}
 	}
 
 	if (pDoc->m_Master[0].m_pPcsRgn)
-		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(nPcsIdx, nStrip, nCol, nRow);
-
-	sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
+	{
+		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_Master[0].MasterInfo.nActionCode, nPcsIdx, nStrip, nCol, nRow);
+		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
+		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
+	}
+	else
+	{
+		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		MsgBox(_T("좌측 마킹위치 정보 실패."));
+	}
 
 	return sInfo;
 }
 
 CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 : "Serial_Strip_Col_Row"
 {
+	CString sInfo;
+	//int nRef = 100 - pDoc->WorkingInfo.LastJob.nJudgeMkRatio[1];
+	//int nJudge = 0;
+
+	//if (pDoc->WorkingInfo.LastJob.bUseJudgeMk)
+	//	nJudge = m_pVision[1]->MkMtRst.dScore;
+
 	if (nSerial <= 0)
 	{
-		AfxMessageBox(_T("Serial Error.48"));
-		return 0;
+		//pView->SetAlarmToPlc(UNIT_PUNCH);
+		pView->ClrDispMsg();
+		MsgBox(_T("우측 마킹위치 정보 실패."));
+		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		return sInfo;
 	}
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	CString sInfo;
-	int nPcsIdx, nDefCode;
+	int nPcsIdx = -1, nDefCode = -1;
 	int nStrip = -1, nCol = -1, nRow = -1;
 	int nPcrIdx = pDoc->GetPcrIdx1(nSerial);
-	if (bDualTest)
+
+	if (pDoc->GetTestMode() == MODE_OUTER)
 	{
-		nPcsIdx = pDoc->m_pPcr[2][nPcrIdx]->m_pDefPcs[nMkPcs];
-		nDefCode = pDoc->m_pPcr[2][nPcrIdx]->m_pDefType[nMkPcs];
+		if (pDoc->m_pPcrIts)
+		{
+			nPcsIdx = pDoc->m_pPcrIts[nPcrIdx]->m_pDefPcs[nMkPcs];
+			nDefCode = pDoc->m_pPcrIts[nPcrIdx]->m_pDefType[nMkPcs];
+		}
+
+		if (nPcsIdx < 0)
+		{
+			MsgBox(_T("외층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
+			//pDoc->LogAuto(_T("외층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+			//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			return sInfo;
+		}
 	}
 	else
 	{
-		nPcsIdx = pDoc->m_pPcr[0][nPcrIdx]->m_pDefPcs[nMkPcs];
-		nDefCode = pDoc->m_pPcr[0][nPcrIdx]->m_pDefType[nMkPcs];
-	}
-	if (pDoc->m_Master[0].m_pPcsRgn)
-		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(nPcsIdx, nStrip, nCol, nRow);
+		if (bDualTest)
+		{
+			if (pDoc->m_pPcr[2])
+			{
+				nPcsIdx = pDoc->m_pPcr[2][nPcrIdx]->m_pDefPcs[nMkPcs];
+				nDefCode = pDoc->m_pPcr[2][nPcrIdx]->m_pDefType[nMkPcs];
+			}
+		}
+		else
+		{
+			if (pDoc->m_pPcr[0])
+			{
+				nPcsIdx = pDoc->m_pPcr[0][nPcrIdx]->m_pDefPcs[nMkPcs];
+				nDefCode = pDoc->m_pPcr[0][nPcrIdx]->m_pDefType[nMkPcs];
+			}
+		}
 
-	sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
+		if (nPcsIdx < 0)
+		{
+			MsgBox(_T("양면or내층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
+			//pDoc->LogAuto(_T("양면or내층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+			//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			return sInfo;
+		}
+	}
+
+	if (pDoc->m_Master[0].m_pPcsRgn)
+	{
+		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_Master[0].MasterInfo.nActionCode, nPcsIdx, nStrip, nCol, nRow);
+		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
+		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
+	}
+	else
+	{
+		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		MsgBox(_T("우측 마킹위치 정보 실패."));
+	}
 
 	return sInfo;
 }
+
+//CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 : "Serial_Strip_Col_Row"
+//{
+//	if (nSerial <= 0)
+//	{
+//		AfxMessageBox(_T("Serial Error.48"));
+//		return 0;
+//	}
+//
+//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+//
+//	CString sInfo;
+//	int nStrip = -1, nCol = -1, nRow = -1;
+//	int nPcsIdx, nDefCode;
+//	int nPcrIdx = pDoc->GetPcrIdx0(nSerial);
+//	if (bDualTest)
+//	{
+//		nPcsIdx = pDoc->m_pPcr[2][nPcrIdx]->m_pDefPcs[nMkPcs];
+//		nDefCode = pDoc->m_pPcr[2][nPcrIdx]->m_pDefType[nMkPcs];
+//	}
+//	else
+//	{
+//		nPcsIdx = pDoc->m_pPcr[0][nPcrIdx]->m_pDefPcs[nMkPcs];
+//		nDefCode = pDoc->m_pPcr[0][nPcrIdx]->m_pDefType[nMkPcs];
+//	}
+//
+//	if (pDoc->m_Master[0].m_pPcsRgn)
+//		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(nPcsIdx, nStrip, nCol, nRow);
+//
+//	sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
+//
+//	return sInfo;
+//}
+//
+//CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 : "Serial_Strip_Col_Row"
+//{
+//	if (nSerial <= 0)
+//	{
+//		AfxMessageBox(_T("Serial Error.48"));
+//		return 0;
+//	}
+//
+//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+//
+//	CString sInfo;
+//	int nPcsIdx, nDefCode;
+//	int nStrip = -1, nCol = -1, nRow = -1;
+//	int nPcrIdx = pDoc->GetPcrIdx1(nSerial);
+//	if (bDualTest)
+//	{
+//		nPcsIdx = pDoc->m_pPcr[2][nPcrIdx]->m_pDefPcs[nMkPcs];
+//		nDefCode = pDoc->m_pPcr[2][nPcrIdx]->m_pDefType[nMkPcs];
+//	}
+//	else
+//	{
+//		nPcsIdx = pDoc->m_pPcr[0][nPcrIdx]->m_pDefPcs[nMkPcs];
+//		nDefCode = pDoc->m_pPcr[0][nPcrIdx]->m_pDefType[nMkPcs];
+//	}
+//	if (pDoc->m_Master[0].m_pPcsRgn)
+//		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(nPcsIdx, nStrip, nCol, nRow);
+//
+//	sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
+//
+//	return sInfo;
+//}
 
 
 int CGvisR2R_PunchView::GetMkStripIdx0(int nSerial, int nMkPcs) // 0 : Fail , 1~4 : Strip Idx
@@ -26759,8 +26934,8 @@ BOOL CGvisR2R_PunchView::MoveAlign0(int nPos)
 			pPos[1] = pDoc->m_Master[0].m_stAlignMk.Y1 + m_pMotion->m_dPinPosY[0];
 		}
 
-		if (ChkCollision(AXIS_X0, pPos[0]))
-			return FALSE;
+		//if (ChkCollision(AXIS_X0, pPos[0]))
+		//	return FALSE;
 
 		double fLen, fVel, fAcc, fJerk;
 		fLen = sqrt(((pPos[0] - dCurrX) * (pPos[0] - dCurrX)) + ((pPos[1] - dCurrY) * (pPos[1] - dCurrY)));
@@ -26809,8 +26984,8 @@ BOOL CGvisR2R_PunchView::MoveAlign1(int nPos)
 			pPos[1] = pDoc->m_Master[0].m_stAlignMk.Y1 + m_pMotion->m_dPinPosY[1];
 		}
 
-		if (ChkCollision(AXIS_X1, pPos[0]))
-			return FALSE;
+		//if (ChkCollision(AXIS_X1, pPos[0]))
+		//	return FALSE;
 
 		double fLen, fVel, fAcc, fJerk;
 		fLen = sqrt(((pPos[0] - dCurrX) * (pPos[0] - dCurrX)) + ((pPos[1] - dCurrY) * (pPos[1] - dCurrY)));

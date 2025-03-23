@@ -406,6 +406,54 @@ BOOL CPcsRgn::GetMkMatrix(int nPcsId, int &nStrip, int &nC, int &nR) // nStrip:0
 	return TRUE;
 }
 
+BOOL CPcsRgn::GetMkMatrix(int nActionCode, int nPcsId, int &nStrip, int &nC, int &nR) // nStrip:0~3 , nC:0~ , nR:0~
+{
+	int nNodeX = nCol;
+	int nNodeY = nRow;
+	int nStPcsY = nNodeY / MAX_STRIP_NUM;
+	int nRow;// , nCol;
+
+	if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
+	{
+		switch (nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+		{
+		case 0:
+			break;
+		case 1:
+			nPcsId = pDoc->MirrorLR(nPcsId);
+			break;
+		case 2:
+			nPcsId = pDoc->MirrorUD(nPcsId);
+			break;
+		case 3:
+			nPcsId = pDoc->Rotate180(nPcsId);
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (-1 < nPcsId && nPcsId < (nNodeX*nNodeY))
+	{
+		nC = int(nPcsId / nNodeY);
+		if (nC % 2)	// 홀수.
+			nRow = nNodeY*(nC + 1) - 1 - nPcsId;
+		else		// 짝수.
+			nRow = nPcsId - nC*nNodeY;
+	}
+	else
+	{
+		nC = -1;
+		nR = -1;
+		return FALSE;
+	}
+
+	nStrip = int(nRow / nStPcsY);
+	nR = nRow % nStPcsY;
+
+	return TRUE;
+}
+
 // void CPcsRgn::GetMkPnt(int nC, int nR, int &nPcsId, CfPoint &ptPnt)
 // {
 // 	int nNodeY = nRow;
