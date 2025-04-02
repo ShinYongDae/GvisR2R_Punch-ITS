@@ -11548,7 +11548,7 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 
 		m_pDlgMenu01->ResetSerial();
 		m_pDlgMenu01->ResetLastProc();
-		m_pDlgMenu01->ChkAoiVsStatus();
+		//m_pDlgMenu01->ChkAoiVsStatus();
 	}
 
 
@@ -11953,8 +11953,8 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 				pDoc->WorkingInfo.LastJob.sModelUp,
 				pDoc->WorkingInfo.LastJob.sLayerUp);
 			pDoc->m_Master[0].LoadMstInfo();
-			if (m_pDlgMenu01)
-				m_pDlgMenu01->ChkAoiVsStatus();
+			//if (m_pDlgMenu01)
+			//	m_pDlgMenu01->ChkAoiVsStatus();
 			//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
 
 			if (m_pEngrave)
@@ -14507,8 +14507,8 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 				pDoc->m_sEngModel,
 				pDoc->m_sEngLayerUp);
 			pDoc->m_Master[0].LoadMstInfo();
-			if (m_pDlgMenu01)
-				m_pDlgMenu01->ChkAoiVsStatus();
+			//if (m_pDlgMenu01)
+			//	m_pDlgMenu01->ChkAoiVsStatus();
 			//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
 
 			if (pDoc->GetTestMode() == MODE_OUTER)
@@ -14531,8 +14531,8 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 				pDoc->WorkingInfo.LastJob.sModelUp,
 				pDoc->WorkingInfo.LastJob.sLayerUp);
 			pDoc->m_Master[0].LoadMstInfo();
-			if (m_pDlgMenu01)
-				m_pDlgMenu01->ChkAoiVsStatus();
+			//if (m_pDlgMenu01)
+			//	m_pDlgMenu01->ChkAoiVsStatus();
 			//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
 		}
 	}
@@ -17072,7 +17072,7 @@ void CGvisR2R_PunchView::DoMark0()
 			nIdx = GetMkStripIdx0(nSerial, m_nMkPcs[0]);		// 1 ~ 4 : strip index
 			if (nIdx > 0)										// Strip index가 정상이면,
 			{
-				if (!IsMkStrip(nIdx)) // Strip[] Mk Off
+				if (!IsMkStrip(nIdx)) // Strip[] Mk Off Check (열별마킹 여부 버튼)
 				{
 					m_nMkPcs[0]++;
 					m_nStepMk[0] = MK_DONE_CHECK;
@@ -17080,7 +17080,7 @@ void CGvisR2R_PunchView::DoMark0()
 				}
 				else
 				{
-					if (m_nMkStrip[0][nIdx - 1] >= nStripOut)
+					if (m_nMkStrip[0][nIdx - 1] >= nStripOut)	// 양폐 스트립 피스갯수
 					{
 						m_nMkPcs[0]++;
 						m_nStepMk[0] = MK_DONE_CHECK;
@@ -17703,7 +17703,7 @@ void CGvisR2R_PunchView::DoMark1()
 				}
 				else
 				{
-					if (m_nMkStrip[1][nIdx - 1] >= nStripOut)
+					if (m_nMkStrip[1][nIdx - 1] >= nStripOut)	// 양폐 스트립 피스갯수
 					{
 						m_nMkPcs[1]++;
 						m_nStepMk[1] = MK_DONE_CHECK;
@@ -19607,8 +19607,8 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 						pDoc->WorkingInfo.LastJob.sModelUp,
 						pDoc->WorkingInfo.LastJob.sLayerUp);
 					pDoc->m_Master[0].LoadMstInfo();
-					if (m_pDlgMenu01)
-						m_pDlgMenu01->ChkAoiVsStatus();
+					//if (m_pDlgMenu01)
+					//	m_pDlgMenu01->ChkAoiVsStatus();
 
 					if (m_pEngrave)
 						m_pEngrave->SwMenu01UpdateWorking(TRUE);
@@ -20562,8 +20562,8 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 						pDoc->WorkingInfo.LastJob.sModelUp,
 						pDoc->WorkingInfo.LastJob.sLayerUp);
 					pDoc->m_Master[0].LoadMstInfo();
-					if (m_pDlgMenu01)
-						m_pDlgMenu01->ChkAoiVsStatus();
+					//if (m_pDlgMenu01)
+					//	m_pDlgMenu01->ChkAoiVsStatus();
 					//pDoc->m_Master[0].WriteStripPieceRegion_Text(pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sLotUp);
 
 

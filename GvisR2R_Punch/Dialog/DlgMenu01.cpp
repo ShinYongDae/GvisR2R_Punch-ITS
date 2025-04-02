@@ -2838,6 +2838,8 @@ void CDlgMenu01::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 		//	GetDlgItem(IDC_STC_VS)->ShowWindow(SW_SHOW);
 		//else if(!pView->GetAoiUpVsStatus() && GetDlgItem(IDC_STC_VS)->IsWindowVisible())
 		//	GetDlgItem(IDC_STC_VS)->ShowWindow(SW_HIDE);
+		if (!pView->IsRun())
+			ChkAoiVsStatus();
 
 		if(m_bTIM_DISP_MK_CNT)
 			SetTimer(TIM_DISP_MK_CNT, 300, NULL);
