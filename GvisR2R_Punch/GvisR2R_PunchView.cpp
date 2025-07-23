@@ -19980,61 +19980,55 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		break;
 
 	case AT_LP + (AtLpVsIdx::UpdateReelmap) + 3:
-		//if (IsRun())
+		if (bDualTest)
 		{
-			if (bDualTest)
-			{
-				if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
-					break;
-			}
-			else
-			{
-				if (m_bTHREAD_UPDATE_REELMAP_UP) // Write Reelmap
-					break;
-			}
-			m_nStepAuto++;
+			if (m_bTHREAD_UPDATE_REELMAP_UP || m_bTHREAD_UPDATE_REELMAP_DN || m_bTHREAD_UPDATE_REELMAP_ALLUP || m_bTHREAD_UPDATE_REELMAP_ALLDN) // Write Reelmap
+				break;
 		}
+		else
+		{
+			if (m_bTHREAD_UPDATE_REELMAP_UP) // Write Reelmap
+				break;
+		}
+		m_nStepAuto++;
 		break;
 
 	case AT_LP + (AtLpVsIdx::MakeItsFile):
-		//if (IsRun())
+		if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
 		{
-			if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
+			if (!bDualTest)
 			{
-				if (!bDualTest)
+				if (m_nShareUpS > 0)
 				{
-					if (m_nShareUpS > 0)
+					MakeItsFile(m_nShareUpS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
+					if (pDoc->GetTestMode() == MODE_OUTER)
+						UpdateReelmapInner(m_nShareUpS);
+				}
+			}
+			else
+			{
+				if (m_nShareUpS > 0)
+				{
+					if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
 					{
 						MakeItsFile(m_nShareUpS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
 						if (pDoc->GetTestMode() == MODE_OUTER)
 							UpdateReelmapInner(m_nShareUpS);
 					}
 				}
-				else
+				if (m_nShareDnS > 0)
 				{
-					if (m_nShareUpS > 0)
+					if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
 					{
-						if (pDoc->m_ListBuf[0].nTot <= pDoc->m_ListBuf[1].nTot)
-						{
-							MakeItsFile(m_nShareUpS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
-							if (pDoc->GetTestMode() == MODE_OUTER)
-								UpdateReelmapInner(m_nShareUpS);
-						}
-					}
-					if (m_nShareDnS > 0)
-					{
-						if (pDoc->m_ListBuf[1].nTot <= pDoc->m_ListBuf[0].nTot)
-						{
-							MakeItsFile(m_nShareDnS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
-							if (pDoc->GetTestMode() == MODE_OUTER)
-								UpdateReelmapInner(m_nShareDnS);
-						}
+						MakeItsFile(m_nShareDnS); // BOOL CReelMap::MakeItsFile(int nSerial, int nLayer) // RMAP_UP, RMAP_DN, RMAP_INNER_UP, RMAP_INNER_DN
+						if (pDoc->GetTestMode() == MODE_OUTER)
+							UpdateReelmapInner(m_nShareDnS);
 					}
 				}
 			}
-
-			m_nStepAuto++;
 		}
+
+		m_nStepAuto++;
 		break;
 
 	case AT_LP + (AtLpVsIdx::MakeItsFile) + 1:
@@ -23082,6 +23076,7 @@ void CGvisR2R_PunchView::MarkingWith2PointAlign()
 	Mk2PtReject();
 	Mk2PtErrStop();
 }
+
 
 void CGvisR2R_PunchView::Mk4PtReady()
 {
@@ -33625,16 +33620,10 @@ void CGvisR2R_PunchView::GetResult()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	//if (pDoc->m_pReelMapUp)
-	//	pDoc->m_pReelMapUp->GetResult();
 	if (bDualTest)
 	{
 		if (pDoc->m_pReelMapAllUp)
 			pDoc->m_pReelMapAllUp->GetResult();
-		//if (pDoc->m_pReelMapDn)
-		//	pDoc->m_pReelMapDn->GetResult();
-		//if (pDoc->m_pReelMapAllDn)
-		//	pDoc->m_pReelMapAllDn->GetResult();
 	}
 	else
 	{
@@ -33644,20 +33633,8 @@ void CGvisR2R_PunchView::GetResult()
 
 	if (pDoc->GetTestMode() == MODE_OUTER)
 	{
-		//if (pDoc->m_pReelMapInnerUp)
-		//	pDoc->m_pReelMapInnerUp->GetResult();
 		if (pDoc->m_pReelMapIts)
 			pDoc->m_pReelMapIts->GetResult();
-
-		//if (pDoc->WorkingInfo.LastJob.bDualTestInner)
-		//{
-		//	if (pDoc->m_pReelMapInnerDn)
-		//		pDoc->m_pReelMapInnerDn->GetResult();
-		//	if (pDoc->m_pReelMapInnerAllUp)
-		//		pDoc->m_pReelMapInnerAllUp->GetResult();
-		//	if (pDoc->m_pReelMapInnerAllDn)
-		//		pDoc->m_pReelMapInnerAllDn->GetResult();
-		//}
 	}
 }
 
