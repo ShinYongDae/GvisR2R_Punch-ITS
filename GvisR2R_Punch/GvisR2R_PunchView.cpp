@@ -34872,18 +34872,6 @@ BOOL CGvisR2R_PunchView::RemakeReelmapFromPcr(CString sModel, CString sLot, CStr
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	CString sReelmapSrc, str, sMsg;
 
-	//if (pDoc->m_pReelMapUp)
-	//	pDoc->m_pReelMapUp->StartThreadRemakeReelmapFromPcr();
-
-	//if (bDualTest)
-	//{
-	//	if (pDoc->m_pReelMapDn)
-	//		pDoc->m_pReelMapDn->StartThreadRemakeReelmapFromPcr();
-
-	//	if (pDoc->m_pReelMapAllUp)
-	//		pDoc->m_pReelMapAllUp->StartThreadRemakeReelmapFromPcr();
-	//}
-
 	if (!pDoc->m_pReelMapUp)
 	{
 		sMsg.Format(_T("m_pReelMapUp이 Create되지않았습니다.\r\n%s"));

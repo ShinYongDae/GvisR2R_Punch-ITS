@@ -2824,87 +2824,11 @@ void CDlgMenu05::MakeIts()
 		bExist = cFile.FindFile(sPathPcr);
 		if (!bExist)
 		{
-		return; // pcr파일이 존재하지 않음.
-	}
+			return; // pcr파일이 존재하지 않음.
+		}
 	}
 
 	int nLayer = GetLayer(m_sLayer);
-	//int nLayer = -1; // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
-	//if (m_sLayer == m_sLayerUp)
-	//{
-	//	if (pDoc->GetTestMode() == MODE_INNER)
-	//		nLayer = RMAP_INNER_UP;
-	//	else
-	//		nLayer = RMAP_UP;
-	//}
-	//else if (m_sLayer == m_sLayerDn)
-	//	{
-	//		if (pDoc->GetTestMode() == MODE_INNER)
-	//			nLayer = RMAP_INNER_DN;
-	//		else
-	//			nLayer = RMAP_DN;
-	//	}
-
-	//CString sPathReelmapUp=_T(""), sPathReelmapDn=_T("");
-	//CString strPath;
-
-	//if (pDoc->m_pReelMapUp)
-	//{
-	//	strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_ALLUP);
-	//	if (!cFile.FindFile(strPath))
-	//	{
-	//		strPath = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
-	//		if (!cFile.FindFile(strPath))
-	//		{
-	//			sPathReelmapUp.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"),
-	//				pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
-	//			sPathReelmapDn.Format(_T("%s%s\\%s\\%s\\ReelMapDataDn.txt"),
-	//				pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
-	//		}
-	//		else
-	//		{
-	//			sPathReelmapUp = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
-	//		}
-	//	}
-	//	else
-	//	{
-	//		sPathReelmapUp = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_UP);
-	//		sPathReelmapDn = pDoc->m_pReelMapUp->GetRmapPathOnOffline(RMAP_DN);
-	//	}
-	//}
-	//else
-	//{
-	//	sPathReelmapUp.Format(_T("%s%s\\%s\\%s\\ReelMapDataUp.txt"),
-	//		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
-	//	sPathReelmapDn.Format(_T("%s%s\\%s\\%s\\ReelMapDataDn.txt"),
-	//		pDoc->WorkingInfo.System.sPathOldFile, m_sModel, m_sLot, m_sLayer);
-	//}
-
-	//int nLayer = -1; // RMAP_NONE = -1, RMAP_UP = 0, RMAP_DN = 1
-	//CFileFind cFile2;
-	//bExist = cFile2.FindFile(sPathReelmapUp);
-	//if (bExist)
-	//{
-	//	if (pDoc->GetTestMode() == MODE_INNER)
-	//		nLayer = RMAP_INNER_UP;
-	//	else
-	//		nLayer = RMAP_UP;
-	//}
-	//else
-	//{
-	//	bExist = cFile2.FindFile(sPathReelmapDn);
-	//	if (bExist)
-	//	{
-	//		if (pDoc->GetTestMode() == MODE_INNER)
-	//			nLayer = RMAP_INNER_DN;
-	//		else
-	//			nLayer = RMAP_DN;
-	//	}
-	//	else
-	//		return; // Layer속성의 릴맵이 존재하지 않음.
-	//}
-
-
 	pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir, m_sModel, m_sLayer);
 	pDoc->m_Master[0].LoadMstInfo();
 

@@ -166,11 +166,12 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "GvisR2R_Punch, 버전 2.0.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2025.03.24 -> 07.14",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2025.07.29",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
     LTEXT           "수율 이전 Shot확인 후 집계",IDC_STATIC,7,46,98,8
     LTEXT           "양면 VS 외층시 내층머징 for RTR11,12,13",IDC_STATIC,7,54,156,8
     LTEXT           "불량이미지 시리얼 && OFFLINE 검색",IDC_STATIC,7,46,104,8
+    LTEXT           "릴맵Disp: 파일읽기 --> 메모리참조",IDC_STATIC,7,38,98,8
 END
 
 IDD_GVISR2R_PUNCH_FORM DIALOGEX 0, 0, 630, 461
