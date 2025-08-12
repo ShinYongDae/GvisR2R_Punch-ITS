@@ -2984,13 +2984,14 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 		nR = nRow;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
-			//pDoc->m_Master[0].m_pPcsRgn->GetMkPnt(nCol, nRow, nPcsId, ptPnt);
-			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNumForIts[nR][nCol];
+			//nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
 			if (nPcrLineNum > -1)
 			{
 				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
 				{
-					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefTypeForIts[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					//nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 					if (nDefCode > 0)
 					{
 						nTotStrip[0]++;
@@ -3012,12 +3013,14 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 		nR = nRow + nStripY;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
-			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNumForIts[nR][nCol];
+			//nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
 			if (nPcrLineNum > -1)
 			{
 				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
 				{
-					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefTypeForIts[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					//nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 					if (nDefCode > 0)
 					{
 						nTotStrip[1]++;
@@ -3039,12 +3042,14 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 		nR = nRow + nStripY * 2;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
-			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNumForIts[nR][nCol];
+			//nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
 			if (nPcrLineNum > -1)
 			{
 				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
 				{
-					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefTypeForIts[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					//nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 					if (nDefCode > 0)
 					{
 						nTotStrip[2]++;
@@ -3066,12 +3071,14 @@ CString CDlgMenu05::GetItsFileData(int nSerial, int nLayer) // RMAP_UP, RMAP_DN,
 		nR = nRow + nStripY * 3;
 		for (nCol = 0; nCol < nNodeX; nCol++)
 		{
-			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
+			nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNumForIts[nR][nCol];
+			//nPcrLineNum = pDoc->m_pPcr[nLayer][nIdx]->m_arPcrLineNum[nR][nCol];
 			if (nPcrLineNum > -1)
 			{
 				if (pDoc->m_pPcr[nLayer][nIdx]->m_pMk[nPcrLineNum] != -2) // -2 (NoMarking)
 				{
-					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefTypeForIts[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
+					//nDefCode = pDoc->m_pPcr[nLayer][nIdx]->m_arDefType[nR][nCol]; //m_pPnlBuf[nSerial - 1][nR][nCol]; // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일 정보용.
 					if (nDefCode > 0)
 					{
 						nTotStrip[3]++;
@@ -4462,6 +4469,8 @@ int CDlgMenu05::LoadPCRUpFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_pPcr[0][nIdx]->m_pDefPcs[i], nC, nR);
 			pDoc->m_pPcr[0][nIdx]->m_arDefType[nR][nC] = pDoc->m_pPcr[0][nIdx]->m_pDefType[i];
 			pDoc->m_pPcr[0][nIdx]->m_arPcrLineNum[nR][nC] = i;
+			pDoc->m_pPcr[0][nIdx]->m_arPcrLineNumForIts[nR][nC] = i;
+			pDoc->m_pPcr[0][nIdx]->m_arDefTypeForIts[nR][nC] = pDoc->m_pPcr[0][nIdx]->m_pDefType[i];
 
 			// CellNum
 			nTemp = strFileData.Find(',', 0);
@@ -4734,6 +4743,8 @@ int CDlgMenu05::LoadPCRDnFromMk(int nSerial)	// return : 2(Failed), 1(정상), -1(
 			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_pPcr[1][nIdx]->m_pDefPcs[i], nC, nR);
 			pDoc->m_pPcr[1][nIdx]->m_arDefType[nR][nC] = pDoc->m_pPcr[1][nIdx]->m_pDefType[i];
 			pDoc->m_pPcr[1][nIdx]->m_arPcrLineNum[nR][nC] = i;
+			pDoc->m_pPcr[1][nIdx]->m_arPcrLineNumForIts[nR][nC] = i;
+			pDoc->m_pPcr[1][nIdx]->m_arDefTypeForIts[nR][nC] = pDoc->m_pPcr[1][nIdx]->m_pDefType[i];
 
 			// CellNum
 			nTemp = strFileData.Find(',', 0);

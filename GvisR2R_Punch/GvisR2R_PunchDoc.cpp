@@ -6078,6 +6078,8 @@ int CGvisR2R_PunchDoc::LoadPCRUp(int nSerial, BOOL bFromShare)	// return : 2(Fai
 			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(m_pPcr[0][nIdx]->m_pDefPcs[i], nC, nR);
 			m_pPcr[0][nIdx]->m_arDefType[nR][nC] = m_pPcr[0][nIdx]->m_pDefType[i];
 			m_pPcr[0][nIdx]->m_arPcrLineNum[nR][nC] = i;
+			m_pPcr[0][nIdx]->m_arPcrLineNumForIts[nR][nC] = i;
+			m_pPcr[0][nIdx]->m_arDefTypeForIts[nR][nC] = m_pPcr[0][nIdx]->m_pDefType[i];
 
 			// CellNum
 			nTemp = strFileData.Find(',', 0);
@@ -6416,6 +6418,8 @@ int CGvisR2R_PunchDoc::LoadPCRDn(int nSerial, BOOL bFromShare)	// return : 2(Fai
 			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(Rotate180(m_pPcr[1][nIdx]->m_pDefPcs[i]), nC, nR);
 			m_pPcr[1][nIdx]->m_arDefType[nR][nC] = m_pPcr[1][nIdx]->m_pDefType[i];
 			m_pPcr[1][nIdx]->m_arPcrLineNum[nR][nC] = i;
+			m_pPcr[1][nIdx]->m_arPcrLineNumForIts[nR][nC] = i;
+			m_pPcr[1][nIdx]->m_arDefTypeForIts[nR][nC] = m_pPcr[1][nIdx]->m_pDefType[i];
 
 			// CellNum
 			nTemp = strFileData.Find(',', 0);
@@ -13854,6 +13858,8 @@ int CGvisR2R_PunchDoc::LoadPcrUp(CString sPath)	// return : 2(Failed), 1(정상), 
 			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(m_pPcr[0][nIdx]->m_pDefPcs[i], nC, nR);
 			m_pPcr[0][nIdx]->m_arDefType[nR][nC] = m_pPcr[0][nIdx]->m_pDefType[i];
 			m_pPcr[0][nIdx]->m_arPcrLineNum[nR][nC] = i;
+			m_pPcr[0][nIdx]->m_arPcrLineNumForIts[nR][nC] = i;
+			m_pPcr[0][nIdx]->m_arDefTypeForIts[nR][nC] = m_pPcr[0][nIdx]->m_pDefType[i];
 
 			// CellNum
 			nTemp = strFileData.Find(',', 0);
@@ -14187,6 +14193,9 @@ int CGvisR2R_PunchDoc::LoadPcrDn(CString sPath)	// return : 2(Failed), 1(정상), 
 			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(Rotate180(m_pPcr[1][nIdx]->m_pDefPcs[i]), nC, nR);
 			m_pPcr[1][nIdx]->m_arDefType[nR][nC] = m_pPcr[1][nIdx]->m_pDefType[i];
 			m_pPcr[1][nIdx]->m_arPcrLineNum[nR][nC] = i;
+			pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_Master[0].MasterInfo.nActionCode, m_pPcr[1][nIdx]->m_pDefPcs[i], nC, nR);
+			m_pPcr[1][nIdx]->m_arPcrLineNumForIts[nR][nC] = i;
+			m_pPcr[1][nIdx]->m_arDefTypeForIts[nR][nC] = m_pPcr[0][nIdx]->m_pDefType[i];
 
 			// CellNum
 			nTemp = strFileData.Find(',', 0);
