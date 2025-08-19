@@ -585,6 +585,9 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 	bPcrInShare[1] = FALSE;
 	bPcrInShareVs[0] = FALSE;
 	bPcrInShareVs[1] = FALSE;
+
+	m_bFailMkJudge[0] = FALSE;
+	m_bFailMkJudge[1] = FALSE;
 }
 
 CGvisR2R_PunchView::~CGvisR2R_PunchView()
@@ -11726,6 +11729,14 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 		RestoreReelmap();
 	}
 
+	if (m_pVoiceCoil[0])
+	{
+		m_pVoiceCoil[0]->ResetStepIsDoneMark();
+	}
+	if (m_pVoiceCoil[1])
+	{
+		m_pVoiceCoil[1]->ResetStepIsDoneMark();
+	}
 	pView->m_nDebugStep = 30; pView->DispThreadTick();
 
 }
@@ -12948,20 +12959,16 @@ int CGvisR2R_PunchView::GetMkStripIdx1(int nDefPcsId) // 0 : Fail , 1~4 : Strip 
 CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 : "Serial_Strip_Col_Row"
 {
 	CString sInfo;
-	//int nRef = 100 - pDoc->WorkingInfo.LastJob.nJudgeMkRatio[0];
-	//int nJudge = 0;
-
-	//if (pDoc->WorkingInfo.LastJob.bUseJudgeMk)
-	//	nJudge = m_pVision[0]->MkMtRst.dScore;
+	int nRef = pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[0];
+	int nJudge = (int)(m_pVision[0]->MkMtRst.dScore);
 
 	if (nSerial <= 0)
 	{
-		//pView->SetAlarmToPlc(UNIT_PUNCH);
 		pView->ClrDispMsg();
 		MsgBox(_T("좌측 마킹위치 정보 실패."));
 
-		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
 		return sInfo;
 	}
 
@@ -12983,8 +12990,8 @@ CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 :
 		{
 			MsgBox(_T("외층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
 			//pDoc->LogAuto(_T("외층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
-			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-			//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
 			return sInfo;
 		}
 	}
@@ -13011,8 +13018,8 @@ CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 :
 		{
 			MsgBox(_T("양면or내층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
 			//pDoc->LogAuto(_T("양면or내층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
-			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-			//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
 			return sInfo;
 		}
 	}
@@ -13020,13 +13027,13 @@ CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 :
 	if (pDoc->m_Master[0].m_pPcsRgn)
 	{
 		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_Master[0].MasterInfo.nActionCode, nPcsIdx, nStrip, nCol, nRow);
-		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
-		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
+		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
+		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
 	}
 	else
 	{
-		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
 		MsgBox(_T("좌측 마킹위치 정보 실패."));
 	}
 
@@ -13036,19 +13043,15 @@ CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 :
 CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 : "Serial_Strip_Col_Row"
 {
 	CString sInfo;
-	//int nRef = 100 - pDoc->WorkingInfo.LastJob.nJudgeMkRatio[1];
-	//int nJudge = 0;
-
-	//if (pDoc->WorkingInfo.LastJob.bUseJudgeMk)
-	//	nJudge = m_pVision[1]->MkMtRst.dScore;
+	int nRef = pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[1];
+	int nJudge = (int)(m_pVision[1]->MkMtRst.dScore);
 
 	if (nSerial <= 0)
 	{
-		//pView->SetAlarmToPlc(UNIT_PUNCH);
 		pView->ClrDispMsg();
 		MsgBox(_T("우측 마킹위치 정보 실패."));
-		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
 		return sInfo;
 	}
 
@@ -13070,8 +13073,8 @@ CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 :
 		{
 			MsgBox(_T("외층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
 			//pDoc->LogAuto(_T("외층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
-			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-			//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
 			return sInfo;
 		}
 	}
@@ -13098,8 +13101,8 @@ CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 :
 		{
 			MsgBox(_T("양면or내층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
 			//pDoc->LogAuto(_T("양면or내층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
-			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-			//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
 			return sInfo;
 		}
 	}
@@ -13107,13 +13110,13 @@ CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 :
 	if (pDoc->m_Master[0].m_pPcsRgn)
 	{
 		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_Master[0].MasterInfo.nActionCode, nPcsIdx, nStrip, nCol, nRow);
-		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
-		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
+		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
+		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
 	}
 	else
 	{
-		sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-		//sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
 		MsgBox(_T("우측 마킹위치 정보 실패."));
 	}
 
@@ -13385,7 +13388,7 @@ int CGvisR2R_PunchView::GetMkStripIdx1(int nSerial, int nMkPcs) // 0 : Fail , 1~
 	return nStripIdx;
 }
 
-void CGvisR2R_PunchView::Move0(CfPoint pt, BOOL bCam)
+void CGvisR2R_PunchView::Move0(CfPoint pt, BOOL bCam, BOOL bWait)
 {
 	if (m_bProbDn[0])
 	{
@@ -13425,11 +13428,11 @@ void CGvisR2R_PunchView::Move0(CfPoint pt, BOOL bCam)
 	if (fLen > 0.001)
 	{
 		m_pMotion->GetSpeedProfile0(TRAPEZOIDAL, AXIS_X0, fLen, fVel, fAcc, fJerk);
-		m_pMotion->Move0(MS_X0Y0, pPos, fVel, fAcc, fAcc, ABS, NO_WAIT);
+		m_pMotion->Move0(MS_X0Y0, pPos, fVel, fAcc, fAcc, ABS, bWait);
 	}
 }
 
-void CGvisR2R_PunchView::Move1(CfPoint pt, BOOL bCam)
+void CGvisR2R_PunchView::Move1(CfPoint pt, BOOL bCam, BOOL bWait)
 {
 	if (m_bProbDn[1])
 	{
@@ -13469,7 +13472,7 @@ void CGvisR2R_PunchView::Move1(CfPoint pt, BOOL bCam)
 	if (fLen > 0.001)
 	{
 		m_pMotion->GetSpeedProfile1(TRAPEZOIDAL, AXIS_X1, fLen, fVel, fAcc, fJerk);
-		m_pMotion->Move1(MS_X1Y1, pPos, fVel, fAcc, fAcc, ABS, NO_WAIT);
+		m_pMotion->Move1(MS_X1Y1, pPos, fVel, fAcc, fAcc, ABS, bWait);
 	}
 }
 
@@ -13513,6 +13516,7 @@ void CGvisR2R_PunchView::Mk0()
 {
 	if (pView->m_pVoiceCoil[0])
 	{
+		pView->m_pVoiceCoil[0]->ResetStepIsDoneMark();
 		pView->m_pVoiceCoil[0]->SetMark(0);
 		pDoc->AddMkCntL();
 		m_nCurMk[0]++;
@@ -13523,6 +13527,7 @@ void CGvisR2R_PunchView::Mk1()
 {
 	if (pView->m_pVoiceCoil[1])
 	{
+		pView->m_pVoiceCoil[1]->ResetStepIsDoneMark();
 		pView->m_pVoiceCoil[1]->SetMark(1);
 		pDoc->AddMkCntR();
 		m_nCurMk[1]++;
@@ -16975,6 +16980,19 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		break;
 	case 3:
+		if (m_bCam)
+		{
+			if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+				sMsg.Format(_T("Left 미마킹 테스트 시작 SN:%d"), m_nBufUpSerial[0]);
+			else
+				sMsg.Format(_T("Left verify 시작 SN:%d"), m_nBufUpSerial[0]);
+			pDoc->LogAuto(sMsg);
+		}
+		else
+		{
+			sMsg.Format(_T("Left marking 시작 SN:%d"), m_nBufUpSerial[0]);
+			pDoc->LogAuto(sMsg);
+		}
 		m_nStepMk[0]++;
 		break;
 	case 4:
@@ -17168,12 +17186,29 @@ void CGvisR2R_PunchView::DoMark0()
 		{
 			// Verify - Mk0
 			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
+
+			if (m_pDlgMenu02)
+				m_pDlgMenu02->InitHistoRst(0);
 			if(!SaveMk0Img(m_nMkPcs[0]))
 			{
-				pView->ClrDispMsg();
-				AfxMessageBox(_T("Error-SaveMk0Img()"));
+				if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+				{
+					if (!m_pVision[0]->m_bMkJudgeHisto)
+					{
+						if (ChkRepunching(0)) // 0 : Left, 1 : Right
+						{
+							Stop();
+							break;
+						}
+						Stop();
+					}
+				}
+				else
+				{
+					pView->ClrDispMsg();
+					AfxMessageBox(_T("Error-SaveMk0Img()"));
+				}
 			}
-			//m_nDebugStep = m_nMkPcs[0]; DispThreadTick();
 		}
 		m_nStepMk[0]++;
 		break;
@@ -17367,6 +17402,22 @@ void CGvisR2R_PunchView::DoMark0()
 
 		pDoc->SaveMkCntL();
 		m_nStepMk[0]++;
+		//if (m_bCam)
+		//{
+		//	if (!ChkMkImgL(m_nBufUpSerial[0], m_nTotMk[0], m_nCurMk[0]))
+		//	{
+		//		Stop();
+		//		nRtn = MsgBox(_T("좌측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO);
+		//		if (IDYES == nRtn)
+		//		{
+		//			m_nStepMk[0]++;
+		//		}
+		//	}
+		//	else
+		//		m_nStepMk[0]++;
+		//}
+		//else
+		//	m_nStepMk[0]++;
 		break;
 	case 104:
 		if (IsMoveDone0())
@@ -17490,13 +17541,6 @@ BOOL CGvisR2R_PunchView::SaveMk0Img(int nMkPcsIdx) // Cam0
 		return FALSE;
 	}
 
-	//sDest.Format(_T("%s%s\\%s\\%s\\Punching\\%04d"), pDoc->WorkingInfo.System.sPathOldFile, stInfo.sModel,
-	//	stInfo.sLot, stInfo.sLayer, nSerial);
-
-	//if (!pDoc->DirectoryExists(sDest))
-	//	CreateDirectory(sDest, NULL);
-	//sPath.Format(_T("%s\\%d.tif"), sDest, ++m_nSaveMk0Img);
-
 	sDest.Format(_T("%s%s\\%s\\%s\\Punching"), pDoc->WorkingInfo.System.sPathOldFile, stInfo.sModel,
 		stInfo.sLot, stInfo.sLayer);
 
@@ -17505,11 +17549,20 @@ BOOL CGvisR2R_PunchView::SaveMk0Img(int nMkPcsIdx) // Cam0
 
 	if (GetTotDefPcs0(nSerial) > 0)
 	{
-		sPath.Format(_T("%s\\%s.tif"), sDest, GetMkInfo0(nSerial, nMkPcsIdx));
+		//sPath.Format(_T("%s\\%s.tif"), sDest, GetMkInfo0(nSerial, nMkPcsIdx));
 
 #ifdef USE_VISION
 		if (m_pVision[0])
-			return m_pVision[0]->SaveMkImg(sPath);
+		{
+			//BOOL bRtn = m_pVision[0]->SaveMkImg(sPath);
+			BOOL bRtn = m_pVision[0]->SaveMkImg(nSerial, nMkPcsIdx, sDest);
+			if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+			{
+				if (m_pDlgMenu02)
+					m_pDlgMenu02->DispHistoScore(0);
+			}
+			return bRtn;
+		}
 #endif
 	}
 	else
@@ -17791,10 +17844,28 @@ void CGvisR2R_PunchView::DoMark1()
 		{
 			// Verify - Mk1
 			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
-			if(!SaveMk1Img(m_nMkPcs[1]))
+
+			if (m_pDlgMenu02)
+				m_pDlgMenu02->InitHistoRst(1);
+			if (!SaveMk1Img(m_nMkPcs[1]))
 			{
-				pView->ClrDispMsg();
-				AfxMessageBox(_T("Error-SaveMk1Img()"));
+				if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+				{
+					if (!m_pVision[1]->m_bMkJudgeHisto)
+					{
+						if (ChkRepunching(1)) // 0 : Left, 1 : Right
+						{
+							Stop();
+							break;
+						}
+						Stop();
+					}
+				}
+				else
+				{
+					pView->ClrDispMsg();
+					AfxMessageBox(_T("Error-SaveMk1Img()"));
+				}
 			}
 		}
 		m_nStepMk[1]++;
@@ -17988,6 +18059,22 @@ void CGvisR2R_PunchView::DoMark1()
 
 		pDoc->SaveMkCntR();
 		m_nStepMk[1]++;
+		//if (m_bCam)
+		//{
+		//	if (!ChkMkImgR(m_nBufUpSerial[1], m_nTotMk[1], m_nCurMk[1]))
+		//	{
+		//		Stop();
+		//		nRtn = MsgBox(_T("우측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO);
+		//		if (IDYES == nRtn)
+		//		{
+		//			m_nStepMk[1]++;
+		//		}
+		//	}
+		//	else
+		//		m_nStepMk[1]++;
+		//}
+		//else
+		//	m_nStepMk[1]++;
 		break;
 	case 104:
 		if (IsMoveDone1())
@@ -18128,11 +18215,20 @@ BOOL CGvisR2R_PunchView::SaveMk1Img(int nMkPcsIdx) // Cam1
 
 	if (GetTotDefPcs1(nSerial) > 0) // Cam1
 	{
-		sPath.Format(_T("%s\\%s.tif"), sDest, GetMkInfo1(nSerial, nMkPcsIdx));
+		//sPath.Format(_T("%s\\%s.tif"), sDest, GetMkInfo1(nSerial, nMkPcsIdx));
 
 #ifdef USE_VISION
 		if (m_pVision[1])
-			return m_pVision[1]->SaveMkImg(sPath);
+		{
+			//	return m_pVision[1]->SaveMkImg(sPath);
+			BOOL bRtn = m_pVision[1]->SaveMkImg(nSerial, nMkPcsIdx, sDest);
+			if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+			{
+				if (m_pDlgMenu02)
+					m_pDlgMenu02->DispHistoScore(1);
+			}
+			return bRtn;
+		}
 #endif
 	}
 	else
@@ -18861,6 +18957,10 @@ void CGvisR2R_PunchView::DoAutoSetFdOffset()
 					m_pDlgMenu02->m_dAoiUpFdOffsetY = 0.0;
 					m_pDlgMenu02->m_dAoiDnFdOffsetX = OfStDn.x;
 					m_pDlgMenu02->m_dAoiDnFdOffsetY = OfStDn.y;
+
+					m_pDlgMenu02->InitHistoRst();
+					m_pDlgMenu02->DispHistoScore(0);
+					m_pDlgMenu02->DispHistoScore(1);
 				}
 
 				pView->m_pMpe->Write(_T("ML45064"), (long)(-1.0*OfStDn.x*1000.0));
@@ -21627,6 +21727,9 @@ void CGvisR2R_PunchView::Mk2PtInit()
 				MsgBox(_T("Serial 연속 되지않습니다."));
 				TowerLamp(RGB_YELLOW, TRUE);
 			}
+
+			m_bFailMkJudge[0] = FALSE;
+			m_bFailMkJudge[1] = FALSE;
 			m_nMkStAuto++;
 			break;
 
@@ -22477,9 +22580,23 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 		case MK_ST + (Mk2PtIdx::DoneMk) :	 // Align변수 초기화
 			if (!IsRun()) 
 				break;
+			
+			if (pDoc->WorkingInfo.System.bSaveMkImg)
+			{
+				if (!ChkMkImgL(m_nBufUpSerial[0], GetTotDefPcs0(m_nBufUpSerial[0])))
+				{
+					Stop();
+					if (IDNO == MsgBox(_T("좌측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO))
+						break;
+				}
 
-			//if (m_bTHREAD_UPDATE_YIELD_UP || m_bTHREAD_UPDATE_YIELD_DN || m_bTHREAD_UPDATE_YIELD_ALLUP || m_bTHREAD_UPDATE_YIELD_ALLDN)
-			//	break;
+				if (!ChkMkImgR(m_nBufUpSerial[1], GetTotDefPcs1(m_nBufUpSerial[1])))
+				{
+					Stop();
+					if (IDNO == MsgBox(_T("우측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO))
+						break;
+				}
+			}
 
 			if (m_bInitAuto)
 			{
@@ -30821,10 +30938,28 @@ void CGvisR2R_PunchView::DoMark0Its()
 		{
 			// Verify - Mk0
 			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
+
+			if (m_pDlgMenu02)
+				m_pDlgMenu02->InitHistoRst(0);
 			if (!SaveMk0Img(m_nMkPcs[0]))
 			{
-				pView->ClrDispMsg();
-				AfxMessageBox(_T("Error-SaveMk0Img()"));
+				if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+				{
+					if (!m_pVision[0]->m_bMkJudgeHisto)
+					{
+						if (ChkRepunching(0)) // 0 : Left, 1 : Right
+						{
+							Stop();
+							break;
+						}
+						Stop();
+					}
+				}
+				else
+				{
+					pView->ClrDispMsg();
+					AfxMessageBox(_T("Error-SaveMk0Img()"));
+				}
 			}
 		}
 		m_nStepMk[0]++;
@@ -31018,6 +31153,22 @@ void CGvisR2R_PunchView::DoMark0Its()
 
 		pDoc->SaveMkCntL();
 		m_nStepMk[0]++;
+		//if (m_bCam)
+		//{
+		//	if (!ChkMkImgL(m_nBufUpSerial[0], m_nTotMk[0]))//, m_nCurMk[0]))
+		//	{
+		//		Stop();
+		//		nRtn = MsgBox(_T("좌측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO);
+		//		if (IDYES == nRtn)
+		//		{
+		//			m_nStepMk[0]++;
+		//		}
+		//	}
+		//	else
+		//		m_nStepMk[0]++;
+		//}
+		//else
+		//	m_nStepMk[0]++;
 		break;
 	case 104:
 		if (IsMoveDone0())
@@ -31391,10 +31542,28 @@ void CGvisR2R_PunchView::DoMark1Its()
 		{
 			// Verify - Mk1
 			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
+
+			if (m_pDlgMenu02)
+				m_pDlgMenu02->InitHistoRst(1);
 			if (!SaveMk1Img(m_nMkPcs[1]))
 			{
-				pView->ClrDispMsg();
-				AfxMessageBox(_T("Error-SaveMk1Img()"));
+				if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+				{
+					if (!m_pVision[1]->m_bMkJudgeHisto)
+					{
+						if (ChkRepunching(1)) // 0 : Left, 1 : Right
+						{
+							Stop();
+							break;
+						}
+						Stop();
+					}
+				}
+				else
+				{
+					pView->ClrDispMsg();
+					AfxMessageBox(_T("Error-SaveMk1Img()"));
+				}
 			}
 		}
 		m_nStepMk[1]++;
@@ -31588,6 +31757,22 @@ void CGvisR2R_PunchView::DoMark1Its()
 
 		pDoc->SaveMkCntR();
 		m_nStepMk[1]++;
+		//if (m_bCam)
+		//{
+		//	if (!ChkMkImgR(m_nBufUpSerial[1], m_nTotMk[1], m_nCurMk[1]))
+		//	{
+		//		Stop();
+		//		nRtn = MsgBox(_T("우측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO);
+		//		if (IDYES == nRtn)
+		//		{
+		//			m_nStepMk[1]++;
+		//		}
+		//	}
+		//	else
+		//		m_nStepMk[1]++;
+		//}
+		//else
+		//	m_nStepMk[1]++;
 		break;
 	case 104:
 		if (IsMoveDone1())
@@ -35122,4 +35307,206 @@ BOOL CGvisR2R_PunchView::RemakeReelmapFromPcr(CString sModel, CString sLot, CStr
 	}
 
 	return TRUE;
+}
+
+
+BOOL CGvisR2R_PunchView::ChkRepunching(int nCam) // 0 : Left, 1 : Right
+{
+	CfPoint ptPnt;
+	int nRtn;
+
+	if (nCam == 0)
+	{
+		pDoc->LogAuto(_T("좌측 펀칭 미마킹 알람 발생"));
+		nRtn = MsgBox(_T("좌측 펀칭이 미마킹으로 보입니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+		pDoc->LogAuto(_T("좌측 펀칭 미마킹 알람 해제"));
+		if (IDYES == nRtn)
+		{
+			m_bFailMkJudge[0] = TRUE;
+			ptPnt.x = m_dTarget[AXIS_X0];
+			ptPnt.y = m_dTarget[AXIS_Y0];
+
+			Move0(ptPnt, FALSE, WAIT);
+			Sleep(30);
+			Mk0();
+			Sleep(100);
+			Move0(ptPnt, TRUE, WAIT);
+			m_nMkPcs[0]--; // Repeat Current Position Verify.
+			m_nStepMk[0] = 8; 
+			return TRUE; // Recheck
+		}
+	}
+	else if (nCam == 1)
+	{
+		pDoc->LogAuto(_T("우측 펀칭 미마킹 알람 발생"));
+		nRtn = MsgBox(_T("우측 펀칭이 미마킹으로 보입니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+		pDoc->LogAuto(_T("우측 펀칭 미마킹 알람 해제"));
+		if (IDYES == nRtn)
+		{
+			m_bFailMkJudge[1] = TRUE;
+			ptPnt.x = m_dTarget[AXIS_X1];
+			ptPnt.y = m_dTarget[AXIS_Y1];
+
+			Move1(ptPnt, FALSE, WAIT);
+			Sleep(30);
+			Mk1();
+			Sleep(100);
+			Move1(ptPnt, TRUE, WAIT);
+			m_nMkPcs[1]--; // Repeat Current Position Verify.
+			m_nStepMk[1] = 8;
+			return TRUE; // Recheck
+		}
+	}
+
+	return FALSE;
+}
+
+BOOL CGvisR2R_PunchView::ChkMkImgR(int nSerial, int nTotDef)//, int nTotMk)
+{
+	if (!pDoc->m_bCntMkedImg)
+		return TRUE;
+
+	int nCount = 0;
+	CString sDest, sPath, sMsg, sTemp;
+	sDest.Format(_T("%s%s\\%s\\%s\\Punching"), pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sModelUp,
+		pDoc->WorkingInfo.LastJob.sLotUp, pDoc->WorkingInfo.LastJob.sLayerUp);
+	sPath.Format(_T("%s\\*.tif"), sDest);
+
+	CString sFileName, sSerial, arSerial = _T("");
+	BOOL bExist = FALSE;
+	int nSerialF;
+	CFileFind cFile;
+
+	bExist = cFile.FindFile(sPath);
+	if (!bExist)
+	{
+		sMsg.Format(_T("시리얼: %d, 마킹이미지수: %d, 총불량수: %d"), nSerial, nCount, nTotDef);
+		MsgBox(sMsg);
+		return FALSE;
+	}
+	else
+	{
+		if (!cFile.IsDots())
+		{
+			if (!cFile.IsDirectory())
+			{
+				sFileName = cFile.GetFileName();
+				sSerial = sFileName.Left(4);
+				nSerialF = _tstoi(sSerial);
+				if (nSerialF == nSerial)
+				{
+					sTemp.Format(_T("%s, "), sFileName);
+					arSerial += sTemp;
+					nCount++;
+					if (nCount >= nTotDef)
+						return TRUE;
+				}
+			}
+		}
+	}
+
+	while (bExist)
+	{
+		//bExist = cFile.FindFile(sPath);
+		bExist = cFile.FindNextFile();
+		if (bExist)
+		{
+			if (cFile.IsDots()) continue;
+			if (!cFile.IsDirectory())
+			{
+				sFileName = cFile.GetFileName();
+				sSerial = sFileName.Left(4);
+				nSerialF = _tstoi(sSerial);
+				if (nSerialF == nSerial)
+				{
+					sTemp.Format(_T("%s, "), sFileName);
+					arSerial += sTemp;
+					nCount++;
+					if (nCount >= nTotDef)
+						return TRUE;
+				}
+			}
+		}
+	}
+
+	if (nCount >= nTotDef)
+		return TRUE;
+	sMsg.Format(_T("시리얼: %d, 마킹이미지수: %d, 총불량수: %d\r\n%s"), nSerial, nCount, nTotDef, arSerial);
+	MsgBox(sMsg);
+	return FALSE;
+}
+
+BOOL CGvisR2R_PunchView::ChkMkImgL(int nSerial, int nTotDef)//, int nTotMk)
+{
+	if (!pDoc->m_bCntMkedImg)
+		return TRUE;
+
+	int nCount = 0;
+	CString sDest, sPath, sMsg, sTemp;
+	sDest.Format(_T("%s%s\\%s\\%s\\Punching"), pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sModelUp,
+		pDoc->WorkingInfo.LastJob.sLotUp, pDoc->WorkingInfo.LastJob.sLayerUp);
+	sPath.Format(_T("%s\\*.tif"), sDest);
+
+	CString sFileName, sSerial, arSerial = _T("");
+	BOOL bExist = FALSE;
+	int nSerialF;
+	CFileFind cFile;
+
+	bExist = cFile.FindFile(sPath);
+	if (!bExist)
+	{
+		sMsg.Format(_T("시리얼: %d, 마킹이미지수: %d, 총불량수: %d"), nSerial, nCount, nTotDef);
+		MsgBox(sMsg);
+		return FALSE;
+	}
+	else
+	{
+		if (!cFile.IsDots())
+		{
+			if (!cFile.IsDirectory())
+			{
+				sFileName = cFile.GetFileName();
+				sSerial = sFileName.Left(4);
+				nSerialF = _tstoi(sSerial);
+				if (nSerialF == nSerial)
+				{
+					sTemp.Format(_T("%s, "), sFileName);
+					arSerial += sTemp;
+					nCount++;
+					if (nCount >= nTotDef)
+						return TRUE;
+				}
+			}
+		}
+	}
+
+	while (bExist)
+	{
+		//bExist = cFile.FindFile(sPath);
+		bExist = cFile.FindNextFile();
+		if (bExist)
+		{
+			if (cFile.IsDots()) continue;
+			if (!cFile.IsDirectory())
+			{
+				sFileName = cFile.GetFileName();
+				sSerial = sFileName.Left(4);
+				nSerialF = _tstoi(sSerial);
+				if (nSerialF == nSerial)
+				{
+					sTemp.Format(_T("%s, "), sFileName);
+					arSerial += sTemp;
+					nCount++;
+					if (nCount >= nTotDef)
+						return TRUE;
+				}
+			}
+		}
+	}
+
+	if (nCount >= nTotDef)
+		return TRUE;
+	sMsg.Format(_T("시리얼: %d, 마킹이미지수: %d, 총불량수: %d\r\n%s"), nSerial, nCount, nTotDef, arSerial);
+	MsgBox(sMsg);
+	return FALSE;
 }

@@ -38,6 +38,9 @@ CVision::CVision(int nIdx, MIL_ID MilSysId, HWND *hCtrl, CWnd* pParent /*=NULL*/
 	m_hCtrl[2] = hCtrl[2];
 	m_hCtrl[3] = hCtrl[3];
 
+	m_dVerifyPunchHistoScore = 50.0;
+	m_nVerifyPunchHistoWhite = 240;
+
 #ifdef USE_IRAYPLE
 	m_pIRayple = NULL;
 #endif
@@ -109,6 +112,8 @@ CVision::CVision(int nIdx, MIL_ID MilSysId, HWND *hCtrl, CWnd* pParent /*=NULL*/
 		m_dEnc[nAxis] = 0.0;
 	m_dBufEnc = 0.0;
 	m_dFdEnc = 0.0;
+
+	m_bMkJudgeHisto = FALSE;
 
 
 	RECT rt={0,0,0,0};
@@ -4391,7 +4396,74 @@ BOOL CVision::ClearPinCenterMarkArea(int nCenterX, int nCenterY, int nLineLength
 	return TRUE;
 }
 
-BOOL CVision::SaveMkImg(CString sPath)
+//BOOL CVision::SaveMkImg(CString sPath)
+//{
+//#ifdef USE_IRAYPLE
+//	m_cs.Lock();
+//	CLibMilBuf *MilGrabImg = NULL;
+//	if (m_pMil)
+//		MilGrabImg = m_pMil->AllocBuf((long)m_pIRayple->GetImgWidth(), (long)m_pIRayple->GetImgHeight(), 8L + M_UNSIGNED, M_IMAGE + M_DISP + M_PROC);
+//
+//	if (m_pIRayple->OneshotGrab() == FALSE)
+//	{
+//		pView->ClrDispMsg();
+//		AfxMessageBox(_T("m_pIRayple->OneshotGrab() Fail !!"));
+//		if (MilGrabImg)
+//			delete MilGrabImg;
+//		m_cs.Unlock();
+//		return FALSE;
+//	}
+//	else if(m_pMil->OneshotGrab(MilGrabImg->m_MilImage, GRAB_COLOR_COLOR) == FALSE)
+//	{
+//		pView->ClrDispMsg();
+//		AfxMessageBox(_T("m_pMil->OneshotGrab Fail !!"));
+//		if (MilGrabImg)
+//			delete MilGrabImg;
+//		m_cs.Unlock();
+//		return FALSE;
+//	}
+//
+//	m_bMkJudgeHisto = TRUE;
+//	if (MilGrabImg && MilGrabImg->m_MilImage)
+//	{
+//		MIL_ID MilGrabImgCld = M_NULL;
+//		MbufChild2d(MilGrabImg->m_MilImage, (640 - DEF_IMG_DISP_SIZEX) / 2, (480 - DEF_IMG_DISP_SIZEX) / 2, DEF_IMG_DISP_SIZEX, DEF_IMG_DISP_SIZEX, &MilGrabImgCld);
+//
+//		if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+//		{
+//			// Check Marking Judge
+//			m_bMkJudgeHisto = CheckVerifyPunchingHisto(MilGrabImgCld);
+//		}
+//
+//		if (MilGrabImgCld)
+//		{
+//			MbufSave(sPath, MilGrabImgCld);
+//			MbufFree(MilGrabImgCld);
+//			MilGrabImgCld = M_NULL;
+//		}
+//	}
+//	else
+//	{
+//		pView->ClrDispMsg();
+//		AfxMessageBox(_T("MbufSave() Fail !!"));
+//
+//		if (MilGrabImg)
+//			delete MilGrabImg;
+//		m_cs.Unlock();
+//		return FALSE;
+//	}
+//	if (MilGrabImg)
+//		delete MilGrabImg;
+//	m_cs.Unlock();
+//
+//	if (!m_bMkJudgeHisto)
+//		return FALSE;
+//
+//#endif
+//	return TRUE;
+//}
+
+BOOL CVision::SaveMkImg(int nSerial, int nMkPcsIdx, CString sDest) // Return FALSE; --> Alarm Message & Answer Remarking
 {
 #ifdef USE_IRAYPLE
 	m_cs.Lock();
@@ -4401,7 +4473,6 @@ BOOL CVision::SaveMkImg(CString sPath)
 
 	if (m_pIRayple->OneshotGrab() == FALSE)
 	{
-		//pView->MsgBox(_T("Image Grab Fail !!"));
 		pView->ClrDispMsg();
 		AfxMessageBox(_T("m_pIRayple->OneshotGrab() Fail !!"));
 		if (MilGrabImg)
@@ -4409,9 +4480,8 @@ BOOL CVision::SaveMkImg(CString sPath)
 		m_cs.Unlock();
 		return FALSE;
 	}
-	else if(m_pMil->OneshotGrab(MilGrabImg->m_MilImage, GRAB_COLOR_COLOR) == FALSE)
+	else if (m_pMil->OneshotGrab(MilGrabImg->m_MilImage, GRAB_COLOR_COLOR) == FALSE)
 	{
-		//pView->MsgBox(_T("Image Grab Fail !!"));
 		pView->ClrDispMsg();
 		AfxMessageBox(_T("m_pMil->OneshotGrab Fail !!"));
 		if (MilGrabImg)
@@ -4420,22 +4490,37 @@ BOOL CVision::SaveMkImg(CString sPath)
 		return FALSE;
 	}
 
-	//if (m_pMil)
-	//	MilOriginDisp = m_pMil->AllocBuf(PIN_IMG_DISP_SIZEX, PIN_IMG_DISP_SIZEY, 1L + M_UNSIGNED, M_IMAGE + M_DISP + M_PROC);
-	//MimResize(MilGrabImg->m_MilImage, MilOriginDisp->m_MilImage, (double)0.5, (double)0.5, M_DEFAULT);
-
-	//if(MilGrabImg && MilOriginDisp->m_MilImage)
-	//	MbufSave(sPath, MilOriginDisp->m_MilImage);
+	m_bMkJudgeHisto = TRUE;
 	if (MilGrabImg && MilGrabImg->m_MilImage)
 	{
-		//MbufSave(sPath, MilGrabImg->m_MilImage);
-
 		MIL_ID MilGrabImgCld = M_NULL;
 		MbufChild2d(MilGrabImg->m_MilImage, (640 - DEF_IMG_DISP_SIZEX) / 2, (480 - DEF_IMG_DISP_SIZEX) / 2, DEF_IMG_DISP_SIZEX, DEF_IMG_DISP_SIZEX, &MilGrabImgCld);
 
+		if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+		{
+			// Check Marking Judge
+			m_bMkJudgeHisto = CheckVerifyPunchingHisto(MilGrabImgCld);
+		}
+
+		// Draw Cross Line
+		MgraColor(M_DEFAULT, M_COLOR_BLACK);
+		MgraLine(M_DEFAULT, MilGrabImgCld, 0, 50, 100, 50);
+		MgraLine(M_DEFAULT, MilGrabImgCld, 50, 0, 50, 100);
+
 		if (MilGrabImgCld)
 		{
-			MbufSave(sPath, MilGrabImgCld);
+			CString sPath;
+			if (m_nIdx == 0)
+			{
+				sPath.Format(_T("%s\\%s.tif"), sDest, pView->GetMkInfo0(nSerial, nMkPcsIdx));
+				MbufSave(sPath, MilGrabImgCld);
+			}
+			else if (m_nIdx == 1)
+			{
+				sPath.Format(_T("%s\\%s.tif"), sDest, pView->GetMkInfo1(nSerial, nMkPcsIdx));
+				MbufSave(sPath, MilGrabImgCld);
+			}
+
 			MbufFree(MilGrabImgCld);
 			MilGrabImgCld = M_NULL;
 		}
@@ -4444,22 +4529,21 @@ BOOL CVision::SaveMkImg(CString sPath)
 	{
 		pView->ClrDispMsg();
 		AfxMessageBox(_T("MbufSave() Fail !!"));
-		//if (MilOriginDisp)
-		//	delete MilOriginDisp;
 
 		if (MilGrabImg)
 			delete MilGrabImg;
 		m_cs.Unlock();
 		return FALSE;
 	}
-	//MilGrabImg->ChildBuffer2d(m_pIRayple->GetImgWidth() / 2 - 100, m_pIRayple->GetImgHeight() / 2 - 100, 200, 200);
-	//MbufSave(sPath, MilGrabImg->m_MilImageChild);
 
-	//if (MilOriginDisp)
-	//	delete MilOriginDisp;
 	if (MilGrabImg)
 		delete MilGrabImg;
+	Sleep(10);
 	m_cs.Unlock();
+
+	if (!m_bMkJudgeHisto)
+		return FALSE;
+
 #endif
 	return TRUE;
 }
@@ -4477,5 +4561,210 @@ void CVision::SaveCadImg(int nIdxMkInfo, CString sPath)
 		AfxMessageBox(_T("SaveCadImg() Fail !!"));
 	}
 }
+
+
+BOOL CVision::CheckVerifyPunchingHisto(MIL_ID &GrabImgId) // Return FALSE; --> Alarm Message & Answer Remarking
+{
+	if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+	{
+		if (!JudgeHisto(GrabImgId))
+		{
+			return FALSE; //  _T("¹Ì¸¶Å· µÊ")
+		}
+	}
+
+	return TRUE; // _T("¸¶Å· µÊ")
+}
+
+/* Number of possible pixel intensities. */
+#define HIST_NUM_INTENSITIES  256
+#define HIST_SCALE_FACTOR     8
+#define HIST_X_POSITION       100
+#define HIST_Y_POSITION       100
+
+BOOL CVision::JudgeHisto(MIL_ID &GrabImgId)
+{
+	DoHisto(GrabImgId); // m_nHistoRst[i] : i (gray level : 0 ~ 255)
+	double dResX, dResY, dResCam;
+
+	dResX = _tstof(pDoc->WorkingInfo.Vision[m_nIdx].sResX);
+	dResY = _tstof(pDoc->WorkingInfo.Vision[m_nIdx].sResY);
+	dResCam = _tstof(pDoc->WorkingInfo.Vision[m_nIdx].sCamPxlRes) / 10000.0; // CamMaster Pixel Resolution.
+
+	long SzX = (long)((double)pDoc->m_nJudgeMkModelHistoSize) * 0.001 / dResX;
+	long SzY = (long)((double)pDoc->m_nJudgeMkModelHistoSize) * 0.001 / dResY;
+
+	int nSumRng = 0, nSumPixels = 0;
+	int nTotalPixels = SzX * SzY;
+	int nPeakVal[256] = { 0 };
+	int nPeakColorVal[256] = { 0 };
+	int nTotPeakVal = 0, nGrateVal = 0;
+	BOOL bInc = FALSE;
+	int i, nHistoVal, nWhite = 0;
+
+	for (i = 0; i < 256; i++) // Gray color value : 0(black) ~ 255(white)
+	{
+		nHistoVal = m_nHistoRst[i];
+		if (nHistoVal > m_nVerifyPunchHistoWhite) // 240
+		{
+			nWhite += nHistoVal;
+		}
+	}
+
+	int nJudge = int(200.0*(1.0 - ((double)nWhite / (double)nTotalPixels)));
+	MkMtRst.dScore = (double)(nJudge > 100 ? 100 : nJudge);
+	if (MkMtRst.dScore < m_dVerifyPunchHistoScore)
+		return FALSE;
+
+	return TRUE; // ¸¶Å·µÊ
+}
+
+void CVision::DoHisto(MIL_ID &GrabImgId)
+{
+	MIL_ID	MilSystem = m_pMil->GetSystemID();
+	MIL_ID	HistResult;
+	MIL_INT	HistValues[HIST_NUM_INTENSITIES]; // Histogram values.
+
+											  // Create Model
+	CLibMilBuf *MilPtModelImg = NULL;
+	MIL_ID MilBufPtModelCrop = M_NULL;
+	double dResX, dResY, dResCam;
+
+	dResX = _tstof(pDoc->WorkingInfo.Vision[m_nIdx].sResX);
+	dResY = _tstof(pDoc->WorkingInfo.Vision[m_nIdx].sResY);
+	dResCam = _tstof(pDoc->WorkingInfo.Vision[m_nIdx].sCamPxlRes) / 10000.0; // CamMaster Pixel Resolution.
+
+	long SzX = (long)((double)pDoc->m_nJudgeMkModelHistoSize) * 0.001 / dResX;
+	long SzY = (long)((double)pDoc->m_nJudgeMkModelHistoSize) * 0.001 / dResY;
+	long StX = long((DEF_IMG_DISP_SIZEX - SzX) / 2);
+	long StY = long((DEF_IMG_DISP_SIZEY - SzY) / 2);
+
+	MilPtModelImg = m_pMil->AllocBuf(SzX, SzY, 8L + M_UNSIGNED, M_IMAGE + M_DISP + M_PROC);
+
+	MbufChild2d(GrabImgId, StX, StY, SzX, SzY, &MilBufPtModelCrop);
+	MbufCopy(MilBufPtModelCrop, MilPtModelImg->m_MilImage);
+	if (pDoc->m_bDebugJudgeMk)
+	{
+		CString sMsg;
+		sMsg.Format(_T("C:\\Histgram_%d.tif"), m_nIdx);
+		MbufSave(sMsg, MilPtModelImg->m_MilImage);
+	}
+
+	/* Allocate a histogram result buffer. */
+	MimAllocResult(MilSystem, HIST_NUM_INTENSITIES, M_HIST_LIST, &HistResult);
+
+	/* Calculate the histogram. */
+	MimHistogram(MilPtModelImg->m_MilImage, HistResult);
+
+	/* Get the results. */
+	MimGetResult(HistResult, M_VALUE, HistValues);
+
+	int i;
+
+	for (i = 0; i < HIST_NUM_INTENSITIES; i++)
+	{
+		m_nHistoRst[i] = HistValues[i];
+	}
+
+	/* Free all allocations. */
+	if (MilBufPtModelCrop)
+	{
+		MbufFree(MilBufPtModelCrop);
+		MilBufPtModelCrop = M_NULL;
+	}
+	if (MilPtModelImg)
+	{
+		delete MilPtModelImg;
+	}
+
+	MimFree(HistResult);
+}
+
+BOOL CVision::TestJudgeMkHisto(BOOL &bMkJudge) // If return value is TRUE and bMkJudge is TRUE, Judge is Marked.
+{
+#ifdef USE_IRAYPLE
+	m_cs.Lock();
+	CLibMilBuf *MilGrabImg = NULL;
+	if (m_pMil)
+		MilGrabImg = m_pMil->AllocBuf((long)640, (long)480, 8L + M_UNSIGNED, M_IMAGE + M_DISP + M_PROC);
+
+	if (m_pIRayple->OneshotGrab() == FALSE)
+	{
+		pView->ClrDispMsg();
+		AfxMessageBox(_T("m_pIRayple->OneshotGrab() Fail !!"));
+		if (MilGrabImg)
+			delete MilGrabImg;
+		m_cs.Unlock();
+		return FALSE;
+	}
+	else if (m_pMil->OneshotGrab(MilGrabImg->m_MilImage, GRAB_COLOR_COLOR) == FALSE)
+	{
+		pView->ClrDispMsg();
+		AfxMessageBox(_T("m_pMil->OneshotGrab Fail !!"));
+		if (MilGrabImg)
+			delete MilGrabImg;
+		m_cs.Unlock();
+		return FALSE;
+	}
+
+	if (MilGrabImg && MilGrabImg->m_MilImage)
+	{
+		MIL_ID MilGrabImgCld = M_NULL;
+		MbufChild2d(MilGrabImg->m_MilImage, (640 - DEF_IMG_DISP_SIZEX) / 2, (480 - DEF_IMG_DISP_SIZEX) / 2, DEF_IMG_DISP_SIZEX, DEF_IMG_DISP_SIZEX, &MilGrabImgCld);
+
+		// Check Marking Judge
+		bMkJudge = CheckVerifyPunchingHisto(MilGrabImgCld);
+
+		if (MilGrabImgCld)
+		{
+			MbufFree(MilGrabImgCld);
+			MilGrabImgCld = M_NULL;
+		}
+	}
+	else
+	{
+		pView->ClrDispMsg();
+		AfxMessageBox(_T("TestJudgeMk() Failled !!"));
+
+		if (MilGrabImg)
+			delete MilGrabImg;
+		m_cs.Unlock();
+		return FALSE;
+	}
+
+	if (MilGrabImg)
+		delete MilGrabImg;
+	Sleep(10);
+	m_cs.Unlock();
+
+	if (!bMkJudge)
+		return FALSE;
+
+#endif
+	return TRUE;
+}
+
+
+void CVision::SetVerifyPunchHistoScore(double dScore)
+{
+	m_dVerifyPunchHistoScore = dScore;
+}
+
+void CVision::SetVerifyPunchHistoWhite(int nWhite)
+{
+	m_nVerifyPunchHistoWhite = nWhite;
+}
+
+double CVision::GetVerifyPunchHistoScore()
+{
+	return m_dVerifyPunchHistoScore;
+}
+
+int CVision::GetVerifyPunchHistoWhite()
+{
+	return m_nVerifyPunchHistoWhite;
+}
+
+
 
 #endif

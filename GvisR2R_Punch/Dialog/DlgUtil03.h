@@ -10,10 +10,10 @@
 #include "MyStatic.h"
 #include "MyBtn.h"
 
-#define MAX_UTIL03_STC_DATA	(66+1)
+#define MAX_UTIL03_STC_DATA	71
 #define MAX_SPREAD_COL		6	
 #define MAX_SPREAD_ROW		11	
-#define MAX_UTIL03_BTN		7
+#define MAX_UTIL03_BTN		8
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgUtil03 dialog
@@ -22,6 +22,7 @@ class CDlgUtil03 : public CDialog
 {
 	BOOL m_bLoadImg;
 	CRect* m_pRect;
+	CMyStatic myStcMkJudge, myStcMkCurr;
 	CMyStatic myStcData[MAX_UTIL03_STC_DATA];
 	CMyBtn myBtn[MAX_UTIL03_BTN];
 	int nScrlV, nScrlH;
@@ -47,8 +48,13 @@ public:
 // 	void DoDispenseTest();
 // 	void SetFurge();
 
+	void DispResultPtScore(int nCam);
+
+
 	afx_msg LRESULT OnMyBtnDown(WPARAM wPara, LPARAM lPara);
 	afx_msg LRESULT OnMyBtnUp(WPARAM wPara, LPARAM lPara);
+
+	void JudgeMkHisto();
 
 // Dialog Data
 	//{{AFX_DATA(CDlgUtil03)
@@ -155,6 +161,7 @@ protected:
 public:
 	afx_msg void OnBnClickedCheckPcs();
 	afx_msg void OnBnClickedCheckPcsDn();
+	afx_msg void OnBnClickedBtnJudgeMk();
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -29,6 +29,8 @@ CSmac::CSmac(CWnd* pParent /*=NULL*/)
 	m_bTimerStop = FALSE;
 	m_bReturnFirstSmacCmdEnd = FALSE;
 	m_bReturnSecondSmacCmdEnd = FALSE;
+	m_bReturnFirstSmacChkPos = FALSE;
+	m_bReturnSecondSmacChkPos = FALSE;
 	m_bRunTimerCheckFirstSmacEnd = FALSE;
 	m_bRunTimerCheckSecondSmacEnd = FALSE;
 
@@ -38,6 +40,11 @@ CSmac::CSmac(CWnd* pParent /*=NULL*/)
 	{
 		m_bCh[i] = FALSE;
 	}
+
+	m_nStepIsDoneMark[0] = 0;
+	m_nStepIsDoneMark[1] = 0;
+	m_bDoneMark[0] = FALSE;
+	m_bDoneMark[1] = FALSE;
 }
 
 CSmac::~CSmac()
@@ -820,6 +827,7 @@ BOOL CSmac::SetWaitSmacCmdEnd0(CString strEndCmd)
 	else if(nCamNum == VOICE_COIL_SECOND_CAM)
 	{
 		m_bReturnSecondSmacCmdEnd = FALSE;
+		m_bReturnSecondSmacChkPos = FALSE;
 		if(!m_bRunTimerCheckSecondSmacEnd)
 		{
 			m_bRunTimerCheckSecondSmacEnd = TRUE;
@@ -850,6 +858,7 @@ BOOL CSmac::SetWaitSmacCmdEnd1(CString strEndCmd)
 	else if(nCamNum == VOICE_COIL_SECOND_CAM)
 	{
 		m_bReturnSecondSmacCmdEnd = FALSE;
+		m_bReturnSecondSmacChkPos = FALSE;
 		if(!m_bRunTimerCheckSecondSmacEnd)
 		{
 			m_bRunTimerCheckSecondSmacEnd = TRUE;
@@ -951,6 +960,7 @@ BOOL CSmac::WaitSmacCmdEnd(int nCamNum, CString strEndCmd)
 	else if(nCamNum == VOICE_COIL_SECOND_CAM)
 	{
 		m_bReturnSecondSmacCmdEnd = FALSE;
+		m_bReturnSecondSmacChkPos = FALSE;
 		if(!m_bRunTimerCheckSecondSmacEnd)
 		{
 			m_bRunTimerCheckSecondSmacEnd = TRUE;
@@ -1205,6 +1215,7 @@ BOOL CSmac::SetCmdEndChk(int nCamNum, CString strEndCmd)
 	else if(nCamNum == VOICE_COIL_SECOND_CAM)
 	{
 		m_bReturnSecondSmacCmdEnd = FALSE; // Chk
+		m_bReturnSecondSmacChkPos = FALSE; // Chk
 		if(!m_bRunTimerCheckSecondSmacEnd)
 		{
 			m_bRunTimerCheckSecondSmacEnd = TRUE;
@@ -1491,10 +1502,67 @@ void CSmac::SetMark(int nCamNum)
 
 BOOL CSmac::IsDoneMark(int nCamNum)
 {
-	if(nCamNum == VOICE_COIL_FIRST_CAM)
+	double dPos, dShiftPos, dFinalPos, dJudgePos;
+	if (nCamNum == VOICE_COIL_FIRST_CAM)
+	{
 		return m_bReturnFirstSmacCmdEnd;
-	else if(nCamNum == VOICE_COIL_SECOND_CAM)
+		//if (!m_bDoneMark[0])
+		//{
+		//	switch (m_nStepIsDoneMark[0])
+		//	{
+		//	case 0:
+		//		if (m_bReturnFirstSmacCmdEnd)
+		//			m_nStepIsDoneMark[0]++;
+		//		break;
+		//	case 1:
+		//		dShiftPos = _tstof(pDoc->WorkingInfo.Marking[nCamNum].sWaitPos) * 200;
+		//		dFinalPos = _tstof(pDoc->WorkingInfo.Marking[nCamNum].sMarkingPos) * 200;
+		//		dJudgePos = (dShiftPos + dFinalPos) / 2.0;
+		//		dPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
+		//		if (dPos < dJudgePos)
+		//			m_nStepIsDoneMark[0]++;
+		//		else
+		//			Sleep(100);
+		//		break;
+		//	case 2:
+		//		m_bDoneMark[0] = TRUE;
+		//		return TRUE;
+		//	}
+		//	return FALSE;
+		//}
+		//else
+		//	return TRUE;
+	}
+	else if (nCamNum == VOICE_COIL_SECOND_CAM)
+	{
 		return m_bReturnSecondSmacCmdEnd;
+		//if (!m_bDoneMark[1])
+		//{
+		//	switch (m_nStepIsDoneMark[1])
+		//	{
+		//	case 0:
+		//		if (m_bReturnSecondSmacCmdEnd)
+		//			m_nStepIsDoneMark[1]++;
+		//		break;
+		//	case 1:
+		//		dShiftPos = _tstof(pDoc->WorkingInfo.Marking[nCamNum].sWaitPos) * 200;
+		//		dFinalPos = _tstof(pDoc->WorkingInfo.Marking[nCamNum].sMarkingPos) * 200;
+		//		dJudgePos = (dShiftPos + dFinalPos) / 2.0;
+		//		dPos = GetSmacPosition(VOICE_COIL_FIRST_CAM);
+		//		if (dPos < dJudgePos)
+		//			m_nStepIsDoneMark[1]++;
+		//		else
+		//			Sleep(100);
+		//		break;
+		//	case 2:
+		//		m_bDoneMark[1] = TRUE;
+		//		return TRUE;
+		//	}
+		//	return FALSE;
+		//}
+		//else
+		//	return TRUE;
+	}
 	
 	return FALSE;
 }
@@ -1730,3 +1798,10 @@ void CSmac::MoveProbFinalPos(int nCamNum)
 	//ClearReceive();	
 }
 
+void CSmac::ResetStepIsDoneMark()
+{
+	m_nStepIsDoneMark[0] = 0;
+	m_nStepIsDoneMark[1] = 0;
+	m_bDoneMark[0] = FALSE;
+	m_bDoneMark[1] = FALSE;
+}

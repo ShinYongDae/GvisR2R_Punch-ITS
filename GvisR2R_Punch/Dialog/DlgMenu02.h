@@ -197,6 +197,10 @@ public:
 	void Grab2PntAlign2();
 	void Grab4PntAlign2();
 
+	void InitHistoRst(int nCam = 2);
+	void DispHistoScore(int nCam);
+	void DispHistoStdVal();
+
 	// ITS
 	MIL_ID m_MilSys;
 

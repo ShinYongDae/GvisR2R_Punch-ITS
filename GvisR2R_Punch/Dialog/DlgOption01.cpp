@@ -51,6 +51,8 @@ BEGIN_MESSAGE_MAP(CDlgOption01, CDialog)
 	ON_BN_CLICKED(IDC_CHECK1, &CDlgOption01::OnBnClickedCheck1)
 	ON_BN_CLICKED(IDC_CHECK2, &CDlgOption01::OnBnClickedCheck2)
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_CHECK3, &CDlgOption01::OnBnClickedCheck3)
+	ON_BN_CLICKED(IDC_CHECK4, &CDlgOption01::OnBnClickedCheck4)
 END_MESSAGE_MAP()
 
 
@@ -88,6 +90,8 @@ void CDlgOption01::AtDlgShow()
 {
 	((CButton*)GetDlgItem(IDC_CHECK1))->SetCheck(pDoc->m_bOffLogAuto);
 	((CButton*)GetDlgItem(IDC_CHECK2))->SetCheck(pDoc->m_bOffLogPLC);
+	((CButton*)GetDlgItem(IDC_CHECK3))->SetCheck(pDoc->m_bDebugJudgeMk);
+	((CButton*)GetDlgItem(IDC_CHECK4))->SetCheck(pDoc->m_bCntMkedImg);
 }
 
 void CDlgOption01::AtDlgHide()
@@ -163,4 +167,38 @@ void CDlgOption01::OnTimer(UINT_PTR nIDEvent)
 
 
 	CDialog::OnTimer(nIDEvent);
+}
+
+
+void CDlgOption01::OnBnClickedCheck3()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	BOOL bOn = ((CButton*)GetDlgItem(IDC_CHECK3))->GetCheck();
+	pDoc->m_bDebugJudgeMk = bOn;
+
+	if (bOn)
+	{
+		::WritePrivateProfileString(_T("System"), _T("DebugJudgeMk"), _T("1"), PATH_WORKING_INFO);
+	}
+	else
+	{
+		::WritePrivateProfileString(_T("System"), _T("DebugJudgeMk"), _T("0"), PATH_WORKING_INFO);
+	}
+}
+
+
+void CDlgOption01::OnBnClickedCheck4()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	BOOL bOn = ((CButton*)GetDlgItem(IDC_CHECK4))->GetCheck();
+	pDoc->m_bCntMkedImg = bOn;
+
+	if (bOn)
+	{
+		::WritePrivateProfileString(_T("System"), _T("CountMarkingImageFile"), _T("1"), PATH_WORKING_INFO);
+	}
+	else
+	{
+		::WritePrivateProfileString(_T("System"), _T("CountMarkingImageFile"), _T("0"), PATH_WORKING_INFO);
+	}
 }

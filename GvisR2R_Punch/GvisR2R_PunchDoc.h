@@ -131,6 +131,8 @@ public:
 	int m_nDef[MAX_DEF];						// [3]: Up/Dn/ALL
 	double m_dMkBuffCurrPos;
 
+
+
 // 작업입니다.
 public:
 	void LogAuto(CString strMsg, int nType = 0);
@@ -508,7 +510,8 @@ public:
 	int GetAoiUpCamMstInfo();
 	int GetAoiDnCamMstInfo();
 
-	BOOL m_bDebugGrabAlign;
+	BOOL m_bDebugGrabAlign, m_bDebugJudgeMk;
+	BOOL m_bCntMkedImg;
 
 	void DestroyDoc();
 
@@ -518,6 +521,16 @@ public:
 	int LoadPcrAllDn (CString sPath);	// return : 2(Failed), 1(정상), -1(Align Error, 노광불량), -2(Lot End)
 
 	int IsOfflineFolder(); // 0 : Not exist, 1 : Exist only Up, 2 : Exist only Dn, 3 : Exist Up and Dn
+
+	int m_nJudgeMkModelHistoSize;
+	double GetVerifyPunchHistoScore();
+	double GetVerifyPunchHistoScore2();
+	int GetVerifyPunchHistoWhite();
+	int GetVerifyPunchHistoWhite2();
+	void SetVerifyPunchHistoScore(double dScore);
+	void SetVerifyPunchHistoScore2(double dScore);
+	void SetVerifyPunchHistoWhite(int nDn);
+	void SetVerifyPunchHistoWhite2(int nDn);
 
 // 재정의입니다.
 public:

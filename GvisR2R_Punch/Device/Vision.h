@@ -128,6 +128,8 @@ class CVision : public CWnd
 	BOOL GrabCrevis(int nPos, BOOL bDraw = TRUE);
 	BOOL GrabIds(int nPos, BOOL bDraw = TRUE);
 
+	double m_dVerifyPunchHistoScore;
+	int m_nVerifyPunchHistoWhite;
 
 // Construction
 public:
@@ -137,7 +139,7 @@ public:
 // Attributes
 public:
 	CLibMil *m_pMil;
-	stPtMtRst PtMtRst;
+	stPtMtRst PtMtRst, MkMtRst;
 
 // Operations
 public:
@@ -209,8 +211,21 @@ public:
 	void GetCrevisSize(int &nX, int &nY);
 	void GetIRaypleSize(int &nX, int &nY);
 
-	BOOL SaveMkImg(CString sPath);
+	BOOL SaveMkImg(int nSerial, int nMkPcsIdx, CString sDest);
+	//BOOL SaveMkImg(CString sPath);
 	void SaveCadImg(int nIdxMkInfo, CString sPath); // (화면의 IDC 인덱스, 저장할 파일 Path)
+
+	int m_nHistoRst[256];
+	BOOL m_bMkJudgeHisto;
+
+	double GetVerifyPunchHistoScore();
+	int GetVerifyPunchHistoWhite();
+	BOOL CheckVerifyPunchingHisto(MIL_ID &GrabImgId);
+	BOOL JudgeHisto(MIL_ID &GrabImgId);
+	void DoHisto(MIL_ID &GrabImgId);
+	BOOL TestJudgeMkHisto(BOOL &bMkJudge);
+	void SetVerifyPunchHistoScore(double dScore);
+	void SetVerifyPunchHistoWhite(int nWhite);
 
 	// ITS
 	//CLibMilBuf *m_pMilBufCad[DEF_VIEW_IMG_NUMBER], *m_pMilBufDef[DEF_VIEW_IMG_NUMBER];

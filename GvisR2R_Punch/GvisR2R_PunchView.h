@@ -855,8 +855,8 @@ public:
 	CfPoint GetMkPnt1(int nSerial, int nMkPcs);
 
 	// 	void Move(CfPoint pt, BOOL bCam=FALSE);
-	void Move0(CfPoint pt, BOOL bCam = FALSE);
-	void Move1(CfPoint pt, BOOL bCam = FALSE);
+	void Move0(CfPoint pt, BOOL bCam = FALSE, BOOL bWait = NO_WAIT);
+	void Move1(CfPoint pt, BOOL bCam = FALSE, BOOL bWait = NO_WAIT);
 	BOOL IsMoveDone();
 	BOOL IsMoveDone0();
 	BOOL IsMoveDone1();
@@ -1265,6 +1265,11 @@ public:
 	BOOL GetMkStSignal();
 	void SetMkStSignal();
 	void LoadSerial();
+
+	BOOL m_bFailMkJudge[2]; // [nCam] : 0(Left), 1(Right)
+	BOOL ChkRepunching(int nCam);
+	BOOL ChkMkImgL(int nSerial, int nTotDef);// , int nTotMk);
+	BOOL ChkMkImgR(int nSerial, int nTotDef);// , int nTotMk);
 
 // 재정의입니다.
 public:

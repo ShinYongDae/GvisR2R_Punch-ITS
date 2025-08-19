@@ -26,6 +26,9 @@ class CSmac : public CWnd
 	BOOL m_bCh[MAX_VOICE_COIL];
 	int m_nCh;
 	CString m_sRcvRs232;
+	int m_nStepIsDoneMark[2]; //Left(0), Right(1)
+	BOOL m_bDoneMark[2]; //Left(0), Right(1)
+
 	BOOL Send(CString str);
 
 public:
@@ -39,6 +42,7 @@ public:
 	CString m_strReceiveVoiceCoilFirstCam, m_strReceiveVoiceCoilSecondCam;
 
 	BOOL m_bReturnFirstSmacCmdEnd, m_bReturnSecondSmacCmdEnd, m_bRunTimerCheckFirstSmacEnd, m_bRunTimerCheckSecondSmacEnd;
+	BOOL m_bReturnFirstSmacChkPos, m_bReturnSecondSmacChkPos;
 
 	CString m_strFirstSmacEndCmd, m_strSecondSmacEndCmd;
 	BOOL m_bTimerStop, m_bFeedingRollerUp;
@@ -48,6 +52,7 @@ public:
 	afx_msg LRESULT OnReceiveRs232(WPARAM wP, LPARAM lP);
 	CString Rcv();
 
+	void ResetStepIsDoneMark();
 	void Init();
 	void SetCh(int nCh);
 	void Reset(int nCh);

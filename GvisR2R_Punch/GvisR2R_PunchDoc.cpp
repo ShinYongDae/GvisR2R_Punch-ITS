@@ -277,6 +277,8 @@ CGvisR2R_PunchDoc::CGvisR2R_PunchDoc()
 
 	m_nEjectBufferLastShot = -1;
 	m_bDebugGrabAlign = FALSE;
+	m_bDebugJudgeMk = FALSE;
+	m_bCntMkedImg = TRUE;
 }
 
 
@@ -1045,6 +1047,16 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		m_bDebugGrabAlign = _ttoi(szData) ? TRUE : FALSE;
 	else
 		m_bDebugGrabAlign = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("DebugJudgeMk"), NULL, szData, sizeof(szData), PATH_WORKING_INFO))
+		m_bDebugJudgeMk = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bDebugJudgeMk = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("CountMarkingImageFile"), NULL, szData, sizeof(szData), PATH_WORKING_INFO))
+		m_bCntMkedImg = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bCntMkedImg = TRUE;
 
 	//if (0 < ::GetPrivateProfileString(_T("DTS"), _T("UseIts"), NULL, szData, sizeof(szData), PATH_WORKING_INFO))
 	//	m_bUseIts = _ttoi(szData) ? TRUE : FALSE;
@@ -1817,6 +1829,32 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		pView->ClrDispMsg(); AfxMessageBox(_T("연속 고정불량 판정 발생 판넬수가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.LastJob.sNumContFixDef = CString(_T(""));
 	}
+
+	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Use Judge Marking Histo"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.LastJob.bUseJudgeMkHisto = _ttoi(szData) ? TRUE : FALSE;
+	else
+		WorkingInfo.LastJob.bUseJudgeMkHisto = TRUE;
+
+	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Judge Marking Histo Ratio Left"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.LastJob.nJudgeMkHistoRatio[0] = _ttoi(szData);
+	else
+		WorkingInfo.LastJob.nJudgeMkHistoRatio[0] = 50;
+
+	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Judge Marking Histo Ratio Right"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.LastJob.nJudgeMkHistoRatio[1] = _ttoi(szData);
+	else
+		WorkingInfo.LastJob.nJudgeMkHistoRatio[1] = 50;
+
+	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Judge Marking Histo White Left"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.LastJob.nJudgeMkHistoWhite[0] = max(min(_ttoi(szData), 240), 128); // Range : 128 ~ 240
+	else
+		WorkingInfo.LastJob.nJudgeMkHistoWhite[0] = 240;
+
+	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Judge Marking Histo White Right"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.LastJob.nJudgeMkHistoWhite[1] = max(min(_ttoi(szData), 240), 128); // Range : 128 ~ 240
+	else
+		WorkingInfo.LastJob.nJudgeMkHistoWhite[1] = 240;
+
 
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Ultra Sonic Cleanner Start Time"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.sUltraSonicCleannerStTim = CString(szData);
@@ -13309,8 +13347,14 @@ int CGvisR2R_PunchDoc::GetItsDefCode(int nDefCode)
 		return m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION];
 	else if (sDefCode == _T("W"))	//24 Wide = 160 -> m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION]
 		return m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION];
-	else if (sDefCode == _T("?"))	//25 Light = 160 -> m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION]
-		return m_nSapp3Code[SAPP3_SPACE_EXTRA_PROTRUSION];
+	else if (sDefCode == _T("F"))	//25 FixedDefect = 0
+		return 0;
+	else if (sDefCode == _T("Y"))	//26 VH.Size = 379
+		return m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF];
+	else if (sDefCode == _T("Z"))	//27 VHEdge = 379
+		return m_nSapp3Code[SAPP3_VHOPEN_NOVH_VHALIGN_VHDEF];
+	else if (sDefCode == _T("?"))	//28 Light = 0
+		return 0;
 
 	return 0;
 }
@@ -14635,4 +14679,76 @@ int CGvisR2R_PunchDoc::IsOfflineFolder() // 0 : Not exist, 1 : Exist only Up, 2 
 		nRtn |= 0x02;
 
 	return nRtn;
+}
+
+double CGvisR2R_PunchDoc::GetVerifyPunchHistoScore()
+{
+	double dVerifyPunchScore = 50.0;
+#ifdef USE_VISION
+	if (pView->m_pVision[0])
+		dVerifyPunchScore = pView->m_pVision[0]->GetVerifyPunchHistoScore();
+#endif
+	return dVerifyPunchScore;
+}
+
+double CGvisR2R_PunchDoc::GetVerifyPunchHistoScore2()
+{
+	double dVerifyPunchScore = 50.0;
+#ifdef USE_VISION
+	if (pView->m_pVision[1])
+		dVerifyPunchScore = pView->m_pVision[1]->GetVerifyPunchHistoScore();
+#endif
+	return dVerifyPunchScore;
+}
+
+int CGvisR2R_PunchDoc::GetVerifyPunchHistoWhite()
+{
+	double dVerifyPunchWhite = 240.0;
+#ifdef USE_VISION
+	if (pView->m_pVision[0])
+		dVerifyPunchWhite = pView->m_pVision[0]->GetVerifyPunchHistoWhite();
+#endif
+	return dVerifyPunchWhite;
+}
+
+int CGvisR2R_PunchDoc::GetVerifyPunchHistoWhite2()
+{
+	double dVerifyPunchWhite = 240.0;
+#ifdef USE_VISION
+	if (pView->m_pVision[1])
+		dVerifyPunchWhite = pView->m_pVision[1]->GetVerifyPunchHistoWhite();
+#endif
+	return dVerifyPunchWhite;
+}
+
+void CGvisR2R_PunchDoc::SetVerifyPunchHistoScore(double dScore)
+{
+#ifdef USE_VISION
+	if (pView->m_pVision[0])
+		pView->m_pVision[0]->SetVerifyPunchHistoScore(dScore);
+#endif
+}
+
+void CGvisR2R_PunchDoc::SetVerifyPunchHistoScore2(double dScore)
+{
+#ifdef USE_VISION
+	if (pView->m_pVision[1])
+		pView->m_pVision[1]->SetVerifyPunchHistoScore(dScore);
+#endif
+}
+
+void CGvisR2R_PunchDoc::SetVerifyPunchHistoWhite(int nDn)
+{
+#ifdef USE_VISION
+	if (pView->m_pVision[0])
+		pView->m_pVision[0]->SetVerifyPunchHistoWhite(nDn);
+#endif
+}
+
+void CGvisR2R_PunchDoc::SetVerifyPunchHistoWhite2(int nDn)
+{
+#ifdef USE_VISION
+	if (pView->m_pVision[1])
+		pView->m_pVision[1]->SetVerifyPunchHistoWhite(nDn);
+#endif
 }

@@ -144,6 +144,7 @@ BEGIN_MESSAGE_MAP(CDlgUtil03, CDialog)
 	ON_MESSAGE(WM_MYBTN_UP, OnMyBtnUp)
 	ON_BN_CLICKED(IDC_CHECK_PCS, &CDlgUtil03::OnBnClickedCheckPcs)
 	ON_BN_CLICKED(IDC_CHECK_PCS_DN, &CDlgUtil03::OnBnClickedCheckPcsDn)
+	ON_BN_CLICKED(IDC_BTN_JUDGE_MK, &CDlgUtil03::OnBnClickedBtnJudgeMk)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -204,12 +205,18 @@ void CDlgUtil03::AtDlgShow()
 {
 	if(pDoc->m_Master[0].m_pPcsRgn)
 		SetScrlBarMax(pDoc->m_Master[0].m_pPcsRgn->nCol, pDoc->m_Master[0].m_pPcsRgn->nRow); // ROT_NONE
-// 	SetScrlBarMax(pDoc->m_pPcsRgn->nRow, pDoc->m_pPcsRgn->nCol); // ROT_CCW_90
 	SetScrlBar(0,0);
 	
 	LoadImg();
 	Disp(ROT_NONE);
-// 	Disp(ROT_CCW_90);
+
+	CString str;
+	str.Format(_T("%d"), pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[0]);
+	myStcData[67].SetText(str);
+
+	str.Format(_T("%d"), pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[1]);
+	myStcData[68].SetText(str);
+
 }
 
 void CDlgUtil03::AtDlgHide()
@@ -251,6 +258,20 @@ BOOL CDlgUtil03::OnInitDialog()
 	// TODO: Add extra initialization here
 	InitStc();
 	InitBtn();
+
+	myStcMkJudge.SubclassDlgItem(IDC_STC_22, this);
+	myStcMkJudge.SetFontName(_T("Arial"));
+	myStcMkJudge.SetFontSize(11);
+	myStcMkJudge.SetTextColor(RGB_NAVY);
+	myStcMkJudge.SetBkColor(RGB_ORANGE);
+	myStcMkJudge.SetFontBold(TRUE);
+
+	myStcMkCurr.SubclassDlgItem(IDC_STC_188, this);
+	myStcMkCurr.SetFontName(_T("Arial"));
+	myStcMkCurr.SetFontSize(11);
+	myStcMkCurr.SetTextColor(RGB_NAVY);
+	myStcMkCurr.SetBkColor(RGB_LTYELLOW);
+	myStcMkCurr.SetFontBold(TRUE);
 
 	if(pDoc->m_Master[0].m_pPcsRgn)
 		SetScrlBarMax(pDoc->m_Master[0].m_pPcsRgn->nCol, pDoc->m_Master[0].m_pPcsRgn->nRow); // ROT_NONE
@@ -301,7 +322,10 @@ void CDlgUtil03::InitBtn()
 	myBtn[5].SetHwnd(this->GetSafeHwnd(), IDC_BTN_MK_MOVE_INIT);
 	myBtn[6].SubclassDlgItem(IDC_BTN_MK_HOME, this);
 	myBtn[6].SetHwnd(this->GetSafeHwnd(), IDC_BTN_MK_HOME);
-	
+
+	myBtn[7].SubclassDlgItem(IDC_BTN_JUDGE_MK, this);
+	myBtn[7].SetHwnd(this->GetSafeHwnd(), IDC_BTN_JUDGE_MK);
+
 	int i;
 	for(i=0; i<MAX_UTIL03_BTN; i++)
 	{
@@ -386,6 +410,11 @@ void CDlgUtil03::InitStc()
 	myStcData[65].SubclassDlgItem(IDC_STC_5_10, this);
 
 	myStcData[66].SubclassDlgItem(IDC_EDIT_YSHIFT_RATIO, this);
+
+	myStcData[67].SubclassDlgItem(IDC_STC_187, this);
+	myStcData[68].SubclassDlgItem(IDC_STC_189, this);
+	myStcData[69].SubclassDlgItem(IDC_STC_REJECT_SCR, this);
+	myStcData[70].SubclassDlgItem(IDC_STC_REJECT_SCR2, this);
 
 	for(int i=0; i<MAX_UTIL03_STC_DATA; i++)
 	{
@@ -1436,4 +1465,114 @@ void CDlgUtil03::OnBnClickedCheckPcsDn()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	Disp(ROT_NONE);
+}
+
+void CDlgUtil03::OnBnClickedBtnJudgeMk()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	JudgeMkHisto();
+}
+
+void CDlgUtil03::JudgeMkHisto()
+{
+	CString sMsg;
+
+	if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+	{
+		int nCam = -1;
+
+		BOOL bOn0 = myBtn[3].GetCheck();	// IDC_CHK_LEFT
+		BOOL bOn1 = myBtn[4].GetCheck();	// IDC_CHK_RIGHT
+
+		if (bOn0)
+			nCam = 0;
+		else if (bOn1)
+			nCam = 1;
+
+		if (nCam < 0)
+		{
+			AfxMessageBox(_T("좌/우 마킹 중 하나를 선택하세요."));
+			return;
+		}
+
+		if (IDNO == pView->MsgBox(_T("미마킹 테스트를 진행하시겠습니까?"), 0, MB_YESNO))
+			return;
+
+#ifdef USE_VISION
+		if (pView->m_pVision[nCam])
+		{
+			if (nCam == 0)
+			{
+				pDoc->LogAuto(_T("Left 미마킹 테스트 클릭"));
+				sMsg.Format(_T("조명 1 : %s"), pDoc->WorkingInfo.Light.sVal[0]);
+				pDoc->LogAuto(sMsg);
+			}
+			else if (nCam == 1)
+			{
+				pDoc->LogAuto(_T("Right 미마킹 테스트 클릭"));
+				sMsg.Format(_T("조명 2 : %s"), pDoc->WorkingInfo.Light.sVal[1]);
+				pDoc->LogAuto(sMsg);
+			}
+
+			BOOL bJudgeMk;
+			BOOL bRtn = pView->m_pVision[nCam]->TestJudgeMkHisto(bJudgeMk);
+			if (pView->m_pDlgMenu02)
+				pView->m_pDlgMenu02->DispHistoScore(nCam);
+			if (bRtn && bJudgeMk)
+			{
+				if (nCam == 0)
+				{
+					sMsg.Format(_T("미마킹 테스트 결과 1 : 정상 (%d)"), int(pView->m_pVision[0]->MkMtRst.dScore));
+					pDoc->LogAuto(sMsg);
+				}
+				else if (nCam == 1)
+				{
+					sMsg.Format(_T("미마킹 테스트 결과 2 : 정상 (%d)"), int(pView->m_pVision[1]->MkMtRst.dScore));
+					pDoc->LogAuto(sMsg);
+				}
+				AfxMessageBox(_T("마킹"));
+			}
+			else if (!bJudgeMk)
+			{
+				if (nCam == 0)
+				{
+					sMsg.Format(_T("미마킹 테스트 결과 1 : 비정상 (%d)"), int(pView->m_pVision[0]->MkMtRst.dScore));
+					pDoc->LogAuto(sMsg);
+				}
+				else if (nCam == 1)
+				{
+					sMsg.Format(_T("미마킹 테스트 결과 2 : 비정상 (%d)"), int(pView->m_pVision[1]->MkMtRst.dScore));
+					pDoc->LogAuto(sMsg);
+				}
+				AfxMessageBox(_T("미마킹"));
+			}
+		}
+#endif
+
+	}
+}
+
+
+void CDlgUtil03::DispResultPtScore(int nCam)
+{
+	CString sVal;
+
+#ifdef USE_VISION
+	if (nCam == 0)
+	{
+		if (pView->m_pVision[0])
+		{
+			if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+				sVal.Format(_T("%d"), int(pView->m_pVision[0]->MkMtRst.dScore));
+			GetDlgItem(IDC_STC_REJECT_SCR)->SetWindowText(sVal);
+		}
+	}
+	else if (nCam == 1)
+		if (pView->m_pVision[1])
+		{
+			if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+				sVal.Format(_T("%d"), int(pView->m_pVision[1]->MkMtRst.dScore));
+			GetDlgItem(IDC_STC_REJECT_SCR2)->SetWindowText(sVal);
+		}
+#endif
 }

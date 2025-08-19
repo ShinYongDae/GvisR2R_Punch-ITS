@@ -2651,3 +2651,4 @@ void CDlgMenu04::EngBuffInitPosSave()
 }
 
 
+

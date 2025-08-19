@@ -440,25 +440,6 @@ BOOL CDlgMenu02::OnInitDialog()
 	CRect rt[2];
 	void *pMilSys=NULL;
 
-// 	if(pView->m_pVision[0])
-// 	{
-// 		hW[0] = GetDlgItem(IDC_STC_VISION)->GetSafeHwnd();
-// 		GetDlgItem(IDC_STC_VISION)->GetWindowRect(&rt[0]);
-// 		pMilSys = pView->m_pVision[0]->SelLive(hW[0], rt[0], pMilSys);
-// 	}
-// 
-// 	if(pView->m_pVision[1])
-// 	{
-// 		hW[1] = GetDlgItem(IDC_STC_VISION_2)->GetSafeHwnd();
-// 		GetDlgItem(IDC_STC_VISION_2)->GetWindowRect(&rt[1]);
-// 		pMilSys = pView->m_pVision[1]->SelLive(hW[1], rt[1], pMilSys);
-// 	}
-
-// 	if(pView->m_pVision[0])
-// 		pMilSys = pView->m_pVision[0]->SelLive2(hW[0], rt[0], pMilSys);
-// 	if(pView->m_pVision[1])
-// 		pMilSys = pView->m_pVision[1]->SelLive2(hW[1], rt[1], pMilSys);
-
 #ifdef USE_VISION
 
 	if(pView->m_pVision[1])
@@ -477,12 +458,16 @@ BOOL CDlgMenu02::OnInitDialog()
 	//MIL_ID MilSys = M_NULL;
 	pView->m_pVision[0] = new CVision(0, m_MilSys, hCtrlV0, this);
 	m_MilSys = pView->m_pVision[0]->GetSystemID();
+	pView->m_pVision[0]->SetVerifyPunchHistoScore(pDoc->GetVerifyPunchHistoScore());
+	pView->m_pVision[0]->SetVerifyPunchHistoWhite(pDoc->GetVerifyPunchHistoWhite());
 
 //#ifndef TEST_MODE
 	HWND hCtrlV1[4] = { 0 };
 	hCtrlV1[0] = GetDlgItem(IDC_STC_VISION_2)->GetSafeHwnd();
 	pView->m_pVision[1] = new CVision(1, m_MilSys, hCtrlV1, this);
-//#endif
+	pView->m_pVision[1]->SetVerifyPunchHistoScore(pDoc->GetVerifyPunchHistoScore2());
+	pView->m_pVision[1]->SetVerifyPunchHistoWhite(pDoc->GetVerifyPunchHistoWhite2());
+	//#endif
 
 
 	if(pView->m_pVision[0])
@@ -5164,5 +5149,55 @@ BOOL CDlgMenu02::Do4PtAlign1(int nPos, BOOL bDraw)
 	return TRUE;
 }
 
+
+void CDlgMenu02::InitHistoRst(int nCam)
+{
+#ifdef USE_VISION
+	if (nCam == 2)
+	{
+		if (pView->m_pVision[0])
+			pView->m_pVision[0]->PtMtRst.dScore = 0.0;
+		if (pView->m_pVision[1])
+			pView->m_pVision[1]->PtMtRst.dScore = 0.0;
+	}
+	else
+	{
+		if (pView->m_pVision[nCam])
+			pView->m_pVision[nCam]->PtMtRst.dScore = 0.0;
+	}
+#endif
+}
+
+void CDlgMenu02::DispHistoScore(int nCam)
+{
+	CString sVal;
+
+#ifdef USE_VISION
+	if (nCam == 0 && pView->m_pVision[0])
+	{
+		if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+			sVal.Format(_T("%d"), int(pView->m_pVision[0]->MkMtRst.dScore));
+		GetDlgItem(IDC_STATIC_MK_PM_SCORE)->SetWindowText(sVal);
+	}
+	else if (nCam == 1 && pView->m_pVision[1])
+	{
+		if (pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto)
+			sVal.Format(_T("%d"), int(pView->m_pVision[1]->MkMtRst.dScore));
+		GetDlgItem(IDC_STATIC_MK_PM_SCORE2)->SetWindowText(sVal);
+	}
+#endif
+	if (m_pDlgUtil03)
+		m_pDlgUtil03->DispResultPtScore(nCam);
+}
+
+
+void CDlgMenu02::DispHistoStdVal()
+{
+	CString sVal;
+	sVal.Format(_T("%d"), pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[0]);
+	GetDlgItem(IDC_STATIC_MK_PM_SCORE3)->SetWindowText(sVal);
+	sVal.Format(_T("%d"), pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[1]);
+	GetDlgItem(IDC_STATIC_MK_PM_SCORE4)->SetWindowText(sVal);
+}
 
 //====================================================================================================
