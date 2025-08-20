@@ -8798,68 +8798,9 @@ void CGvisR2R_PunchDoc::UpdateYieldOnRmap()
 	if (bDualTest)
 	{
 		pView->m_bTHREAD_REELMAP_YIELD_DN = TRUE;	// UpdateReelmapYieldDn(); // Yield Reelmap
-		//pView->m_bTHREAD_REELMAP_YIELD_ALLUP = TRUE;
-		//pView->m_bTHREAD_REELMAP_YIELD_ALLDN = TRUE;
 	}
 	Sleep(100);
-
-	//if (m_pReelMapUp)
-	//	m_pReelMapUp->UpdateRst();					// 릴맵 텍스트 파일의 수율정보를 업데이트함.
-	//if (bDualTest)
-	//{
-	//	if (m_pReelMapDn)
-	//		m_pReelMapDn->UpdateRst();					// 릴맵 텍스트 파일의 수율정보를 업데이트함.
-	//	if (m_pReelMapAllUp)
-	//		m_pReelMapAllUp->UpdateRst();					// 릴맵 텍스트 파일의 수율정보를 업데이트함.
-	//	if (m_pReelMapAllDn)
-	//		m_pReelMapAllDn->UpdateRst();					// 릴맵 텍스트 파일의 수율정보를 업데이트함.
-	//}
-
 }
-
-//void CGvisR2R_PunchDoc::UpdateYield(int nSerial)
-//{
-//	if (nSerial <= 0)
-//	{
-//		pView->ClrDispMsg();
-//		AfxMessageBox(_T("Serial Error.66"));
-//		return;
-//	}
-//
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-//
-//	if (m_pReelMapUp)
-//		m_pReelMapUp->UpdateYield(nSerial);
-//	if (bDualTest)
-//	{
-//		if (m_pReelMapDn)
-//			m_pReelMapDn->UpdateYield(nSerial);
-//		if (m_pReelMapAllUp)
-//			m_pReelMapAllUp->UpdateYield(nSerial);
-//		if (m_pReelMapAllDn)
-//			m_pReelMapAllDn->UpdateYield(nSerial);
-//	}
-//
-//	if (pDoc->GetTestMode() == MODE_OUTER)
-//	{
-//		if (m_pReelMapInnerUp)
-//			m_pReelMapInnerUp->UpdateYield(nSerial);
-//
-//		if (m_pReelMapIts)
-//			m_pReelMapIts->UpdateYield(nSerial);
-//
-//		if (WorkingInfo.LastJob.bDualTestInner)
-//		{
-//			if (m_pReelMapInnerDn)
-//				m_pReelMapInnerDn->UpdateYield(nSerial);
-//			if (m_pReelMapInnerAllUp)
-//				m_pReelMapInnerAllUp->UpdateYield(nSerial);
-//			if (m_pReelMapInnerAllDn)
-//				m_pReelMapInnerAllDn->UpdateYield(nSerial);
-//		}
-//	}
-//
-//}
 
 void CGvisR2R_PunchDoc::UpdateYieldUp(int nSerial)
 {

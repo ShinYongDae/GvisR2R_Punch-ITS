@@ -9364,213 +9364,6 @@ void CGvisR2R_PunchView::CompletedMk(int nCam) // 0: Only Cam0, 1: Only Cam1, 2:
 	pDoc->SetCompletedSerial(nSerial);
 }
 
-//void CGvisR2R_PunchView::Shift2Mk()
-//{
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-//	int nSerial = m_nBufUpSerial[0];
-//
-//	if (bDualTest)
-//	{
-//		if (m_bLastProc && m_nBufDnSerial[0] == m_nLotEndSerial)
-//		{
-//			nSerial = m_nBufDnSerial[0];
-//			if (nSerial > 0 && (nSerial % 2))
-//			{
-//				//pDoc->UpdateYield(nSerial);
-//				//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//				//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//				pDoc->Shift2Mk(nSerial);	// Cam0
-//				if (m_pDlgFrameHigh)
-//					m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//				pDoc->UpdateYieldOnRmap();
-//			}
-//		}
-//		else
-//		{
-//			nSerial = m_nBufDnSerial[0];
-//			if (!m_bCont)
-//			{
-//				if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//
-//					//pDoc->UpdateYield(nSerial + 1);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[1] = nSerial + 1;
-//					//m_bTHREAD_UPDATAE_YIELD[1] = TRUE;
-//
-//					if (m_nBufDnSerial[1] > 0)
-//					{
-//					pDoc->Shift2Mk(m_nBufDnSerial[1]);	// Cam1
-//					pDoc->UpdateYieldOnRmap();
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(m_nBufDnSerial[1]);
-//				}
-//				else
-//				{
-//						if (m_pDlgFrameHigh)
-//							m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					}
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//			else
-//			{
-//				if (nSerial > 0)
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//
-//					//pDoc->UpdateYield(nSerial + 1);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[1] = nSerial + 1;
-//					//m_bTHREAD_UPDATAE_YIELD[1] = TRUE;
-//
-//					if (m_nBufDnSerial[1] > 0)
-//					{
-//					pDoc->Shift2Mk(m_nBufDnSerial[1]);	// Cam1
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(m_nBufDnSerial[1]);
-//				}
-//				else
-//				{
-//						if (m_pDlgFrameHigh)
-//							m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					}
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//		}
-//	}
-//	else
-//	{
-//		if (m_bLastProc && m_nBufUpSerial[0] == m_nLotEndSerial)
-//		{
-//			nSerial = m_nBufUpSerial[0];
-//			if (!m_bCont)
-//			{
-//				if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//			else
-//			{
-//				if (nSerial > 0)
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//		}
-//		else
-//		{
-//			nSerial = m_nBufUpSerial[0];
-//			if (!m_bCont)
-//			{
-//				if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//
-//					//pDoc->UpdateYield(nSerial + 1);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[1] = nSerial + 1;
-//					//m_bTHREAD_UPDATAE_YIELD[1] = TRUE;
-//
-//					if (m_nBufUpSerial[1] > 0)
-//					{
-//					pDoc->Shift2Mk(m_nBufUpSerial[1]);	// Cam1
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(m_nBufUpSerial[1]);
-//				}
-//				else
-//				{
-//						if (m_pDlgFrameHigh)
-//							m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					}
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//			else
-//			{
-//				if (nSerial > 0)
-//				{
-//					//pDoc->UpdateYield(nSerial);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[0] = nSerial;
-//					//m_bTHREAD_UPDATAE_YIELD[0] = TRUE;
-//
-//					pDoc->Shift2Mk(nSerial);	// Cam0
-//
-//					//pDoc->UpdateYield(nSerial + 1);
-//					//m_nSerialTHREAD_UPDATAE_YIELD[1] = nSerial + 1;
-//					//m_bTHREAD_UPDATAE_YIELD[1] = TRUE;
-//
-//					if (m_nBufUpSerial[1] > 0)
-//					{
-//					pDoc->Shift2Mk(m_nBufUpSerial[1]);	// Cam1
-//					if (m_pDlgFrameHigh)
-//						m_pDlgFrameHigh->SetMkLastShot(m_nBufUpSerial[1]);
-//				}
-//				else
-//				{
-//						if (m_pDlgFrameHigh)
-//							m_pDlgFrameHigh->SetMkLastShot(nSerial);
-//					}
-//					pDoc->UpdateYieldOnRmap();
-//				}
-//				else
-//				{
-//					Stop();
-//				}
-//			}
-//		}
-//	}
-//
-//	m_bShift2Mk = FALSE;
-//}
-
 void CGvisR2R_PunchView::SetTestSts(int nStep)
 {
 	// 	if(!m_pDlgMenu03)
@@ -18641,19 +18434,7 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 		case LOT_END:
 			if (!m_bTHREAD_REELMAP_YIELD_UP && !m_bTHREAD_REELMAP_YIELD_DN && !m_bTHREAD_REELMAP_YIELD_ALLUP && !m_bTHREAD_REELMAP_YIELD_ALLDN) // Yield Reelmap
 			{
-				//m_bTHREAD_RELOAD_RST_UP = FALSE;
-				//m_bTHREAD_RELOAD_RST_DN = FALSE;
-				//m_bTHREAD_RELOAD_RST_ALLUP = FALSE;
-				//m_bTHREAD_RELOAD_RST_ALLDN = FALSE;
-				//m_bTHREAD_RELOAD_RST_UP_INNER = FALSE;
-				//m_bTHREAD_RELOAD_RST_ITS = FALSE;
-				//m_bTHREAD_RELOAD_RST_DN_INNER = FALSE;
-				//m_bTHREAD_RELOAD_RST_ALLUP_INNER = FALSE;
-				//m_bTHREAD_RELOAD_RST_ALLDN_INNER = FALSE;
-
-				//ReloadReelmap(nSerial);
 				UpdateRst();
-				//pDoc->UpdateYieldOnRmap(); // 20230614
 				m_nLotEndAuto++;
 			}
 			break;
@@ -18663,12 +18444,7 @@ BOOL CGvisR2R_PunchView::DoAutoGetLotEndSignal()
 			m_nLotEndAuto++;
 			break;
 		case LOT_END + 2:
-			//if (!m_bTHREAD_RELOAD_RST_UP && !m_bTHREAD_RELOAD_RST_DN && !m_bTHREAD_RELOAD_RST_ALLUP && !m_bTHREAD_RELOAD_RST_ALLDN
-			//	&& !m_bTHREAD_RELOAD_RST_UP_INNER && !m_bTHREAD_RELOAD_RST_ITS && !m_bTHREAD_RELOAD_RST_DN_INNER && !m_bTHREAD_RELOAD_RST_ALLUP_INNER
-			//	&& !m_bTHREAD_RELOAD_RST_ALLDN_INNER)
-			{
-				m_nLotEndAuto++;
-			}
+			m_nLotEndAuto++;
 			break;
 		case LOT_END + 3:
 			Buzzer(TRUE, 0);
@@ -21641,7 +21417,6 @@ void CGvisR2R_PunchView::Mk2PtChkSerial()
 			break;
 
 		case MK_ST + (Mk2PtIdx::ChkSn) + 2:
-			//pDoc->UpdateYieldOnRmap(); // 20230614
 
 #ifdef USE_SR1000W
 			if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_OUTER)
@@ -22683,11 +22458,6 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 			{
 				pDoc->LogAuto(_T("PLC: 마킹부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)"));
 				m_nMkStAuto++;
-				//if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
-				//{
-				//	UpdateYield(); // Cam[0],  Cam[1]
-				//	m_nMkStAuto++;
-				//}
 			}
 			break;
 
@@ -22827,11 +22597,6 @@ void CGvisR2R_PunchView::Mk2PtShift2Mk() // MODE_INNER
 			{
 				pDoc->LogAuto(_T("PLC: 마킹부 Feeding완료(PLC가 On시키고 PC가 확인하고 Reset시킴.)"));
 				m_nMkStAuto++;
-				//if (!m_bTHREAD_UPDATAE_YIELD[0] && !m_bTHREAD_UPDATAE_YIELD[1])
-				//{
-				//	UpdateYield(); // Cam[0],  Cam[1]
-				//	m_nMkStAuto++;
-				//}
 			}
 			break;
 
@@ -29244,53 +29009,21 @@ void CGvisR2R_PunchView::RunShift2Mk()
 	Shift2Mk();			// PCR 이동(Buffer->Marked) // 기록(WorkingInfo.LastJob.sSerial)
 }
 
-//BOOL CGvisR2R_PunchView::LoadAoiSpec()
-//{
-//	return  pDoc->LoadAoiSpec();
-//}
-
 BOOL CGvisR2R_PunchView::LoadMasterSpec()
 {
-	//int i;
-	//CString sPath, sItem;
-	//CString sSpecDir = pDoc->WorkingInfo.System.sPathCamSpecDir;
-	//CString sModel = pDoc->WorkingInfo.LastJob.sModelUp;
-	//CString sLayer = pDoc->WorkingInfo.LastJob.sLayerUp;
-
-	//sPath.Format(_T("%s%s\\%s.ini"), sSpecDir, sModel, sLayer);
-
 	return TRUE;
 }
-
-//void CGvisR2R_PunchView::SetMkPcsIdx(int nSerial)
-//{
-//	pDoc->SetMkPcsIdx(nSerial);
-//}
 
 
 // Call from Thread Function
 void CGvisR2R_PunchView::UpdateYield(int nSerial)
 {
-	//pDoc->UpdateYield(nSerial);
-
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-	//int nId = nSerial % 2; // 홀수(1), 짝수(0)
 
 	m_nSnTHREAD_UPDATAE_YIELD = nSerial;
 	m_bTHREAD_UPDATE_YIELD_UP = TRUE;
 	if(bDualTest)
 		m_bTHREAD_UPDATE_YIELD_DN = TRUE;
-
-	//if (pDoc->GetTestMode() == MODE_OUTER)
-	//{
-	//	m_bTHREAD_UPDATE_YIELD_ITS = TRUE;
-	//	m_bTHREAD_UPDATE_YIELD_INNER_UP = TRUE;
-	//	if (pDoc->WorkingInfo.LastJob.bDualTestInner)
-	//	{
-	//		m_bTHREAD_UPDATE_YIELD_INNER_DN = TRUE;
-	//	}
-	//}
-
 }
 
 void CGvisR2R_PunchView::UpdateYieldUp(int nSerial)
@@ -34058,8 +33791,6 @@ void CGvisR2R_PunchView::Shift2Mk()
 
 		if (m_pDlgFrameHigh)
 			m_pDlgFrameHigh->SetMkLastShot(nSerialL);
-
-		//pDoc->UpdateYieldOnRmap(); // 20230614
 	}
 	else
 	{
@@ -34076,8 +33807,6 @@ void CGvisR2R_PunchView::Shift2Mk()
 
 			if (m_pDlgFrameHigh)
 				m_pDlgFrameHigh->SetMkLastShot(nLastShot);
-
-			//pDoc->UpdateYieldOnRmap(); // 20230614
 		}
 	}
 
@@ -35188,7 +34917,6 @@ BOOL CGvisR2R_PunchView::RemakeReelmapFromPcr(CString sModel, CString sLot, CStr
 				{
 					pDoc->LoadPcrDn(sDnPath);
 					pDoc->LoadPcrAllUp(sDnPath);
-					//pDoc->LoadPcrAllDn(sDnPath);
 
 					// 시리얼파일의 정보로 릴맵을 만듬 
 					if (pDoc->m_pReelMapUp)
@@ -35197,21 +34925,8 @@ BOOL CGvisR2R_PunchView::RemakeReelmapFromPcr(CString sModel, CString sLot, CStr
 						pDoc->m_pReelMapDn->Write(nSerial); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 					if (pDoc->m_pReelMapAllUp)
 						pDoc->m_pReelMapAllUp->Write(nSerial); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
-					//if (pDoc->m_pReelMapAllDn)
-					//	pDoc->m_pReelMapAllDn->Write(nSerial); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 
 					pDoc->SetLastSerial(nSerial);
-
-					// 수율은 릴맵의 Shot별 불량을 읽어서 산출함.(시리얼이 연속이 아닐 수 있으므로)
-					//pDoc->UpdateYieldUp(nSerial);
-					//pDoc->UpdateYieldDn(nSerial);
-					//pDoc->UpdateYieldAllUp(nSerial);
-					//pDoc->UpdateYieldAllDn(nSerial);
-
-					//UpdateReelmapYieldUp();
-					//UpdateReelmapYieldDn();
-					//UpdateReelmapYieldAllUp();
-					//UpdateReelmapYieldAllDn();
 				}
 				else
 				{
@@ -35222,13 +34937,10 @@ BOOL CGvisR2R_PunchView::RemakeReelmapFromPcr(CString sModel, CString sLot, CStr
 			}
 			else
 			{
-				//UpdateReelmap(nSerial); // 시리얼파일의 정보로 릴맵을 만듬 
 				if (pDoc->m_pReelMapUp)
 					pDoc->m_pReelMapUp->Write(nSerial); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 
 				pDoc->SetLastSerial(nSerial);
-
-				//pDoc->UpdateYieldUp(nSerial);
 			}
 		}
 	}

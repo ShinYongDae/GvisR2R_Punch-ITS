@@ -2854,8 +2854,6 @@ BOOL CReelMap::InitRst()
 void CReelMap::CloseRst()
 {
 	int nPnl, nRow;
-// 	int nNodeX = pDoc->m_pPcsRgn->nCol;
-// 	int nNodeY = pDoc->m_pPcsRgn->nRow;
 	int nNodeX = PNLBUF_X;
 	int nNodeY = PNLBUF_Y;
 
@@ -2893,19 +2891,7 @@ void CReelMap::ClrRst()
 			m_nDefPerStrip[k][i] = 0;
 	}
 
-// 	double dN0;
-// 	if(m_dTotLen > m_dPnlLen)
-// 		dN0 = m_dTotLen / m_dPnlLen;
-// 	else
-// 		dN0 = (double)PNL_TOT;
-// 	int nN0 = int(m_dTotLen / m_dPnlLen);
-// 	int TotPnl = (dN0 - (double)nN0) > 0.0 ? (nN0+1) : nN0 ;
-// 	if(TotPnl > PNL_TOT)
-// 		TotPnl = PNL_TOT;
-
 	int nPnl, nRow, nCol;
-// 	int nNodeX = pDoc->m_Master[0].m_pPcsRgn->nCol;
-// 	int nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow;
 	int TotPnl = PNL_TOT;
 	int nNodeX = PNLBUF_X;
 	int nNodeY = PNLBUF_Y;
@@ -2926,313 +2912,84 @@ void CReelMap::ClrRst()
 CString CReelMap::GetYieldPath(int nRmap)
 {
 	CString sPath;
-	//BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-
 	CString str;
 
-	//if (bDualTest)
+	switch (nRmap)
 	{
-		switch (nRmap)
-		{
-		case RMAP_UP:
-			str = _T("YieldUp.txt");
-			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-				pDoc->WorkingInfo.LastJob.sModelUp,
-				pDoc->WorkingInfo.LastJob.sLotUp,
-				pDoc->WorkingInfo.LastJob.sLayerUp,
-				str);
-			//if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-			//{
-			//	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-			//		pDoc->WorkingInfo.LastJob.sModelUp,
-			//		pDoc->WorkingInfo.LastJob.sLotUp,
-			//		pDoc->WorkingInfo.LastJob.sLayerUp,
-			//		str);
-			//}
-			//else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-			//{
-			//	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-			//		pDoc->WorkingInfo.LastJob.sModelUp,
-			//		pDoc->Status.PcrShare[0].sLot,
-			//		pDoc->WorkingInfo.LastJob.sLayerUp,
-			//		str);
-			//}
-			break;
-		case RMAP_ALLUP:
-			str = _T("YieldAll.txt");
-			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-				pDoc->WorkingInfo.LastJob.sModelUp,
-				pDoc->WorkingInfo.LastJob.sLotUp,
-				pDoc->WorkingInfo.LastJob.sLayerUp,
-				str);
-			//if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-			//{
-			//	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-			//		pDoc->WorkingInfo.LastJob.sModelUp,
-			//		pDoc->WorkingInfo.LastJob.sLotUp,
-			//		pDoc->WorkingInfo.LastJob.sLayerUp,
-			//		str);
-			//}
-			//else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-			//{
-			//	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-			//		pDoc->WorkingInfo.LastJob.sModelUp,
-			//		pDoc->Status.PcrShare[0].sLot,
-			//		pDoc->WorkingInfo.LastJob.sLayerUp,
-			//		str);
-			//}
-			break;
-		case RMAP_DN:
-			str = _T("YieldDn.txt");
-			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-				pDoc->WorkingInfo.LastJob.sModelUp,
-				pDoc->WorkingInfo.LastJob.sLotUp,
-				pDoc->WorkingInfo.LastJob.sLayerDn,
-				str);
-			//if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[1])
-			//{
-			//	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-			//		//pDoc->WorkingInfo.LastJob.sModelDn,
-			//		//pDoc->WorkingInfo.LastJob.sLotDn,
-			//		pDoc->WorkingInfo.LastJob.sModelUp,
-			//		pDoc->WorkingInfo.LastJob.sLotUp,
-			//		pDoc->WorkingInfo.LastJob.sLayerDn,
-			//		str);
-			//}
-			//else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[1])
-			//{
-			//	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-			//		//pDoc->WorkingInfo.LastJob.sModelDn,
-			//		//pDoc->Status.PcrShare[1].sLot,
-			//		pDoc->WorkingInfo.LastJob.sModelUp,
-			//		pDoc->Status.PcrShare[0].sLot,
-			//		pDoc->WorkingInfo.LastJob.sLayerDn,
-			//		str);
-			//}
-			break;
-		case RMAP_ALLDN:
-			str = _T("YieldAll.txt");
-			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-				pDoc->WorkingInfo.LastJob.sModelUp,
-				pDoc->WorkingInfo.LastJob.sLotUp,
-				pDoc->WorkingInfo.LastJob.sLayerDn,
-				str);
-		//if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[1])
-			//{
-			//	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-			//		//pDoc->WorkingInfo.LastJob.sModelDn,
-			//		//pDoc->WorkingInfo.LastJob.sLotDn,
-			//		pDoc->WorkingInfo.LastJob.sModelUp,
-			//		pDoc->WorkingInfo.LastJob.sLotUp,
-			//		pDoc->WorkingInfo.LastJob.sLayerDn,
-			//		str);
-			//}
-			//else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[1])
-			//{
-			//	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-			//		//pDoc->WorkingInfo.LastJob.sModelDn,
-			//		//pDoc->Status.PcrShare[1].sLot,
-			//		pDoc->WorkingInfo.LastJob.sModelUp,
-			//		pDoc->Status.PcrShare[0].sLot,
-			//		pDoc->WorkingInfo.LastJob.sLayerDn,
-			//		str);
-			//}
-			break;
-		case RMAP_INNER_UP:
-			str = _T("YieldUp.txt");
-				sPath.Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
-					pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode,
-					pDoc->WorkingInfo.LastJob.sInnerLotUp, pDoc->WorkingInfo.LastJob.sInnerLayerUp,
-					str);
-			break;
-		case RMAP_INNER_DN:
-			str = _T("YieldDn.txt");
-			sPath.Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
-				pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode,
-				pDoc->WorkingInfo.LastJob.sInnerLotUp, pDoc->WorkingInfo.LastJob.sInnerLayerDn,
-				str);
-			break;
-		case RMAP_INNER_ALLUP:
-			str = _T("YieldAll.txt");
+	case RMAP_UP:
+		str = _T("YieldUp.txt");
+		sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
+			pDoc->WorkingInfo.LastJob.sModelUp,
+			pDoc->WorkingInfo.LastJob.sLotUp,
+			pDoc->WorkingInfo.LastJob.sLayerUp,
+			str);
+		break;
+	case RMAP_ALLUP:
+		str = _T("YieldAll.txt");
+		sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
+			pDoc->WorkingInfo.LastJob.sModelUp,
+			pDoc->WorkingInfo.LastJob.sLotUp,
+			pDoc->WorkingInfo.LastJob.sLayerUp,
+			str);
+		break;
+	case RMAP_DN:
+		str = _T("YieldDn.txt");
+		sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
+			pDoc->WorkingInfo.LastJob.sModelUp,
+			pDoc->WorkingInfo.LastJob.sLotUp,
+			pDoc->WorkingInfo.LastJob.sLayerDn,
+			str);
+		break;
+	case RMAP_ALLDN:
+		str = _T("YieldAll.txt");
+		sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
+			pDoc->WorkingInfo.LastJob.sModelUp,
+			pDoc->WorkingInfo.LastJob.sLotUp,
+			pDoc->WorkingInfo.LastJob.sLayerDn,
+			str);
+		break;
+	case RMAP_INNER_UP:
+		str = _T("YieldUp.txt");
 			sPath.Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
 				pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode,
 				pDoc->WorkingInfo.LastJob.sInnerLotUp, pDoc->WorkingInfo.LastJob.sInnerLayerUp,
 				str);
-			break;
-		case RMAP_INNER_ALLDN:
-			str = _T("YieldAll.txt");
-			sPath.Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
-				pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode,
-				pDoc->WorkingInfo.LastJob.sInnerLotUp, pDoc->WorkingInfo.LastJob.sInnerLayerDn,
-				str);
-			break;
-		case RMAP_INOUTER_UP:
-			break;
-		case RMAP_INOUTER_DN:
-			break;
-		case RMAP_ITS:
-			//pDoc->GetCurrentInfoEng();
-			str = _T("YieldIts.txt");
-			sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
-				pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode, //pDoc->m_sItsCode,
-				str);
-			break;
-		}
+		break;
+	case RMAP_INNER_DN:
+		str = _T("YieldDn.txt");
+		sPath.Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
+			pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode,
+			pDoc->WorkingInfo.LastJob.sInnerLotUp, pDoc->WorkingInfo.LastJob.sInnerLayerDn,
+			str);
+		break;
+	case RMAP_INNER_ALLUP:
+		str = _T("YieldAll.txt");
+		sPath.Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
+			pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode,
+			pDoc->WorkingInfo.LastJob.sInnerLotUp, pDoc->WorkingInfo.LastJob.sInnerLayerUp,
+			str);
+		break;
+	case RMAP_INNER_ALLDN:
+		str = _T("YieldAll.txt");
+		sPath.Format(_T("%s%s\\%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
+			pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode,
+			pDoc->WorkingInfo.LastJob.sInnerLotUp, pDoc->WorkingInfo.LastJob.sInnerLayerDn,
+			str);
+		break;
+	case RMAP_INOUTER_UP:
+		break;
+	case RMAP_INOUTER_DN:
+		break;
+	case RMAP_ITS:
+		str = _T("YieldIts.txt");
+		sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
+			pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode, //pDoc->m_sItsCode,
+			str);
+		break;
 	}
-	//else
-	//{
-	//	str = _T("YieldUp.txt");
-	//	if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-	//	{
-	//		sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-	//			pDoc->WorkingInfo.LastJob.sModelUp,
-	//			pDoc->WorkingInfo.LastJob.sLotUp,
-	//			pDoc->WorkingInfo.LastJob.sLayerUp,
-	//			str);
-	//	}
-	//	else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-	//	{
-	//		sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-	//			pDoc->WorkingInfo.LastJob.sModelUp,
-	//			pDoc->Status.PcrShare[0].sLot,
-	//			pDoc->WorkingInfo.LastJob.sLayerUp,
-	//			str);
-	//	}
-	//}
+
 	return sPath;
 }
-
-//CString CReelMap::GetYieldPath(int nRmap)
-//{
-//	CString sPath;
-//#ifdef TEST_MODE
-//	sPath = PATH_REELMAP;
-//#else
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-//
-//	CString str;
-//
-//	if (bDualTest)
-//	{
-//		switch (nRmap)
-//		{
-//		case RMAP_UP:
-//			str = _T("YieldUp.txt");
-//			if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//			else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->Status.PcrShare[0].sLot,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//			break;
-//		case RMAP_ALLUP:
-//#ifdef TEST_MODE
-//			str = _T("YieldAllUp.txt");
-//#else
-//			str = _T("YieldAll.txt");
-//#endif
-//			if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//			else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->Status.PcrShare[0].sLot,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//			break;
-//		case RMAP_DN:
-//			str = _T("YieldDn.txt");
-//			if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[1])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					//pDoc->WorkingInfo.LastJob.sModelDn,
-//					//pDoc->WorkingInfo.LastJob.sLotDn,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerDn,
-//					str);
-//			}
-//			else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[1])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					//pDoc->WorkingInfo.LastJob.sModelDn,
-//					//pDoc->Status.PcrShare[1].sLot,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->Status.PcrShare[0].sLot,
-//					pDoc->WorkingInfo.LastJob.sLayerDn,
-//					str);
-//			}
-//			break;
-//		case RMAP_ALLDN:
-//#ifdef TEST_MODE
-//			str = _T("YieldAllDn.txt");
-//#else
-//			str = _T("YieldAll.txt");
-//#endif
-//			if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[1])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					//pDoc->WorkingInfo.LastJob.sModelDn,
-//					//pDoc->WorkingInfo.LastJob.sLotDn,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerDn,
-//					str);
-//			}
-//			else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[1])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					//pDoc->WorkingInfo.LastJob.sModelDn,
-//					//pDoc->Status.PcrShare[1].sLot,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->Status.PcrShare[0].sLot,
-//					pDoc->WorkingInfo.LastJob.sLayerDn,
-//					str);
-//			}
-//			break;
-//		}
-//	}
-//	else
-//	{
-//		str = _T("YieldUp.txt");
-//		if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->WorkingInfo.LastJob.sLotUp,
-//				pDoc->WorkingInfo.LastJob.sLayerUp,
-//				str);
-//		}
-//		else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->Status.PcrShare[0].sLot,
-//				pDoc->WorkingInfo.LastJob.sLayerUp,
-//				str);
-//		}
-//	}
-//#endif
-//	return sPath;
-//}
 
 void CReelMap::ResetYield()
 {
@@ -3253,138 +3010,6 @@ void CReelMap::ResetYield()
 		}
 	}
 }
-
-//BOOL CReelMap::WriteYield(int nSerial, CString sPath)
-//{
-//	int nNodeX = 0, nNodeY = 0;
-//#ifndef TEST_MODE
-//	nNodeX = pDoc->m_Master[0].m_pPcsRgn->nCol;
-//	nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow;
-//#endif
-//	CString sDefNum, strData;
-//	int nPnl, nRow, nCol, nDefCode, nStrip;
-//	int nTotPcs = nNodeX * nNodeY;
-//	int nStripPcs = nTotPcs / 4;
-//	double dStOutRto = _tstof(pDoc->WorkingInfo.LastJob.sStripOutRatio) / 100.0;
-//	nPnl = nSerial - 1;
-//
-//	int i, k;
-//	TCHAR szData[200];
-//
-//	CString sCode, strMenu, strItem, sMsg;
-//	int nTot=0, nGood=0, nDef=0;
-//	int nTotSriptOut = 0;
-//
-//	int nDefStrip[4], nDefA[MAX_DEF], nDefPerStrip[4][MAX_DEF], nStripOut[4];
-//	nDefStrip[0] = 0; nDefStrip[1] = 0; nDefStrip[2] = 0; nDefStrip[3] = 0;
-//	nStripOut[0] = 0; nStripOut[1] = 0; nStripOut[2] = 0; nStripOut[3] = 0;
-//
-//	nTot = nNodeX * nNodeY;
-//
-//	strMenu.Format(_T("%d"), nSerial);
-//
-//	strData.Format(_T("%d"), nSerial);
-//	::WritePrivateProfileString(_T("Info"), _T("Total Shot"), strData, sPath);
-//
-//	for (k = 0; k < MAX_DEF; k++)
-//	{
-//		nDefA[k] = 0;
-//
-//		for (i = 0; i < 4; i++)
-//		{
-//			nDefPerStrip[i][k] = 0;
-//		}
-//	}
-//
-//	for (nRow = 0; nRow < nNodeY; nRow++)
-//	{
-//		for (nCol = 0; nCol < nNodeX; nCol++)
-//		{
-//			if (m_pPnlBuf)
-//			{
-//				nDefCode = (int)m_pPnlBuf[nPnl][nRow][nCol] < 0 ? 0 : (int)m_pPnlBuf[nPnl][nRow][nCol];
-//				nDefA[nDefCode]++;
-//
-//				nStrip = int(nRow / (nNodeY / MAX_STRIP));
-//				if (nStrip > -1 && nStrip < MAX_STRIP)
-//				{
-//					if (nDefCode > 0)
-//					{
-//						nDefStrip[nStrip]++;
-//						nDefPerStrip[nStrip][nDefCode]++;
-//					}
-//				}
-//			}
-//		}
-//	}
-//
-//	for (nStrip = 0; nStrip < 4; nStrip++)
-//	{
-//		if (nDefStrip[nStrip] >= nStripPcs * dStOutRto)
-//			nStripOut[nStrip]++;
-//	}
-//
-//	for (i = 1; i < MAX_DEF; i++)
-//	{
-//		sCode.Format(_T("%d"), i); 
-//		m_stYield.nDefA[i] = m_stYield.nDefA[i] + nDefA[i];
-//		sDefNum.Format(_T("%d"), m_stYield.nDefA[i]);
-//		::WritePrivateProfileString(_T("Info"), sCode, sDefNum, sPath);
-//		::WritePrivateProfileString(strMenu, sCode, sDefNum, sPath);
-//
-//		nDef += nDefA[i];
-//	}
-//
-//	nGood = nTot - nDef;
-//
-//	m_stYield.nTot = m_stYield.nTot + nTot;
-//	strData.Format(_T("%d"), m_stYield.nTot);
-//	::WritePrivateProfileString(_T("Info"), _T("Total Pcs"), strData, sPath);
-//	::WritePrivateProfileString(strMenu, _T("Total Pcs"), strData, sPath);
-//
-//	m_stYield.nGood = m_stYield.nGood + nGood;
-//	strData.Format(_T("%d"), m_stYield.nGood);
-//	::WritePrivateProfileString(_T("Info"), _T("Good Pcs"), strData, sPath);
-//	::WritePrivateProfileString(strMenu, _T("Good Pcs"), strData, sPath);
-//
-//	m_stYield.nDef = m_stYield.nDef + nDef;
-//	strData.Format(_T("%d"), m_stYield.nDef);
-//	::WritePrivateProfileString(_T("Info"), _T("Bad Pcs"), strData, sPath);
-//	::WritePrivateProfileString(strMenu, _T("Bad Pcs"), strData, sPath);
-//
-//	for (k = 0; k < 4; k++)
-//	{
-//		strItem.Format(_T("Strip%d"), k);
-//		m_stYield.nDefStrip[k] = m_stYield.nDefStrip[k] + nDefStrip[k];
-//		strData.Format(_T("%d"), m_stYield.nDefStrip[k]);
-//		::WritePrivateProfileString(_T("Info"), strItem, strData, sPath);
-//		::WritePrivateProfileString(strMenu, strItem, strData, sPath);
-//
-//		strItem.Format(_T("StripOut_%d"), k); 
-//		m_stYield.nStripOut[k] = m_stYield.nStripOut[k] + nStripOut[k];
-//		strData.Format(_T("%d"), m_stYield.nStripOut[k]);
-//		::WritePrivateProfileString(_T("Info"), strItem, strData, sPath);
-//		::WritePrivateProfileString(strMenu, strItem, strData, sPath);
-//
-//		nTotSriptOut += nStripOut[k];
-//
-//		for (i = 1; i < MAX_DEF; i++)
-//		{
-//			strItem.Format(_T("Strip%d_%d"), k, i);
-//			m_stYield.nDefPerStrip[k][i] = m_stYield.nDefPerStrip[k][i] + nDefPerStrip[k][i];
-//			strData.Format(_T("%d"), m_stYield.nDefPerStrip[k][i]);
-//			::WritePrivateProfileString(_T("Info"), strItem, strData, sPath);
-//			::WritePrivateProfileString(strMenu, strItem, strData, sPath);
-//		}
-//	}
-//
-//	m_stYield.nTotSriptOut = m_stYield.nTotSriptOut + nTotSriptOut;
-//	strData.Format(_T("%d"), m_stYield.nTotSriptOut);
-//	::WritePrivateProfileString(_T("Info"), _T("StripOut_Total"), strData, sPath);
-//	::WritePrivateProfileString(strMenu, _T("StripOut_Total"), strData, sPath);
-//
-//	return TRUE;
-//}
 
 BOOL CReelMap::UpdateYield(int nSerial)
 {
@@ -3491,33 +3116,27 @@ BOOL CReelMap::UpdateReelmapYield()
 int CReelMap::GetDefNum(int nDefCode)
 {
 	return m_stYield.nDefA[nDefCode];
-	//return m_nDef[nDefCode];
 }
 
 int CReelMap::GetDefStrip(int nStrip)
 {
 	return m_stYield.nDefStrip[nStrip];
-	//return m_nDefStrip[nStrip];
 }
 
 int CReelMap::GetDefStrip(int nStrip, int nDefCode)
 {
 	return m_stYield.nDefPerStrip[nStrip][nDefCode];
-	//return m_nDefPerStrip[nStrip][nDefCode];
 }
 
 int CReelMap::GetStripOut(int nStrip)
 {
 	return m_stYield.nStripOut[nStrip];
-	//return m_nStripOut[nStrip];
 }
 
 void CReelMap::GetPcsNum(int &nGood, int &nBad)
 {
 	nGood = m_stYield.nGood;
 	nBad = m_stYield.nDef;
-	//nGood = m_nGoodPcs;
-	//nBad = m_nBadPcs;
 }
 
 void CReelMap::Clear()
@@ -3539,9 +3158,6 @@ int CReelMap::GetLastSerial()
 
 void CReelMap::SetFixPcs(int nSerial)
 {
-// 	if(!pDoc->WorkingInfo.LastJob.bContFixDef)
-// 		return;
-
 	int nNodeX = pDoc->m_Master[0].m_pPcsRgn->nCol;
 	int nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow;
 	int nR, nC, nDefCode;
