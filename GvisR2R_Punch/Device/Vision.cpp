@@ -4605,7 +4605,8 @@ BOOL CVision::JudgeHisto(MIL_ID &GrabImgId)
 	for (i = 0; i < 256; i++) // Gray color value : 0(black) ~ 255(white)
 	{
 		nHistoVal = m_nHistoRst[i];
-		if (nHistoVal > m_nVerifyPunchHistoWhite) // 240
+		//if (nHistoVal > m_nVerifyPunchHistoWhite) // 240
+		if (i > m_nVerifyPunchHistoWhite) // 240
 		{
 			nWhite += nHistoVal;
 		}

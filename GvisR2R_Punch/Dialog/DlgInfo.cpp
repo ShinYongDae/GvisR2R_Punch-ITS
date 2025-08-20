@@ -2379,7 +2379,7 @@ void CDlgInfo::OnStnClickedStc199()
 
 	CString sVal;
 	GetDlgItem(IDC_STC_199)->GetWindowText(sVal);
-	pDoc->WorkingInfo.LastJob.nJudgeMkHistoWhite[0] = max(min(_ttoi(sVal), 240), 128); // Range : 128 ~ 240
+	pDoc->WorkingInfo.LastJob.nJudgeMkHistoWhite[0] = max(min(_ttoi(sVal), 240), 30); // Range : 30 ~ 240
 	pDoc->SetVerifyPunchHistoWhite(pDoc->WorkingInfo.LastJob.nJudgeMkHistoWhite[0]);
 	sVal.Format(_T("%d"), pDoc->WorkingInfo.LastJob.nJudgeMkHistoWhite[0]);
 	GetDlgItem(IDC_STC_199)->SetWindowText(sVal);
@@ -2403,7 +2403,7 @@ void CDlgInfo::OnStnClickedStc218()
 
 	CString sVal;
 	GetDlgItem(IDC_STC_218)->GetWindowText(sVal);
-	pDoc->WorkingInfo.LastJob.nJudgeMkHistoWhite[1] = max(min(_ttoi(sVal), 240), 128); // Range : 128 ~ 240
+	pDoc->WorkingInfo.LastJob.nJudgeMkHistoWhite[1] = max(min(_ttoi(sVal), 240), 30); // Range : 30 ~ 240
 	pDoc->SetVerifyPunchHistoWhite2(pDoc->WorkingInfo.LastJob.nJudgeMkHistoWhite[1]);
 	sVal.Format(_T("%d"), pDoc->WorkingInfo.LastJob.nJudgeMkHistoWhite[1]);
 	GetDlgItem(IDC_STC_218)->SetWindowText(sVal);
@@ -2431,6 +2431,9 @@ void CDlgInfo::OnStnClickedStc193()
 	pDoc->SetVerifyPunchHistoScore(_ttof(sVal));
 
 	::WritePrivateProfileString(_T("Last Job"), _T("Judge Marking Histo Ratio Left"), sVal, PATH_WORKING_INFO);
+
+	if (pView->m_pDlgMenu02)
+		pView->m_pDlgMenu02->DispHistoStdVal();
 }
 
 
@@ -2454,4 +2457,7 @@ void CDlgInfo::OnStnClickedStc195()
 	pDoc->SetVerifyPunchHistoScore2(_ttof(sVal));
 
 	::WritePrivateProfileString(_T("Last Job"), _T("Judge Marking Histo Ratio Right"), sVal, PATH_WORKING_INFO);
+
+	if (pView->m_pDlgMenu02)
+		pView->m_pDlgMenu02->DispHistoStdVal();
 }

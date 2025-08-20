@@ -162,6 +162,8 @@ public:
 	afx_msg void OnBnClickedCheckPcs();
 	afx_msg void OnBnClickedCheckPcsDn();
 	afx_msg void OnBnClickedBtnJudgeMk();
+	afx_msg void OnStnClickedStc187();
+	afx_msg void OnStnClickedStc189();
 };
 
 //{{AFX_INSERT_LOCATION}}

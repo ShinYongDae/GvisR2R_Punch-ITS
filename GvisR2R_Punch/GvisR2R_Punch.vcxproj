@@ -127,8 +127,8 @@
       <LargeAddressAware>true</LargeAddressAware>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
-      <HeapReserveSize>10485760</HeapReserveSize>
-      <StackReserveSize>10485760</StackReserveSize>
+      <HeapReserveSize>20971520</HeapReserveSize>
+      <StackReserveSize>20971520</StackReserveSize>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

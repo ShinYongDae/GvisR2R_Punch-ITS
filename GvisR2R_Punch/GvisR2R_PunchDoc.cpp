@@ -1845,6 +1845,11 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	else
 		WorkingInfo.LastJob.nJudgeMkHistoRatio[1] = 50;
 
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("JudgeMk ModelHistoSize"), NULL, szData, sizeof(szData), sPath))
+		m_nJudgeMkModelHistoSize = _ttoi(szData);
+	else
+		m_nJudgeMkModelHistoSize = 300; // [um]
+
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Judge Marking Histo White Left"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.nJudgeMkHistoWhite[0] = max(min(_ttoi(szData), 240), 128); // Range : 128 ~ 240
 	else

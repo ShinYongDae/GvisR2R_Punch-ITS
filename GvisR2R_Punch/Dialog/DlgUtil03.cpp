@@ -145,6 +145,8 @@ BEGIN_MESSAGE_MAP(CDlgUtil03, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_PCS, &CDlgUtil03::OnBnClickedCheckPcs)
 	ON_BN_CLICKED(IDC_CHECK_PCS_DN, &CDlgUtil03::OnBnClickedCheckPcsDn)
 	ON_BN_CLICKED(IDC_BTN_JUDGE_MK, &CDlgUtil03::OnBnClickedBtnJudgeMk)
+	ON_STN_CLICKED(IDC_STC_187, &CDlgUtil03::OnStnClickedStc187)
+	ON_STN_CLICKED(IDC_STC_189, &CDlgUtil03::OnStnClickedStc189)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1575,4 +1577,56 @@ void CDlgUtil03::DispResultPtScore(int nCam)
 			GetDlgItem(IDC_STC_REJECT_SCR2)->SetWindowText(sVal);
 		}
 #endif
+}
+
+
+void CDlgUtil03::OnStnClickedStc187()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	myStcData[67].SetBkColor(RGB_RED);
+	myStcData[67].RedrawWindow();
+
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_187)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_187, pt, TO_BOTTOM | TO_RIGHT);
+
+	myStcData[67].SetBkColor(RGB_WHITE);
+	myStcData[67].RedrawWindow();
+
+	CString sVal;
+	GetDlgItem(IDC_STC_187)->GetWindowText(sVal);
+	pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[0] = _ttoi(sVal);
+	pDoc->SetVerifyPunchHistoScore(_ttof(sVal));
+
+	::WritePrivateProfileString(_T("Last Job"), _T("Judge Marking Histo Ratio Left"), sVal, PATH_WORKING_INFO);
+
+	if (pView->m_pDlgMenu02)
+		pView->m_pDlgMenu02->DispHistoStdVal();
+}
+
+
+void CDlgUtil03::OnStnClickedStc189()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	myStcData[68].SetBkColor(RGB_RED);
+	myStcData[68].RedrawWindow();
+
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_189)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_189, pt, TO_BOTTOM | TO_RIGHT);
+
+	myStcData[68].SetBkColor(RGB_WHITE);
+	myStcData[68].RedrawWindow();
+
+	CString sVal;
+	GetDlgItem(IDC_STC_189)->GetWindowText(sVal);
+	pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[1] = 100 - _ttoi(sVal);
+	pDoc->SetVerifyPunchHistoScore2(_ttof(sVal));
+
+	::WritePrivateProfileString(_T("Last Job"), _T("Judge Marking Ratio2"), sVal, PATH_WORKING_INFO);
+
+	if (pView->m_pDlgMenu02)
+		pView->m_pDlgMenu02->DispHistoStdVal();
 }
