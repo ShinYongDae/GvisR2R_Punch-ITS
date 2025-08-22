@@ -2314,7 +2314,7 @@ void CDlgInfo::OnTimer(UINT_PTR nIDEvent)
 
 void CDlgInfo::OnChk28()
 {
-	if (myBtn[31].GetCheck())
+	if (myBtn[26].GetCheck())
 	{
 		pDoc->WorkingInfo.LastJob.bUseJudgeMkHisto = TRUE;
 	}
