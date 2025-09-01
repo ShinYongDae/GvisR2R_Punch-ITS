@@ -117,7 +117,6 @@ typedef enum {KOREAN=0, ENGLISH=1, JAPANESE=2} LANG;
 #define Pi		3.14159265358979
 
 #define MAX_LIGHT_CH	4
-#define MAX_VOICE_COIL	2
 
 // Define Voice Coil ID & Cmd
 #define VOICE_COIL_FIRST_CAM			0
@@ -932,6 +931,7 @@ struct stMarking
 	CString sWaitVel;
 	CString sWaitAcc;
 	CString sMarkingPos;
+	CString sMarkingSensingPosOffset;
 	CString sMarkingVel;
 	CString sMarkingAcc;
 	CString sMarkingToq;
@@ -949,6 +949,7 @@ struct stMarking
 		sWaitVel = _T("");
 		sWaitAcc = _T("");
 		sMarkingPos = _T("");
+		sMarkingSensingPosOffset = _T("");
 		sMarkingVel = _T("");
 		sMarkingAcc = _T("");
 		sMarkingToq = _T("");

@@ -50,7 +50,12 @@
 #define FROM_DISPDEFIMG			100
 
 #define AT_LP					10
-#define MK_DONE_CHECK			30	// m_nStepMk
+
+#define MK_DO_ALL				5	// m_nStepMk
+#define MK_DO_REJECT			7	// m_nStepMk
+#define MK_DONE_CHECK_START		8	// m_nStepMk
+#define MK_DO					13	// m_nStepMk
+#define MK_DONE_CHECK_END		30	// m_nStepMk
 #define MK_LIGHT_ERR			50	// m_nStepMk
 #define MK_END					100	// m_nStepMk
 
@@ -555,7 +560,7 @@ public:
 	int m_nSerialMakeItsFile;
 
 	BOOL m_bIsBuf[2]; // [0]: AOI-Up , [1]: AOI-Dn
-
+	int m_nOverSaveMkImg[2]; // [0]: Left, [1]: Right
 
 // 작업입니다.
 public:
@@ -758,8 +763,8 @@ public:
 	void SetReMk(BOOL bMk0 = FALSE, BOOL bMk1 = FALSE);
 	BOOL InitMk();
 	void InitAuto(BOOL bInit = TRUE);
-	void Mk0();
-	void Mk1();
+	BOOL Mk0();
+	BOOL Mk1();
 	//BOOL IsMk();
 	BOOL IsReMk();
 	BOOL IsMkDone();
@@ -1007,6 +1012,8 @@ public:
 	void MoveMk(double dOffset);
 	BOOL IsMk0Done();
 	BOOL IsMk1Done();
+	BOOL IsMk0Miss();
+	BOOL IsMk1Miss();
 	void InitIoWrite();
 	void SetTestSts0(BOOL bOn);
 	void SetTestSts1(BOOL bOn);
@@ -1268,8 +1275,10 @@ public:
 
 	BOOL m_bFailMkJudge[2]; // [nCam] : 0(Left), 1(Right)
 	BOOL ChkRepunching(int nCam);
-	BOOL ChkMkImgL(int nSerial, int nTotDef);// , int nTotMk);
-	BOOL ChkMkImgR(int nSerial, int nTotDef);// , int nTotMk);
+	BOOL ChkMkImgL(int nSerial, int nTotMk);
+	BOOL ChkMkImgR(int nSerial, int nTotMk);
+	void ResetMkImgL(int nSerial);
+	void ResetMkImgR(int nSerial);
 
 // 재정의입니다.
 public:

@@ -411,6 +411,9 @@
     <ClInclude Include="Dialog\DlgCammasterinfoStrpcs.h">
       <Filter>Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="Device\Rs232Smac.h">
+      <Filter>Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GvisR2R_Punch.cpp">
@@ -721,6 +724,9 @@
     </ClCompile>
     <ClCompile Include="Dialog\DlgCammasterinfoStrpcs.cpp">
       <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\Rs232Smac.cpp">
+      <Filter>Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1422,8 +1422,8 @@ void CDlgMenu02::SwMyBtnDown(int nCtrlID)
 	{
 		if(pView->m_pVoiceCoil[0])
 		{
-			pView->m_pVoiceCoil[0]->SearchHomeSmac(0);
-			pView->m_pVoiceCoil[0]->MoveSmacShiftPos(0);
+			pView->m_pVoiceCoil[0]->SearchHomeSmac();
+			pView->m_pVoiceCoil[0]->MoveSmacShiftPos();
 			pView->m_bProbDn[0] = FALSE;
 			//if(m_pDlgUtil06)
 			//	m_pDlgUtil06->myBtn[2].SetCheck(FALSE);
@@ -1434,8 +1434,8 @@ void CDlgMenu02::SwMyBtnDown(int nCtrlID)
 	{
 		if(pView->m_pVoiceCoil[1])
 		{
-			pView->m_pVoiceCoil[1]->SearchHomeSmac(1);
-			pView->m_pVoiceCoil[1]->MoveSmacShiftPos(1);
+			pView->m_pVoiceCoil[1]->SearchHomeSmac();
+			pView->m_pVoiceCoil[1]->MoveSmacShiftPos();
 			pView->m_bProbDn[1] = FALSE;
 			//if(m_pDlgUtil06)
 			//	m_pDlgUtil06->myBtn[6].SetCheck(FALSE);
@@ -3164,7 +3164,7 @@ void CDlgMenu02::SwMarking()
 
 
 	if(pView->m_pVoiceCoil[0])
-		pView->m_pVoiceCoil[0]->SetMarking(0);
+		pView->m_pVoiceCoil[0]->SetMarking();
 	SetMkDlyOff(0);
 
 }
@@ -3224,7 +3224,7 @@ void CDlgMenu02::SwMarking2()
 
 
 	if(pView->m_pVoiceCoil[1])
-		pView->m_pVoiceCoil[1]->SetMarking(1);
+		pView->m_pVoiceCoil[1]->SetMarking();
 	SetMkDlyOff(1);
 
 }
@@ -3921,7 +3921,7 @@ void CDlgMenu02::OnBtnMk0PosMeas()
 	switch(m_nSelectCam0Pos) 
 	{
 	case 1:
-		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->GetSmacMeasureOfSurface(VOICE_COIL_FIRST_CAM);
+		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->GetSmacMeasureOfSurface();
 		pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->ClearReceive();
 		if(dFinalPos > 0.001)
 		{
@@ -3932,7 +3932,7 @@ void CDlgMenu02::OnBtnMk0PosMeas()
 		}
 		break;
 	case 2:
-		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->GetSmacMeasureOfSurface(VOICE_COIL_FIRST_CAM);
+		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->GetSmacMeasureOfSurface();
 		pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->ClearReceive();
 		if(dFinalPos > 0.001)
 		{
@@ -3943,7 +3943,7 @@ void CDlgMenu02::OnBtnMk0PosMeas()
 		}
 		break;
 	case 3:
-		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->GetSmacMeasureOfSurface(VOICE_COIL_FIRST_CAM);
+		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->GetSmacMeasureOfSurface();
 		pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->ClearReceive();
 		if(dFinalPos > 0.001)
 		{
@@ -3954,7 +3954,7 @@ void CDlgMenu02::OnBtnMk0PosMeas()
 		}
 		break;
 	case 4:
-		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->GetSmacMeasureOfSurface(VOICE_COIL_FIRST_CAM);
+		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->GetSmacMeasureOfSurface();
 		pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->ClearReceive();
 		if(dFinalPos > 0.001)
 		{	
@@ -3968,7 +3968,7 @@ void CDlgMenu02::OnBtnMk0PosMeas()
 		return;
 	}
 
-	pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->CalcAveSmacHeight(VOICE_COIL_FIRST_CAM);
+	pView->m_pVoiceCoil[VOICE_COIL_FIRST_CAM]->CalcAveSmacHeight();
 }
 
 void CDlgMenu02::OnBtnMk1PosMeas() 
@@ -3980,7 +3980,7 @@ void CDlgMenu02::OnBtnMk1PosMeas()
 	switch(m_nSelectCam1Pos) 
 	{
 	case 1:
-		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->GetSmacMeasureOfSurface(VOICE_COIL_SECOND_CAM);
+		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->GetSmacMeasureOfSurface();
 		pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->ClearReceive();
 		if(dFinalPos > 0.001)
 		{
@@ -3991,7 +3991,7 @@ void CDlgMenu02::OnBtnMk1PosMeas()
 		}
 		break;
 	case 2:
-		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->GetSmacMeasureOfSurface(VOICE_COIL_SECOND_CAM);
+		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->GetSmacMeasureOfSurface();
 		pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->ClearReceive();
 		if(dFinalPos > 0.001)
 		{
@@ -4002,7 +4002,7 @@ void CDlgMenu02::OnBtnMk1PosMeas()
 		}
 		break;
 	case 3:
-		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->GetSmacMeasureOfSurface(VOICE_COIL_SECOND_CAM);
+		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->GetSmacMeasureOfSurface();
 		pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->ClearReceive();
 		if(dFinalPos > 0.001)
 		{
@@ -4013,7 +4013,7 @@ void CDlgMenu02::OnBtnMk1PosMeas()
 		}
 		break;
 	case 4:
-		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->GetSmacMeasureOfSurface(VOICE_COIL_SECOND_CAM);
+		dFinalPos = pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->GetSmacMeasureOfSurface();
 		pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->ClearReceive();
 		if(dFinalPos > 0.001)
 		{	
@@ -4027,7 +4027,7 @@ void CDlgMenu02::OnBtnMk1PosMeas()
 		return;
 	}
 
-	pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->CalcAveSmacHeight(VOICE_COIL_SECOND_CAM);
+	pView->m_pVoiceCoil[VOICE_COIL_SECOND_CAM]->CalcAveSmacHeight();
 }
 
 void CDlgMenu02::OnBtnAlignMove2() 

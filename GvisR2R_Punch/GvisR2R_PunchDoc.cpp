@@ -3224,6 +3224,11 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 	else
 		WorkingInfo.Marking[0].sMarkingPos = CString(_T(""));
 
+	if (0 < ::GetPrivateProfileString(_T("Marking0"), _T("MARKING_MARKING_SENSING_POS_OFFSET"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.Marking[0].sMarkingSensingPosOffset = CString(szData);
+	else
+		WorkingInfo.Marking[0].sMarkingSensingPosOffset = CString(_T("0.5"));
+
 	if (0 < ::GetPrivateProfileString(_T("Marking0"), _T("MARKING_MARKING_VEL"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.Marking[0].sMarkingVel = CString(szData);
 	else
@@ -3332,6 +3337,11 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.Marking[1].sMarkingPos = CString(szData);
 	else
 		WorkingInfo.Marking[1].sMarkingPos = CString(_T(""));
+
+	if (0 < ::GetPrivateProfileString(_T("Marking1"), _T("MARKING_MARKING_SENSING_POS_OFFSET"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.Marking[1].sMarkingSensingPosOffset = CString(szData);
+	else
+		WorkingInfo.Marking[1].sMarkingSensingPosOffset = CString(_T("0.5"));
 
 	if (0 < ::GetPrivateProfileString(_T("Marking1"), _T("MARKING_MARKING_VEL"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.Marking[1].sMarkingVel = CString(szData);

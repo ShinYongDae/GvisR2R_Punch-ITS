@@ -680,10 +680,12 @@
 #define IDC_STC_29                      1204
 #define IDC_STC_MK_CNT_R2               1204
 #define IDC_STC_TQ_VAL_R                1204
+#define IDC_EDIT_MK_OFFSET              1204
 #define IDC_STC_38                      1205
 #define IDC_CHK_MK_POS1_3               1205
 #define IDC_CHK_9                       1205
 #define IDC_STC_TQ_R                    1205
+#define IDC_EDIT_MK_OFFSET2             1205
 #define IDC_CHK_007                     1206
 #define IDC_CHK_MK_POS1_4               1206
 #define IDC_CHK_10                      1206
@@ -1405,7 +1407,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        361
 #define _APS_NEXT_COMMAND_VALUE         32785
-#define _APS_NEXT_CONTROL_VALUE         1204
+#define _APS_NEXT_CONTROL_VALUE         1205
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

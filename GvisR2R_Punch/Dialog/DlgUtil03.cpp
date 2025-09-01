@@ -1344,13 +1344,13 @@ void CDlgUtil03::OnBtnMkMoveInit()
 	BOOL bOn1 = myBtn[4].GetCheck();
 
 	if(bOn0 && !bOn1)
-		pView->m_pVoiceCoil[0]->MoveSmacShiftPos(0);
+		pView->m_pVoiceCoil[0]->MoveSmacShiftPos();
 	else if(!bOn0 && bOn1)
-		pView->m_pVoiceCoil[1]->MoveSmacShiftPos(1);
+		pView->m_pVoiceCoil[1]->MoveSmacShiftPos();
 	else if(bOn0 && bOn1)
 	{
-		pView->m_pVoiceCoil[0]->MoveSmacShiftPos(0);
-		pView->m_pVoiceCoil[1]->MoveSmacShiftPos(1);
+		pView->m_pVoiceCoil[0]->MoveSmacShiftPos();
+		pView->m_pVoiceCoil[1]->MoveSmacShiftPos();
 	}
 }
 
@@ -1361,13 +1361,13 @@ void CDlgUtil03::OnBtnMkHome()
 	BOOL bOn1 = myBtn[4].GetCheck();
 
 	if(bOn0 && !bOn1)
-		pView->m_pVoiceCoil[0]->SearchHomeSmac(0);
+		pView->m_pVoiceCoil[0]->SearchHomeSmac();
 	else if(!bOn0 && bOn1)
-		pView->m_pVoiceCoil[1]->SearchHomeSmac(1);
+		pView->m_pVoiceCoil[1]->SearchHomeSmac();
 	else if(bOn0 && bOn1)
 	{
-		pView->m_pVoiceCoil[0]->SearchHomeSmac(0);
-		pView->m_pVoiceCoil[1]->SearchHomeSmac(1);
+		pView->m_pVoiceCoil[0]->SearchHomeSmac();
+		pView->m_pVoiceCoil[1]->SearchHomeSmac();
 	}
 }
 

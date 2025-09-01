@@ -1331,8 +1331,8 @@ void CDlgMenu04::SwMyBtnDown(int nCtrlID)
 	{
 		if(pView->m_pVoiceCoil[0])
 		{
-			pView->m_pVoiceCoil[0]->SearchHomeSmac(0);
-			pView->m_pVoiceCoil[0]->MoveSmacShiftPos(0);
+			pView->m_pVoiceCoil[0]->SearchHomeSmac();
+			pView->m_pVoiceCoil[0]->MoveSmacShiftPos();
 			pView->m_bProbDn[0] = FALSE;
 			//if(pView->m_pDlgMenu02->m_pDlgUtil06)
 			//	pView->m_pDlgMenu02->m_pDlgUtil06->myBtn[2].SetCheck(FALSE);
@@ -1343,8 +1343,8 @@ void CDlgMenu04::SwMyBtnDown(int nCtrlID)
 	{
 		if(pView->m_pVoiceCoil[1])
 		{
-			pView->m_pVoiceCoil[1]->SearchHomeSmac(1);
-			pView->m_pVoiceCoil[1]->MoveSmacShiftPos(1);
+			pView->m_pVoiceCoil[1]->SearchHomeSmac();
+			pView->m_pVoiceCoil[1]->MoveSmacShiftPos();
 			pView->m_bProbDn[1] = FALSE;
 			//if(pView->m_pDlgMenu02->m_pDlgUtil06)
 			//	pView->m_pDlgMenu02->m_pDlgUtil06->myBtn[6].SetCheck(FALSE);
@@ -1548,7 +1548,7 @@ void CDlgMenu04::OnStc48()
 	GetDlgItem(IDC_STC_48)->GetWindowText(sData);
 	pDoc->SetWaitPos1(_tstof(sData));
 
-	pView->m_pVoiceCoil[0]->SetMarkShiftData(0);
+	pView->m_pVoiceCoil[0]->SetMarkShiftData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1574,7 +1574,7 @@ void CDlgMenu04::OnStc52()
 	GetDlgItem(IDC_STC_52)->GetWindowText(sData);
 	pDoc->SetWaitVel1(_tstof(sData));
 
-	pView->m_pVoiceCoil[0]->SetMarkShiftData(0);
+	pView->m_pVoiceCoil[0]->SetMarkShiftData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1600,7 +1600,7 @@ void CDlgMenu04::OnStc55()
 	GetDlgItem(IDC_STC_55)->GetWindowText(sData);
 	pDoc->SetWaitAcc1(_tstof(sData));	
 
-	pView->m_pVoiceCoil[0]->SetMarkShiftData(0);
+	pView->m_pVoiceCoil[0]->SetMarkShiftData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1626,7 +1626,7 @@ void CDlgMenu04::OnStc58()
 	GetDlgItem(IDC_STC_58)->GetWindowText(sData);
 	pDoc->SetMarkingPos1(_tstof(sData));	
 	
-	pView->m_pVoiceCoil[0]->SetMarkFinalData(0);
+	pView->m_pVoiceCoil[0]->SetMarkFinalData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1652,7 +1652,7 @@ void CDlgMenu04::OnStc62()
 	GetDlgItem(IDC_STC_62)->GetWindowText(sData);
 	pDoc->SetMarkingVel1(_tstof(sData));
 
-	pView->m_pVoiceCoil[0]->SetMarkFinalData(0);
+	pView->m_pVoiceCoil[0]->SetMarkFinalData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1678,7 +1678,7 @@ void CDlgMenu04::OnStc65()
 	GetDlgItem(IDC_STC_65)->GetWindowText(sData);
 	pDoc->SetMarkingAcc1(_tstof(sData));
 	
-	pView->m_pVoiceCoil[0]->SetMarkFinalData(0);
+	pView->m_pVoiceCoil[0]->SetMarkFinalData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1704,7 +1704,7 @@ void CDlgMenu04::OnStc68()
 	GetDlgItem(IDC_STC_68)->GetWindowText(sData);
 	pDoc->SetMarkingToq1(_tstof(sData));
 
-	pView->m_pVoiceCoil[0]->SetMarkFinalData(0);
+	pView->m_pVoiceCoil[0]->SetMarkFinalData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1946,7 +1946,7 @@ void CDlgMenu04::OnStc93()
 	GetDlgItem(IDC_STC_93)->GetWindowText(sData);
 	pDoc->SetWaitPos2(_tstof(sData));	
 	
-	pView->m_pVoiceCoil[1]->SetMarkShiftData(1);
+	pView->m_pVoiceCoil[1]->SetMarkShiftData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1972,7 +1972,7 @@ void CDlgMenu04::OnStc97()
 	GetDlgItem(IDC_STC_97)->GetWindowText(sData);
 	pDoc->SetWaitVel2(_tstof(sData));	
 
-	pView->m_pVoiceCoil[1]->SetMarkShiftData(1);
+	pView->m_pVoiceCoil[1]->SetMarkShiftData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -1998,7 +1998,7 @@ void CDlgMenu04::OnStc110()
 	GetDlgItem(IDC_STC_110)->GetWindowText(sData);
 	pDoc->SetWaitAcc2(_tstof(sData));	
 	
-	pView->m_pVoiceCoil[1]->SetMarkShiftData(1);
+	pView->m_pVoiceCoil[1]->SetMarkShiftData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -2024,7 +2024,7 @@ void CDlgMenu04::OnStc113()
 	GetDlgItem(IDC_STC_113)->GetWindowText(sData);
 	pDoc->SetMarkingPos2(_tstof(sData));
 	
-	pView->m_pVoiceCoil[1]->SetMarkFinalData(1);
+	pView->m_pVoiceCoil[1]->SetMarkFinalData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -2050,7 +2050,7 @@ void CDlgMenu04::OnStc117()
 	GetDlgItem(IDC_STC_117)->GetWindowText(sData);
 	pDoc->SetMarkingVel2(_tstof(sData));
 	
-	pView->m_pVoiceCoil[1]->SetMarkFinalData(1);
+	pView->m_pVoiceCoil[1]->SetMarkFinalData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -2076,7 +2076,7 @@ void CDlgMenu04::OnStc120()
 	GetDlgItem(IDC_STC_120)->GetWindowText(sData);
 	pDoc->SetMarkingAcc2(_tstof(sData));
 	
-	pView->m_pVoiceCoil[1]->SetMarkFinalData(1);
+	pView->m_pVoiceCoil[1]->SetMarkFinalData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -2102,7 +2102,7 @@ void CDlgMenu04::OnStc123()
 	GetDlgItem(IDC_STC_123)->GetWindowText(sData);
 	pDoc->SetMarkingToq2(_tstof(sData));
 	
-	pView->m_pVoiceCoil[1]->SetMarkFinalData(1);
+	pView->m_pVoiceCoil[1]->SetMarkFinalData();
 
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
@@ -2595,7 +2595,7 @@ void CDlgMenu04::OnStc69()
 	str.Format(_T("\r(0~1900)\rg(%.0f)"), _tstof(pDoc->WorkingInfo.Marking[0].sMarkingToqOffset));
 	GetDlgItem(IDC_STC_69)->SetWindowText(str);
 
-	pView->m_pVoiceCoil[0]->SetMarkFinalData(0);
+	pView->m_pVoiceCoil[0]->SetMarkFinalData();
 }
 
 void CDlgMenu04::OnStc124() 
@@ -2618,7 +2618,7 @@ void CDlgMenu04::OnStc124()
 	str.Format(_T("\r(0~1900)\rg(%.0f)"), _tstof(pDoc->WorkingInfo.Marking[1].sMarkingToqOffset));
 	GetDlgItem(IDC_STC_124)->SetWindowText(str);
 	
-	pView->m_pVoiceCoil[1]->SetMarkFinalData(1);
+	pView->m_pVoiceCoil[1]->SetMarkFinalData();
 }
 
 BOOL CDlgMenu04::OnEraseBkgnd(CDC* pDC)

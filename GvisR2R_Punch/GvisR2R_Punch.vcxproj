@@ -232,6 +232,7 @@
     <ClInclude Include="Device\Render.h" />
     <ClInclude Include="Device\RGBConvert.h" />
     <ClInclude Include="Device\Rs232.h" />
+    <ClInclude Include="Device\Rs232Smac.h" />
     <ClInclude Include="Device\safelock.h" />
     <ClInclude Include="Device\Smac.h" />
     <ClInclude Include="Device\SocketComm.h" />
@@ -354,6 +355,7 @@
     <ClCompile Include="Device\Query.cpp" />
     <ClCompile Include="Device\Render.cpp" />
     <ClCompile Include="Device\Rs232.cpp" />
+    <ClCompile Include="Device\Rs232Smac.cpp" />
     <ClCompile Include="Device\Smac.cpp" />
     <ClCompile Include="Device\SocketComm.cpp" />
     <ClCompile Include="Device\Sr1000w.cpp" />

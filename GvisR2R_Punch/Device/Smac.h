@@ -6,14 +6,13 @@
 #endif // _MSC_VER > 1000
 // Smac.h : header file
 //
-#include "Rs232.h"
+#include "Rs232Smac.h"
 
-#define TIMER_FIRST_SMAC_GET_POS			100
-#define TIMER_SECOND_SMAC_GET_POS			101
-#define TIMER_FIRST_SMAC_CHECK_END_CMD		110
-#define TIMER_SECOND_SMAC_CHECK_END_CMD		111
-#define TIMER_FIRST_SMAC_CHECK_ERROR_CODE	120
-#define TIMER_SECOND_SMAC_CHECK_ERROR_CODE	121
+#define TIMER_GET_POS			100
+#define TIMER_CHECK_END_CMD		110
+#define TIMER_CHECK_ERROR_CODE	120
+
+#define DELAY_SMAC				3000
 
 /////////////////////////////////////////////////////////////////////////////
 // CSmac window
@@ -23,11 +22,13 @@ class CSmac : public CWnd
 // Construction
 	CWnd*			m_pParent;
 	CCriticalSection m_cs;
-	BOOL m_bCh[MAX_VOICE_COIL];
+	BOOL m_bCh;
 	int m_nCh;
 	CString m_sRcvRs232;
-	int m_nStepIsDoneMark[2]; //Left(0), Right(1)
-	BOOL m_bDoneMark[2]; //Left(0), Right(1)
+	int m_nStepIsDoneMark;
+	BOOL m_bDoneMark;
+	BOOL m_bMisMark;
+	double m_dFinalMkPos;
 
 	BOOL Send(CString str);
 
@@ -36,15 +37,15 @@ public:
 
 // Attributes
 public:
-	CRs232 m_Rs232;
+	CRs232Smac m_Rs232;
 	BOOL m_bRs232Run;
 
-	CString m_strReceiveVoiceCoilFirstCam, m_strReceiveVoiceCoilSecondCam;
+	CString m_strReceiveVoiceCoil;
 
-	BOOL m_bReturnFirstSmacCmdEnd, m_bReturnSecondSmacCmdEnd, m_bRunTimerCheckFirstSmacEnd, m_bRunTimerCheckSecondSmacEnd;
-	BOOL m_bReturnFirstSmacChkPos, m_bReturnSecondSmacChkPos;
+	BOOL m_bReturnCmdEnd;
+	BOOL m_bRunTimerCheckEnd;
 
-	CString m_strFirstSmacEndCmd, m_strSecondSmacEndCmd;
+	CString m_strEndCmd;
 	BOOL m_bTimerStop, m_bFeedingRollerUp;
 
 // Operations
@@ -58,50 +59,39 @@ public:
 	void Reset(int nCh);
 	void Close();
 
-	double GetSmacMeasureOfSurface(int nCamNum);
-	void SendStringToFirstCamVoiceCoil(CString strSend);
-	void SendStringToSecondCamVoiceCoil(CString strSend);
-	BOOL WaitSmacCmdEnd(int nCamNum, CString strEndCmd); // Return Value is TRUE (OK), FALSE (NG)
-	BOOL SetWaitSmacCmdEnd0(CString strEndCmd); // Return Value is TRUE (OK), FALSE (NG)
-	BOOL SetWaitSmacCmdEnd1(CString strEndCmd); // Return Value is TRUE (OK), FALSE (NG)
-	BOOL WaitSmacCmdEnd0(CString strEndCmd); // Return Value is TRUE (OK), FALSE (NG)
-	BOOL WaitSmacCmdEnd1(CString strEndCmd); // Return Value is TRUE (OK), FALSE (NG)
-	double GetSmacPosition(int nCamNum);
-	void SearchHomeSmac(int nCamNum);
-	void SearchHomeSmac0();
-	void SearchHomeSmac1();
-	BOOL IsDoneSearchHomeSmac0();
-	BOOL IsDoneSearchHomeSmac1();
-	int CheckSmacErrorCode(int nCamNum);
+	double GetSmacMeasureOfSurface();
+	void SendStringToVoiceCoil(CString strSend);
+	BOOL WaitSmacCmdEnd(); // Return Value is TRUE (OK), FALSE (NG)
+	BOOL SetWaitSmacCmdEnd(CString strEndCmd); // Return Value is TRUE (OK), FALSE (NG)
+	BOOL WaitSmacCmdEnd(CString strEndCmd); // Return Value is TRUE (OK), FALSE (NG)
+	double GetSmacPosition();
+	void SearchHomeSmac();
+	BOOL IsDoneSearchHomeSmac();
+	int CheckSmacErrorCode();
 	CString DisplaySmacErrorList(int nErrCode);
 	void Wait(int imSecond);
-	void CalcAveSmacHeight(int nCamNum);
-	void ResetSmac(int nCamNum);
-	CString GetSmacStatus(int nCamNum);
-	void MoveSmacFinalPos(int nCamNum);
-	void MoveSmacShiftPos(int nCamNum);
-	void MoveSmacShiftPos0();
-	void MoveSmacShiftPos1();
-	BOOL IsDoneMoveSmacShiftPos0();
-	BOOL IsDoneMoveSmacShiftPos1();
-	void MoveSmacMeasPos(int nCamNum);
+	void CalcAveSmacHeight();
+	void ResetSmac();
+	CString GetSmacStatus();
+	void MoveSmacFinalPos();
+	void MoveSmacShiftPos();
+	BOOL IsDoneMoveSmacShiftPos();
+	void MoveSmacMeasPos();
 
-	void SetMarking(int nCamNum);
-	void SetMarkShiftData(int nCamNum);
-	void SetMarkFinalData(int nCamNum);
-	void SetMark(int nCamNum);
-	BOOL IsDoneMark(int nCamNum);
+	void SetMarking();
+	void SetMarkShiftData();
+	void SetMarkFinalData();
+	BOOL SetMark();
+	BOOL IsDoneMark();
+	BOOL IsMissMark();
+	double GetMkFinalPos();
 	
-	void SetProbing(int nCamNum);
-	void SetProbShiftData(int nCamNum);
-	void SetProbFinalData(int nCamNum);
-	void SetProb(int nCamNum);
-	BOOL IsDoneProb(int nCamNum);
-	void MoveProbFinalPos(int nCamNum);
+	void SetProbShiftData();
+	void SetProbFinalData();
 
-	BOOL SetCmdEndChk(int nCamNum, CString strEndCmd);
+	BOOL SetCmdEndChk(CString strEndCmd);
 	void ClearReceive();
-
+	void SetEsc();
 
 // Overrides
 	// ClassWizard generated virtual function overrides

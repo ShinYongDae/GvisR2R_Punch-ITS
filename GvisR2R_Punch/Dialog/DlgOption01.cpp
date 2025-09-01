@@ -53,6 +53,8 @@ BEGIN_MESSAGE_MAP(CDlgOption01, CDialog)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_CHECK3, &CDlgOption01::OnBnClickedCheck3)
 	ON_BN_CLICKED(IDC_CHECK4, &CDlgOption01::OnBnClickedCheck4)
+	ON_EN_CHANGE(IDC_EDIT_MK_OFFSET, &CDlgOption01::OnEnChangeEditMkOffset)
+	ON_EN_CHANGE(IDC_EDIT_MK_OFFSET2, &CDlgOption01::OnEnChangeEditMkOffset2)
 END_MESSAGE_MAP()
 
 
@@ -92,6 +94,8 @@ void CDlgOption01::AtDlgShow()
 	((CButton*)GetDlgItem(IDC_CHECK2))->SetCheck(pDoc->m_bOffLogPLC);
 	((CButton*)GetDlgItem(IDC_CHECK3))->SetCheck(pDoc->m_bDebugJudgeMk);
 	((CButton*)GetDlgItem(IDC_CHECK4))->SetCheck(pDoc->m_bCntMkedImg);
+	GetDlgItem(IDC_EDIT_MK_OFFSET)->SetWindowText(pDoc->WorkingInfo.Marking[0].sMarkingSensingPosOffset);
+	GetDlgItem(IDC_EDIT_MK_OFFSET2)->SetWindowText(pDoc->WorkingInfo.Marking[1].sMarkingSensingPosOffset);
 }
 
 void CDlgOption01::AtDlgHide()
@@ -201,4 +205,36 @@ void CDlgOption01::OnBnClickedCheck4()
 	{
 		::WritePrivateProfileString(_T("System"), _T("CountMarkingImageFile"), _T("0"), PATH_WORKING_INFO);
 	}
+}
+
+
+void CDlgOption01::OnEnChangeEditMkOffset()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialog::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString sPath = PATH_WORKING_INFO;
+	CString sData;
+	GetDlgItem(IDC_EDIT_MK_OFFSET)->GetWindowText(sData);
+	pDoc->WorkingInfo.Marking[0].sMarkingSensingPosOffset = sData;
+	::WritePrivateProfileString(_T("Marking0"), _T("MARKING_MARKING_SENSING_POS_OFFSET"), sData, sPath);
+}
+
+
+void CDlgOption01::OnEnChangeEditMkOffset2()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialog::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString sPath = PATH_WORKING_INFO;
+	CString sData;
+	GetDlgItem(IDC_EDIT_MK_OFFSET2)->GetWindowText(sData);
+	pDoc->WorkingInfo.Marking[1].sMarkingSensingPosOffset = sData;
+	::WritePrivateProfileString(_T("Marking1"), _T("MARKING_MARKING_SENSING_POS_OFFSET"), sData, sPath);
 }

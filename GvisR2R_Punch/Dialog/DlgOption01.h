@@ -38,4 +38,6 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedCheck3();
 	afx_msg void OnBnClickedCheck4();
+	afx_msg void OnEnChangeEditMkOffset();
+	afx_msg void OnEnChangeEditMkOffset2();
 };

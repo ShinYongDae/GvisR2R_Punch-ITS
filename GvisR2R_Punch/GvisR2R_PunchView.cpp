@@ -521,6 +521,8 @@ CGvisR2R_PunchView::CGvisR2R_PunchView()
 			m_bRejectDone[a][b] = FALSE;
 		}
 	}
+	m_nOverSaveMkImg[0] = 0;
+	m_nOverSaveMkImg[1] = 0;
 
 	m_sDispMain = _T("");
 
@@ -939,14 +941,12 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 
 			if (m_pVoiceCoil[0])
 			{
-				m_pVoiceCoil[0]->SetMarkFinalData(0);
-				//m_pVoiceCoil[0]->SetProbFinalData(0);
+				m_pVoiceCoil[0]->SetMarkFinalData();
 			}
 
 			if (m_pVoiceCoil[1])
 			{
-				m_pVoiceCoil[1]->SetMarkFinalData(1);
-				//m_pVoiceCoil[1]->SetProbFinalData(1);
+				m_pVoiceCoil[1]->SetMarkFinalData();
 			}
 
 			break;
@@ -1761,9 +1761,9 @@ BOOL CGvisR2R_PunchView::InitAct()
 
 	// Homming
 	if (m_pVoiceCoil[0])
-		m_pVoiceCoil[0]->SearchHomeSmac(0);
+		m_pVoiceCoil[0]->SearchHomeSmac();
 	if (m_pVoiceCoil[1])
-		m_pVoiceCoil[1]->SearchHomeSmac(1);
+		m_pVoiceCoil[1]->SearchHomeSmac();
 
 	return TRUE;
 }
@@ -3244,17 +3244,11 @@ void CGvisR2R_PunchView::DispThreadTick()
 	//str.Format(_T("%d,%d,%d"), m_dwThreadTick[0], m_dwThreadTick[1], m_dwThreadTick[2]); // MK, Collision, Enc
 	//if (m_sTick != str)
 	{
-		//m_sTick = str;
-		//str.Format(_T("%d"), pDoc->m_nShotNum); // "m_sOrderNum-m_sShotNum" : "9-3"
-		//str.Format(_T("%d%d%d%d:%d%d%d%d"),
-		//	m_bTHREAD_UPDATE_REELMAP_UP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_DN ? 1 : 0, 
+		//str.Format(_T("%d%d%d%d:%d%d"),
+		//	m_bTHREAD_UPDATE_REELMAP_UP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_DN ? 1 : 0,
 		//	m_bTHREAD_UPDATE_REELMAP_ALLUP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_ALLDN ? 1 : 0,
-		//	m_bTHREAD_REELMAP_YIELD_UP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_DN ? 1 : 0, 
-		//	m_bTHREAD_REELMAP_YIELD_ALLUP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_ALLDN ? 1 : 0);
-		str.Format(_T("%d%d%d%d:%d%d"),
-			m_bTHREAD_UPDATE_REELMAP_UP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_DN ? 1 : 0,
-			m_bTHREAD_UPDATE_REELMAP_ALLUP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_ALLDN ? 1 : 0,
-			m_bTHREAD_REELMAP_YIELD_UP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_DN ? 1 : 0);
+		//	m_bTHREAD_REELMAP_YIELD_UP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_DN ? 1 : 0);
+		str.Format(_T("%.3f"), m_pVoiceCoil[0]->GetMkFinalPos());
 		pFrm->DispStatusBar(str, 5);
 #ifdef USE_IDS
 		double dFPS[2];
@@ -3265,9 +3259,8 @@ void CGvisR2R_PunchView::DispThreadTick()
 		str.Format(_T("%.1f,%.1f"), dFPS[0], dFPS[1]);
 		pFrm->DispStatusBar(str, 6);
 #else
-		//str.Format(_T("%d"), m_nDebugStep);
-		//str.Format(_T("%d,%d,%d,%d"), m_nStepAuto, m_nMkStAuto, m_nStepMk[0], m_nStepMk[1]);//pView->m_nLotEndAuto
-		str.Format(_T("%d,%d,%d,%d"), m_nStepAuto, m_nSerialRmapUpdate, m_nShareUpS, m_nShareDnS);//pView->m_nLotEndAuto
+		//str.Format(_T("%d,%d,%d,%d"), m_nStepAuto, m_nSerialRmapUpdate, m_nShareUpS, m_nShareDnS);//pView->m_nLotEndAuto
+		str.Format(_T("%.3f"), m_pVoiceCoil[1]->GetMkFinalPos());
 		pFrm->DispStatusBar(str, 6);
 #endif
 	}
@@ -10343,6 +10336,8 @@ BOOL CGvisR2R_PunchView::SetMk(BOOL bRun)	// Marking Start
 			m_bRejectDone[a][b] = FALSE;	// [nCam][nStrip]:[2][4] - [좌/우][] : 스트립에 펀칭한 피스 수 count가 스트립 폐기 설정수 완료 여부 
 		}
 	}
+	m_nOverSaveMkImg[0] = 0;
+	m_nOverSaveMkImg[1] = 0;
 
 	if (bRun)
 	{
@@ -11307,6 +11302,8 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 			m_bRejectDone[a][b] = FALSE;
 		}
 	}
+	m_nOverSaveMkImg[0] = 0;
+	m_nOverSaveMkImg[1] = 0;
 
 	pView->m_nDebugStep = 12; pView->DispThreadTick();
 	m_pMpe->Write(_T("MB440100"), 0); // PLC 운전준비 완료(PC가 확인하고 Reset시킴.)
@@ -13187,8 +13184,8 @@ void CGvisR2R_PunchView::Move0(CfPoint pt, BOOL bCam, BOOL bWait)
 	{
 		if (m_pVoiceCoil[0])
 		{
-			m_pVoiceCoil[0]->SearchHomeSmac(0);
-			m_pVoiceCoil[0]->MoveSmacShiftPos(0);
+			m_pVoiceCoil[0]->SearchHomeSmac();
+			m_pVoiceCoil[0]->MoveSmacShiftPos();
 			m_bProbDn[0] = FALSE;
 			//if (m_pDlgMenu02->m_pDlgUtil06)
 			//	m_pDlgMenu02->m_pDlgUtil06->myBtn[2].SetCheck(FALSE);
@@ -13231,8 +13228,8 @@ void CGvisR2R_PunchView::Move1(CfPoint pt, BOOL bCam, BOOL bWait)
 	{
 		if (m_pVoiceCoil[1])
 		{
-			m_pVoiceCoil[1]->SearchHomeSmac(1);
-			m_pVoiceCoil[1]->MoveSmacShiftPos(1);
+			m_pVoiceCoil[1]->SearchHomeSmac();
+			m_pVoiceCoil[1]->MoveSmacShiftPos();
 			m_bProbDn[1] = FALSE;
 			//if (m_pDlgMenu02->m_pDlgUtil06)
 			//	m_pDlgMenu02->m_pDlgUtil06->myBtn[6].SetCheck(FALSE);
@@ -13305,26 +13302,31 @@ BOOL CGvisR2R_PunchView::IsMoveDone1()
 	return FALSE;
 }
 
-void CGvisR2R_PunchView::Mk0()
+BOOL CGvisR2R_PunchView::Mk0()
 {
-	if (pView->m_pVoiceCoil[0])
-	{
-		pView->m_pVoiceCoil[0]->ResetStepIsDoneMark();
-		pView->m_pVoiceCoil[0]->SetMark(0);
-		pDoc->AddMkCntL();
-		m_nCurMk[0]++;
-	}
+	if (!m_pVoiceCoil[0])
+		return FALSE;
+
+	m_pVoiceCoil[0]->ResetStepIsDoneMark();
+	if (!m_pVoiceCoil[0]->SetMark())
+		return FALSE;
+
+	pDoc->AddMkCntL();
+	m_nCurMk[0]++;
+	return TRUE;
 }
 
-void CGvisR2R_PunchView::Mk1()
+BOOL CGvisR2R_PunchView::Mk1()
 {
-	if (pView->m_pVoiceCoil[1])
-	{
-		pView->m_pVoiceCoil[1]->ResetStepIsDoneMark();
-		pView->m_pVoiceCoil[1]->SetMark(1);
-		pDoc->AddMkCntR();
-		m_nCurMk[1]++;
-	}
+	if (m_pVoiceCoil[1])
+		return FALSE;
+
+	m_pVoiceCoil[1]->ResetStepIsDoneMark();
+	if (!m_pVoiceCoil[1]->SetMark())
+		return FALSE;
+	pDoc->AddMkCntR();
+	m_nCurMk[1]++;
+	return TRUE;
 }
 
 void CGvisR2R_PunchView::Ink(BOOL bOn)
@@ -15849,6 +15851,8 @@ void CGvisR2R_PunchView::DoReject0()
 	case 0:
 		if (IsNoMk())
 			ShowLive();
+		m_nOverSaveMkImg[0] = 0;
+		m_nOverSaveMkImg[1] = 0;
 		m_nMkStrip[0][0] = 0;
 		m_nMkStrip[0][1] = 0;
 		m_nMkStrip[0][2] = 0;
@@ -15955,16 +15959,45 @@ void CGvisR2R_PunchView::DoReject0()
 		break;
 	case 6:
 		if (IsMoveDone0())
-			m_nStepMk[2]++;
-		break;
-	case 7:
-		if (!IsNoMk0())
 		{
 			m_dwStMkDn[0] = GetTickCount();
-			Mk0();
+			m_nStepMk[2]++;
+		}
+		break;
+	case MK_DO_REJECT:
+		if (!IsNoMk0())
+		{
+			if (!Mk0())
+			{
+				if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+				{
+					Buzzer(TRUE, 0);
+					DispMain(_T("정 지"), RGB_RED);
+					if (m_pVoiceCoil[0])
+						m_pVoiceCoil[0]->SetEsc();
+
+					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_dwStMkDn[0] = GetTickCount();
+						m_nStepMk[2] = MK_DO_REJECT;
+					}
+					else
+					{
+						m_dwStMkDn[0] = GetTickCount();
+						m_nStepMk[2]++;
+						Stop();
+					}
+				}
+				break;
+			}
+			else
+				m_dwStMkDn[0] = GetTickCount();
 		}
 		else
 			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
+
 		m_nStepMk[2]++;
 		break;
 	case 8:
@@ -15991,22 +16024,21 @@ void CGvisR2R_PunchView::DoReject0()
 			}
 			else
 			{
-				if (m_dwStMkDn[0] + 5000 < GetTickCount())
+				if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
 				{
 					Buzzer(TRUE, 0);
 					//pView->DispStsBar(_T("정지-29"), 0);
 					DispMain(_T("정 지"), RGB_RED);
-					m_pVoiceCoil[0]->SearchHomeSmac0();
+					//m_pVoiceCoil[0]->SearchHomeSmac();
+					if (m_pVoiceCoil[0])
+						m_pVoiceCoil[0]->SetEsc();
 
-					//nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[2] = 7;
+						m_nStepMk[2] = MK_DO_REJECT;
 					}
-					else if (nRtn < 0)
-						m_nStepMk[2]++;
 					else
 					{
 						m_nMkPcs[2]++;
@@ -16025,15 +16057,12 @@ void CGvisR2R_PunchView::DoReject0()
 		}
 		break;
 	case 11:
-		//m_nStepMk[2]++;
-		//if(m_bRtnMyMsgBox[2])
 		if ((nRtn = WaitRtnVal(3)) > -1)
 		{
-			//if(IDYES == m_nRtnMyMsgBox[2])
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[2] = 7;
+				m_nStepMk[2] = MK_DO_REJECT;
 			}
 			else
 			{
@@ -16057,7 +16086,7 @@ void CGvisR2R_PunchView::DoReject0()
 		}
 		break;
 	case MK_END:
-		m_pVoiceCoil[0]->SearchHomeSmac0();
+		m_pVoiceCoil[0]->SearchHomeSmac();
 		SetDelay0(500, 1);		// [mSec]
 		m_nStepMk[2]++;
 		break;
@@ -16078,6 +16107,8 @@ void CGvisR2R_PunchView::DoReject0()
 			m_nMkStrip[0][1] = 0;
 			m_nMkStrip[0][2] = 0;
 			m_nMkStrip[0][3] = 0;
+			m_nOverSaveMkImg[0] = 0;
+			m_nOverSaveMkImg[1] = 0;
 		}
 		break;
 	}
@@ -16115,6 +16146,8 @@ void CGvisR2R_PunchView::DoReject1()
 	case 0:
 		if (IsNoMk())
 			ShowLive();
+		m_nOverSaveMkImg[0] = 0;
+		m_nOverSaveMkImg[1] = 0;
 		m_nMkStrip[1][0] = 0;
 		m_nMkStrip[1][1] = 0;
 		m_nMkStrip[1][2] = 0;
@@ -16221,13 +16254,41 @@ void CGvisR2R_PunchView::DoReject1()
 		break;
 	case 6:
 		if (IsMoveDone1())
-			m_nStepMk[3]++;
-		break;
-	case 7:
-		if (!IsNoMk1())
 		{
 			m_dwStMkDn[1] = GetTickCount();
-			Mk1();
+			m_nStepMk[3]++;
+		}
+		break;
+	case MK_DO_REJECT:
+		if (!IsNoMk1())
+		{
+			if (!Mk1())
+			{
+				if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
+				{
+					Buzzer(TRUE, 0);
+					DispMain(_T("정 지"), RGB_RED);
+					if (m_pVoiceCoil[1])
+						m_pVoiceCoil[1]->SetEsc();
+
+					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_dwStMkDn[1] = GetTickCount();
+						m_nStepMk[3] = MK_DO_REJECT;
+					}
+					else
+					{
+						m_dwStMkDn[1] = GetTickCount();
+						m_nStepMk[3]++;
+						Stop();
+					}
+				}
+				break;
+			}
+			else
+				m_dwStMkDn[1] = GetTickCount();
 		}
 		else
 			SetDelay1(pDoc->m_nDelayShow, 1);		// [mSec]
@@ -16256,22 +16317,20 @@ void CGvisR2R_PunchView::DoReject1()
 			}
 			else
 			{
-				if (m_dwStMkDn[1] + 5000 < GetTickCount())
+				if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
 				{
 					Buzzer(TRUE, 0);
-					//pView->DispStsBar(_T("정지-30"), 0);
 					DispMain(_T("정 지"), RGB_RED);
-					m_pVoiceCoil[1]->SearchHomeSmac1();
+					//m_pVoiceCoil[1]->SearchHomeSmac();
+					if (m_pVoiceCoil[1])
+						m_pVoiceCoil[1]->SetEsc();
 
-					//nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[3] = 7;
+						m_nStepMk[3] = MK_DO_REJECT;
 					}
-					else if (nRtn < 0)
-						m_nStepMk[3]++;
 					else
 					{
 						m_nMkPcs[3]++;
@@ -16290,15 +16349,12 @@ void CGvisR2R_PunchView::DoReject1()
 		}
 		break;
 	case 11:
-		//m_nStepMk[3]++;
-		//if(m_bRtnMyMsgBox[3])
 		if ((nRtn = WaitRtnVal(4)) > -1)
 		{
-			//if(IDYES == m_nRtnMyMsgBox[3])
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[3] = 7;
+				m_nStepMk[3] = MK_DO_REJECT;
 			}
 			else
 			{
@@ -16322,7 +16378,7 @@ void CGvisR2R_PunchView::DoReject1()
 		}
 		break;
 	case MK_END:
-		m_pVoiceCoil[1]->SearchHomeSmac1();
+		m_pVoiceCoil[1]->SearchHomeSmac();
 		SetDelay1(500, 1);		// [mSec]
 		m_nStepMk[3]++;
 		break;
@@ -16343,6 +16399,8 @@ void CGvisR2R_PunchView::DoReject1()
 			m_nMkStrip[1][1] = 0;
 			m_nMkStrip[1][2] = 0;
 			m_nMkStrip[1][3] = 0;
+			m_nOverSaveMkImg[0] = 0;
+			m_nOverSaveMkImg[1] = 0;
 		}
 		break;
 	}
@@ -16350,8 +16408,7 @@ void CGvisR2R_PunchView::DoReject1()
 
 void CGvisR2R_PunchView::DoMark0All()
 {
-	//BOOL bOn;
-	//int nSerial;
+	int nRtn;
 	CfPoint ptPnt;
 
 	if (!IsRun())
@@ -16446,11 +16503,42 @@ void CGvisR2R_PunchView::DoMark0All()
 		break;
 	case 4:
 		if (IsMoveDone0())
+		{
+			m_dwStMkDn[0] = GetTickCount();
 			m_nStepMk[2]++;
+		}
 		break;
-	case 5:
+	case MK_DO_ALL:
 		if (!IsNoMk0())
-			Mk0();
+		{
+			if (!Mk0())
+			{
+				if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+				{
+					Buzzer(TRUE, 0);
+					DispMain(_T("정 지"), RGB_RED);
+					if (m_pVoiceCoil[0])
+						m_pVoiceCoil[0]->SetEsc();
+
+					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_dwStMkDn[0] = GetTickCount();
+						m_nStepMk[2] = MK_DO_ALL;
+					}
+					else
+					{
+						m_dwStMkDn[0] = GetTickCount();
+						m_nStepMk[2]++;
+						Stop();
+					}
+				}
+				break;
+			}
+			else
+				m_dwStMkDn[0] = GetTickCount();
+		}
 		else
 			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
 		m_nStepMk[2]++;
@@ -16505,8 +16593,7 @@ void CGvisR2R_PunchView::DoMark0All()
 
 void CGvisR2R_PunchView::DoMark1All()
 {
-	//BOOL bOn;
-	//int nSerial;
+	int nRtn;
 	CfPoint ptPnt;
 
 	if (!IsRun())
@@ -16601,11 +16688,42 @@ void CGvisR2R_PunchView::DoMark1All()
 		break;
 	case 4:
 		if (IsMoveDone1())
+		{
+			m_dwStMkDn[1] = GetTickCount();
 			m_nStepMk[3]++;
+		}
 		break;
-	case 5:
+	case MK_DO_ALL:
 		if (!IsNoMk1())
-			Mk1();
+		{
+			if (!Mk1())
+			{
+				if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
+				{
+					Buzzer(TRUE, 0);
+					DispMain(_T("정 지"), RGB_RED);
+					if (m_pVoiceCoil[1])
+						m_pVoiceCoil[1]->SetEsc();
+
+					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_dwStMkDn[1] = GetTickCount();
+						m_nStepMk[3] = MK_DO_ALL;
+					}
+					else
+					{
+						m_dwStMkDn[1] = GetTickCount();
+						m_nStepMk[3]++;
+						Stop();
+					}
+				}
+				break;
+			}
+			else
+				m_dwStMkDn[1] = GetTickCount();
+		}
 		else
 			SetDelay1(pDoc->m_nDelayShow, 1);		// [mSec]
 		m_nStepMk[3]++;
@@ -16697,12 +16815,11 @@ void CGvisR2R_PunchView::DoMark0()
 	if (!m_bAuto)
 		return;
 
-
 	//BOOL bOn;
-	int nSerial, nIdx, nErrCode, nRtn;
+	int nSerial, nIdx, nErrCode, nRtn, nTotMked;
 	CfPoint ptPnt;
 	CString sMsg;
-	double dStripOut = (pDoc->m_Master[0].m_pPcsRgn->nTotPcs / MAX_STRIP_NUM) * _tstof(pDoc->WorkingInfo.LastJob.sStripOutRatio) / 100.0;
+	double dStripOut = (pDoc->m_Master[0].m_pPcsRgn->nTotPcs / MAX_STRIP_NUM) * _tstof(pDoc->WorkingInfo.LastJob.sStripOutRatio) / 100.0; // 스트립아웃 불량갯수
 	int nStripOut = int(dStripOut);
 	if (dStripOut > nStripOut)
 		nStripOut++;			// 스트립 양폐 비율
@@ -16722,10 +16839,10 @@ void CGvisR2R_PunchView::DoMark0()
 				}
 			}
 
-			if (m_nStepMk[0] < 13 && m_nStepMk[0] > 8) // Mk0();
-			{
-				m_nStepMk[0] = 8;	// 마킹완료Check
-			}
+			//if (m_nStepMk[0] < MK_DO && m_nStepMk[0] > MK_DONE_CHECK_START) // Mk0();
+			//{
+			//	m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
+			//}
 		}
 		return;
 	}
@@ -16759,6 +16876,8 @@ void CGvisR2R_PunchView::DoMark0()
 			}
 			else
 			{
+				if (m_bCam)
+					ResetMkImgL(nSerial);
 				m_nStepMk[0]++;
 			}
 		}
@@ -16855,7 +16974,7 @@ void CGvisR2R_PunchView::DoMark0()
 			}
 		}
 		break;
-	case 8:
+	case MK_DONE_CHECK_START:
 		nSerial = m_nBufUpSerial[0]; // Cam0
 
 		if (m_nMkPcs[0] < GetTotDefPcs0(nSerial))	// 마킹완료Check
@@ -16876,7 +16995,7 @@ void CGvisR2R_PunchView::DoMark0()
 			if (ptPnt.x < 0.0 && ptPnt.y < 0.0) // 양품화. (마킹하지 않음)
 			{
 				m_nMkPcs[0]++;
-				m_nStepMk[0] = MK_DONE_CHECK;
+				m_nStepMk[0] = MK_DONE_CHECK_END;
 				break;
 			}
 
@@ -16886,7 +17005,7 @@ void CGvisR2R_PunchView::DoMark0()
 				if (!IsMkStrip(nIdx)) // Strip[] Mk Off Check (열별마킹 여부 버튼)
 				{
 					m_nMkPcs[0]++;
-					m_nStepMk[0] = MK_DONE_CHECK;
+					m_nStepMk[0] = MK_DONE_CHECK_END;
 					break;
 				}
 				else
@@ -16894,7 +17013,7 @@ void CGvisR2R_PunchView::DoMark0()
 					if (m_nMkStrip[0][nIdx - 1] >= nStripOut)	// 양폐 스트립 피스갯수
 					{
 						m_nMkPcs[0]++;
-						m_nStepMk[0] = MK_DONE_CHECK;
+						m_nStepMk[0] = MK_DONE_CHECK_END;
 						break;
 					}
 					else
@@ -16967,13 +17086,41 @@ void CGvisR2R_PunchView::DoMark0()
 		break;
 	case 12:
 		if (IsMoveDone0())
-			m_nStepMk[0]++;
-		break;
-	case 13:
-		if (!IsNoMk0())
 		{
 			m_dwStMkDn[0] = GetTickCount();
-			Mk0();
+			m_nStepMk[0]++;
+		}
+		break;
+	case MK_DO:
+		if (!IsNoMk0())
+		{
+			if (!Mk0())
+			{
+				if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+				{
+					Buzzer(TRUE, 0);
+					DispMain(_T("정 지"), RGB_RED);
+					if (m_pVoiceCoil[0])
+						m_pVoiceCoil[0]->SetEsc();
+
+					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_dwStMkDn[0] = GetTickCount();
+						m_nStepMk[0] = MK_DO;
+					}
+					else
+					{
+						m_dwStMkDn[0] = GetTickCount();
+						m_nStepMk[0]++;
+						Stop();
+					}
+				}
+				break;
+			}
+			else
+				m_dwStMkDn[0] = GetTickCount();
 		}
 		else
 		{
@@ -16990,6 +17137,7 @@ void CGvisR2R_PunchView::DoMark0()
 					{
 						if (ChkRepunching(0)) // 0 : Left, 1 : Right
 						{
+							m_nOverSaveMkImg[0]++;
 							Stop();
 							break;
 						}
@@ -17018,7 +17166,10 @@ void CGvisR2R_PunchView::DoMark0()
 				m_nStepMk[0]++;
 		}
 		else
+		{
+			m_dwStMkDn[0] = GetTickCount();
 			m_nStepMk[0]++;
+		}
 		break;
 	case 17:
 		if (!IsNoMk0())
@@ -17026,12 +17177,58 @@ void CGvisR2R_PunchView::DoMark0()
 			if (IsMk0Done())
 			{
 				// One more MK On Start....
-				if (!m_nMkPcs[0] /*&& pDoc->WorkingInfo.Probing[0].bUse*/ && !m_bAnswer[2])
+				if (IsMk0Miss())
 				{
-					m_bAnswer[2] = TRUE;
-					Mk0();
+					nRtn = MsgBox(_T("보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_nStepMk[0] = MK_DO;
+					}
+					else
+					{
+						m_bAnswer[2] = FALSE;
+						m_nMkPcs[0]++;
+						m_nStepMk[0]++;
+						m_nStepMk[0]++;
+						Stop();
+					}
+					break;
 				}
-				else
+
+				//if (!m_nMkPcs[0] && !m_bAnswer[2])
+				//{
+				//	m_bAnswer[2] = TRUE;
+				//	if (!Mk0())
+				//	{
+				//		if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+				//		{
+				//			Buzzer(TRUE, 0);
+				//			DispMain(_T("정 지"), RGB_RED);
+				//			if (m_pVoiceCoil[0])
+				//				m_pVoiceCoil[0]->SetEsc();
+				//
+				//			nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+				//			if (IDYES == nRtn)
+				//			{
+				//				DispMain(_T("운전중"), RGB_RED);
+				//				m_dwStMkDn[0] = GetTickCount();
+				//				m_nStepMk[0] = 17;
+				//			}
+				//			else
+				//			{
+				//				m_dwStMkDn[0] = GetTickCount();
+				//				m_bAnswer[2] = FALSE;
+				//				m_nMkPcs[0]++;
+				//				m_nStepMk[0]++;
+				//				m_nStepMk[0]++;
+				//				Stop();
+				//			}
+				//		}
+				//		break;
+				//	}
+				//}
+				//else
 				{
 					m_bAnswer[2] = FALSE;
 					m_nMkPcs[0]++;
@@ -17041,22 +17238,26 @@ void CGvisR2R_PunchView::DoMark0()
 			}
 			else
 			{
-				if (m_dwStMkDn[0] + 5000 < GetTickCount())
+				if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
 				{
 					BuzzerFromThread(TRUE, 0);
-					//pView->DispStsBar(_T("정지-32"), 0);
 					DispMain(_T("정 지"), RGB_RED);
-					m_pVoiceCoil[0]->SearchHomeSmac0();
-
-					//nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
-					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					//m_pVoiceCoil[0]->SearchHomeSmac();
+					if (m_pVoiceCoil[0])
+						m_pVoiceCoil[0]->SetEsc();
+					if (IsMk0Miss())
+					{
+						nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					}
+					else
+					{
+						nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					}
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[0] = 13;
+						m_nStepMk[0] = MK_DO;
 					}
-					else if (nRtn < 0)
-						m_nStepMk[0]++; // Wait...
 					else
 					{
 						m_bAnswer[2] = FALSE;
@@ -17081,7 +17282,7 @@ void CGvisR2R_PunchView::DoMark0()
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[0] = 13;
+				m_nStepMk[0] = MK_DO;
 			}
 			else
 			{
@@ -17093,9 +17294,9 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		break;
 	case 19:
-		m_nStepMk[0] = MK_DONE_CHECK;
+		m_nStepMk[0] = MK_DONE_CHECK_END;
 		break;
-	case MK_DONE_CHECK:
+	case MK_DONE_CHECK_END:
 		nSerial = m_nBufUpSerial[0]; // Cam0
 
 		if (m_nMkPcs[0] < GetTotDefPcs0(nSerial))
@@ -17115,13 +17316,13 @@ void CGvisR2R_PunchView::DoMark0()
 						m_nStepMk[0] = MK_END;
 					}
 					else
-						m_nStepMk[0] = 8;	// 마킹완료Check
+						m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 				}
 				else
-					m_nStepMk[0] = 8;	// 마킹완료Check
+					m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 			}
 			else
-				m_nStepMk[0] = 8;	// 마킹완료Check
+				m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 		}
 		else
 		{
@@ -17141,7 +17342,7 @@ void CGvisR2R_PunchView::DoMark0()
 				m_nStepMk[0] = MK_END;
 		}
 		break;
-	case MK_DONE_CHECK + 1:
+	case MK_DONE_CHECK_END + 1:
 		nSerial = m_nBufUpSerial[0]; // Cam0
 
 		if (m_nMkPcs[0] < GetTotDefPcs0(nSerial))
@@ -17151,7 +17352,7 @@ void CGvisR2R_PunchView::DoMark0()
 				if (IsReview0())
 				{
 					if (IsJogRtUp0())
-						m_nStepMk[0] = 8;	// 마킹완료Check
+						m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 				}
 				else
 				{
@@ -17160,7 +17361,7 @@ void CGvisR2R_PunchView::DoMark0()
 				}
 			}
 			else
-				m_nStepMk[0] = 8;	// 마킹완료Check
+				m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 		}
 		else
 		{
@@ -17197,7 +17398,8 @@ void CGvisR2R_PunchView::DoMark0()
 		//m_nStepMk[0]++;
 		if (m_bCam)
 		{
-			if (!ChkMkImgL(m_nBufUpSerial[0], m_nTotMk[0]))//, m_nCurMk[0]))
+			nTotMked = m_nMkStrip[0][0] + m_nMkStrip[0][1] + m_nMkStrip[0][2] + m_nMkStrip[0][3];
+			if (!ChkMkImgL(m_nBufUpSerial[0], nTotMked))
 			{
 				Stop();
 				nRtn = MsgBox(_T("좌측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO);
@@ -17239,7 +17441,7 @@ void CGvisR2R_PunchView::DoMark0()
 
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
-		m_pVoiceCoil[0]->SearchHomeSmac0();
+		m_pVoiceCoil[0]->SearchHomeSmac();
 		//AsyncMsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		MsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		m_nStepMk[0]++;
@@ -17374,7 +17576,7 @@ void CGvisR2R_PunchView::DoMark1()
 		return;
 
 	//BOOL bOn;
-	int nSerial, nIdx, nErrCode, nRtn;
+	int nSerial, nIdx, nErrCode, nRtn, nTotMked;
 	CfPoint ptPnt;
 	CString sMsg;
 	double dStripOut = (pDoc->m_Master[0].m_pPcsRgn->nTotPcs / MAX_STRIP_NUM) * _tstof(pDoc->WorkingInfo.LastJob.sStripOutRatio) / 100.0;
@@ -17397,10 +17599,10 @@ void CGvisR2R_PunchView::DoMark1()
 				}
 			}
 
-			if (m_nStepMk[1] < 13 && m_nStepMk[1] > 8) // Mk1();
-			{
-				m_nStepMk[1] = 8;	// 마킹완료Check
-			}
+			//if (m_nStepMk[1] < MK_DO && m_nStepMk[1] > MK_DONE_CHECK_START) // Mk1();
+			//{
+			//	m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
+			//}
 		}
 		return;
 	}
@@ -17433,6 +17635,8 @@ void CGvisR2R_PunchView::DoMark1()
 			}
 			else
 			{
+				if (m_bCam)
+					ResetMkImgR(nSerial);
 				m_nStepMk[1]++;
 			}
 		}
@@ -17513,7 +17717,7 @@ void CGvisR2R_PunchView::DoMark1()
 			}
 		}
 		break;
-	case 8:
+	case MK_DONE_CHECK_START:
 		nSerial = m_nBufUpSerial[1]; // Cam1
 
 		if (m_nMkPcs[1] < GetTotDefPcs1(nSerial))	// 마킹완료Check
@@ -17534,7 +17738,7 @@ void CGvisR2R_PunchView::DoMark1()
 			if (ptPnt.x < 0.0 && ptPnt.y < 0.0) // 양품화.
 			{
 				m_nMkPcs[1]++;
-				m_nStepMk[1] = MK_DONE_CHECK;
+				m_nStepMk[1] = MK_DONE_CHECK_END;
 				break;
 			}
 
@@ -17544,7 +17748,7 @@ void CGvisR2R_PunchView::DoMark1()
 				if (!IsMkStrip(nIdx)) // Strip[] Mk Off
 				{
 					m_nMkPcs[1]++;
-					m_nStepMk[1] = MK_DONE_CHECK;
+					m_nStepMk[1] = MK_DONE_CHECK_END;
 					break;
 				}
 				else
@@ -17552,7 +17756,7 @@ void CGvisR2R_PunchView::DoMark1()
 					if (m_nMkStrip[1][nIdx - 1] >= nStripOut)	// 양폐 스트립 피스갯수
 					{
 						m_nMkPcs[1]++;
-						m_nStepMk[1] = MK_DONE_CHECK;
+						m_nStepMk[1] = MK_DONE_CHECK_END;
 						break;
 					}
 					else
@@ -17625,13 +17829,41 @@ void CGvisR2R_PunchView::DoMark1()
 		break;
 	case 12:
 		if (IsMoveDone1())
-			m_nStepMk[1]++;
-		break;
-	case 13:
-		if (!IsNoMk1())
 		{
 			m_dwStMkDn[1] = GetTickCount();
-			Mk1();
+			m_nStepMk[1]++;
+		}
+		break;
+	case MK_DO:
+		if (!IsNoMk1())
+		{
+			if (!Mk1())
+			{
+				if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
+				{
+					Buzzer(TRUE, 0);
+					DispMain(_T("정 지"), RGB_RED);
+					if (m_pVoiceCoil[1])
+						m_pVoiceCoil[1]->SetEsc();
+
+					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_dwStMkDn[1] = GetTickCount();
+						m_nStepMk[1] = MK_DO;
+					}
+					else
+					{
+						m_dwStMkDn[1] = GetTickCount();
+						m_nStepMk[1]++;
+						Stop();
+					}
+				}
+				break;
+			}
+			else
+				m_dwStMkDn[1] = GetTickCount();
 		}
 		else
 		{
@@ -17648,6 +17880,7 @@ void CGvisR2R_PunchView::DoMark1()
 					{
 						if (ChkRepunching(1)) // 0 : Left, 1 : Right
 						{
+							m_nOverSaveMkImg[1]++;
 							Stop();
 							break;
 						}
@@ -17676,45 +17909,101 @@ void CGvisR2R_PunchView::DoMark1()
 				m_nStepMk[1]++;
 		}
 		else
+		{
+			m_dwStMkDn[1] = GetTickCount();
 			m_nStepMk[1]++;
+		}
 		break;
 	case 17:
 		if (!IsNoMk1())
 		{
 			if (IsMk1Done())
 			{
-				// One more MK On Start....
-				if (!m_nMkPcs[1] && !m_bAnswer[3])
+				if (IsMk1Miss())
 				{
-					m_bAnswer[3] = TRUE;
-					Mk1();
+					nRtn = MsgBox(_T("보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_nStepMk[1] = MK_DO;
+					}
+					else
+					{
+						m_bAnswer[3] = FALSE;
+						m_nMkPcs[1]++;
+						m_nStepMk[1]++;
+						m_nStepMk[1]++;
+						Stop();
+					}
+					break;
 				}
-				else
+
+				// One more MK On Start....
+				//if (!m_nMkPcs[1] && !m_bAnswer[3])
+				//{
+				//	m_bAnswer[3] = TRUE;
+				//	if (!Mk1())
+				//	{
+				//		if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
+				//		{
+				//			Buzzer(TRUE, 0);
+				//			DispMain(_T("정 지"), RGB_RED);
+				//			if (m_pVoiceCoil[1])
+				//				m_pVoiceCoil[1]->SetEsc();
+				//
+				//			nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+				//			if (IDYES == nRtn)
+				//			{
+				//				DispMain(_T("운전중"), RGB_RED);
+				//				m_dwStMkDn[1] = GetTickCount();
+				//				m_nStepMk[1] = 17;
+				//			}
+				//			else
+				//			{
+				//				m_dwStMkDn[1] = GetTickCount();
+				//				m_bAnswer[3] = FALSE;
+				//				m_nMkPcs[1]++;
+				//				m_nStepMk[1]++;
+				//				m_nStepMk[1]++;
+				//				Stop();
+				//			}
+				//		}
+				//		break;
+				//	}
+				//	else
+				//		m_dwStMkDn[1] = GetTickCount();
+				//}
+				//else
 				{
 					m_bAnswer[3] = FALSE;
 					m_nMkPcs[1]++;
 					m_nStepMk[1]++;
 					m_nStepMk[1]++;
 				}
-
 			}
 			else
 			{
-				if (m_dwStMkDn[1] + 5000 < GetTickCount())
+				if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
 				{
 					BuzzerFromThread(TRUE, 0);
 					DispMain(_T("정 지"), RGB_RED);
-					m_pVoiceCoil[1]->SearchHomeSmac1();
+					//m_pVoiceCoil[1]->SearchHomeSmac();
+					if (m_pVoiceCoil[1])
+						m_pVoiceCoil[1]->SetEsc();
 
-					//nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
-					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					if (IsMk1Miss())
+					{
+						nRtn = MsgBox(_T("보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					}
+					else
+					{
+						nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					}
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[1] = 13;
+						m_nStepMk[1] = MK_DO;
 					}
-					else if (nRtn < 0)
-						m_nStepMk[1]++; // Wait...
 					else
 					{
 						m_bAnswer[3] = FALSE;
@@ -17739,7 +18028,7 @@ void CGvisR2R_PunchView::DoMark1()
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[1] = 13;
+				m_nStepMk[1] = MK_DO;
 			}
 			else
 			{
@@ -17751,9 +18040,9 @@ void CGvisR2R_PunchView::DoMark1()
 		}
 		break;
 	case 19:
-		m_nStepMk[1] = MK_DONE_CHECK;
+		m_nStepMk[1] = MK_DONE_CHECK_END;
 		break;
-	case MK_DONE_CHECK:
+	case MK_DONE_CHECK_END:
 		nSerial = m_nBufUpSerial[1]; // Cam1
 
 		if (m_nMkPcs[1] < GetTotDefPcs1(nSerial))
@@ -17773,13 +18062,13 @@ void CGvisR2R_PunchView::DoMark1()
 						m_nStepMk[1] = MK_END;
 					}
 					else
-						m_nStepMk[1] = 8;	// 마킹완료Check
+						m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 				}
 				else
-					m_nStepMk[1] = 8;	// 마킹완료Check
+					m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 			}
 			else
-				m_nStepMk[1] = 8;	// 마킹완료Check
+				m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 		}
 		else
 		{
@@ -17799,7 +18088,7 @@ void CGvisR2R_PunchView::DoMark1()
 				m_nStepMk[1] = MK_END;
 		}
 		break;
-	case MK_DONE_CHECK + 1:
+	case MK_DONE_CHECK_END + 1:
 		nSerial = m_nBufUpSerial[1]; // Cam1
 
 		if (m_nMkPcs[1] < GetTotDefPcs1(nSerial))
@@ -17809,7 +18098,7 @@ void CGvisR2R_PunchView::DoMark1()
 				if (IsReview1())
 				{
 					if (IsJogRtUp1())
-						m_nStepMk[1] = 8;	// 마킹완료Check
+						m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 				}
 				else
 				{
@@ -17818,7 +18107,7 @@ void CGvisR2R_PunchView::DoMark1()
 				}
 			}
 			else
-				m_nStepMk[1] = 8;	// 마킹완료Check
+				m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 		}
 		else
 		{
@@ -17854,7 +18143,8 @@ void CGvisR2R_PunchView::DoMark1()
 		//m_nStepMk[1]++;
 		if (m_bCam)
 		{
-			if (!ChkMkImgR(m_nBufUpSerial[1], m_nTotMk[1]))//, m_nCurMk[1]))
+			nTotMked = m_nMkStrip[1][0] + m_nMkStrip[1][1] + m_nMkStrip[1][2] + m_nMkStrip[1][3];
+			if (!ChkMkImgR(m_nBufUpSerial[1], nTotMked))
 			{
 				Stop();
 				nRtn = MsgBox(_T("우측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO);
@@ -17896,7 +18186,7 @@ void CGvisR2R_PunchView::DoMark1()
 
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
-		m_pVoiceCoil[1]->SearchHomeSmac1();
+		m_pVoiceCoil[1]->SearchHomeSmac();
 		//AsyncMsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		MsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		m_nStepMk[1]++;
@@ -22440,6 +22730,8 @@ void CGvisR2R_PunchView::Mk2PtDoMarking()
 					m_bRejectDone[a][b] = FALSE;
 				}
 			}
+			m_nOverSaveMkImg[0] = 0;
+			m_nOverSaveMkImg[1] = 0;
 
 			m_nSaveMk0Img = 0;
 			m_nSaveMk1Img = 0;
@@ -22848,6 +23140,8 @@ void CGvisR2R_PunchView::Mk2PtReject()
 							m_bRejectDone[a][b] = FALSE;
 						}
 					}
+					m_nOverSaveMkImg[0] = 0;
+					m_nOverSaveMkImg[1] = 0;
 				}
 				else
 				{
@@ -24560,6 +24854,8 @@ void CGvisR2R_PunchView::Mk4PtDoMarking()
 					m_bRejectDone[a][b] = FALSE;
 				}
 			}
+			m_nOverSaveMkImg[0] = 0;
+			m_nOverSaveMkImg[1] = 0;
 
 			m_nMkStAuto++;
 			break;
@@ -24859,6 +25155,8 @@ void CGvisR2R_PunchView::Mk4PtReject()
 							m_bRejectDone[a][b] = FALSE;
 						}
 					}
+					m_nOverSaveMkImg[0] = 0;
+					m_nOverSaveMkImg[1] = 0;
 				}
 				else
 				{
@@ -26048,7 +26346,7 @@ BOOL CGvisR2R_PunchView::IsMk0Done()
 	BOOL bDone = FALSE;
 
 	if (pView->m_pVoiceCoil[0])
-		bDone = pView->m_pVoiceCoil[0]->IsDoneMark(0);
+		bDone = pView->m_pVoiceCoil[0]->IsDoneMark();
 
 	return bDone;
 }
@@ -26058,7 +26356,27 @@ BOOL CGvisR2R_PunchView::IsMk1Done()
 	BOOL bDone = FALSE;
 
 	if (pView->m_pVoiceCoil[1])
-		bDone = pView->m_pVoiceCoil[1]->IsDoneMark(1);
+		bDone = pView->m_pVoiceCoil[1]->IsDoneMark();
+
+	return bDone;
+}
+
+BOOL CGvisR2R_PunchView::IsMk0Miss()
+{
+	BOOL bDone = FALSE;
+
+	if (pView->m_pVoiceCoil[0])
+		bDone = pView->m_pVoiceCoil[0]->IsMissMark();
+
+	return bDone;
+}
+
+BOOL CGvisR2R_PunchView::IsMk1Miss()
+{
+	BOOL bDone = FALSE;
+
+	if (pView->m_pVoiceCoil[1])
+		bDone = pView->m_pVoiceCoil[1]->IsMissMark();
 
 	return bDone;
 }
@@ -30408,7 +30726,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 	if (!m_bAuto)
 		return;
 
-	int nSerial, nIdx, nErrCode, nRtn;
+	int nSerial, nIdx, nErrCode, nRtn, nTotMked;
 	CfPoint ptPnt;
 	CString sMsg;
 	double dStripOut = (pDoc->m_Master[0].m_pPcsRgn->nTotPcs / MAX_STRIP_NUM) * _tstof(pDoc->WorkingInfo.LastJob.sStripOutRatio) / 100.0;
@@ -30431,10 +30749,10 @@ void CGvisR2R_PunchView::DoMark0Its()
 				}
 			}
 
-			if (m_nStepMk[0] < 13 && m_nStepMk[0] > 8) // Mk0();
-			{
-				m_nStepMk[0] = 8;	// 마킹완료Check
-			}
+			//if (m_nStepMk[0] < MK_DO && m_nStepMk[0] > MK_DONE_CHECK_START) // Mk0();
+			//{
+			//	m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
+			//}
 		}
 		return;
 	}
@@ -30466,6 +30784,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 			}
 			else
 			{
+				if (m_bCam)
+					ResetMkImgL(nSerial);
 				m_nStepMk[0]++;
 			}
 		}
@@ -30547,7 +30867,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 			}
 		}
 		break;
-	case 8:
+	case MK_DONE_CHECK_START:
 		nSerial = m_nBufUpSerial[0]; // Cam0
 
 		if (m_nMkPcs[0] < GetTotDefPcs0Its(nSerial))	// 마킹완료Check
@@ -30568,7 +30888,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 			if (ptPnt.x < 0.0 && ptPnt.y < 0.0) // 양품화. (마킹하지 않음)
 			{
 				m_nMkPcs[0]++;
-				m_nStepMk[0] = MK_DONE_CHECK;
+				m_nStepMk[0] = MK_DONE_CHECK_END;
 				break;
 			}
 
@@ -30578,7 +30898,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 				if (!IsMkStrip(nIdx)) // Strip[] Mk Off
 				{
 					m_nMkPcs[0]++;
-					m_nStepMk[0] = MK_DONE_CHECK;
+					m_nStepMk[0] = MK_DONE_CHECK_END;
 					break;
 				}
 				else
@@ -30586,7 +30906,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 					if (m_nMkStrip[0][nIdx - 1] >= nStripOut)
 					{
 						m_nMkPcs[0]++;
-						m_nStepMk[0] = MK_DONE_CHECK;
+						m_nStepMk[0] = MK_DONE_CHECK_END;
 						break;
 					}
 					else
@@ -30659,13 +30979,39 @@ void CGvisR2R_PunchView::DoMark0Its()
 		break;
 	case 12:
 		if (IsMoveDone0())
-			m_nStepMk[0]++;
-		break;
-	case 13:
-		if (!IsNoMk0())
 		{
 			m_dwStMkDn[0] = GetTickCount();
-			Mk0();
+			m_nStepMk[0]++;
+		}
+		break;
+	case MK_DO:
+		if (!IsNoMk0())
+		{
+			if (!Mk0())
+			{
+				if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+				{
+					Buzzer(TRUE, 0);
+					DispMain(_T("정 지"), RGB_RED);
+					if (m_pVoiceCoil[0])
+						m_pVoiceCoil[0]->SetEsc();
+
+					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_dwStMkDn[0] = GetTickCount();
+						m_nStepMk[0] = MK_DO;
+					}
+					else
+					{
+						m_dwStMkDn[0] = GetTickCount();
+						m_nStepMk[0]++;
+						Stop();
+					}
+				}
+				break;
+			}
 		}
 		else
 		{
@@ -30682,6 +31028,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 					{
 						if (ChkRepunching(0)) // 0 : Left, 1 : Right
 						{
+							m_nOverSaveMkImg[0]++;
 							Stop();
 							break;
 						}
@@ -30710,20 +31057,71 @@ void CGvisR2R_PunchView::DoMark0Its()
 				m_nStepMk[0]++;
 		}
 		else
+		{
+			m_dwStMkDn[0] = GetTickCount();
 			m_nStepMk[0]++;
+		}
 		break;
 	case 17:
 		if (!IsNoMk0())
 		{
 			if (IsMk0Done())
 			{
-				// One more MK On Start....
-				if (!m_nMkPcs[0] && !m_bAnswer[2])
+				if (IsMk0Miss())
 				{
-					m_bAnswer[2] = TRUE;
-					Mk0();
+					nRtn = MsgBox(_T("보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_nStepMk[0] = MK_DO;
+					}
+					else
+					{
+						m_bAnswer[2] = FALSE;
+						m_nMkPcs[0]++;
+						m_nStepMk[0]++;
+						m_nStepMk[0]++;
+						Stop();
+					}
+					break;
 				}
-				else
+
+				// One more MK On Start....
+				//if (!m_nMkPcs[0] && !m_bAnswer[2])
+				//{
+				//	m_bAnswer[2] = TRUE;
+				//	if (!Mk0())
+				//	{
+				//		if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+				//		{
+				//			Buzzer(TRUE, 0);
+				//			DispMain(_T("정 지"), RGB_RED);
+				//			if (m_pVoiceCoil[0])
+				//				m_pVoiceCoil[0]->SetEsc();
+				//
+				//			nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+				//			if (IDYES == nRtn)
+				//			{
+				//				DispMain(_T("운전중"), RGB_RED);
+				//				m_dwStMkDn[0] = GetTickCount();
+				//				m_nStepMk[0] = 17;
+				//			}
+				//			else
+				//			{
+				//				m_dwStMkDn[0] = GetTickCount();
+				//				m_bAnswer[2] = FALSE;
+				//				m_nMkPcs[0]++;
+				//				m_nStepMk[0]++;
+				//				m_nStepMk[0]++;
+				//				Stop();
+				//			}
+				//		}
+				//		break;
+				//	}
+				//	else
+				//		m_dwStMkDn[0] = GetTickCount();
+				//}
+				//else
 				{
 					m_bAnswer[2] = FALSE;
 					m_nMkPcs[0]++;
@@ -30733,21 +31131,27 @@ void CGvisR2R_PunchView::DoMark0Its()
 			}
 			else
 			{
-				if (m_dwStMkDn[0] + 5000 < GetTickCount())
+				if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
 				{
 					BuzzerFromThread(TRUE, 0);
 					DispMain(_T("정 지"), RGB_RED);
-					m_pVoiceCoil[0]->SearchHomeSmac0();
+					//m_pVoiceCoil[0]->SearchHomeSmac();
+					if (m_pVoiceCoil[0])
+						m_pVoiceCoil[0]->SetEsc();
 
-					//nRtn = AsyncMsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
-					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IsMk0Miss())
+					{
+						nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					}
+					else
+					{
+						nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					}
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[0] = 13;
+						m_nStepMk[0] = MK_DO;
 					}
-					else if (nRtn < 0)
-						m_nStepMk[0]++; // Wait...
 					else
 					{
 						m_bAnswer[2] = FALSE;
@@ -30772,7 +31176,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[0] = 13;
+				m_nStepMk[0] = MK_DO;
 			}
 			else
 			{
@@ -30784,9 +31188,9 @@ void CGvisR2R_PunchView::DoMark0Its()
 		}
 		break;
 	case 19:
-		m_nStepMk[0] = MK_DONE_CHECK;
+		m_nStepMk[0] = MK_DONE_CHECK_END;
 		break;
-	case MK_DONE_CHECK:
+	case MK_DONE_CHECK_END:
 		nSerial = m_nBufUpSerial[0]; // Cam0
 
 		if (m_nMkPcs[0] < GetTotDefPcs0Its(nSerial))
@@ -30806,13 +31210,13 @@ void CGvisR2R_PunchView::DoMark0Its()
 						m_nStepMk[0] = MK_END;
 					}
 					else
-						m_nStepMk[0] = 8;	// 마킹완료Check
+						m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 				}
 				else
-					m_nStepMk[0] = 8;	// 마킹완료Check
+					m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 			}
 			else
-				m_nStepMk[0] = 8;	// 마킹완료Check
+				m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 		}
 		else
 		{
@@ -30832,7 +31236,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 				m_nStepMk[0] = MK_END;
 		}
 		break;
-	case MK_DONE_CHECK + 1:
+	case MK_DONE_CHECK_END + 1:
 		nSerial = m_nBufUpSerial[0]; // Cam0
 
 		if (m_nMkPcs[0] < GetTotDefPcs0Its(nSerial))
@@ -30842,7 +31246,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 				if (IsReview0())
 				{
 					if (IsJogRtUp0())
-						m_nStepMk[0] = 8;	// 마킹완료Check
+						m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 				}
 				else
 				{
@@ -30851,7 +31255,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 				}
 			}
 			else
-				m_nStepMk[0] = 8;	// 마킹완료Check
+				m_nStepMk[0] = MK_DONE_CHECK_START;	// 마킹완료Check
 		}
 		else
 		{
@@ -30888,7 +31292,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 		//m_nStepMk[0]++;
 		if (m_bCam)
 		{
-			if (!ChkMkImgL(m_nBufUpSerial[0], m_nTotMk[0]))//, m_nCurMk[0]))
+			nTotMked = m_nMkStrip[0][0] + m_nMkStrip[0][1] + m_nMkStrip[0][2] + m_nMkStrip[0][3];
+			if (!ChkMkImgL(m_nBufUpSerial[0], nTotMked))
 			{
 				Stop();
 				nRtn = MsgBox(_T("좌측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO);
@@ -30930,7 +31335,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
-		m_pVoiceCoil[0]->SearchHomeSmac0();
+		m_pVoiceCoil[0]->SearchHomeSmac();
 		//AsyncMsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		MsgBox(_T("보이스코일(좌) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 1);
 		m_nStepMk[0]++;
@@ -31009,7 +31414,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 		return;
 
 	//BOOL bOn;
-	int nSerial, nIdx, nErrCode, nRtn;
+	int nSerial, nIdx, nErrCode, nRtn, nTotMked;
 	CfPoint ptPnt;
 	CString sMsg;
 	double dStripOut = (pDoc->m_Master[0].m_pPcsRgn->nTotPcs / MAX_STRIP_NUM) * _tstof(pDoc->WorkingInfo.LastJob.sStripOutRatio) / 100.0;
@@ -31033,10 +31438,10 @@ void CGvisR2R_PunchView::DoMark1Its()
 				}
 			}
 
-			if (m_nStepMk[1] < 13 && m_nStepMk[1] > 8) // Mk1();
-			{
-				m_nStepMk[1] = 8;	// 마킹완료Check
-			}
+			//if (m_nStepMk[1] < MK_DO && m_nStepMk[1] > MK_DONE_CHECK_START) // Mk1();
+			//{
+			//	m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
+			//}
 		}
 		return;
 	}
@@ -31069,6 +31474,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 			}
 			else
 			{
+				if (m_bCam)
+					ResetMkImgR(nSerial);
 				m_nStepMk[1]++;
 			}
 		}
@@ -31151,7 +31558,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 			}
 		}
 		break;
-	case 8:
+	case MK_DONE_CHECK_START:
 		nSerial = m_nBufUpSerial[1]; // Cam1
 
 		if (m_nMkPcs[1] < GetTotDefPcs1Its(nSerial))	// 마킹완료Check
@@ -31172,7 +31579,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 			if (ptPnt.x < 0.0 && ptPnt.y < 0.0) // 양품화.
 			{
 				m_nMkPcs[1]++;
-				m_nStepMk[1] = MK_DONE_CHECK;
+				m_nStepMk[1] = MK_DONE_CHECK_END;
 				break;
 			}
 
@@ -31182,7 +31589,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 				if (!IsMkStrip(nIdx)) // Strip[] Mk Off
 				{
 					m_nMkPcs[1]++;
-					m_nStepMk[1] = MK_DONE_CHECK;
+					m_nStepMk[1] = MK_DONE_CHECK_END;
 					break;
 				}
 				else
@@ -31190,7 +31597,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 					if (m_nMkStrip[1][nIdx - 1] >= nStripOut)
 					{
 						m_nMkPcs[1]++;
-						m_nStepMk[1] = MK_DONE_CHECK;
+						m_nStepMk[1] = MK_DONE_CHECK_END;
 						break;
 					}
 					else
@@ -31263,13 +31670,41 @@ void CGvisR2R_PunchView::DoMark1Its()
 		break;
 	case 12:
 		if (IsMoveDone1())
-			m_nStepMk[1]++;
-		break;
-	case 13:
-		if (!IsNoMk1())
 		{
 			m_dwStMkDn[1] = GetTickCount();
-			Mk1();
+			m_nStepMk[1]++;
+		}
+		break;
+	case MK_DO:
+		if (!IsNoMk1())
+		{
+			if (!Mk1())
+			{
+				if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
+				{
+					Buzzer(TRUE, 0);
+					DispMain(_T("정 지"), RGB_RED);
+					if (m_pVoiceCoil[1])
+						m_pVoiceCoil[1]->SetEsc();
+
+					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_dwStMkDn[1] = GetTickCount();
+						m_nStepMk[1] = MK_DO;
+					}
+					else
+					{
+						m_dwStMkDn[1] = GetTickCount();
+						m_nStepMk[1]++;
+						Stop();
+					}
+				}
+				break;
+			}
+			else
+				m_dwStMkDn[1] = GetTickCount();
 		}
 		else
 		{
@@ -31286,6 +31721,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 					{
 						if (ChkRepunching(1)) // 0 : Left, 1 : Right
 						{
+							m_nOverSaveMkImg[1]++;
 							Stop();
 							break;
 						}
@@ -31314,45 +31750,101 @@ void CGvisR2R_PunchView::DoMark1Its()
 				m_nStepMk[1]++;
 		}
 		else
+		{
+			m_dwStMkDn[1] = GetTickCount();
 			m_nStepMk[1]++;
+		}
 		break;
 	case 17:
 		if (!IsNoMk1())
 		{
 			if (IsMk1Done())
 			{
-				// One more MK On Start....
-				if (!m_nMkPcs[1] && !m_bAnswer[3])
+				if (IsMk1Miss())
 				{
-					m_bAnswer[3] = TRUE;
-					Mk1();
+					nRtn = MsgBox(_T("보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					if (IDYES == nRtn)
+					{
+						DispMain(_T("운전중"), RGB_RED);
+						m_nStepMk[1] = MK_DO;
+					}
+					else
+					{
+						m_bAnswer[3] = FALSE;
+						m_nMkPcs[1]++;
+						m_nStepMk[1]++;
+						m_nStepMk[1]++;
+						Stop();
+					}
+					break;
 				}
-				else
+
+				// One more MK On Start....
+				//if (!m_nMkPcs[1] && !m_bAnswer[3])
+				//{
+				//	m_bAnswer[3] = TRUE;
+				//	if (!Mk1())
+				//	{
+				//		if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
+				//		{
+				//			Buzzer(TRUE, 0);
+				//			DispMain(_T("정 지"), RGB_RED);
+				//			if (m_pVoiceCoil[1])
+				//				m_pVoiceCoil[1]->SetEsc();
+				//
+				//			nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+				//			if (IDYES == nRtn)
+				//			{
+				//				DispMain(_T("운전중"), RGB_RED);
+				//				m_dwStMkDn[1] = GetTickCount();
+				//				m_nStepMk[1] = 17;
+				//			}
+				//			else
+				//			{
+				//				m_dwStMkDn[1] = GetTickCount();
+				//				m_bAnswer[3] = FALSE;
+				//				m_nMkPcs[1]++;
+				//				m_nStepMk[1]++;
+				//				m_nStepMk[1]++;
+				//				Stop();
+				//			}
+				//		}
+				//		break;
+				//	}
+				//	else
+				//		m_dwStMkDn[1] = GetTickCount();
+				//}
+				//else
 				{
 					m_bAnswer[3] = FALSE;
 					m_nMkPcs[1]++;
 					m_nStepMk[1]++;
 					m_nStepMk[1]++;
 				}
-
 			}
 			else
 			{
-				if (m_dwStMkDn[1] + 5000 < GetTickCount())
+				if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
 				{
 					BuzzerFromThread(TRUE, 0);
 					DispMain(_T("정 지"), RGB_RED);
-					m_pVoiceCoil[1]->SearchHomeSmac1();
+					//m_pVoiceCoil[1]->SearchHomeSmac();
+					if (m_pVoiceCoil[1])
+						m_pVoiceCoil[1]->SetEsc();
 
-					//nRtn = AsyncMsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
-					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					if (IsMk1Miss())
+					{
+						nRtn = MsgBox(_T("보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					}
+					else
+					{
+						nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					}
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
-						m_nStepMk[1] = 13;
+						m_nStepMk[1] = MK_DO;
 					}
-					else if (nRtn < 0)
-						m_nStepMk[1]++; // Wait...
 					else
 					{
 						m_bAnswer[3] = FALSE;
@@ -31377,7 +31869,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 			if (IDYES == nRtn)
 			{
 				DispMain(_T("운전중"), RGB_RED);
-				m_nStepMk[1] = 13;
+				m_nStepMk[1] = MK_DO;
 			}
 			else
 			{
@@ -31389,9 +31881,9 @@ void CGvisR2R_PunchView::DoMark1Its()
 		}
 		break;
 	case 19:
-		m_nStepMk[1] = MK_DONE_CHECK;
+		m_nStepMk[1] = MK_DONE_CHECK_END;
 		break;
-	case MK_DONE_CHECK:
+	case MK_DONE_CHECK_END:
 		nSerial = m_nBufUpSerial[1]; // Cam1
 
 		if (m_nMkPcs[1] < GetTotDefPcs1Its(nSerial))
@@ -31411,13 +31903,13 @@ void CGvisR2R_PunchView::DoMark1Its()
 						m_nStepMk[1] = MK_END;
 					}
 					else
-						m_nStepMk[1] = 8;	// 마킹완료Check
+						m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 				}
 				else
-					m_nStepMk[1] = 8;	// 마킹완료Check
+					m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 			}
 			else
-				m_nStepMk[1] = 8;	// 마킹완료Check
+				m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 		}
 		else
 		{
@@ -31437,7 +31929,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 				m_nStepMk[1] = MK_END;
 		}
 		break;
-	case MK_DONE_CHECK + 1:
+	case MK_DONE_CHECK_END + 1:
 		nSerial = m_nBufUpSerial[1]; // Cam1
 
 		if (m_nMkPcs[1] < GetTotDefPcs1Its(nSerial))
@@ -31447,7 +31939,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 				if (IsReview1())
 				{
 					if (IsJogRtUp1())
-						m_nStepMk[1] = 8;	// 마킹완료Check
+						m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 				}
 				else
 				{
@@ -31456,7 +31948,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 				}
 			}
 			else
-				m_nStepMk[1] = 8;	// 마킹완료Check
+				m_nStepMk[1] = MK_DONE_CHECK_START;	// 마킹완료Check
 		}
 		else
 		{
@@ -31492,7 +31984,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 		//m_nStepMk[1]++;
 		if (m_bCam)
 		{
-			if (!ChkMkImgR(m_nBufUpSerial[1], m_nTotMk[1]))//, m_nCurMk[1]))
+			nTotMked = m_nMkStrip[1][0] + m_nMkStrip[1][1] + m_nMkStrip[1][2] + m_nMkStrip[1][3];
+			if (!ChkMkImgR(m_nBufUpSerial[1], nTotMked))
 			{
 				Stop();
 				nRtn = MsgBox(_T("우측 불량수와 마킹이미지 파일수가 다릅니다.\r\n계속 작업을 진행하시겠습니까?"), 1, MB_YESNO);
@@ -31534,7 +32027,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 
 	case ERR_PROC:
 		DispMain(_T("정 지"), RGB_RED);
-		m_pVoiceCoil[1]->SearchHomeSmac1();
+		m_pVoiceCoil[1]->SearchHomeSmac();
 		//AsyncMsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		MsgBox(_T("보이스코일(우) 초기위치 이동이 되지 않습니다.\r\n마킹상태를 확인하세요."), 2);
 		m_nStepMk[1]++;
@@ -32214,6 +32707,8 @@ BOOL CGvisR2R_PunchView::SetMkIts(BOOL bRun)	// Marking Start
 			m_bRejectDone[a][b] = FALSE;	// [nCam][nStrip]:[2][4] - [좌/우][] : 스트립에 펀칭한 피스 수 count가 스트립 폐기 설정수 완료 여부 
 		}
 	}
+	m_nOverSaveMkImg[0] = 0;
+	m_nOverSaveMkImg[1] = 0;
 
 	if (bRun)
 	{
@@ -35014,11 +35509,21 @@ BOOL CGvisR2R_PunchView::ChkRepunching(int nCam) // 0 : Left, 1 : Right
 
 			Move0(ptPnt, FALSE, WAIT);
 			Sleep(30);
-			Mk0();
+
+			if (!Mk0())
+			{
+				Buzzer(TRUE, 0);
+				DispMain(_T("정 지"), RGB_RED);
+				if (m_pVoiceCoil[0])
+					m_pVoiceCoil[0]->SetEsc();
+
+				nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다."));
+			}
+
 			Sleep(100);
 			Move0(ptPnt, TRUE, WAIT);
 			m_nMkPcs[0]--; // Repeat Current Position Verify.
-			m_nStepMk[0] = 8; 
+			m_nStepMk[0] = MK_DONE_CHECK_START;
 			return TRUE; // Recheck
 		}
 	}
@@ -35035,11 +35540,21 @@ BOOL CGvisR2R_PunchView::ChkRepunching(int nCam) // 0 : Left, 1 : Right
 
 			Move1(ptPnt, FALSE, WAIT);
 			Sleep(30);
-			Mk1();
+
+			if (!Mk1())
+			{
+				Buzzer(TRUE, 0);
+				DispMain(_T("정 지"), RGB_RED);
+				if (m_pVoiceCoil[1])
+					m_pVoiceCoil[1]->SetEsc();
+
+				nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다."));
+			}
+
 			Sleep(100);
 			Move1(ptPnt, TRUE, WAIT);
 			m_nMkPcs[1]--; // Repeat Current Position Verify.
-			m_nStepMk[1] = 8;
+			m_nStepMk[1] = MK_DONE_CHECK_START;
 			return TRUE; // Recheck
 		}
 	}
@@ -35047,12 +35562,12 @@ BOOL CGvisR2R_PunchView::ChkRepunching(int nCam) // 0 : Left, 1 : Right
 	return FALSE;
 }
 
-BOOL CGvisR2R_PunchView::ChkMkImgR(int nSerial, int nTotDef)//, int nTotMk)
+BOOL CGvisR2R_PunchView::ChkMkImgR(int nSerial, int nTotMk)
 {
 	if (!pDoc->m_bCntMkedImg)
 		return TRUE;
 
-	int nCount = 0;
+	int nCount = 0, nMkPnt = 0;
 	CString sDest, sPath, sMsg, sTemp;
 	sDest.Format(_T("%s%s\\%s\\%s\\Punching"), pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sModelUp,
 		pDoc->WorkingInfo.LastJob.sLotUp, pDoc->WorkingInfo.LastJob.sLayerUp);
@@ -35078,32 +35593,34 @@ BOOL CGvisR2R_PunchView::ChkMkImgR(int nSerial, int nTotDef)//, int nTotMk)
 			sTemp.Format(_T("%s, "), sFileName);
 			arSerial += sTemp;
 			nCount++;
-			if (nCount >= nTotDef)
+			nMkPnt = nCount - m_nOverSaveMkImg[1];
+			if (nMkPnt >= nTotMk)
 			{
-				sTemp.Format(_T("%d=%d"), nTotDef, nCount);
+				sTemp.Format(_T("%d=%d"), nTotMk, nMkPnt);
 				pView->DispStsBar(sTemp, 6);
 				return TRUE;
 			}
 		}
 	}
 
-	if (nCount >= nTotDef)
+	nMkPnt = nCount - m_nOverSaveMkImg[1];
+	if (nMkPnt >= nTotMk)
 	{
-		sTemp.Format(_T("%d=%d"), nTotDef, nCount);
+		sTemp.Format(_T("%d=%d"), nTotMk, nMkPnt);
 		pView->DispStsBar(sTemp, 6);
 		return TRUE;
 	}
-	sMsg.Format(_T("시리얼: %d, 마킹이미지수: %d, 총불량수: %d\r\n%s"), nSerial, nCount, nTotDef, arSerial);
+	sMsg.Format(_T("시리얼: %d, 마킹이미지수(중복수): %d(%d), 총마킹수: %d\r\n%s"), nSerial, nCount, m_nOverSaveMkImg[1], nTotMk, arSerial);
 	MsgBox(sMsg);
 	return FALSE;
 }
 
-BOOL CGvisR2R_PunchView::ChkMkImgL(int nSerial, int nTotDef)//, int nTotMk)
+BOOL CGvisR2R_PunchView::ChkMkImgL(int nSerial, int nTotMk)
 {
 	if (!pDoc->m_bCntMkedImg)
 		return TRUE;
 
-	int nCount = 0;
+	int nCount = 0, nMkPnt = 0;
 	CString sDest, sPath, sMsg, sTemp;
 	sDest.Format(_T("%s%s\\%s\\%s\\Punching"), pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sModelUp,
 		pDoc->WorkingInfo.LastJob.sLotUp, pDoc->WorkingInfo.LastJob.sLayerUp);
@@ -35129,22 +35646,90 @@ BOOL CGvisR2R_PunchView::ChkMkImgL(int nSerial, int nTotDef)//, int nTotMk)
 			sTemp.Format(_T("%s, "), sFileName);
 			arSerial += sTemp;
 			nCount++;
-			if (nCount >= nTotDef)
+			nMkPnt = nCount - m_nOverSaveMkImg[0];
+			if (nMkPnt >= nTotMk)
 			{
-				sTemp.Format(_T("%d=%d"), nTotDef, nCount);
+				sTemp.Format(_T("%d=%d"), nTotMk, nMkPnt);
 				pView->DispStsBar(sTemp, 6);
 				return TRUE;
 			}
 		}
 	}
 
-	if (nCount >= nTotDef)
+	nMkPnt = nCount - m_nOverSaveMkImg[0];
+	if (nMkPnt >= nTotMk)
 	{
-		sTemp.Format(_T("%d=%d"), nTotDef, nCount);
+		sTemp.Format(_T("%d=%d"), nTotMk, nMkPnt);
 		pView->DispStsBar(sTemp, 6);
 		return TRUE;
 	}
-	sMsg.Format(_T("시리얼: %d, 마킹이미지수: %d, 총불량수: %d\r\n%s"), nSerial, nCount, nTotDef, arSerial);
+	sMsg.Format(_T("시리얼: %d, 마킹이미지수(중복수): %d(%d), 총마킹수: %d\r\n%s"), nSerial, nCount, m_nOverSaveMkImg[0], nTotMk, arSerial);
 	MsgBox(sMsg);
 	return FALSE;
+}
+
+void CGvisR2R_PunchView::ResetMkImgL(int nSerial)
+{
+	if (!pDoc->m_bCntMkedImg)
+		return;
+
+	int nCount = 0, nMkPnt = 0;
+	CString sDest, sPath, sMsg, sTemp;
+	sDest.Format(_T("%s%s\\%s\\%s\\Punching"), pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sModelUp,
+		pDoc->WorkingInfo.LastJob.sLotUp, pDoc->WorkingInfo.LastJob.sLayerUp);
+	sPath.Format(_T("%s\\*.tif"), sDest);
+
+	CString sFileName, sSerial, arSerial = _T("");
+	BOOL bExist = FALSE;
+	int nSerialF;
+	CFileFind cFile;
+
+	bExist = cFile.FindFile(sPath);
+	while (bExist)
+	{
+		bExist = cFile.FindNextFile();
+		if (cFile.IsDots()) continue;
+		if (cFile.IsDirectory()) continue;
+
+		sFileName = cFile.GetFileName();
+		sSerial = sFileName.Left(4);
+		nSerialF = _tstoi(sSerial);
+		if (nSerialF == nSerial)
+		{
+			DeleteFile(sFileName);
+		}
+	}
+}
+
+void CGvisR2R_PunchView::ResetMkImgR(int nSerial)
+{
+	if (!pDoc->m_bCntMkedImg)
+		return;
+
+	int nCount = 0, nMkPnt = 0;
+	CString sDest, sPath, sMsg, sTemp;
+	sDest.Format(_T("%s%s\\%s\\%s\\Punching"), pDoc->WorkingInfo.System.sPathOldFile, pDoc->WorkingInfo.LastJob.sModelUp,
+		pDoc->WorkingInfo.LastJob.sLotUp, pDoc->WorkingInfo.LastJob.sLayerUp);
+	sPath.Format(_T("%s\\*.tif"), sDest);
+
+	CString sFileName, sSerial, arSerial = _T("");
+	BOOL bExist = FALSE;
+	int nSerialF;
+	CFileFind cFile;
+
+	bExist = cFile.FindFile(sPath);
+	while (bExist)
+	{
+		bExist = cFile.FindNextFile();
+		if (cFile.IsDots()) continue;
+		if (cFile.IsDirectory()) continue;
+
+		sFileName = cFile.GetFileName();
+		sSerial = sFileName.Left(4);
+		nSerialF = _tstoi(sSerial);
+		if (nSerialF == nSerial)
+		{
+			DeleteFile(sFileName);
+		}
+	}
 }

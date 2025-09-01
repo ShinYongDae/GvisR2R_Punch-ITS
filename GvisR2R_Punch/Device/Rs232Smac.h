@@ -1,10 +1,9 @@
-//Rs232.h
-//Rs232c를 하기위한 클래스 헤더
-#if !defined(AFX_Rs232c_H__INCLUDED_)
-#define AFX_Rs232c_H__INCLUDED_
+//Rs232Smac.h
+//Rs232Smac를 하기위한 클래스 헤더
+#if !defined(AFX_Rs232SMAC_H__INCLUDED_)
+#define AFX_Rs232SMAC_H__INCLUDED_
 
 #include "../Global/GlobalDefine.h"
-
 
 #ifndef MAXBLOCK
 #define MAXBLOCK        80
@@ -23,12 +22,13 @@
 // function prototypes (private)
 
 /////////////////////////////////////////////////////////////////////////////
-// CRs232 window
+// CRs232Smac window
 
-class CRs232 : public CObject
+class CRs232Smac : public CObject
 {
+	CWnd* m_pParent;
 
-	DECLARE_DYNCREATE( CRs232 )
+	DECLARE_DYNCREATE( CRs232Smac )
 public:
 	HANDLE      m_hComDev ;//컴포트 디바이스 연결 핸들
 	BOOL        m_bConnected;//컴포트가 연결되면 1로 설정
@@ -38,7 +38,7 @@ public:
 
 // Construction
 public:
-	CRs232();
+	CRs232Smac();
 
 	void ClearReceive();
 
@@ -63,7 +63,7 @@ public:
 	//읽은 데이타를 버퍼에 저장한다.
 	void SetReadData(LPSTR data);
 	//메세재를 보낼 윈도우 플래를 설정한다.
-	void SetHwnd(HWND hwnd);
+	void SetHwnd(CWnd* pParent);
 
 
 // Attributes
@@ -84,12 +84,12 @@ public:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CRs232)
+	//{{AFX_VIRTUAL(CRs232Smac)
 	//}}AFX_VIRTUAL
 
 // Implementation
 public:
-	virtual ~CRs232();
+	virtual ~CRs232Smac();
 
 	// Generated message map functions
 //	DECLARE_MESSAGE_MAP()
