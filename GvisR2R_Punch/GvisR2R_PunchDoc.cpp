@@ -14708,3 +14708,58 @@ void CGvisR2R_PunchDoc::SetVerifyPunchHistoWhite2(int nDn)
 		pView->m_pVision[1]->SetVerifyPunchHistoWhite(nDn);
 #endif
 }
+
+// Write Log for Punch
+void CGvisR2R_PunchDoc::LogPunch(CString strMsg, int nType)
+{
+	if (m_bOffLogPLC)
+		return;
+
+	CSafeLockDoc lock(&g_LogLockPLC);
+
+	TCHAR szFile[MAX_PATH] = { 0, };
+	TCHAR szPath[MAX_PATH] = { 0, };
+	TCHAR* pszPos = NULL;
+
+	_stprintf(szPath, PATH_LOG);
+	if (!DirectoryExists(szPath))
+		CreateDirectory(szPath, NULL);
+
+	_stprintf(szPath, PATH_LOG_PUNCH);
+	if (!DirectoryExists(szPath))
+		CreateDirectory(szPath, NULL);
+
+	COleDateTime time = COleDateTime::GetCurrentTime();
+
+	switch (nType)
+	{
+	case 0:
+		_stprintf(szFile, _T("%s\\%s.txt"), szPath, COleDateTime::GetCurrentTime().Format(_T("%Y%m%d")));
+		break;
+	}
+
+	CString strDate;
+	CString strContents;
+	CTime now;
+
+	strDate.Format(_T("%s: "), COleDateTime::GetCurrentTime().Format(_T("%Y/%m/%d %H:%M:%S")));
+	strContents = strDate;
+	strContents += strMsg;
+	strContents += _T("\r\n");
+	strContents += _T("\r\n");
+
+	CFile file;
+
+	if (file.Open(szFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyNone) == 0)
+		return;
+
+	char cameraKey[1024];
+	StringToChar(strContents, cameraKey);
+
+	file.SeekToEnd();
+	int nLenth = strContents.GetLength();
+	int nLenth2 = strlen(cameraKey);
+	file.Write(cameraKey, nLenth2);
+	file.Flush();
+	file.Close();
+}
