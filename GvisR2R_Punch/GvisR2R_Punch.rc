@@ -170,7 +170,7 @@ BEGIN
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
     LTEXT           "미마킹테스트(Histo) - White DN",IDC_STATIC,7,46,98,8
     LTEXT           "양면 VS 외층시 내층머징 for RTR11,12,13",IDC_STATIC,7,54,156,8
-    LTEXT           "마킹이미지 양폐수율 적용 체크",IDC_STATIC,7,38,98,8
+    LTEXT           "RS232SMAC 추가",IDC_STATIC,7,38,98,8
 END
 
 IDD_GVISR2R_PUNCH_FORM DIALOGEX 0, 0, 630, 461
