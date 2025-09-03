@@ -54,6 +54,7 @@
 #define MK_DO_ALL				5	// m_nStepMk
 #define MK_DO_REJECT			7	// m_nStepMk
 #define MK_DONE_CHECK_START		8	// m_nStepMk
+#define MK_MOVE					9	// m_nStepMk
 #define MK_DO					13	// m_nStepMk
 #define MK_DONE_CHECK_END		30	// m_nStepMk
 #define MK_LIGHT_ERR			50	// m_nStepMk
@@ -1010,8 +1011,8 @@ public:
 	BOOL LoadPcrDn(int nSerial, BOOL bFromShare = FALSE);
 	void MoveAoi(double dOffset);
 	void MoveMk(double dOffset);
-	BOOL IsMk0Done();
-	BOOL IsMk1Done();
+	BOOL IsMk0Done(int nMkPcsIdx);
+	BOOL IsMk1Done(int nMkPcsIdx);
 	BOOL IsMk0Miss();
 	BOOL IsMk1Miss();
 	void InitIoWrite();
@@ -1042,8 +1043,8 @@ public:
 	int GetMkStripIdx1(int nDefPcsId); // 0 : Fail , 1~4 : Strip Idx
 	int GetMkStripIdx0(int nSerial, int nMkPcs); // 0 : Fail , 1~4 : Strip Idx
 	int GetMkStripIdx1(int nSerial, int nMkPcs); // 0 : Fail , 1~4 : Strip Idx
-	CString GetMkInfo0(int nSerial, int nMkPcs);
-	CString GetMkInfo1(int nSerial, int nMkPcs);
+	CString GetMkInfo0(int nSerial, int nMkPcs, BOOL bDispJudge = TRUE);
+	CString GetMkInfo1(int nSerial, int nMkPcs, BOOL bDispJudge = TRUE);
 
 	BOOL IsMkStrip(int nStripIdx);
 	void CycleStop();

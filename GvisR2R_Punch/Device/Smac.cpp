@@ -809,7 +809,7 @@ double CSmac::GetMkFinalPos()
 	return m_dFinalMkPos;
 }
 
-BOOL CSmac::IsDoneMark()
+BOOL CSmac::IsDoneMark(int nMkPcsIdx)
 {
 	double dPos, dShiftPos, dFinalPos, dJudgePos;
 	int nPos;
@@ -834,7 +834,11 @@ BOOL CSmac::IsDoneMark()
 					m_bMisMark = TRUE;
 				else
 					m_bMisMark = FALSE;
-				sLog.Format(_T("DN%d: %.3f"), m_nCh, m_dFinalMkPos);
+				int nSerial = pView->m_nBufUpSerial[m_nCh]; // Cam1
+				if(m_nCh)
+					sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+				else
+					sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
 				pDoc->LogPunch(sLog);
 			}
 			else

@@ -82,7 +82,7 @@ public:
 	void SetMarkShiftData();
 	void SetMarkFinalData();
 	BOOL SetMark();
-	BOOL IsDoneMark();
+	BOOL IsDoneMark(int nMkPcsIdx);
 	BOOL IsMissMark();
 	double GetMkFinalPos();
 	

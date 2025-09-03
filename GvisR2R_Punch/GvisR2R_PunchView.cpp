@@ -12739,7 +12739,7 @@ int CGvisR2R_PunchView::GetMkStripIdx1(int nDefPcsId) // 0 : Fail , 1~4 : Strip 
 	return nStripIdx;
 }
 
-CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 : "Serial_Strip_Col_Row"
+CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs, BOOL bDispJudge) // return Cam0 : "Serial_Strip_Col_Row"
 {
 	CString sInfo;
 	int nRef = pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[0];
@@ -12750,8 +12750,11 @@ CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 :
 		pView->ClrDispMsg();
 		MsgBox(_T("좌측 마킹위치 정보 실패."));
 
-		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		if (bDispJudge)
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		else
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+
 		return sInfo;
 	}
 
@@ -12773,8 +12776,10 @@ CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 :
 		{
 			MsgBox(_T("외층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
 			//pDoc->LogAuto(_T("외층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
-			//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			if (bDispJudge)
+				sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			else
+				sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
 			return sInfo;
 		}
 	}
@@ -12801,8 +12806,10 @@ CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 :
 		{
 			MsgBox(_T("양면or내층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
 			//pDoc->LogAuto(_T("양면or내층 작업에서 좌측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
-			//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			if (bDispJudge)
+				sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			else
+				sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
 			return sInfo;
 		}
 	}
@@ -12810,20 +12817,25 @@ CString CGvisR2R_PunchView::GetMkInfo0(int nSerial, int nMkPcs) // return Cam0 :
 	if (pDoc->m_Master[0].m_pPcsRgn)
 	{
 		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_Master[0].MasterInfo.nActionCode, nPcsIdx, nStrip, nCol, nRow);
-		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
-		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
+		if (bDispJudge)
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
+		else
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
 	}
 	else
 	{
-		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		if (bDispJudge)
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		else
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
+
 		MsgBox(_T("좌측 마킹위치 정보 실패."));
 	}
 
 	return sInfo;
 }
 
-CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 : "Serial_Strip_Col_Row"
+CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs, BOOL bDispJudge) // return Cam1 : "Serial_Strip_Col_Row"
 {
 	CString sInfo;
 	int nRef = pDoc->WorkingInfo.LastJob.nJudgeMkHistoRatio[1];
@@ -12833,8 +12845,10 @@ CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 :
 	{
 		pView->ClrDispMsg();
 		MsgBox(_T("우측 마킹위치 정보 실패."));
-		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		if(bDispJudge)
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		else
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
 		return sInfo;
 	}
 
@@ -12856,8 +12870,10 @@ CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 :
 		{
 			MsgBox(_T("외층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
 			//pDoc->LogAuto(_T("외층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
-			//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			if (bDispJudge)
+				sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			else
+				sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
 			return sInfo;
 		}
 	}
@@ -12884,8 +12900,10 @@ CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 :
 		{
 			MsgBox(_T("양면or내층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
 			//pDoc->LogAuto(_T("양면or내층 작업에서 우측 마킹이미지의 PCS Index를 설정하지 못했습니다."));
-			//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			if (bDispJudge)
+				sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+			else
+				sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
 			return sInfo;
 		}
 	}
@@ -12893,13 +12911,17 @@ CString CGvisR2R_PunchView::GetMkInfo1(int nSerial, int nMkPcs) // return Cam1 :
 	if (pDoc->m_Master[0].m_pPcsRgn)
 	{
 		pDoc->m_Master[0].m_pPcsRgn->GetMkMatrix(pDoc->m_Master[0].MasterInfo.nActionCode, nPcsIdx, nStrip, nCol, nRow);
-		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
-		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
+		if (bDispJudge)
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1, nRef, nJudge);
+		else
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, nStrip + 'A', nCol + 1, nRow + 1);
 	}
 	else
 	{
-		//sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
-		sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		if (bDispJudge)
+			sInfo.Format(_T("%04d_%c_%d_%d_%d_%d"), nSerial, '?', 0, 0, nRef, 0);
+		else
+			sInfo.Format(_T("%04d_%c_%d_%d"), nSerial, '?', 0, 0);
 		MsgBox(_T("우측 마킹위치 정보 실패."));
 	}
 
@@ -16009,7 +16031,7 @@ void CGvisR2R_PunchView::DoReject0()
 		if (!IsNoMk0())
 		{
 			//Mk0(FALSE);
-			if (IsMk0Done())
+			if (IsMk0Done(m_nMkPcs[2]))
 			{
 				m_nMkPcs[2]++;
 				m_nStepMk[2]++;
@@ -16302,7 +16324,7 @@ void CGvisR2R_PunchView::DoReject1()
 	case 10:
 		if (!IsNoMk1())
 		{
-			if (IsMk1Done())
+			if (IsMk1Done(m_nMkPcs[3]))
 			{
 				m_nMkPcs[3]++;
 				m_nStepMk[3]++;
@@ -16819,11 +16841,11 @@ void CGvisR2R_PunchView::DoMark0()
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	if (!IsRun())																		// 정지상태에서
+	if (!IsRun())																			// 정지상태에서
 	{
-		if (IsOnMarking0())																// 마킹중에
+		if (IsOnMarking0())																	// 마킹중에
 		{
-			if (m_nStepMk[0] < MK_DO)
+			if (m_nStepMk[0] < MK_MOVE)
 			{
 				if (m_pMotion->IsEnable(MS_X0) && m_pMotion->IsEnable(MS_Y0))				// 모션이 Enable상태이고
 				{
@@ -17034,7 +17056,7 @@ void CGvisR2R_PunchView::DoMark0()
 			m_nStepMk[0] = MK_END;
 		}
 		break;
-	case 9:
+	case MK_MOVE:
 		// Cam0 : m_bPriority[0] <-, m_bPriority[3] ->
 		// Cam1 : m_bPriority[1] ->, m_bPriority[2] <-
 		ptPnt.x = m_dTarget[AXIS_X0];
@@ -17076,13 +17098,22 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		break;
 	case 10:
-		m_nStepMk[0]++;
+		if (IsMoveDone0())
+		{
+			m_dwStMkDn[0] = GetTickCount();
+			m_nStepMk[0]++;
+		}
 		break;
 	case 11:
 		m_nStepMk[0]++;
 		break;
 	case 12:
-		if (IsMoveDone0())
+		if (IsNoMk0())
+		{
+			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
+				m_nStepMk[0]++;
+		}
+		else
 		{
 			m_dwStMkDn[0] = GetTickCount();
 			m_nStepMk[0]++;
@@ -17151,21 +17182,12 @@ void CGvisR2R_PunchView::DoMark0()
 		m_nStepMk[0]++;
 		break;
 	case 14:
-		if (IsNoMk0())
-		{
-			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
-				m_nStepMk[0]++;
-		}
-		else
-		{
-			m_dwStMkDn[0] = GetTickCount();
-			m_nStepMk[0]++;
-		}
+		m_nStepMk[0]++;
 		break;
 	case 15:
 		if (!IsNoMk0())
 		{
-			if (IsMk0Done())
+			if (IsMk0Done(m_nMkPcs[0]))
 			{
 				// One more MK On Start....
 				if (IsMk0Miss())
@@ -17536,7 +17558,7 @@ void CGvisR2R_PunchView::DoMark1()
 	{
 		if (IsOnMarking1())
 		{
-			if (m_nStepMk[1] < MK_DO)
+			if (m_nStepMk[1] < MK_MOVE)
 			{
 				if (m_pMotion->IsEnable(MS_X1) && m_pMotion->IsEnable(MS_Y1))
 				{
@@ -17743,7 +17765,7 @@ void CGvisR2R_PunchView::DoMark1()
 			m_nStepMk[1] = MK_END;
 		}
 		break;
-	case 9:
+	case MK_MOVE:
 		// Cam0 : m_bPriority[0] <-, m_bPriority[3] ->
 		// Cam1 : m_bPriority[1] ->, m_bPriority[2] <-
 		ptPnt.x = m_dTarget[AXIS_X1];
@@ -17785,13 +17807,22 @@ void CGvisR2R_PunchView::DoMark1()
 		}
 		break;
 	case 10:
-		m_nStepMk[1]++;
+		if (IsMoveDone1())
+		{
+			m_dwStMkDn[1] = GetTickCount();
+			m_nStepMk[1]++;
+		}
 		break;
 	case 11:
 		m_nStepMk[1]++;
 		break;
 	case 12:
-		if (IsMoveDone1())
+		if (IsNoMk1())
+		{
+			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
+				m_nStepMk[1]++;
+		}
+		else
 		{
 			m_dwStMkDn[1] = GetTickCount();
 			m_nStepMk[1]++;
@@ -17860,21 +17891,12 @@ void CGvisR2R_PunchView::DoMark1()
 		m_nStepMk[1]++;
 		break;
 	case 14:
-		if (IsNoMk1())
-		{
-			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
-				m_nStepMk[1]++;
-		}
-		else
-		{
-			m_dwStMkDn[1] = GetTickCount();
-			m_nStepMk[1]++;
-		}
+		m_nStepMk[1]++;
 		break;
 	case 15:
 		if (!IsNoMk1())
 		{
-			if (IsMk1Done())
+			if (IsMk1Done(m_nMkPcs[1]))
 			{
 				if (IsMk1Miss())
 				{
@@ -26250,22 +26272,22 @@ BOOL CGvisR2R_PunchView::IsRdyTest1()
 	return FALSE;
 }
 
-BOOL CGvisR2R_PunchView::IsMk0Done()
+BOOL CGvisR2R_PunchView::IsMk0Done(int nMkPcsIdx)
 {
 	BOOL bDone = FALSE;
 
 	if (pView->m_pVoiceCoil[0])
-		bDone = pView->m_pVoiceCoil[0]->IsDoneMark();
+		bDone = pView->m_pVoiceCoil[0]->IsDoneMark(nMkPcsIdx);
 
 	return bDone;
 }
 
-BOOL CGvisR2R_PunchView::IsMk1Done()
+BOOL CGvisR2R_PunchView::IsMk1Done(int nMkPcsIdx)
 {
 	BOOL bDone = FALSE;
 
 	if (pView->m_pVoiceCoil[1])
-		bDone = pView->m_pVoiceCoil[1]->IsDoneMark();
+		bDone = pView->m_pVoiceCoil[1]->IsDoneMark(nMkPcsIdx);
 
 	return bDone;
 }
@@ -30649,7 +30671,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 	{
 		if (IsOnMarking0())																// 마킹중에
 		{
-			if (m_nStepMk[0] < MK_DO)
+			if (m_nStepMk[0] < MK_MOVE)
 			{
 				if (m_pMotion->IsEnable(MS_X0) && m_pMotion->IsEnable(MS_Y0))				// 모션이 Enable상태이고
 				{
@@ -30856,7 +30878,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 			m_nStepMk[0] = MK_END;
 		}
 		break;
-	case 9:
+	case MK_MOVE:
 		// Cam0 : m_bPriority[0] <-, m_bPriority[3] ->
 		// Cam1 : m_bPriority[1] ->, m_bPriority[2] <-
 		ptPnt.x = m_dTarget[AXIS_X0];
@@ -30898,13 +30920,22 @@ void CGvisR2R_PunchView::DoMark0Its()
 		}
 		break;
 	case 10:
-		m_nStepMk[0]++;
+		if (IsMoveDone0())
+		{
+			m_dwStMkDn[0] = GetTickCount();
+			m_nStepMk[0]++;
+		}
 		break;
 	case 11:
 		m_nStepMk[0]++;
 		break;
 	case 12:
-		if (IsMoveDone0())
+		if (IsNoMk0())
+		{
+			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
+				m_nStepMk[0]++;
+		}
+		else
 		{
 			m_dwStMkDn[0] = GetTickCount();
 			m_nStepMk[0]++;
@@ -30971,21 +31002,12 @@ void CGvisR2R_PunchView::DoMark0Its()
 		m_nStepMk[0]++;
 		break;
 	case 14:
-		if (IsNoMk0())
-		{
-			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
-				m_nStepMk[0]++;
-		}
-		else
-		{
-			m_dwStMkDn[0] = GetTickCount();
-			m_nStepMk[0]++;
-		}
+		m_nStepMk[0]++;
 		break;
 	case 15:
 		if (!IsNoMk0())
 		{
-			if (IsMk0Done())
+			if (IsMk0Done(m_nMkPcs[0]))
 			{
 				if (IsMk0Miss())
 				{
@@ -31301,7 +31323,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 	{
 		if (IsOnMarking1())
 		{
-			if (m_nStepMk[1] < MK_DO)
+			if (m_nStepMk[1] < MK_MOVE)
 			{
 				if (m_pMotion->IsEnable(MS_X1) && m_pMotion->IsEnable(MS_Y1))
 				{
@@ -31510,7 +31532,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 			m_nStepMk[1] = MK_END;
 		}
 		break;
-	case 9:
+	case MK_MOVE:
 		// Cam0 : m_bPriority[0] <-, m_bPriority[3] ->
 		// Cam1 : m_bPriority[1] ->, m_bPriority[2] <-
 		ptPnt.x = m_dTarget[AXIS_X1];
@@ -31552,13 +31574,22 @@ void CGvisR2R_PunchView::DoMark1Its()
 		}
 		break;
 	case 10:
-		m_nStepMk[1]++;
+		if (IsMoveDone1())
+		{
+			m_dwStMkDn[1] = GetTickCount();
+			m_nStepMk[1]++;
+		}
 		break;
 	case 11:
 		m_nStepMk[1]++;
 		break;
 	case 12:
-		if (IsMoveDone1())
+		if (IsNoMk1())
+		{
+			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
+				m_nStepMk[1]++;
+		}
+		else
 		{
 			m_dwStMkDn[1] = GetTickCount();
 			m_nStepMk[1]++;
@@ -31627,21 +31658,12 @@ void CGvisR2R_PunchView::DoMark1Its()
 		m_nStepMk[1]++;
 		break;
 	case 14:
-		if (IsNoMk1())
-		{
-			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
-				m_nStepMk[1]++;
-		}
-		else
-		{
-			m_dwStMkDn[1] = GetTickCount();
-			m_nStepMk[1]++;
-		}
+		m_nStepMk[1]++;
 		break;
 	case 15:
 		if (!IsNoMk1())
 		{
-			if (IsMk1Done())
+			if (IsMk1Done(m_nMkPcs[1]))
 			{
 				if (IsMk1Miss())
 				{
