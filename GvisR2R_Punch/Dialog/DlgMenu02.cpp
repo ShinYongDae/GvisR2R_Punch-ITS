@@ -3158,8 +3158,8 @@ void CDlgMenu02::SwMarking()
 			{
 				pView->ClrDispMsg();
 				AfxMessageBox(_T("Move XY Error..."));
+			}
 		}
-	}
 	}
 
 

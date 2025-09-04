@@ -40,4 +40,5 @@ public:
 	afx_msg void OnBnClickedCheck4();
 	afx_msg void OnEnChangeEditMkOffset();
 	afx_msg void OnEnChangeEditMkOffset2();
+	afx_msg void OnBnClickedCheck5();
 };

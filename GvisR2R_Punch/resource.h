@@ -1317,6 +1317,7 @@
 #define IDC_BTN_GD_RA_ALL               1418
 #define IDC_STC_DEF_1                   1418
 #define IDC_EDIT_REGISTER               1418
+#define IDC_CHECK5                      1418
 #define IDC_STC_DEF_2                   1419
 #define IDC_BTN_MEAS_MOVE               1419
 #define IDC_STC_REJECT_SCR              1419

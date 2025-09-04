@@ -166,7 +166,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "GvisR2R_Punch, 버전 2.0.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2025.09.03",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2025.09.04",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
     LTEXT           "미마킹테스트(Histo) - White DN",IDC_STATIC,7,46,98,8
     LTEXT           "양면 VS 외층시 내층머징 for RTR11,12,13",IDC_STATIC,7,54,156,8
@@ -2171,10 +2171,11 @@ BEGIN
     CONTROL         "Off Log Punch",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,32,78,12
     CONTROL         "Save Model Image for Judging",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,47,115,12
     CONTROL         "불량 마킹이미지 파일수 카운트",IDC_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,63,115,12
-    EDITTEXT        IDC_EDIT_MK_OFFSET,117,79,37,14,ES_CENTER | ES_AUTOHSCROLL
-    LTEXT           "마킹(좌) 감지위치 Offset [mm]",IDC_STATIC,20,82,95,8
-    EDITTEXT        IDC_EDIT_MK_OFFSET2,116,96,37,14,ES_CENTER | ES_AUTOHSCROLL
-    LTEXT           "마킹(우) 감지위치 Offset [mm]",IDC_STATIC,19,99,96,8
+    EDITTEXT        IDC_EDIT_MK_OFFSET,123,79,37,14,ES_CENTER | ES_AUTOHSCROLL
+    LTEXT           "마킹(좌) 감지위치 Offset [mm]",IDC_STATIC,20,82,100,8
+    EDITTEXT        IDC_EDIT_MK_OFFSET2,123,96,37,14,ES_CENTER | ES_AUTOHSCROLL
+    LTEXT           "마킹(우) 감지위치 Offset [mm]",IDC_STATIC,19,99,101,8
+    CONTROL         "보이스코일 펀칭 후 대기위치 확인",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,117,115,12
 END
 
 IDD_DLG_CAMMASTERINFO_MST DIALOGEX 0, 0, 615, 319

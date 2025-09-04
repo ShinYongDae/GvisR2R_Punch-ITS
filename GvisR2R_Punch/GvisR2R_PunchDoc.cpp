@@ -56,6 +56,7 @@ CGvisR2R_PunchDoc::CGvisR2R_PunchDoc()
 
 	m_bOffLogAuto = FALSE;
 	m_bOffLogPLC = FALSE;
+	m_bChkSmacWaitPos = TRUE;
 	m_strUserNameList = _T("");
 
 	m_bBufEmpty[0] = FALSE; // Exist
@@ -1042,6 +1043,11 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		m_bOffLogPLC = _ttoi(szData) ? TRUE : FALSE;
 	else
 		m_bOffLogPLC = FALSE;
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("ChkSmacWaitPos"), NULL, szData, sizeof(szData), PATH_WORKING_INFO))
+		m_bChkSmacWaitPos = _ttoi(szData) ? TRUE : FALSE;
+	else
+		m_bChkSmacWaitPos = TRUE;
 
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("DebugGrabAlign"), NULL, szData, sizeof(szData), PATH_WORKING_INFO))
 		m_bDebugGrabAlign = _ttoi(szData) ? TRUE : FALSE;

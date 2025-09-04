@@ -17092,32 +17092,40 @@ void CGvisR2R_PunchView::DoMark0()
 				m_bCollision[0] = FALSE;
 				m_bPriority[2] = FALSE;
 				ptPnt.x = 0.0;
-				ptPnt.y = 0.0;//m_dEnc[AXIS_Y0];
+				ptPnt.y = m_dEnc[AXIS_Y0];
 				Move0(ptPnt, FALSE);
 			}
 		}
 		break;
 	case 10:
-		if (IsMoveDone0())
-		{
-			m_dwStMkDn[0] = GetTickCount();
-			m_nStepMk[0]++;
-		}
-		break;
-	case 11:
 		m_nStepMk[0]++;
 		break;
-	case 12:
-		if (IsNoMk0())
+	case 11:
+		if (IsMoveDone0())
 		{
-			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
-				m_nStepMk[0]++;
+			//if (IsNoMk0())
+			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
+
+			m_dwStMkDn[0] = GetTickCount();
+			m_nStepMk[0]++;
 		}
-		else
+		break;
+	case 12:
+		if (!WaitDelay0(1))		// F:Done, T:On Waiting....
 		{
 			m_dwStMkDn[0] = GetTickCount();
 			m_nStepMk[0]++;
 		}
+		//if (IsNoMk0())
+		//{
+		//	if (!WaitDelay0(1))		// F:Done, T:On Waiting....
+		//		m_nStepMk[0]++;
+		//}
+		//else
+		//{
+		//	m_dwStMkDn[0] = GetTickCount();
+		//	m_nStepMk[0]++;
+		//}
 		break;
 	case MK_DO:
 		if (!IsNoMk0())
@@ -17179,10 +17187,22 @@ void CGvisR2R_PunchView::DoMark0()
 				}
 			}
 		}
+
+		if (IsNoMk0())
+			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
 		m_nStepMk[0]++;
 		break;
 	case 14:
-		m_nStepMk[0]++;
+		if (IsNoMk0())
+		{
+			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
+				m_nStepMk[0]++;
+		}
+		else
+		{
+			m_dwStMkDn[0] = GetTickCount();
+			m_nStepMk[0]++;
+		}
 		break;
 	case 15:
 		if (!IsNoMk0())
@@ -17801,32 +17821,39 @@ void CGvisR2R_PunchView::DoMark1()
 				m_bCollision[1] = FALSE;
 				m_bPriority[3] = FALSE;
 				ptPnt.x = _tstof(pDoc->WorkingInfo.Motion.sSafeZone);
-				ptPnt.y = 0.0;//m_dEnc[AXIS_Y1];
+				ptPnt.y = m_dEnc[AXIS_Y1];
 				Move1(ptPnt, FALSE);
 			}
 		}
 		break;
 	case 10:
-		if (IsMoveDone1())
-		{
-			m_dwStMkDn[1] = GetTickCount();
-			m_nStepMk[1]++;
-		}
-		break;
-	case 11:
 		m_nStepMk[1]++;
 		break;
-	case 12:
-		if (IsNoMk1())
+	case 11:
+		if (IsMoveDone1())
 		{
-			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
-				m_nStepMk[1]++;
+			//if (IsNoMk1())
+			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
+			m_dwStMkDn[1] = GetTickCount();
+			m_nStepMk[1]++;
 		}
-		else
+		break;
+	case 12:
+		if (!WaitDelay1(6))		// F:Done, T:On Waiting....
 		{
 			m_dwStMkDn[1] = GetTickCount();
 			m_nStepMk[1]++;
 		}
+		//if (IsNoMk1())
+		//{
+		//	if (!WaitDelay1(6))		// F:Done, T:On Waiting....
+		//		m_nStepMk[1]++;
+		//}
+		//else
+		//{
+		//	m_dwStMkDn[1] = GetTickCount();
+		//	m_nStepMk[1]++;
+		//}
 		break;
 	case MK_DO:
 		if (!IsNoMk1())
@@ -17888,10 +17915,21 @@ void CGvisR2R_PunchView::DoMark1()
 				}
 			}
 		}
+		if (IsNoMk1())
+			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
 		m_nStepMk[1]++;
 		break;
 	case 14:
-		m_nStepMk[1]++;
+		if (IsNoMk1())
+		{
+			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
+				m_nStepMk[1]++;
+		}
+		else
+		{
+			m_dwStMkDn[1] = GetTickCount();
+			m_nStepMk[1]++;
+		}
 		break;
 	case 15:
 		if (!IsNoMk1())
@@ -30914,32 +30952,39 @@ void CGvisR2R_PunchView::DoMark0Its()
 				m_bCollision[0] = FALSE;
 				m_bPriority[2] = FALSE;
 				ptPnt.x = 0.0;
-				ptPnt.y = 0.0;//m_dEnc[AXIS_Y0];
+				ptPnt.y = m_dEnc[AXIS_Y0];
 				Move0(ptPnt, FALSE);
 			}
 		}
 		break;
 	case 10:
-		if (IsMoveDone0())
-		{
-			m_dwStMkDn[0] = GetTickCount();
-			m_nStepMk[0]++;
-		}
-		break;
-	case 11:
 		m_nStepMk[0]++;
 		break;
-	case 12:
-		if (IsNoMk0())
+	case 11:
+		if (IsMoveDone0())
 		{
-			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
-				m_nStepMk[0]++;
+			//if (IsNoMk0())
+			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
+			m_dwStMkDn[0] = GetTickCount();
+			m_nStepMk[0]++;
 		}
-		else
+		break;
+	case 12:
+		if (!WaitDelay0(1))		// F:Done, T:On Waiting....
 		{
 			m_dwStMkDn[0] = GetTickCount();
 			m_nStepMk[0]++;
 		}
+		//if (IsNoMk0())
+		//{
+		//	if (!WaitDelay0(1))		// F:Done, T:On Waiting....
+		//		m_nStepMk[0]++;
+		//}
+		//else
+		//{
+		//	m_dwStMkDn[0] = GetTickCount();
+		//	m_nStepMk[0]++;
+		//}
 		break;
 	case MK_DO:
 		if (!IsNoMk0())
@@ -30999,10 +31044,23 @@ void CGvisR2R_PunchView::DoMark0Its()
 				}
 			}
 		}
+
+		if (IsNoMk0())
+			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
+
 		m_nStepMk[0]++;
 		break;
 	case 14:
-		m_nStepMk[0]++;
+		if (IsNoMk0())
+		{
+			if (!WaitDelay0(1))		// F:Done, T:On Waiting....
+				m_nStepMk[0]++;
+		}
+		else
+		{
+			m_dwStMkDn[0] = GetTickCount();
+			m_nStepMk[0]++;
+		}
 		break;
 	case 15:
 		if (!IsNoMk0())
@@ -31568,32 +31626,39 @@ void CGvisR2R_PunchView::DoMark1Its()
 				m_bCollision[1] = FALSE;
 				m_bPriority[3] = FALSE;
 				ptPnt.x = _tstof(pDoc->WorkingInfo.Motion.sSafeZone);
-				ptPnt.y = 0.0;//m_dEnc[AXIS_Y1];
+				ptPnt.y = m_dEnc[AXIS_Y1];
 				Move1(ptPnt, FALSE);
 			}
 		}
 		break;
 	case 10:
-		if (IsMoveDone1())
-		{
-			m_dwStMkDn[1] = GetTickCount();
-			m_nStepMk[1]++;
-		}
-		break;
-	case 11:
 		m_nStepMk[1]++;
 		break;
-	case 12:
-		if (IsNoMk1())
+	case 11:
+		if (IsMoveDone1())
 		{
-			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
-				m_nStepMk[1]++;
+			//if (IsNoMk1())
+			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
+			m_dwStMkDn[1] = GetTickCount();
+			m_nStepMk[1]++;
 		}
-		else
+		break;
+	case 12:
+		if (!WaitDelay1(6))		// F:Done, T:On Waiting....
 		{
 			m_dwStMkDn[1] = GetTickCount();
 			m_nStepMk[1]++;
 		}
+		//if (IsNoMk1())
+		//{
+		//	if (!WaitDelay1(6))		// F:Done, T:On Waiting....
+		//		m_nStepMk[1]++;
+		//}
+		//else
+		//{
+		//	m_dwStMkDn[1] = GetTickCount();
+		//	m_nStepMk[1]++;
+		//}
 		break;
 	case MK_DO:
 		if (!IsNoMk1())
@@ -31655,10 +31720,21 @@ void CGvisR2R_PunchView::DoMark1Its()
 				}
 			}
 		}
+		if (IsNoMk1())
+			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
 		m_nStepMk[1]++;
 		break;
 	case 14:
-		m_nStepMk[1]++;
+		if (IsNoMk1())
+		{
+			if (!WaitDelay1(6))		// F:Done, T:On Waiting....
+				m_nStepMk[1]++;
+		}
+		else
+		{
+			m_dwStMkDn[1] = GetTickCount();
+			m_nStepMk[1]++;
+		}
 		break;
 	case 15:
 		if (!IsNoMk1())
