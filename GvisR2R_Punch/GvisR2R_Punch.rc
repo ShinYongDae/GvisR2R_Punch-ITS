@@ -165,7 +165,7 @@ CAPTION "GvisR2R_Punch 정보"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
-    LTEXT           "GvisR2R_Punch, 버전 2.0.1",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "GvisR2R_Punch, 버전 2.2.2",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2025.09.05",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
     LTEXT           "미마킹테스트(Histo) - White DN",IDC_STATIC,7,46,98,8
@@ -2175,7 +2175,7 @@ BEGIN
     LTEXT           "마킹(좌) 감지위치 Offset [mm]",IDC_STATIC,20,82,100,8
     EDITTEXT        IDC_EDIT_MK_OFFSET2,123,96,37,14,ES_CENTER | ES_AUTOHSCROLL
     LTEXT           "마킹(우) 감지위치 Offset [mm]",IDC_STATIC,19,99,101,8
-    CONTROL         "보이스코일 펀칭 후 대기위치 확인",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,117,115,12
+    CONTROL         "보이스코일 펀칭 후 대기위치 확인",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,117,132,12
 END
 
 IDD_DLG_CAMMASTERINFO_MST DIALOGEX 0, 0, 615, 319

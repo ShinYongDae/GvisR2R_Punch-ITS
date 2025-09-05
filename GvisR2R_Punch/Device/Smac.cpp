@@ -187,12 +187,15 @@ double CSmac::GetSmacPosition()
 	strVal = m_strReceiveVoiceCoil;
 
 	nPos1 = strVal.Find(_T("OK"));
-	nPos2 = strVal.GetLength();
+	//nPos2 = strVal.GetLength();
 	strVal = strVal.Left(nPos1-3);
 
-	nPos1 = strVal.ReverseFind(':');
-	nPos2 = strVal.GetLength();
-	strVal.Delete(0, nPos1+3);
+	//nPos1 = strVal.ReverseFind(':');
+	//nPos2 = strVal.GetLength();
+	//strVal.Delete(0, nPos1+3);
+
+	nPos2 = strVal.ReverseFind('\n');
+	strVal = strVal.Right(strVal.GetLength() - (nPos2 + 1));
 
 	nGetSmacPos = _tstoi(strVal);
 	dGetSmacPos = double(nGetSmacPos * 0.005 ); // 엔코더 해상도 : [5um / 1pluse]
@@ -684,7 +687,11 @@ void CSmac::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 			{
 				m_bRunTimerCheckEnd = FALSE;
 				m_bReturnCmdEnd = TRUE;
-				Sleep(10);
+				//if (m_strEndCmd == _T("PUNCHING_OK"))
+				//{
+				//	if (IsDoneMark(0))
+				//		Sleep(10);
+				//}
 			}
 			else
 				SetTimer(TIMER_CHECK_END_CMD, 100, NULL);
@@ -853,7 +860,7 @@ BOOL CSmac::IsDoneMark(int nMkPcsIdx)
 	//return m_bReturnCmdEnd;
 	double dPos, dShiftPos, dFinalPos, dJudgePos;
 	int nPos, nSerial;
-	CString sPos, sLog;
+	CString sPos[4], sLog;
 
 	if (!pDoc->m_bChkSmacWaitPos)
 	{
@@ -864,12 +871,12 @@ BOOL CSmac::IsDoneMark(int nMkPcsIdx)
 				nPos = m_strReceiveVoiceCoil.Find(_T(":PUNCHING_OK"), 0);
 				if (nPos > 0)
 				{
-					sPos = m_strReceiveVoiceCoil.Left(nPos);
-					nPos = sPos.ReverseFind('\r');
-					sPos = sPos.Left(nPos);
-					nPos = sPos.Find('\n');
-					sPos = sPos.Right(nPos + 1);
-					m_dFinalMkPos = _tstof(sPos) * 0.005; // 엔코더 해상도 : [5um / 1pluse]
+					sPos[0] = m_strReceiveVoiceCoil.Left(nPos);
+					nPos = sPos[0].ReverseFind('\r');
+					sPos[1] = sPos[0].Left(nPos);
+					nPos = sPos[1].ReverseFind('\n');
+					sPos[2] = sPos[1].Right(sPos[1].GetLength() - (nPos + 1));
+					m_dFinalMkPos = _tstof(sPos[2]) * 0.005; // 엔코더 해상도 : [5um / 1pluse]
 					dFinalPos = _tstof(pDoc->WorkingInfo.Marking[m_nCh].sMarkingPos);
 					dJudgePos = dFinalPos + _tstof(pDoc->WorkingInfo.Marking[m_nCh].sMarkingSensingPosOffset);
 					if (m_dFinalMkPos < dJudgePos) // 미마킹으로 판단
@@ -909,12 +916,12 @@ BOOL CSmac::IsDoneMark(int nMkPcsIdx)
 					nPos = m_strReceiveVoiceCoil.Find(_T(":PUNCHING_OK"), 0);
 					if (nPos > 0)
 					{
-						sPos = m_strReceiveVoiceCoil.Left(nPos);
-						nPos = sPos.ReverseFind('\r');
-						sPos = sPos.Left(nPos);
-						nPos = sPos.Find('\n');
-						sPos = sPos.Right(nPos + 1);
-						m_dFinalMkPos = _tstof(sPos) * 0.005; // 엔코더 해상도 : [5um / 1pluse]
+						sPos[0] = m_strReceiveVoiceCoil.Left(nPos);
+						nPos = sPos[0].ReverseFind('\r');
+						sPos[1] = sPos[0].Left(nPos);
+						nPos = sPos[1].ReverseFind('\n');
+						sPos[2] = sPos[1].Right(sPos[1].GetLength() - (nPos + 1));
+						m_dFinalMkPos = _tstof(sPos[2]) * 0.005; // 엔코더 해상도 : [5um / 1pluse]
 						dFinalPos = _tstof(pDoc->WorkingInfo.Marking[m_nCh].sMarkingPos);
 						dJudgePos = dFinalPos + _tstof(pDoc->WorkingInfo.Marking[m_nCh].sMarkingSensingPosOffset);
 						if (m_dFinalMkPos < dJudgePos) // 미마킹으로 판단
