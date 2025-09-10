@@ -855,7 +855,7 @@ double CSmac::GetMkFinalPos()
 	return m_dFinalMkPos;
 }
 
-BOOL CSmac::IsDoneMark(int nMkPcsIdx)
+BOOL CSmac::IsDoneMark(int nMkPcsIdx, BOOL bRemark)
 {
 	//return m_bReturnCmdEnd;
 	double dPos, dShiftPos, dFinalPos, dJudgePos;
@@ -885,9 +885,19 @@ BOOL CSmac::IsDoneMark(int nMkPcsIdx)
 						m_bMisMark = FALSE;
 					nSerial = pView->m_nBufUpSerial[m_nCh]; // Cam1
 					if (m_nCh)
-						sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+					{
+						if(bRemark)
+							sLog.Format(_T("%s DN%d: %.3f Remarking"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+						else
+							sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+					}
 					else
-						sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+					{
+						if (bRemark)
+							sLog.Format(_T("%s DN%d: %.3f Remarking"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+						else
+							sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+					}
 					pDoc->LogPunch(sLog);
 				}
 				else
@@ -930,9 +940,19 @@ BOOL CSmac::IsDoneMark(int nMkPcsIdx)
 							m_bMisMark = FALSE;
 						nSerial = pView->m_nBufUpSerial[m_nCh]; // Cam1
 						if (m_nCh)
-							sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+						{
+							if(bRemark)
+								sLog.Format(_T("%s DN%d: %.3f Remarking"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+							else
+								sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+						}
 						else
-							sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+						{
+							if (bRemark)
+								sLog.Format(_T("%s DN%d: %.3f Remarking"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+							else
+								sLog.Format(_T("%s DN%d: %.3f"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, m_dFinalMkPos);
+						}
 						pDoc->LogPunch(sLog);
 					}
 					else
@@ -952,9 +972,19 @@ BOOL CSmac::IsDoneMark(int nMkPcsIdx)
 				{
 					nSerial = pView->m_nBufUpSerial[m_nCh]; // Cam1
 					if (m_nCh)
-						sLog.Format(_T("%s UP%d: %.3f"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, dPos);
+					{
+						if(bRemark)
+							sLog.Format(_T("%s UP%d: %.3f Remarking"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, dPos);
+						else
+							sLog.Format(_T("%s UP%d: %.3f"), pView->GetMkInfo1(nSerial, nMkPcsIdx, FALSE), m_nCh, dPos);
+					}
 					else
-						sLog.Format(_T("%s UP%d: %.3f"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, dPos);
+					{
+						if(bRemark)
+							sLog.Format(_T("%s UP%d: %.3f Remarking"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, dPos);
+						else
+							sLog.Format(_T("%s UP%d: %.3f"), pView->GetMkInfo0(nSerial, nMkPcsIdx, FALSE), m_nCh, dPos);
+					}
 					pDoc->LogPunch(sLog);
 					m_nStepIsDoneMark++;
 				}

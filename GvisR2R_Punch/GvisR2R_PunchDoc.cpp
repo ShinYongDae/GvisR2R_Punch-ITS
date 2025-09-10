@@ -12961,7 +12961,6 @@ BOOL CGvisR2R_PunchDoc::InitReelmapInner()
 		return FALSE;
 	}
 	
-	//GetCurrentInfoEng();
 	int nTotPcs = m_MasterInner[0].m_pPcsRgn->GetTotPcs();
 	BOOL bDualTest = WorkingInfo.LastJob.bDualTestInner;
 
@@ -13021,7 +13020,6 @@ BOOL CGvisR2R_PunchDoc::InitReelmapInnerUp()
 		return FALSE;
 	}
 
-	//GetCurrentInfoEng();
 	BOOL bDualTest = WorkingInfo.LastJob.bDualTestInner;
 	int nTotPcs = m_MasterInner[0].m_pPcsRgn->GetTotPcs();
 

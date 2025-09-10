@@ -1011,8 +1011,8 @@ public:
 	BOOL LoadPcrDn(int nSerial, BOOL bFromShare = FALSE);
 	void MoveAoi(double dOffset);
 	void MoveMk(double dOffset);
-	BOOL IsMk0Done(int nMkPcsIdx);
-	BOOL IsMk1Done(int nMkPcsIdx);
+	BOOL IsMk0Done(int nMkPcsIdx, BOOL bRemark = FALSE);
+	BOOL IsMk1Done(int nMkPcsIdx, BOOL bRemark = FALSE);
 	BOOL IsMk0Miss();
 	BOOL IsMk1Miss();
 	void InitIoWrite();

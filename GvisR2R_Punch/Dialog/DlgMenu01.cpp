@@ -847,31 +847,17 @@ void CDlgMenu01::SelDisp()
 				break;
 			}
 
-// 			if(nIdxMkInfo >= DEF_VIEW_IMG_NUMBER/2)
-// 			{
-// 				hW = NULL;
-// 				GetDlgItem(nCtrlIdCad)->GetWindowRect(&rt);
-// 				pView->m_pVision[1]->DisplaySelect(CAD_IMG, hW, rt, nIdxMkInfo-DEF_VIEW_IMG_NUMBER/2);
-// 
-// 				hW = NULL;
-// 				GetDlgItem(nCtrlIdDef)->GetWindowRect(&rt);
-// 				pView->m_pVision[1]->DisplaySelect(DEF_IMG, hW, rt, nIdxMkInfo-DEF_VIEW_IMG_NUMBER/2);
-// 			}
-
 			hW = GetDlgItem(nCtrlIdCad)->GetSafeHwnd();
 			GetDlgItem(nCtrlIdCad)->GetWindowRect(&rt);
 #ifdef USE_VISION
 			pView->m_pVision[0]->DisplaySelect(CAD_IMG, hW, rt, nIdxMkInfo);
-			//pView->m_pVision[1]->DisplaySelect(CAD_IMG, hW, rt, nIdxMkInfo);
 #endif
 			hW = GetDlgItem(nCtrlIdDef)->GetSafeHwnd();
 			GetDlgItem(nCtrlIdDef)->GetWindowRect(&rt);
 #ifdef USE_VISION
 			pView->m_pVision[0]->DisplaySelect(DEF_IMG, hW, rt, nIdxMkInfo);
-			//pView->m_pVision[1]->DisplaySelect(DEF_IMG, hW, rt, nIdxMkInfo);
 #endif
 		}
-
 	}
 
 }

@@ -652,10 +652,6 @@ void CDlgMenu06::OpenReelmap(int nSelRmap)
 
 		if (pDoc->GetTestMode() == MODE_OUTER)
 		{
-			//myBtn[12].SetCheck(FALSE);	// IDC_CHK_DEF_UP
-			//myBtn[13].SetCheck(FALSE);	// IDC_CHK_DEF_DN
-			//myBtn[14].SetCheck(TRUE);	// IDC_CHK_DEF_ALL
-			//pDoc->GetCurrentInfoEng();
 			if (pDoc->WorkingInfo.LastJob.bDualTestInner)
 			{
 				pDoc->m_pReelMapInner->Open();
