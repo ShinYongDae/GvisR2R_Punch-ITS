@@ -11090,6 +11090,9 @@ BOOL CGvisR2R_PunchView::SetSerialMkInfo(int nSerial, BOOL bDumy)
 
 void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 {
+	if (pDoc->GetTestMode() == MODE_OUTER || pDoc->GetTestMode() == MODE_INNER)
+		pDoc->GetCurrentInfoEng();
+
 	if (!pDoc->WorkingInfo.LastJob.bSampleTest)
 	{
 		::WritePrivateProfileString(_T("Infomation"), _T("Lot End"), _T("0"), pDoc->WorkingInfo.System.sPathMkCurrInfo);
@@ -11628,7 +11631,7 @@ void CGvisR2R_PunchView::ClrMkInfo()
 
 	CString sLot, sLayerUp, sLayerDn;
 	BOOL bDualTestInner;
-	if (pDoc->GetCurrentInfoEng())
+	//if (pDoc->GetCurrentInfoEng())
 	{
 		if (pDoc->GetTestMode() == MODE_OUTER)
 		{

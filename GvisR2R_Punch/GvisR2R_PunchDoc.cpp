@@ -11481,7 +11481,7 @@ CString CGvisR2R_PunchDoc::GetItsFolderPath()
 	{
 		if (Path[2].IsEmpty())
 		{
-			if (pDoc->GetCurrentInfoEng())
+			//if (pDoc->GetCurrentInfoEng())
 			{
 				pDoc->WorkingInfo.LastJob.sEngItsCode = m_sItsCode;
 				Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;

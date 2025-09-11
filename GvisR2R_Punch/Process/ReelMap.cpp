@@ -4526,7 +4526,7 @@ CString CReelMap::GetRmapPath(int nRmap)
 			str);
 		break;
 	case RMAP_ITS:
-		pDoc->GetCurrentInfoEng();
+		//pDoc->GetCurrentInfoEng();
 		str = _T("ReelMapDataIts.txt");
 		sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
 			pDoc->WorkingInfo.LastJob.sModelUp,
@@ -5056,7 +5056,7 @@ void CReelMap::RestoreReelmap()
 			str);
 		break;
 	case RMAP_ITS:
-		pDoc->GetCurrentInfoEng();
+		//pDoc->GetCurrentInfoEng();
 		str = _T("ReelMapDataIts.txt");
 		sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
 			pDoc->WorkingInfo.LastJob.sModelUp, pDoc->WorkingInfo.LastJob.sEngItsCode,	//pDoc->m_sItsCode,
@@ -8759,7 +8759,7 @@ CString CReelMap::GetIpPath()
 			str);
 		break;
 	case RMAP_ITS:
-		pDoc->GetCurrentInfoEng();
+		//pDoc->GetCurrentInfoEng();
 		str = _T("ReelMapDataIts.txt");
 		sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sIpPathItsFile,
 			pDoc->WorkingInfo.LastJob.sModelUp,
