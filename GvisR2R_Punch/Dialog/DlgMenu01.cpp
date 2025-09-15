@@ -327,6 +327,7 @@ BOOL CDlgMenu01::OnInitDialog()
 	GetDlgItem(IDC_BTN_GD_RA_ALL)->ShowWindow(SW_HIDE);
 
 	GetDlgItem(IDC_CHK_2LAYER)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_CHK_REVIEW_MOVE)->ShowWindow(SW_HIDE);
 
 	GetDlgItem(IDC_HIDE_CAD_001)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_HIDE_DEF_001)->ShowWindow(SW_HIDE);
@@ -3374,6 +3375,7 @@ void CDlgMenu01::UpdateData()
 	}
 
 	myBtn[2].SetCheck(pDoc->WorkingInfo.LastJob.bVerify);
+	myBtn[5].SetCheck(pDoc->WorkingInfo.LastJob.bReview);
 	GetDlgItem(IDC_STC_REVIEW_LEN)->SetWindowText(pDoc->WorkingInfo.LastJob.sVerifyLen);
 	pDoc->SetMkMenu01(_T("Data"), _T("VerifyLen"), pDoc->WorkingInfo.LastJob.sVerifyLen);
 
@@ -4538,7 +4540,7 @@ void CDlgMenu01::OnStcReviewLen()
 	::WritePrivateProfileString(_T("Last Job"), _T("Verify Length"), sData, sPath);
 }
 
-void CDlgMenu01::OnChkReviewMove() 
+void CDlgMenu01::OnChkReviewMove() // IDC_CHK_REVIEW_MOVE
 {
 	// TODO: Add your control notification handler code here
 	BOOL bOn = myBtn[5].GetCheck();

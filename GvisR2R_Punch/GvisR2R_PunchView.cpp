@@ -856,7 +856,8 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 				m_pDlgFrameHigh->ChkMenu01();
 			SetDualTest(pDoc->WorkingInfo.LastJob.bDualTest);
 
-			if (pDoc->GetCurrentInfoEng())
+			m_bGetCurrentInfoEng = pDoc->GetCurrentInfoEng();
+			if (m_bGetCurrentInfoEng)
 			{
 				if (pDoc->GetTestMode() == MODE_OUTER)
 				{
@@ -1015,7 +1016,7 @@ void CGvisR2R_PunchView::OnTimer(UINT_PTR nIDEvent)
 					UpdateLotTime();
 				}
 
-				if (pDoc->GetCurrentInfoEng())
+				if (m_bGetCurrentInfoEng)
 				{
 					if (pDoc->GetTestMode() == MODE_OUTER)
 					{
@@ -3232,7 +3233,7 @@ void CGvisR2R_PunchView::DispThreadTick()
 	if (m_bDestroyedView)
 		return;
 
-	CString str;
+	CString str = _T("");
 	//str.Format(_T("%d"), m_dwThreadTick[1]);//, m_dwThreadTick[1], m_dwThreadTick[2]);
 	//str.Format(_T("%d,%d,%d"), m_dwThreadTick[0], m_dwThreadTick[1], m_dwThreadTick[2]); // MK, Collision, Enc
 	//if (m_sTick != str)
@@ -3241,7 +3242,8 @@ void CGvisR2R_PunchView::DispThreadTick()
 		//	m_bTHREAD_UPDATE_REELMAP_UP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_DN ? 1 : 0,
 		//	m_bTHREAD_UPDATE_REELMAP_ALLUP ? 1 : 0, m_bTHREAD_UPDATE_REELMAP_ALLDN ? 1 : 0,
 		//	m_bTHREAD_REELMAP_YIELD_UP ? 1 : 0, m_bTHREAD_REELMAP_YIELD_DN ? 1 : 0);
-		str.Format(_T("%.3f"), m_pVoiceCoil[0]->GetMkFinalPos());
+		if (pView->m_pVoiceCoil[0])
+			str.Format(_T("%.3f"), m_pVoiceCoil[0]->GetMkFinalPos());
 		pFrm->DispStatusBar(str, 5);
 #ifdef USE_IDS
 		double dFPS[2];
@@ -3253,7 +3255,8 @@ void CGvisR2R_PunchView::DispThreadTick()
 		pFrm->DispStatusBar(str, 6);
 #else
 		//str.Format(_T("%d,%d,%d,%d"), m_nStepAuto, m_nSerialRmapUpdate, m_nShareUpS, m_nShareDnS);//pView->m_nLotEndAuto
-		str.Format(_T("%.3f"), m_pVoiceCoil[1]->GetMkFinalPos());
+		if (pView->m_pVoiceCoil[1])
+			str.Format(_T("%.3f"), m_pVoiceCoil[1]->GetMkFinalPos());
 		pFrm->DispStatusBar(str, 6);
 #endif
 	}
@@ -11090,8 +11093,18 @@ BOOL CGvisR2R_PunchView::SetSerialMkInfo(int nSerial, BOOL bDumy)
 
 void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 {
+	pDoc->WorkingInfo.LastJob.bReview = FALSE;
+
 	if (pDoc->GetTestMode() == MODE_OUTER || pDoc->GetTestMode() == MODE_INNER)
-		pDoc->GetCurrentInfoEng();
+	{
+		m_bGetCurrentInfoEng = pDoc->GetCurrentInfoEng();
+		if (!m_bGetCurrentInfoEng)
+		{
+			pView->MsgBox(_T("각인부에서 설정데이터를 읽을 수가 없습니다.\r\n\각인부 PC상태를 확인 후 다시 초기화를 해주세요."));
+		}
+	}
+	else
+		m_bGetCurrentInfoEng = FALSE;
 
 	if (!pDoc->WorkingInfo.LastJob.bSampleTest)
 	{
@@ -11191,7 +11204,6 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 			m_pDlgMenu02->m_dMkFdOffsetY[nCam][nPoint] = 0.0;
 		}
 	}
-
 
 	m_pDlgMenu02->m_dAoiUpFdOffsetX = 0.0;
 	m_pDlgMenu02->m_dAoiUpFdOffsetY = 0.0;
@@ -11404,10 +11416,6 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 		//ClrMkInfo();
 		pView->m_nDebugStep = 21; pView->DispThreadTick();
 
-		//ResetMkInfo(0); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-		//pView->m_nDebugStep = 22; pView->DispThreadTick();
-		//if (bDualTest)
-		//	ResetMkInfo(1);
 
 		pView->m_nDebugStep = 23; pView->DispThreadTick();
 		ClrMkInfo(); // 20220420 - Happen Release Trouble
@@ -11422,13 +11430,10 @@ void CGvisR2R_PunchView::InitAuto(BOOL bInit)
 		}
 		pView->m_nDebugStep = 25; pView->DispThreadTick();
 
-		//pDoc->m_ListBuf[0].Clear();
-		//pDoc->m_ListBuf[1].Clear();
 	}
 	else
 	{
 		pView->m_nDebugStep = 26; pView->DispThreadTick();
-		//if (pDoc->GetTestMode() == MODE_INNER && pDoc->WorkingInfo.LastJob.bDispLotEnd)
 		if (pDoc->GetTestMode() == MODE_INNER && pDoc->WorkingInfo.LastJob.bDispLotEnd)
 		{
 			if (IDYES == pView->MsgBox(_T("각인부에서 레이저 각인부터 시작하시겠습니까?"), 0, MB_YESNO, DEFAULT_TIME_OUT, FALSE))
@@ -11632,6 +11637,7 @@ void CGvisR2R_PunchView::ClrMkInfo()
 	CString sLot, sLayerUp, sLayerDn;
 	BOOL bDualTestInner;
 	//if (pDoc->GetCurrentInfoEng())
+	if(m_bGetCurrentInfoEng)
 	{
 		if (pDoc->GetTestMode() == MODE_OUTER)
 		{
@@ -11695,9 +11701,9 @@ void CGvisR2R_PunchView::ModelChange(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn
 void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-	BOOL bDualTestInner, bGetCurrentInfoEng;
+	BOOL bDualTestInner;// , bGetCurrentInfoEng;
 	CString sLot, sLayerUp, sLayerDn;
-	bGetCurrentInfoEng = GetCurrentInfoEng();
+	//bGetCurrentInfoEng = GetCurrentInfoEng();
 
 	// CamMst Info...
 	pDoc->GetCamPxlRes();
@@ -11714,13 +11720,12 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 				m_pDlgMenu01->ResetMkInfo();
 		}
 
-		if (bGetCurrentInfoEng)
+		if (m_bGetCurrentInfoEng)
 		{
 			if (pDoc->GetTestMode() == MODE_OUTER)
 			{
 				if (pDoc->GetItsSerialInfo(0, bDualTestInner, sLot, sLayerUp, sLayerDn, 3))
 				{
-					//if (pDoc->GetTestMode() == MODE_OUTER)
 					if (pDoc->m_MasterInner[0].IsMstSpec(pDoc->WorkingInfo.System.sPathCamSpecDir, pDoc->WorkingInfo.LastJob.sModelUp, sLayerUp))
 					{
 						if (!bDualTestInner)
@@ -11755,7 +11760,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 			if (m_pEngrave)
 				m_pEngrave->SwMenu01UpdateWorking(TRUE);
 
-			if (bGetCurrentInfoEng)
+			if (m_bGetCurrentInfoEng)
 			{
 				if (pDoc->GetTestMode() == MODE_OUTER)
 				{
@@ -11794,7 +11799,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 
 		InitReelmapUp();
 
-		if (bGetCurrentInfoEng)
+		if (m_bGetCurrentInfoEng)
 		{
 			if (pDoc->GetTestMode() == MODE_OUTER)
 			{
@@ -11824,16 +11829,9 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 		if (m_pDlgMenu01)
 		{
 			m_pDlgMenu01->InitCadImgUp();
-
-			//if (!bDualTest && pDoc->GetTestMode() != MODE_OUTER)
-			//{
-			//	m_pDlgMenu01->InitGL();
-			//	m_bDrawGL = TRUE;
-			//	m_pDlgMenu01->RefreshRmap();
-			//}
 		}
 
-		if (bGetCurrentInfoEng)
+		if (m_bGetCurrentInfoEng)
 		{
 			if (pDoc->GetTestMode() == MODE_OUTER)
 			{
@@ -11915,7 +11913,7 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 				m_pDlgMenu01->InitCadImgDn();
 				if (nAoi == 1)
 				{
-					if (bGetCurrentInfoEng)
+					if (m_bGetCurrentInfoEng)
 					{
 						if (pDoc->GetTestMode() == MODE_OUTER)
 						{
@@ -11944,15 +11942,8 @@ void CGvisR2R_PunchView::ResetMkInfo(int nAoi) // 0 : AOI-Up , 1 : AOI-Dn , 2 : 
 					m_pDlgMenu01->RefreshRmap();
 				}
 			}
-
-			// 		m_bDrawGL = TRUE;
 		}
 	}
-	// 	else
-	// 	{
-	// 		if(m_pDlgMenu01)
-	// 			m_pDlgMenu01->ResetMkInfo();
-	// 	}
 
 }
 
@@ -13329,528 +13320,6 @@ void CGvisR2R_PunchView::Ink(BOOL bOn)
 	}
 }
 
-//CString CGvisR2R_PunchView::GetRmapPath(int nRmap, stModelInfo stInfo)
-//{
-//	CString str, sPath, Path[5];
-//
-//	switch (nRmap)
-//	{
-//	case RMAP_UP:
-//		str = _T("ReelMapDataUp.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = stInfo.sModel;
-//		Path[2] = stInfo.sLot;
-//		Path[3] = stInfo.sLayer;
-//		Path[4] = _T("");
-//		break;
-//	case RMAP_ALLUP:
-//		str = _T("ReelMapDataAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = stInfo.sModel;
-//		Path[2] = stInfo.sLot;
-//		Path[3] = stInfo.sLayer;
-//		Path[4] = _T("");
-//		break;
-//	case RMAP_DN:
-//		str = _T("ReelMapDataDn.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = stInfo.sModel;
-//		Path[2] = stInfo.sLot;
-//		Path[3] = stInfo.sLayer;
-//		Path[4] = _T("");
-//		break;
-//	case RMAP_ALLDN:
-//		str = _T("ReelMapDataAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = stInfo.sModel;
-//		Path[2] = stInfo.sLot;
-//		Path[3] = stInfo.sLayer;
-//		Path[4] = _T("");
-//		break;
-//	case RMAP_INNER_UP:
-//		str = _T("ReelMapDataUp.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = stInfo.sModel;
-//		Path[2] = stInfo.sLot;
-//		Path[3] = stInfo.sLayer;
-//		Path[4] = pDoc->WorkingInfo.LastJob.sInnerLayerUp;
-//		break;
-//	case RMAP_INNER_DN:
-//		str = _T("ReelMapDataDn.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
-//		Path[3] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//		Path[4] = pDoc->WorkingInfo.LastJob.sInnerLayerDn;
-//		break;
-//	case RMAP_INNER_ALLUP:
-//		str = _T("YieldAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
-//		Path[3] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//		Path[4] = pDoc->WorkingInfo.LastJob.sInnerLayerUp;
-//		break;
-//	case RMAP_INNER_ALLDN:
-//		str = _T("ReelMapDataAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = stInfo.sModel;
-//		Path[2] = stInfo.sLot;
-//		Path[3] = stInfo.sLayer;
-//		Path[4] = pDoc->WorkingInfo.LastJob.sInnerLayerDn;
-//		break;
-//	case RMAP_INOUTER_UP:
-//		break;
-//	case RMAP_INOUTER_DN:
-//		break;
-//	case RMAP_ITS:
-//		str = _T("ReelMapDataIts.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathItsFile;
-//		Path[1] = stInfo.sModel;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
-//		Path[3] = _T("");
-//		Path[4] = _T("");
-//		break;
-//	}
-//
-//	if (!Path[0].IsEmpty() && !Path[1].IsEmpty())
-//	{
-//		sPath.Format(_T("%s%s"), Path[0], Path[1]);
-//		if (!pDoc->DirectoryExists(sPath))
-//			CreateDirectory(sPath, NULL);
-//
-//		if (!Path[2].IsEmpty())
-//		{
-//			sPath.Format(_T("%s%s\\%s"), Path[0], Path[1], Path[2]);
-//			if (!pDoc->DirectoryExists(sPath))
-//				CreateDirectory(sPath, NULL);
-//
-//			if (!Path[3].IsEmpty())
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3]);
-//				if (!pDoc->DirectoryExists(sPath))
-//					CreateDirectory(sPath, NULL);
-//
-//				if (!Path[4].IsEmpty())
-//				{
-//					sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], Path[4]);
-//					if (!pDoc->DirectoryExists(sPath))
-//						CreateDirectory(sPath, NULL);
-//				}
-//			}
-//		}
-//	}
-//
-//
-////	CString sPath;
-////#ifdef TEST_MODE
-////	sPath = PATH_REELMAP;
-////#else
-////	CString str;
-////	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-////
-////	if (bDualTest)
-////	{
-////		switch (nRmap)
-////		{
-////		case RMAP_UP:
-////			str = _T("ReelMapDataUp.txt");
-////			break;
-////		case RMAP_ALLUP:
-//////#ifdef TEST_MODE
-//////			str = _T("ReelMapDataAllUp.txt");
-//////#else
-////			str = _T("ReelMapDataAll.txt");
-//////#endif
-////			break;
-////		case RMAP_DN:
-////			str = _T("ReelMapDataDn.txt");
-////			break;
-////		case RMAP_ALLDN:
-//////#ifdef TEST_MODE
-//////			str = _T("ReelMapDataAllDn.txt");
-//////#else
-////			str = _T("ReelMapDataAll.txt");
-//////#endif
-////			break;
-////		}
-////	}
-////	else
-////		str = _T("ReelMapDataUp.txt");
-////
-////	sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-////		stInfo.sModel,
-////		stInfo.sLot,
-////		stInfo.sLayer,
-////		str);
-////#endif
-//	return sPath;
-//}
-
-//CString CGvisR2R_PunchView::GetRmapPath(int nRmap)
-//{
-//	CString sPath = _T("");
-//	CString Path[4], str;
-//
-//	switch (nRmap)
-//	{
-//	case RMAP_UP:
-//		str = _T("ReelMapDataUp.txt");
-//		if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->WorkingInfo.LastJob.sLotUp,
-//				pDoc->WorkingInfo.LastJob.sLayerUp,
-//				str);
-//		}
-//		else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->Status.PcrShare[0].sLot,
-//				pDoc->WorkingInfo.LastJob.sLayerUp,
-//				str);
-//		}
-//		break;
-//	case RMAP_ALLUP:
-//		str = _T("ReelMapDataAll.txt");
-//		if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->WorkingInfo.LastJob.sLotUp,
-//				pDoc->WorkingInfo.LastJob.sLayerUp,
-//				str);
-//		}
-//		else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->Status.PcrShare[0].sLot,
-//				pDoc->WorkingInfo.LastJob.sLayerUp,
-//				str);
-//		}
-//		break;
-//	case RMAP_DN:
-//		str = _T("ReelMapDataDn.txt");
-//		if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[1])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				//pDoc->WorkingInfo.LastJob.sModelDn,
-//				//pDoc->WorkingInfo.LastJob.sLotDn,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->WorkingInfo.LastJob.sLotUp,
-//				pDoc->WorkingInfo.LastJob.sLayerDn,
-//				str);
-//		}
-//		else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[1])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				//pDoc->WorkingInfo.LastJob.sModelDn,
-//				//pDoc->Status.PcrShare[1].sLot,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->Status.PcrShare[0].sLot,
-//				pDoc->WorkingInfo.LastJob.sLayerDn,
-//				str);
-//		}
-//		break;
-//	case RMAP_ALLDN:
-//		str = _T("ReelMapDataAll.txt");
-//		if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[1])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->WorkingInfo.LastJob.sLotUp,
-//				//pDoc->WorkingInfo.LastJob.sModelDn,
-//				//pDoc->WorkingInfo.LastJob.sLotDn,
-//				pDoc->WorkingInfo.LastJob.sLayerDn,
-//				str);
-//		}
-//		else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[1])
-//		{
-//			sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//				pDoc->WorkingInfo.LastJob.sModelUp,
-//				pDoc->Status.PcrShare[0].sLot,
-//				//pDoc->WorkingInfo.LastJob.sModelDn,
-//				//pDoc->Status.PcrShare[1].sLot,
-//				pDoc->WorkingInfo.LastJob.sLayerDn,
-//				str);
-//		}
-//		break;
-//	case RMAP_INNER_UP:
-//		str = _T("ReelMapDataUp.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//		Path[3] = pDoc->WorkingInfo.LastJob.sInnerLayerUp;
-//		sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], str);
-//		break;
-//	case RMAP_INNER_DN:
-//		str = _T("ReelMapDataDn.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		//Path[1] = pDoc->WorkingInfo.LastJob.sInnerModelDn;
-//		//Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotDn;
-//		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//		Path[3] = pDoc->WorkingInfo.LastJob.sInnerLayerDn;
-//		sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], str);
-//		break;
-//	case RMAP_INNER_ALLUP:
-//		str = _T("ReelMapDataAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//		Path[3] = pDoc->WorkingInfo.LastJob.sInnerLayerUp;
-//		sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], str);
-//		break;
-//	case RMAP_INNER_ALLDN:
-//		str = _T("ReelMapDataAll.txt");
-//		Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//		//Path[1] = pDoc->WorkingInfo.LastJob.sInnerModelDn;
-//		//Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotDn;
-//		Path[1] = pDoc->WorkingInfo.LastJob.sModelUp;
-//		Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//		Path[3] = pDoc->WorkingInfo.LastJob.sInnerLayerDn;
-//		sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], str);
-//		break;
-//	case RMAP_INOUTER_UP:
-//		str = _T("ReelMapDataIO.txt");
-//		sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//			pDoc->WorkingInfo.LastJob.sModelUp,
-//			pDoc->WorkingInfo.LastJob.sLotUp,
-//			pDoc->WorkingInfo.LastJob.sLayerUp,
-//			str);
-//		break;
-//	case RMAP_INOUTER_DN:
-//		str = _T("ReelMapDataIO.txt");
-//		sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//			//pDoc->WorkingInfo.LastJob.sModelDn,
-//			//pDoc->WorkingInfo.LastJob.sLotDn,
-//			pDoc->WorkingInfo.LastJob.sModelUp,
-//			pDoc->WorkingInfo.LastJob.sLotUp,
-//			pDoc->WorkingInfo.LastJob.sLayerDn,
-//			str);
-//		break;
-//	case RMAP_ITS:
-//		pDoc->GetCurrentInfoEng();
-//		str = _T("ReelMapDataIts.txt");
-//		sPath.Format(_T("%s%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathItsFile,
-//			pDoc->WorkingInfo.LastJob.sModelUp,
-//			pDoc->WorkingInfo.LastJob.sEngItsCode,
-//			//pDoc->m_sItsCode,
-//			str);
-//		break;
-//	}
-//
-//	return sPath;
-//}
-//CString CGvisR2R_PunchView::GetRmapPath(int nRmap)
-//{
-//	CString sPath;
-//#ifdef TEST_MODE
-//	sPath = PATH_REELMAP;
-//#else
-//	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
-//
-//	CString str;
-//	if (bDualTest)
-//	{
-//		switch (nRmap)
-//		{
-//		case RMAP_UP:
-//			str = _T("ReelMapDataUp.txt");
-//			if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//			else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->Status.PcrShare[0].sLot,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//			break;
-//		case RMAP_ALLUP:
-////#ifdef TEST_MODE
-////			str = _T("ReelMapDataAllUp.txt");
-////#else
-//			str = _T("ReelMapDataAll.txt");
-////#endif
-//			if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//			else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->Status.PcrShare[0].sLot,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//			break;
-//		case RMAP_DN:
-//			str = _T("ReelMapDataDn.txt");
-//			if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[1])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					//pDoc->WorkingInfo.LastJob.sModelDn,
-//					//pDoc->WorkingInfo.LastJob.sLotDn,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerDn,
-//					str);
-//			}
-//			else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[1])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					//pDoc->WorkingInfo.LastJob.sModelDn,
-//					//pDoc->Status.PcrShare[1].sLot,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->Status.PcrShare[0].sLot,
-//					pDoc->WorkingInfo.LastJob.sLayerDn,
-//					str);
-//			}
-//			break;
-//		case RMAP_ALLDN:
-////#ifdef TEST_MODE
-////			str = _T("ReelMapDataAllDn.txt");
-////#else
-//			str = _T("ReelMapDataAll.txt");
-////#endif
-//			if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[1])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					//pDoc->WorkingInfo.LastJob.sModelDn,
-//					//pDoc->WorkingInfo.LastJob.sLotDn,
-//					pDoc->WorkingInfo.LastJob.sLayerDn,
-//					str);
-//			}
-//			else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[1])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->Status.PcrShare[0].sLot,
-//					//pDoc->WorkingInfo.LastJob.sModelDn,
-//					//pDoc->Status.PcrShare[1].sLot,
-//					pDoc->WorkingInfo.LastJob.sLayerDn,
-//					str);
-//			}
-//			break;
-//		}
-//	}
-//	else
-//	{
-//		if (pDoc->GetTestMode() != MODE_OUTER)
-//		{
-//			str = _T("ReelMapDataUp.txt");
-//			if (pDoc->m_bDoneChgLot || !pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//			else if (!pDoc->m_bDoneChgLot && pDoc->m_bNewLotShare[0])
-//			{
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->Status.PcrShare[0].sLot,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//			}
-//
-//			return sPath;
-//		}
-//	}
-//
-//	//	pDoc->m_pReelMap->m_nLayer = nRmap;
-//
-//	if (pDoc->GetTestMode() == MODE_OUTER)
-//	{
-//		int nIdx;
-//		CString Path[4];
-//
-//		//bDualTest = pDoc->WorkingInfo.LastJob.bInnerDualTest;
-//		//if (bDualTest)
-//		{
-//			switch (nRmap)
-//			{
-//			case RMAP_INNER_UP:
-//				str = _T("ReelMapDataUp.txt");
-//				Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//				Path[1] = pDoc->WorkingInfo.LastJob.sInnerModelUp;
-//				Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//				Path[3] = pDoc->WorkingInfo.LastJob.sInnerLayerUp;
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], str);
-//				break;
-//			case RMAP_INNER_DN:
-//				str = _T("ReelMapDataDn.txt");
-//				Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//				//Path[1] = pDoc->WorkingInfo.LastJob.sInnerModelDn;
-//				//Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotDn;
-//				Path[1] = pDoc->WorkingInfo.LastJob.sInnerModelUp;
-//				Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//				Path[3] = pDoc->WorkingInfo.LastJob.sInnerLayerDn;
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], str);
-//				break;
-//			case RMAP_INNER_ALLUP:
-//				str = _T("ReelMapDataAll.txt");
-//				Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//				Path[1] = pDoc->WorkingInfo.LastJob.sInnerModelUp;
-//				Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//				Path[3] = pDoc->WorkingInfo.LastJob.sInnerLayerUp;
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], str);
-//				break;
-//			case RMAP_INNER_ALLDN:
-//				str = _T("ReelMapDataAll.txt");
-//				Path[0] = pDoc->WorkingInfo.System.sPathOldFile;
-//				//Path[1] = pDoc->WorkingInfo.LastJob.sInnerModelDn;
-//				//Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotDn;
-//				Path[1] = pDoc->WorkingInfo.LastJob.sInnerModelUp;
-//				Path[2] = pDoc->WorkingInfo.LastJob.sInnerLotUp;
-//				Path[3] = pDoc->WorkingInfo.LastJob.sInnerLayerDn;
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), Path[0], Path[1], Path[2], Path[3], str);
-//				break;
-//			case RMAP_INOUTER_UP:
-//				str = _T("ReelMapDataIO.txt");
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerUp,
-//					str);
-//				break;
-//			case RMAP_INOUTER_DN:
-//				str = _T("ReelMapDataIO.txt");
-//				sPath.Format(_T("%s%s\\%s\\%s\\%s"), pDoc->WorkingInfo.System.sPathOldFile,
-//					//pDoc->WorkingInfo.LastJob.sModelDn,
-//					//pDoc->WorkingInfo.LastJob.sLotDn,
-//					pDoc->WorkingInfo.LastJob.sModelUp,
-//					pDoc->WorkingInfo.LastJob.sLotUp,
-//					pDoc->WorkingInfo.LastJob.sLayerDn,
-//					str);
-//				break;
-//			}
-//		}
-//	}
-//#endif
-//	return sPath;
-//}
-
 BOOL CGvisR2R_PunchView::LoadPcrUp(int nSerial, BOOL bFromShare)
 {
 	if (nSerial <= 0)
@@ -14252,30 +13721,13 @@ void CGvisR2R_PunchView::InitReelmapDn()
 	}
 }
 
-// void CGvisR2R_PunchView::LoadMstInfo()
-// {
-// 	CString sPath;
-// 
-// 	pDoc->LoadMasterSpec();
-// 	pDoc->LoadPinImg();
-// 	pDoc->LoadAlignImg();
-// 	pDoc->GetCamPxlRes();
-// 	pDoc->LoadStripRgnFromCam();
-// 
-// 	pDoc->LoadPcsRgnFromCam();
-// 	pDoc->LoadPcsImg();
-// 	pDoc->LoadCadImg();
-// 
-// 	pDoc->LoadCadMk(); //.pch
-// }
-
 BOOL CGvisR2R_PunchView::LoadMstInfo()
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	CString sLot, sLayerUp, sLayerDn;
-	BOOL bDualTestInner, bGetCurrentInfoEng;
+	BOOL bDualTestInner;// , bGetCurrentInfoEng;
 
-	bGetCurrentInfoEng = GetCurrentInfoEng(); // TRUE: MODE_INNER or MODE_OUTER
+	//bGetCurrentInfoEng = GetCurrentInfoEng(); // TRUE: MODE_INNER or MODE_OUTER
 	pDoc->GetCamPxlRes();
 
 	if (IsLastJob(0)) // Up
@@ -14287,7 +13739,7 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 		//		MsgBox(_T("내층 모델의 OFFLINE 폴더가 없습니다."));
 		//	}
 		//}
-		if (bGetCurrentInfoEng)
+		if (m_bGetCurrentInfoEng)
 		{
 			pDoc->m_Master[0].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
 				pDoc->m_sEngModel,
@@ -14325,7 +13777,7 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 
 	if (IsLastJob(1)) // Dn
 	{
-		if (bGetCurrentInfoEng)
+		if (m_bGetCurrentInfoEng)
 		{
 			pDoc->m_Master[1].Init(pDoc->WorkingInfo.System.sPathCamSpecDir,
 				pDoc->m_sEngModel,
@@ -14383,7 +13835,7 @@ BOOL CGvisR2R_PunchView::LoadMstInfo()
 	// Reelmap 정보 Loading.....
 	InitReelmap(); // Delete & New
 
-	if (bGetCurrentInfoEng)
+	if (m_bGetCurrentInfoEng)
 	{
 		if (pDoc->GetTestMode() == MODE_OUTER)
 		{
@@ -15962,7 +15414,7 @@ void CGvisR2R_PunchView::DoReject0()
 					if (m_pVoiceCoil[0])
 						m_pVoiceCoil[0]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("1-보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -16019,7 +15471,7 @@ void CGvisR2R_PunchView::DoReject0()
 					if (m_pVoiceCoil[0])
 						m_pVoiceCoil[0]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("2-보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -16043,7 +15495,7 @@ void CGvisR2R_PunchView::DoReject0()
 		}
 		break;
 	case 11:
-		if ((nRtn = WaitRtnVal(3)) > -1)
+		if ((nRtn = WaitRtnVal(1)) > -1)
 		{
 			if (IDYES == nRtn)
 			{
@@ -16257,7 +15709,7 @@ void CGvisR2R_PunchView::DoReject1()
 					if (m_pVoiceCoil[1])
 						m_pVoiceCoil[1]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("3-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -16311,7 +15763,7 @@ void CGvisR2R_PunchView::DoReject1()
 					if (m_pVoiceCoil[1])
 						m_pVoiceCoil[1]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+					nRtn = MsgBox(_T("4-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -16335,7 +15787,7 @@ void CGvisR2R_PunchView::DoReject1()
 		}
 		break;
 	case 11:
-		if ((nRtn = WaitRtnVal(4)) > -1)
+		if ((nRtn = WaitRtnVal(2)) > -1)
 		{
 			if (IDYES == nRtn)
 			{
@@ -16506,7 +15958,7 @@ void CGvisR2R_PunchView::DoMark0All()
 					if (m_pVoiceCoil[0])
 						m_pVoiceCoil[0]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("5-보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -16691,7 +16143,7 @@ void CGvisR2R_PunchView::DoMark1All()
 					if (m_pVoiceCoil[1])
 						m_pVoiceCoil[1]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("6-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -17098,7 +16550,7 @@ void CGvisR2R_PunchView::DoMark0()
 					if (m_pVoiceCoil[0])
 						m_pVoiceCoil[0]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("7-보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -17171,7 +16623,7 @@ void CGvisR2R_PunchView::DoMark0()
 				// One more MK On Start....
 				if (IsMk0Miss())
 				{
-					nRtn = MsgBox(_T("보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("8-보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -17202,11 +16654,11 @@ void CGvisR2R_PunchView::DoMark0()
 						m_pVoiceCoil[0]->SetEsc();
 					if (IsMk0Miss())
 					{
-						nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						nRtn = MsgBox(_T("9-보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					}
 					else
 					{
-						nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						nRtn = MsgBox(_T("10-보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					}
 					if (IDYES == nRtn)
 					{
@@ -17235,7 +16687,7 @@ void CGvisR2R_PunchView::DoMark0()
 						// One more MK On Start....
 						if (IsMk0Miss())
 						{
-							nRtn = MsgBox(_T("보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+							nRtn = MsgBox(_T("11-보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							if (IDYES == nRtn)
 							{
 								DispMain(_T("운전중"), RGB_RED);
@@ -17269,11 +16721,11 @@ void CGvisR2R_PunchView::DoMark0()
 								m_pVoiceCoil[0]->SetEsc();
 							if (IsMk0Miss())
 							{
-								nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+								nRtn = MsgBox(_T("12-보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							}
 							else
 							{
-								nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+								nRtn = MsgBox(_T("13-보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							}
 							if (IDYES == nRtn)
 							{
@@ -17889,7 +17341,7 @@ void CGvisR2R_PunchView::DoMark1()
 					if (m_pVoiceCoil[1])
 						m_pVoiceCoil[1]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("14-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{						
 						DispMain(_T("운전중"), RGB_RED);
@@ -17960,7 +17412,7 @@ void CGvisR2R_PunchView::DoMark1()
 			{
 				if (IsMk1Miss())
 				{
-					nRtn = MsgBox(_T("보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("15-보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -17992,11 +17444,11 @@ void CGvisR2R_PunchView::DoMark1()
 
 					if (IsMk1Miss())
 					{
-						nRtn = MsgBox(_T("보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						nRtn = MsgBox(_T("16-보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					}
 					else
 					{
-						nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+						nRtn = MsgBox(_T("17-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					}
 					if (IDYES == nRtn)
 					{
@@ -18025,7 +17477,7 @@ void CGvisR2R_PunchView::DoMark1()
 						// One more MK On Start....
 						if (IsMk1Miss())
 						{
-							nRtn = MsgBox(_T("보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+							nRtn = MsgBox(_T("18-보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							if (IDYES == nRtn)
 							{
 								DispMain(_T("운전중"), RGB_RED);
@@ -18059,11 +17511,11 @@ void CGvisR2R_PunchView::DoMark1()
 								m_pVoiceCoil[1]->SetEsc();
 							if (IsMk1Miss())
 							{
-								nRtn = MsgBox(_T("보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+								nRtn = MsgBox(_T("19-보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							}
 							else
 							{
-								nRtn = MsgBox(_T("보이스코일(우) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+								nRtn = MsgBox(_T("20-보이스코일(우) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							}
 							if (IDYES == nRtn)
 							{
@@ -19395,7 +18847,7 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 
 				if (MODE_INNER == pDoc->GetTestMode() || MODE_OUTER == pDoc->GetTestMode()) // Please modify for outer mode.-20221226
 				{
-					GetCurrentInfoEng();
+					//GetCurrentInfoEng();
 					if (m_pDlgMenu01)
 						m_pDlgMenu01->UpdateData();
 				}
@@ -19804,7 +19256,8 @@ void CGvisR2R_PunchView::DoAutoChkShareVsFolder()	// 잔량처리 시 계속적으로 반복
 		{
 			m_nShareUpCnt++;
 
-			if (pDoc->GetCurrentInfoEng())
+			//if (pDoc->GetCurrentInfoEng())
+			if(m_bGetCurrentInfoEng)
 			{
 				if (pDoc->GetTestMode() == MODE_OUTER)
 					pDoc->GetItsSerialInfo(m_nShareUpS, bDualTestInner, sLot, sLayerUp, sLayerDn, 0);
@@ -20422,7 +19875,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 				if (MODE_INNER == pDoc->GetTestMode() || MODE_OUTER == pDoc->GetTestMode()) // Please modify for outer mode.-20221226
 				{
-					GetCurrentInfoEng();
+					//GetCurrentInfoEng();
 					if (m_pDlgMenu01)
 						m_pDlgMenu01->UpdateData();
 				}
@@ -20762,7 +20215,8 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 			//	m_nShareUpSerial[1] = m_nShareUpS; // 짝수
 			m_nShareUpCnt++;
 
-			if (pDoc->GetCurrentInfoEng())
+			//if (pDoc->GetCurrentInfoEng())
+			if(m_bGetCurrentInfoEng)
 			{
 				if (pDoc->GetTestMode() == MODE_OUTER)
 					pDoc->GetItsSerialInfo(m_nShareUpS, bDualTestInner, sLot, sLayerUp, sLayerDn, 0);
@@ -31083,7 +30537,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 					if (m_pVoiceCoil[0])
 						m_pVoiceCoil[0]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("21-보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -31154,7 +30608,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 			{
 				if (IsMk0Miss())
 				{
-					nRtn = MsgBox(_T("보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("22-보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -31186,11 +30640,11 @@ void CGvisR2R_PunchView::DoMark0Its()
 
 					if (IsMk0Miss())
 					{
-						nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						nRtn = MsgBox(_T("23-보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					}
 					else
 					{
-						nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						nRtn = MsgBox(_T("24-보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					}
 					if (IDYES == nRtn)
 					{
@@ -31219,7 +30673,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 						// One more MK On Start....
 						if (IsMk0Miss())
 						{
-							nRtn = MsgBox(_T("보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+							nRtn = MsgBox(_T("25-보이스코일(좌) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							if (IDYES == nRtn)
 							{
 								DispMain(_T("운전중"), RGB_RED);
@@ -31253,11 +30707,11 @@ void CGvisR2R_PunchView::DoMark0Its()
 								m_pVoiceCoil[0]->SetEsc();
 							if (IsMk0Miss())
 							{
-								nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+								nRtn = MsgBox(_T("26-보이스코일(좌) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							}
 							else
 							{
-								nRtn = MsgBox(_T("보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+								nRtn = MsgBox(_T("27-보이스코일(좌) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							}
 							if (IDYES == nRtn)
 							{
@@ -31820,7 +31274,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 					if (m_pVoiceCoil[1])
 						m_pVoiceCoil[1]->SetEsc();
 
-					nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("28-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -31891,7 +31345,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 			{
 				if (IsMk1Miss())
 				{
-					nRtn = MsgBox(_T("보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+					nRtn = MsgBox(_T("29-보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					if (IDYES == nRtn)
 					{
 						DispMain(_T("운전중"), RGB_RED);
@@ -31923,11 +31377,11 @@ void CGvisR2R_PunchView::DoMark1Its()
 
 					if (IsMk1Miss())
 					{
-						nRtn = MsgBox(_T("보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						nRtn = MsgBox(_T("30-보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 					}
 					else
 					{
-						nRtn = MsgBox(_T("보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
+						nRtn = MsgBox(_T("31-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 2, MB_YESNO);
 					}
 					if (IDYES == nRtn)
 					{
@@ -31956,7 +31410,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 						// One more MK On Start....
 						if (IsMk1Miss())
 						{
-							nRtn = MsgBox(_T("보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+							nRtn = MsgBox(_T("32-보이스코일(우) 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							if (IDYES == nRtn)
 							{
 								DispMain(_T("운전중"), RGB_RED);
@@ -31990,11 +31444,11 @@ void CGvisR2R_PunchView::DoMark1Its()
 								m_pVoiceCoil[1]->SetEsc();
 							if (IsMk1Miss())
 							{
-								nRtn = MsgBox(_T("보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+								nRtn = MsgBox(_T("33-보이스코일(우) 마킹완료가 않되고 미마킹된 것 같습니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							}
 							else
 							{
-								nRtn = MsgBox(_T("보이스코일(우) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+								nRtn = MsgBox(_T("34-보이스코일(우) 마킹완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
 							}
 							if (IDYES == nRtn)
 							{

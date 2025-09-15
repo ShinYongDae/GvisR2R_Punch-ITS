@@ -6017,11 +6017,7 @@ int CGvisR2R_PunchDoc::LoadPCRUp(int nSerial, BOOL bFromShare)	// return : 2(Fai
 		}
 
 		bUpdate = TRUE;
-
-		//if (!WorkingInfo.LastJob.bDualTest)
-		{
-			pView->ResetMkInfo(0); // CAD 데이터 리로딩   0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-		}
+		pView->ResetMkInfo(0); // CAD 데이터 리로딩   0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
 	}
 
 	if (bUpdate)
@@ -6364,10 +6360,6 @@ int CGvisR2R_PunchDoc::LoadPCRDn(int nSerial, BOOL bFromShare)	// return : 2(Fai
 		}
 		bUpdate = TRUE;
 
-		//if (WorkingInfo.LastJob.bDualTest)
-		//{
-		//	pView->ResetMkInfo(0); // CAD 데이터 리로딩 --->  0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-		//}
 	}
 
 	if (bUpdate)
@@ -6377,33 +6369,6 @@ int CGvisR2R_PunchDoc::LoadPCRDn(int nSerial, BOOL bFromShare)	// return : 2(Fai
 		if (pView->m_pDlgMenu01)
 			pView->m_pDlgMenu01->UpdateData();
 	}
-
-	//if (!strModel.IsEmpty() && !strLot.IsEmpty() && !strLayer.IsEmpty())
-	//{
-	//	if (WorkingInfo.LastJob.sModelDn.IsEmpty() || WorkingInfo.LastJob.sLotDn.IsEmpty() || WorkingInfo.LastJob.sLayerDn.IsEmpty())
-	//	{
-	//		WorkingInfo.LastJob.sModelDn = strModel;
-	//		WorkingInfo.LastJob.sLotDn = strLot;
-	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
-	//		if (WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//	else if (WorkingInfo.LastJob.sModelDn != strModel || WorkingInfo.LastJob.sLayerDn != strLayer /*|| WorkingInfo.LastJob.sLotDn != strLot*/)
-	//	{
-	//		WorkingInfo.LastJob.sModelDn = strModel;
-	//		WorkingInfo.LastJob.sLotDn = strLot;
-	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
-	//		if (WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//}
-
 
 	int nTotDef = _tstoi(strTotalBadPieceNum);
 
@@ -11482,6 +11447,7 @@ CString CGvisR2R_PunchDoc::GetItsFolderPath()
 		if (Path[2].IsEmpty())
 		{
 			//if (pDoc->GetCurrentInfoEng())
+			if(pView->m_bGetCurrentInfoEng)
 			{
 				pDoc->WorkingInfo.LastJob.sEngItsCode = m_sItsCode;
 				Path[2] = pDoc->WorkingInfo.LastJob.sEngItsCode;
@@ -12047,31 +12013,6 @@ int CGvisR2R_PunchDoc::LoadPCRUpInner(int nSerial, BOOL bFromShare)	// return : 
 	strFileData.Delete(0, nTemp + 1);
 	nFileSize = nFileSize - nTemp - 1;
 
-	//if (!strModel.IsEmpty() && !strLot.IsEmpty() && !strLayer.IsEmpty())
-	//{
-	//	if (WorkingInfo.LastJob.sModelUp.IsEmpty() || WorkingInfo.LastJob.sLotUp.IsEmpty() || WorkingInfo.LastJob.sLayerUp.IsEmpty())
-	//	{
-	//		WorkingInfo.LastJob.sModelUp = strModel;
-	//		WorkingInfo.LastJob.sLotUp = strLot;
-	//		WorkingInfo.LastJob.sLayerUp = strLayer;
-
-	//		if (!WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(0); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//	else if (WorkingInfo.LastJob.sModelUp != strModel || WorkingInfo.LastJob.sLayerUp != strLayer || WorkingInfo.LastJob.sLotUp != strLot)
-	//	{
-	//		WorkingInfo.LastJob.sModelUp = strModel;
-	//		WorkingInfo.LastJob.sLotUp = strLot;
-	//		WorkingInfo.LastJob.sLayerUp = strLayer;
-
-	//		if (!WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(0); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//}
 
 	int nTotDef = _tstoi(strTotalBadPieceNum);
 
@@ -12322,33 +12263,6 @@ int CGvisR2R_PunchDoc::LoadPCRDnInner(int nSerial, BOOL bFromShare)	// return : 
 	strTotalBadPieceNum = strFileData.Left(nTemp);;
 	strFileData.Delete(0, nTemp + 1);
 	nFileSize = nFileSize - nTemp - 1;
-
-
-	//if (!strModel.IsEmpty() && !strLot.IsEmpty() && !strLayer.IsEmpty())
-	//{
-	//	if (WorkingInfo.LastJob.sModelDn.IsEmpty() || WorkingInfo.LastJob.sLotDn.IsEmpty() || WorkingInfo.LastJob.sLayerDn.IsEmpty())
-	//	{
-	//		WorkingInfo.LastJob.sModelDn = strModel;
-	//		WorkingInfo.LastJob.sLotDn = strLot;
-	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
-	//		if (WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//	else if (WorkingInfo.LastJob.sModelDn != strModel || WorkingInfo.LastJob.sLayerDn != strLayer || WorkingInfo.LastJob.sLotDn != strLot)
-	//	{
-	//		WorkingInfo.LastJob.sModelDn = strModel;
-	//		WorkingInfo.LastJob.sLotDn = strLot;
-	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
-	//		if (WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//}
 
 
 	int nTotDef = _tstoi(strTotalBadPieceNum);
@@ -14030,10 +13944,6 @@ int CGvisR2R_PunchDoc::LoadPcrDn(CString sPath)	// return : 2(Failed), 1(정상), 
 		}
 		bUpdate = TRUE;
 
-		//if (WorkingInfo.LastJob.bDualTest)
-		//{
-		//	pView->ResetMkInfo(0); // CAD 데이터 리로딩 --->  0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-		//}
 	}
 
 	if (bUpdate)
@@ -14043,33 +13953,6 @@ int CGvisR2R_PunchDoc::LoadPcrDn(CString sPath)	// return : 2(Failed), 1(정상), 
 		if (pView->m_pDlgMenu01)
 			pView->m_pDlgMenu01->UpdateData();
 	}
-
-	//if (!strModel.IsEmpty() && !strLot.IsEmpty() && !strLayer.IsEmpty())
-	//{
-	//	if (WorkingInfo.LastJob.sModelDn.IsEmpty() || WorkingInfo.LastJob.sLotDn.IsEmpty() || WorkingInfo.LastJob.sLayerDn.IsEmpty())
-	//	{
-	//		WorkingInfo.LastJob.sModelDn = strModel;
-	//		WorkingInfo.LastJob.sLotDn = strLot;
-	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
-	//		if (WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//	else if (WorkingInfo.LastJob.sModelDn != strModel || WorkingInfo.LastJob.sLayerDn != strLayer /*|| WorkingInfo.LastJob.sLotDn != strLot*/)
-	//	{
-	//		WorkingInfo.LastJob.sModelDn = strModel;
-	//		WorkingInfo.LastJob.sLotDn = strLot;
-	//		WorkingInfo.LastJob.sLayerDn = strLayer;
-
-	//		if (WorkingInfo.LastJob.bDualTest)
-	//		{
-	//			pView->ResetMkInfo(2); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
-	//		}
-	//	}
-	//}
-
 
 	int nTotDef = _tstoi(strTotalBadPieceNum);
 

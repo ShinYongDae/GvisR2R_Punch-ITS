@@ -374,6 +374,7 @@ public:
 	CGvisR2R_PunchDoc* GetDocument() const;
 
 	int m_nDebugStep; 	void DispThreadTick();
+	BOOL m_bGetCurrentInfoEng;
 
 	BOOL m_bRcvSig[_SigInx::_EndIdx];
 	//stRcvSig m_stRcvSig;

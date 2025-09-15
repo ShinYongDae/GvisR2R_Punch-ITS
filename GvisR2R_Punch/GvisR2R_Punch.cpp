@@ -56,9 +56,10 @@ CGvisR2R_PunchApp::~CGvisR2R_PunchApp()
 {
 	wsaEndup();
 	Sleep(300);
-
-	//_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);	// 메모리 누수 감지 기능 - 출력 창으로 다시 리디렉션
-	//_CrtDumpMemoryLeaks();								// 메모리 누수 감지 기능
+#ifdef _CRTDBG_MAP_ALLOC
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);	// 메모리 누수 감지 기능 - 출력 창으로 다시 리디렉션
+	_CrtDumpMemoryLeaks();								// 메모리 누수 감지 기능
+#endif
 }
 
 // 유일한 CGvisR2R_PunchApp 개체입니다.

@@ -294,21 +294,22 @@ int CDlgMyMsg::GetRtnVal(int nThreadIdx)
 			int MsgId = stDispMsg.nThreadIdx;
 			if(nThreadIdx == MsgId)
 			{
-				if(i==0)
-				{
-					nRtn = m_ArrayMyMsgBoxRtn.GetAt(0);
-					m_ArrayMyMsgBoxRtn.RemoveAt(0);
+				//if(i==0)
+				//{
+					//nRtn = m_ArrayMyMsgBoxRtn.GetAt(0);
+					//m_ArrayMyMsgBoxRtn.RemoveAt(0);
+					nRtn = m_ArrayMyMsgBoxRtn.GetAt(i);
+					m_ArrayMyMsgBoxRtn.RemoveAt(i);
 
 					stMyMsgBoxRtnWait stRtnWait(sMsg, nThreadIdx, nRtn);
 					m_ArrayMyMsgBoxRtnWait.Add(stRtnWait);
 
 					break;
-				}
+				//}
 			}
 		}
-
-		if(i>=nCount)
-			return nRtn;
+		//if(i>=nCount)
+		//	return nRtn;
 	}
 
 	return nRtn; // m_nRtnVal;

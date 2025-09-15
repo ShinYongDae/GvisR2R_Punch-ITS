@@ -160,7 +160,12 @@ CString CCamIRayple::CharToString(char *szStr)
 
 	int nLen = strlen(szStr) + sizeof(char);
 	wchar_t *tszTemp = NULL;
+
+#ifndef _CRTDBG_MAP_ALLOC
 	tszTemp = new WCHAR[nLen];
+#else
+	tszTemp = DBG_NEW WCHAR[nLen];
+#endif
 
 	MultiByteToWideChar(CP_ACP, 0, szStr, -1, tszTemp, nLen * sizeof(WCHAR));
 
@@ -177,11 +182,19 @@ TCHAR* CCamIRayple::CharToTCHAR(char *str)
 {
 	int nLength = strlen(str) + sizeof(char);
 
+#ifndef _CRTDBG_MAP_ALLOC
 	LPWSTR lpWideCharStr = new WCHAR[nLength];
+#else
+	LPWSTR lpWideCharStr = DBG_NEW WCHAR[nLength];
+#endif
 	MultiByteToWideChar(CP_ACP, 0, str, -1, lpWideCharStr, nLength * sizeof(TCHAR));
 
 	TCHAR *tszStr = NULL;
+#ifndef _CRTDBG_MAP_ALLOC
 	tszStr = new TCHAR[nLength];
+#else
+	tszStr = DBG_NEW TCHAR[nLength];
+#endif
 
 	USES_CONVERSION;
 	_tcscpy(tszStr, W2T(lpWideCharStr));
@@ -199,7 +212,11 @@ char* CCamIRayple::TCHARToChar(TCHAR *tszStr)
 	LPWSTR lpWideCharStr = T2W(tszStr);
 
 	nLength = WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, -1, NULL, NULL, NULL, NULL);
+#ifndef _CRTDBG_MAP_ALLOC
 	szStr = new char[nLength + 1];
+#else
+	szStr = DBG_NEW char[nLength + 1];
+#endif
 	WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, -1, szStr, nLength, NULL, NULL);
 
 	return szStr;
@@ -212,14 +229,22 @@ char* CCamIRayple::TCHARToChar(const TCHAR *tszStr)
 
 #ifdef UNICODE
 	nLength = WideCharToMultiByte(CP_ACP, 0, tszStr, -1, NULL, NULL, NULL, NULL);
+#ifndef _CRTDBG_MAP_ALLOC
 	szStr = new char[nLength + 1];
+#else
+	szStr = DBG_NEW char[nLength + 1];
+#endif
 	WideCharToMultiByte(CP_ACP, 0, tszStr, -1, szStr, nLength, NULL, NULL);
 #else
 	USES_CONVERSION;
 	LPWSTR lpWideCharStr = T2W(tszStr);
 
 	nLength = WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, -1, NULL, NULL, NULL, NULL);
+#ifndef _CRTDBG_MAP_ALLOC
 	szStr = new char[nLength + 1];
+#else
+	szStr = DBG_NEW char[nLength + 1];
+#endif
 	WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, -1, szStr, nLength, NULL, NULL);
 #endif
 
@@ -374,7 +399,11 @@ void CCamIRayple::frameProc(IMV_Frame frame)
 	}
 
 	// transcoding
+#ifndef _CRTDBG_MAP_ALLOC
 	FrameBuffer* pConvertFrameBuffer = new FrameBuffer(m_devHandle, frame);
+#else
+	FrameBuffer* pConvertFrameBuffer = DBG_NEW FrameBuffer(m_devHandle, frame);
+#endif
 	addConvertedImage(pConvertFrameBuffer);
 }
 

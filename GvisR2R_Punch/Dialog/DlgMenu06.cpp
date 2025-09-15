@@ -410,7 +410,9 @@ BOOL CDlgMenu06::OnInitDialog()
 	GetDlgItem(IDC_CHK_EJECT_BUFFER)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_CHK_LOT_END)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_CHK_REMARKING)->ShowWindow(SW_HIDE);
+
 	GetDlgItem(IDC_CHK_2LAYER)->ShowWindow(SW_HIDE);
+
 	GetDlgItem(IDC_CHK_MK_1)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_CHK_MK_2)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_CHK_MK_3)->ShowWindow(SW_HIDE);
