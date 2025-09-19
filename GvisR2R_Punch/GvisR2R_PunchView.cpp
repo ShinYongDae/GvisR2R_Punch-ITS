@@ -18015,16 +18015,16 @@ void CGvisR2R_PunchView::DispDefImg()
 						SetSerialMkInfo(nSerialR);		// 불량이미지(우) Display Start
 				}
 			}
-			else
-			{
-				if (ChkLastProc())
-				{
-					if (pView->m_bSerialDecrese)
-						SetSerialMkInfo(m_nLotEndSerial - 1, TRUE);	// 불량이미지(우) Display Start
-					else
-						SetSerialMkInfo(m_nLotEndSerial + 1, TRUE);	// 불량이미지(우) Display Start
-				}
-			}
+			//else
+			//{
+			//	if (ChkLastProc())
+			//	{
+			//		if (pView->m_bSerialDecrese)
+			//			SetSerialMkInfo(m_nLotEndSerial - 1, TRUE);	// 불량이미지(우) Display Start
+			//		else
+			//			SetSerialMkInfo(m_nLotEndSerial + 1, TRUE);	// 불량이미지(우) Display Start
+			//	}
+			//}
 			m_nStepTHREAD_DISP_DEF++;
 		}
 		break;

@@ -1448,12 +1448,28 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.System.sPathItsFile = CString(_T(""));
 	}
 
-	if (0 < ::GetPrivateProfileString(_T("System"), _T("ItsFileDirPath"), NULL, szData, sizeof(szData), sPath))
-		WorkingInfo.System.sPathIts = CString(szData);
+	//if (0 < ::GetPrivateProfileString(_T("System"), _T("ItsFileDirPath"), NULL, szData, sizeof(szData), sPath))
+	//	WorkingInfo.System.sPathIts = CString(szData);
+	//else
+	//{
+	//	pView->ClrDispMsg(); AfxMessageBox(_T("ItsFileDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+	//	WorkingInfo.System.sPathIts = CString(_T(""));
+	//}
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("ItsFileInnerDirPath"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.sPathItsInner = CString(szData);
 	else
 	{
-		pView->ClrDispMsg(); AfxMessageBox(_T("ItsFileDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.System.sPathIts = CString(_T(""));
+		//AfxMessageBox(_T("ItsFileInnerDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.sPathItsInner = CString(_T("D:\\Its1\\"));
+	}
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("ItsFileOuterDirPath"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.sPathItsOuter = CString(szData);
+	else
+	{
+		//AfxMessageBox(_T("ItsFileOuterDirPath가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.System.sPathItsOuter = CString(_T("D:\\Its\\"));
 	}
 
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("VrsOldFileDirIpPath"), NULL, szData, sizeof(szData), sPath))
@@ -2715,46 +2731,6 @@ BOOL CGvisR2R_PunchDoc::LoadWorkingInfo()
 		WorkingInfo.VoiceCoil[0].bLf = _ttoi(szData) ? TRUE : FALSE;
 	else
 		WorkingInfo.VoiceCoil[0].bLf = FALSE;
-
-	// 	if (0 < ::GetPrivateProfileString(_T("VoiceCoil0"), _T("VOICE_COIL_FINAL_POS"), NULL, szData, sizeof(szData), sPath))
-	// 		WorkingInfo.VoiceCoil[0].sSmacFinalPos = _ttoi(szData)?TRUE:FALSE;
-	// 	else
-	// 		WorkingInfo.VoiceCoil[0].sSmacFinalPos = FALSE;
-	// 
-	// 	if (0 < ::GetPrivateProfileString(_T("VoiceCoil0"), _T("VOICE_COIL_FINAL_VEL"), NULL, szData, sizeof(szData), sPath))
-	// 		WorkingInfo.VoiceCoil[0].sSmacFinalVel = _ttoi(szData)?TRUE:FALSE;
-	// 	else
-	// 		WorkingInfo.VoiceCoil[0].sSmacFinalVel = FALSE;
-	// 
-	// 	if (0 < ::GetPrivateProfileString(_T("VoiceCoil0"), _T("VOICE_COIL_FINAL_ACC"), NULL, szData, sizeof(szData), sPath))
-	// 		WorkingInfo.VoiceCoil[0].sSmacFinalAcc = _ttoi(szData)?TRUE:FALSE;
-	// 	else
-	// 		WorkingInfo.VoiceCoil[0].sSmacFinalAcc = FALSE;
-	// 
-	// 	if (0 < ::GetPrivateProfileString(_T("VoiceCoil0"), _T("VOICE_COIL_FINAL_TOQ"), NULL, szData, sizeof(szData), sPath))
-	// 		WorkingInfo.VoiceCoil[0].sSmacFinalToq = _ttoi(szData)?TRUE:FALSE;
-	// 	else
-	// 		WorkingInfo.VoiceCoil[0].sSmacFinalToq = FALSE;
-	// 
-	// 	if (0 < ::GetPrivateProfileString(_T("VoiceCoil0"), _T("VOICE_COIL_SHIFT_POS"), NULL, szData, sizeof(szData), sPath))
-	// 		WorkingInfo.VoiceCoil[0].sSmacShiftPos = _ttoi(szData)?TRUE:FALSE;
-	// 	else
-	// 		WorkingInfo.VoiceCoil[0].sSmacShiftPos = FALSE;
-	// 
-	// 	if (0 < ::GetPrivateProfileString(_T("VoiceCoil0"), _T("VOICE_COIL_SHIFT_VEL"), NULL, szData, sizeof(szData), sPath))
-	// 		WorkingInfo.VoiceCoil[0].sSmacShiftVel = _ttoi(szData)?TRUE:FALSE;
-	// 	else
-	// 		WorkingInfo.VoiceCoil[0].sSmacShiftVel = FALSE;
-	// 
-	// 	if (0 < ::GetPrivateProfileString(_T("VoiceCoil0"), _T("VOICE_COIL_SHIFT_ACC"), NULL, szData, sizeof(szData), sPath))
-	// 		WorkingInfo.VoiceCoil[0].sSmacShiftAcc = _ttoi(szData)?TRUE:FALSE;
-	// 	else
-	// 		WorkingInfo.VoiceCoil[0].sSmacShiftAcc = FALSE;
-	// 
-	// 	if (0 < ::GetPrivateProfileString(_T("VoiceCoil0"), _T("VOICE_COIL_SHIFT_TOQ"), NULL, szData, sizeof(szData), sPath))
-	// 		WorkingInfo.VoiceCoil[0].sSmacShiftToq = _tstoi(szData)?TRUE:FALSE;
-	// 	else
-	// 		WorkingInfo.VoiceCoil[0].sSmacShiftToq = FALSE;
 
 	// [VoiceCoil1]
 
@@ -6788,7 +6764,7 @@ BOOL CGvisR2R_PunchDoc::CopyDefImgUp(int nSerial, CString sNewLot)
 			}
 			else
 			{
-				strDefImgPathD.Format(_T("%s\\%s\\%s\\%s\\DefImagePos\\%d\\%d_%05d_%s_%c_%d_%d.tif"), WorkingInfo.System.sPathOldFile,
+				strDefImgPathD.Format(_T("%s%s\\%s\\%s\\DefImagePos\\%d\\%d_%05d_%s_%c_%d_%d.tif"), WorkingInfo.System.sPathOldFile,
 					WorkingInfo.LastJob.sModelUp,
 					sLot,
 					WorkingInfo.LastJob.sLayerUp,
@@ -7113,7 +7089,7 @@ BOOL CGvisR2R_PunchDoc::CopyDefImgDn(int nSerial, CString sNewLot)
 			}
 			else
 			{
-				strDefImgPathD.Format(_T("%s\\%s\\%s\\%s\\DefImagePos\\%d\\%d_%05d_%s_%c_%d_%d.tif"), WorkingInfo.System.sPathOldFile,
+				strDefImgPathD.Format(_T("%s%s\\%s\\%s\\DefImagePos\\%d\\%d_%05d_%s_%c_%d_%d.tif"), WorkingInfo.System.sPathOldFile,
 					WorkingInfo.LastJob.sModelUp,
 					sLot,
 					WorkingInfo.LastJob.sLayerDn,
@@ -11463,12 +11439,33 @@ CString CGvisR2R_PunchDoc::GetItsFolderPath()
 	return sPath;
 }
 
+//CString CGvisR2R_PunchDoc::GetItsTargetFolderPath()
+//{
+//	CString sItsPath = pDoc->WorkingInfo.System.sPathIts;
+//
+//	if (sItsPath.IsEmpty())
+//		return _T("");
+//
+//	int pos = sItsPath.ReverseFind('\\');
+//	if (pos != -1)
+//		sItsPath.Delete(pos, sItsPath.GetLength() - pos);
+//
+//	return sItsPath;
+//}
+
 CString CGvisR2R_PunchDoc::GetItsTargetFolderPath()
 {
-	CString sItsPath = pDoc->WorkingInfo.System.sPathIts;
+	CString sItsPath = _T("");// = WorkingInfo.System.sPathIts;
+	if (GetTestMode() == MODE_INNER)
+		sItsPath = pDoc->WorkingInfo.System.sPathItsInner;
+	else if (GetTestMode() == MODE_OUTER)// || pDoc->WorkingInfo.System.bUseDualIts || pDoc->WorkingInfo.System.bUseDual2dIts)
+		sItsPath = pDoc->WorkingInfo.System.sPathItsOuter;
 
 	if (sItsPath.IsEmpty())
+	{
+		pView->MsgBox(_T("내/외층 설정이 않되어서 ITS 폴더를 설정할 수 없습니다."));
 		return _T("");
+	}
 
 	int pos = sItsPath.ReverseFind('\\');
 	if (pos != -1)
@@ -11476,6 +11473,7 @@ CString CGvisR2R_PunchDoc::GetItsTargetFolderPath()
 
 	return sItsPath;
 }
+
 
 CString CGvisR2R_PunchDoc::GetItsReelmapPath()
 {
@@ -14442,7 +14440,7 @@ int CGvisR2R_PunchDoc::IsOfflineFolder() // 0 : Not exist, 1 : Exist only Up, 2 
 	CFileFind finder;
 
 	str = _T("OFFLINE");
-	sPath.Format(_T("%s%s\\%s\\%s\\%s\\*.*"), pDoc->WorkingInfo.System.sPathOldFile,
+	sPath.Format(_T("%s%s\\%s\\%s\\%s\\*.pcr"), pDoc->WorkingInfo.System.sPathOldFile,
 		pDoc->WorkingInfo.LastJob.sModelUp,
 		pDoc->WorkingInfo.LastJob.sLotUp,
 		pDoc->WorkingInfo.LastJob.sLayerUp,
@@ -14455,7 +14453,7 @@ int CGvisR2R_PunchDoc::IsOfflineFolder() // 0 : Not exist, 1 : Exist only Up, 2 
 		nRtn |= 0x01;
 
 	str = _T("OFFLINE");
-	sPath.Format(_T("%s%s\\%s\\%s\\%s\\*.*"), pDoc->WorkingInfo.System.sPathOldFile,
+	sPath.Format(_T("%s%s\\%s\\%s\\%s\\*.pcr"), pDoc->WorkingInfo.System.sPathOldFile,
 		pDoc->WorkingInfo.LastJob.sModelUp,
 		pDoc->WorkingInfo.LastJob.sLotUp,
 		pDoc->WorkingInfo.LastJob.sLayerDn,
