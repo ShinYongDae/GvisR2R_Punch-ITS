@@ -36,6 +36,9 @@
 #include "Vic7defs.h"
 #include "../Process/FreeImage.h"
 
+#pragma comment (lib, "lib/vic64.lib") //#pragma comment (lib, "vic32ms.lib")
+#pragma comment(lib, "lib/FreeImage_x64")
+
 #ifdef USE_IDS
 #include "CamIds.h"
 #endif
@@ -50,9 +53,6 @@
 
 
 #include "LibMil.h"
-
-#pragma comment (lib, "lib/vic64.lib") //#pragma comment (lib, "vic32ms.lib")
-#pragma comment(lib, "lib/FreeImage_x64")
 
 #define MAX_TRIG	1
 #define CAMERA_WIDTH	640

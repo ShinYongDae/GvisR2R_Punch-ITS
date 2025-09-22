@@ -1439,20 +1439,6 @@ BOOL CCamMaster::CADImgBufAlloc(TCHAR *strCADImg, int CellNum, BOOL bOppLayerF)
 
 void CCamMaster::LoadAlignImg()
 {
-/*
-	char FN[200];
-
-	sprintf(FN, "%s%s\\%s-md0.tif",strSpecPath,strModel,strLayer);
-	VicFileLoad(pGlobalView->m_pDlgSetPunchAlign->m_VisionFirst.m_MilAlign0PositionImg, FN);
-	
-	sprintf(FN, "%s%s\\%s-md1.tif",strSpecPath,strModel,strLayer);
-	VicFileLoad(pGlobalView->m_pDlgSetPunchAlign->m_VisionFirst.m_MilAlign1PositionImg, FN);
-
-	sprintf(FN, "c:\\test100.tif");
-	MbufSave(FN, pGlobalView->m_pDlgSetPunchAlign->m_VisionFirst.m_MilAlign0PositionImg);
-	sprintf(FN, "c:\\test200.tif");
-	MbufSave(FN, pGlobalView->m_pDlgSetPunchAlign->m_VisionFirst.m_MilAlign1PositionImg);
-*/
 	BOOL prcStopF = FALSE;
 	//char FileNAlign[MAX_PATH], FileNLoc[MAX_PATH];
 	TCHAR FileNLoc[MAX_PATH];

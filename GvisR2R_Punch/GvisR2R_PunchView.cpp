@@ -16534,6 +16534,8 @@ void CGvisR2R_PunchView::DoMark0()
 	case 12:
 		if (!WaitDelay0(1))		// F:Done, T:On Waiting....
 		{
+			if (IsNoMk0())
+				Sleep(300);
 			m_dwStMkDn[0] = GetTickCount();
 			m_nStepMk[0]++;
 		}
@@ -16572,7 +16574,7 @@ void CGvisR2R_PunchView::DoMark0()
 		else
 		{
 			// Verify - Mk0
-			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
+			//SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
 
 			if (m_pDlgMenu02)
 				m_pDlgMenu02->InitHistoRst(0);
@@ -17325,6 +17327,8 @@ void CGvisR2R_PunchView::DoMark1()
 	case 12:
 		if (!WaitDelay1(6))		// F:Done, T:On Waiting....
 		{
+			if (IsNoMk1())
+				Sleep(300);
 			m_dwStMkDn[1] = GetTickCount();
 			m_nStepMk[1]++;
 		}
@@ -17363,7 +17367,7 @@ void CGvisR2R_PunchView::DoMark1()
 		else
 		{
 			// Verify - Mk1
-			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
+			//SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
 
 			if (m_pDlgMenu02)
 				m_pDlgMenu02->InitHistoRst(1);
@@ -30521,6 +30525,8 @@ void CGvisR2R_PunchView::DoMark0Its()
 	case 12:
 		if (!WaitDelay0(1))		// F:Done, T:On Waiting....
 		{
+			if (IsNoMk0())
+				Sleep(300);
 			m_dwStMkDn[0] = GetTickCount();
 			m_nStepMk[0]++;
 		}
@@ -30557,7 +30563,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 		else
 		{
 			// Verify - Mk0
-			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
+			//SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
 
 			if (m_pDlgMenu02)
 				m_pDlgMenu02->InitHistoRst(0);
@@ -31258,6 +31264,8 @@ void CGvisR2R_PunchView::DoMark1Its()
 	case 12:
 		if (!WaitDelay1(6))		// F:Done, T:On Waiting....
 		{
+			if (IsNoMk1())
+				Sleep(300);
 			m_dwStMkDn[1] = GetTickCount();
 			m_nStepMk[1]++;
 		}
@@ -31296,7 +31304,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 		else
 		{
 			// Verify - Mk1
-			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
+			//SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
 
 			if (m_pDlgMenu02)
 				m_pDlgMenu02->InitHistoRst(1);
