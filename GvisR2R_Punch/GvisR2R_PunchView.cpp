@@ -18179,7 +18179,6 @@ void CGvisR2R_PunchView::DoAuto()
 	DoAutoDispMsg();
 
 	// Check Share Folder Start
-	//if(GetAoiUpVsStatus())
 	if(pDoc->m_bVsStatusUp)
 		DoAutoChkShareVsFolder();
 	else
@@ -20546,13 +20545,7 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 
 
 			bNewModel = GetAoiDnInfo(m_nShareDnS, &nNewLot);
-			//if (bNewModel)
-			//{
-			//	Stop();
-			//	break;
-			//}
-
-			//if (bNewModel)	// AOI 정보(AoiCurrentInfoPath) -> AOI Feeding Offset
+	
 			if (nNewLot)
 			{
 				//MsgBox(_T("신규 모델에 의한 AOI(하)에서 로트 분리가 되었습니다.\r\n이전 로트를 잔량처리 합니다.");
@@ -20597,78 +20590,39 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 				UpdateReelmap(m_nShareDnS); // 시리얼파일의 정보로 릴맵을 만듬
 			}
 
-			//if (bDualTest)
-			//{
-			//	if (m_nShareDnS != m_nShareDnSprev)
-			//	{
-			//		m_nShareDnSprev = m_nShareDnS;
-			//		UpdateReelmap(m_nShareDnS);  // 시리얼파일의 정보로 릴맵을 만듬  // After inspect bottom side.
-			//	}
-			//}
-
-
 			if (!m_bLastProc)
 			{
-				//if (!IsSetLotEnd())
-				//{
-				//	if (ChkLotEndDn(m_nShareDnS))// 파일의 내용 중에 Lot End (-2) 잔량처리를 체크함. (연속 3Pnl:-2) -> 로트완료 
-				//	{
-				//		if (!IsSetLotEnd())
-				//			SetLotEnd(m_nShareDnS - pDoc->AoiDummyShot[1]);
-				//		if (m_nAoiLastSerial[0] < 1)
-				//			m_nAoiLastSerial[0] = m_nShareDnS;
-				//		if (bDualTest)
-				//		{
-				//			m_bLastProc = TRUE;
-				//			m_nLastProcAuto = LAST_PROC;
-				//		}
-				//	}
-				//}
-
 				if (ChkLastProc())
 				{
 					m_nLastProcAuto = LAST_PROC;
 					m_bLastProc = TRUE;
-
-					//if (IsVs())
-					//{
-					//	if (m_nAoiLastSerial[0] < 1)
-					//		m_nAoiLastSerial[0] = m_nShareDnS;
-					//	m_nPrevStepAuto = m_nStepAuto;
-					//	m_nStepAuto = LAST_PROC_VS_ALL;		 // 잔량처리 3
-					//	break;
-					//}
-					//else
+					
+					if (ChkLastProcFromEng())
 					{
-						if (ChkLastProcFromEng())
-						{
-							if (IsSetLotEnd())
-								nSerial = GetLotEndSerial();
-							else
-								nSerial = pDoc->GetCurrentInfoEngShotNum();
-						}
-						else if (ChkLastProcFromUp())
-						{
-							if (IsSetLotEnd())
-								nSerial = GetLotEndSerial();
-							else
-								nSerial = pDoc->m_ListBuf[0].GetLast();
-						}
+						if (IsSetLotEnd())
+							nSerial = GetLotEndSerial();
 						else
-						{
-							if (IsSetLotEnd())
-								nSerial = GetLotEndSerial();
-							else
-								nSerial = pDoc->m_ListBuf[1].GetLast();
-						}
-
-						if (!IsSetLotEnd()) // 20160810
-						{
-							SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
-						//if (m_nAoiLastSerial[0] < 1)
-						//m_nAoiLastSerial[0] = nSerial;
-						}
+							nSerial = pDoc->GetCurrentInfoEngShotNum();
 					}
+					else if (ChkLastProcFromUp())
+					{
+						if (IsSetLotEnd())
+							nSerial = GetLotEndSerial();
+						else
+							nSerial = pDoc->m_ListBuf[0].GetLast();
+					}
+					else
+					{
+						if (IsSetLotEnd())
+							nSerial = GetLotEndSerial();
+						else
+							nSerial = pDoc->m_ListBuf[1].GetLast();
+					}
+
+					if (!IsSetLotEnd()) // 20160810
+					{
+						SetLotEnd(nSerial);//+pDoc->AoiDummyShot[1]); // 3
+					}					
 				}
 			}
 			else
@@ -20680,20 +20634,12 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 					else
 						nSerial = pDoc->GetCurrentInfoEngShotNum();
 
-					//if (m_nLotEndSerial != nSerial)
 					if (!IsSetLotEnd())
 					{
 						SetLotEnd(nSerial);
-						//if (m_nAoiLastSerial[0] < 1)
-						//m_nAoiLastSerial[0] = nSerial;
 					}
 				}
 			}
-		}
-		else
-		{
-			//ClrDispMsg();
-			//AfxMessageBox(_T("Error : m_nShareDnS <= 0"));
 		}
 
 		break;
@@ -20709,19 +20655,10 @@ void CGvisR2R_PunchView::DoAutoChkShareFolder()	// 20170727-잔량처리 시 계속적으
 		{
 			if (m_nShareDnS > 0)
 			{
-				//if (m_bChkLastProcVs)
-				//{
-				//	if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
-				//		break;
-				//}
-				//else
+				if (IsSetLotEnd())
 				{
-					if (IsSetLotEnd())
-					{
-						//if (m_nShareDnS > m_nAoiLastSerial[0] && m_nAoiLastSerial[0] > 0)
-						if (m_nShareDnS > GetLotEndSerial())
-							break;
-					}
+					if (m_nShareDnS > GetLotEndSerial())
+						break;
 				}
 
 				if (pView->m_pDlgFrameHigh)
