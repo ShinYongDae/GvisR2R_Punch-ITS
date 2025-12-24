@@ -16520,6 +16520,7 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		break;
 	case 10:
+		Sleep(300); // Wait for moving
 		m_nStepMk[0]++;
 		break;
 	case 11:
@@ -16541,35 +16542,41 @@ void CGvisR2R_PunchView::DoMark0()
 		}
 		break;
 	case MK_DO:
-		if (!IsNoMk0())
+		if (!IsNoMk0( ))
 		{
-			if (!Mk0())
+			if (IsMkPos0(m_dTarget[AXIS_X0], m_dTarget[AXIS_Y0]))
 			{
-				if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+				if (!Mk0())
 				{
-					Buzzer(TRUE, 0);
-					DispMain(_T("정 지"), RGB_RED);
-					if (m_pVoiceCoil[0])
-						m_pVoiceCoil[0]->SetEsc();
+					if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+					{
+						Buzzer(TRUE, 0);
+						DispMain(_T("정 지"), RGB_RED);
+						if (m_pVoiceCoil[0])
+							m_pVoiceCoil[0]->SetEsc();
 
-					nRtn = MsgBox(_T("7-보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
-					if (IDYES == nRtn)
-					{
-						DispMain(_T("운전중"), RGB_RED);
-						m_dwStMkDn[0] = GetTickCount();
-						m_nStepMk[0] = MK_MOVE; // MK_DO
+						nRtn = MsgBox(_T("7-보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						if (IDYES == nRtn)
+						{
+							DispMain(_T("운전중"), RGB_RED);
+							m_dwStMkDn[0] = GetTickCount();
+							m_nStepMk[0] = MK_MOVE; // MK_DO
+						}
+						else
+						{
+							m_dwStMkDn[0] = GetTickCount();
+							m_nStepMk[0]++;
+							Stop();
+						}
 					}
-					else
-					{
-						m_dwStMkDn[0] = GetTickCount();
-						m_nStepMk[0]++;
-						Stop();
-					}
+					break;
 				}
-				break;
+				else
+				{
+					m_dwStMkDn[0] = GetTickCount();
+					m_nStepMk[0]++;
+				}
 			}
-			else
-				m_dwStMkDn[0] = GetTickCount();
 		}
 		else
 		{
@@ -16599,11 +16606,12 @@ void CGvisR2R_PunchView::DoMark0()
 					AfxMessageBox(_T("Error-SaveMk0Img()"));
 				}
 			}
+			m_nStepMk[0]++;
 		}
 
 		if (IsNoMk0())
 			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
-		m_nStepMk[0]++;
+		//m_nStepMk[0]++;
 		break;
 	case 14:
 		if (IsNoMk0())
@@ -17313,6 +17321,7 @@ void CGvisR2R_PunchView::DoMark1()
 		}
 		break;
 	case 10:
+		Sleep(300); // Wait for moving
 		m_nStepMk[1]++;
 		break;
 	case 11:
@@ -17336,33 +17345,39 @@ void CGvisR2R_PunchView::DoMark1()
 	case MK_DO:
 		if (!IsNoMk1())
 		{
-			if (!Mk1())
+			if (IsMkPos1(m_dTarget[AXIS_X1], m_dTarget[AXIS_Y1]))
 			{
-				if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
+				if (!Mk1())
 				{
-					Buzzer(TRUE, 0);
-					DispMain(_T("정 지"), RGB_RED);
-					if (m_pVoiceCoil[1])
-						m_pVoiceCoil[1]->SetEsc();
-
-					nRtn = MsgBox(_T("14-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
-					if (IDYES == nRtn)
-					{						
-						DispMain(_T("운전중"), RGB_RED);
-						m_dwStMkDn[1] = GetTickCount();
-						m_nStepMk[1] = MK_MOVE; // MK_DO
-					}
-					else
+					if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
 					{
-						m_dwStMkDn[1] = GetTickCount();
-						m_nStepMk[1]++;
-						Stop();
+						Buzzer(TRUE, 0);
+						DispMain(_T("정 지"), RGB_RED);
+						if (m_pVoiceCoil[1])
+							m_pVoiceCoil[1]->SetEsc();
+
+						nRtn = MsgBox(_T("14-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						if (IDYES == nRtn)
+						{
+							DispMain(_T("운전중"), RGB_RED);
+							m_dwStMkDn[1] = GetTickCount();
+							m_nStepMk[1] = MK_MOVE; // MK_DO
+						}
+						else
+						{
+							m_dwStMkDn[1] = GetTickCount();
+							m_nStepMk[1]++;
+							Stop();
+						}
 					}
+					break;
 				}
-				break;
+				else
+				{
+					m_dwStMkDn[1] = GetTickCount();
+					m_nStepMk[1]++;
+				}
 			}
-			else
-				m_dwStMkDn[1] = GetTickCount();
 		}
 		else
 		{
@@ -17392,10 +17407,11 @@ void CGvisR2R_PunchView::DoMark1()
 					AfxMessageBox(_T("Error-SaveMk1Img()"));
 				}
 			}
+			m_nStepMk[1]++;
 		}
 		if (IsNoMk1())
 			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
-		m_nStepMk[1]++;
+		//m_nStepMk[1]++;
 		break;
 	case 14:
 		if (IsNoMk1())
@@ -30448,6 +30464,7 @@ void CGvisR2R_PunchView::DoMark0Its()
 		}
 		break;
 	case 10:
+		Sleep(300); // Wait for moving
 		m_nStepMk[0]++;
 		break;
 	case 11:
@@ -30471,30 +30488,38 @@ void CGvisR2R_PunchView::DoMark0Its()
 	case MK_DO:
 		if (!IsNoMk0())
 		{
-			if (!Mk0())
+			if (IsMkPos0(m_dTarget[AXIS_X0], m_dTarget[AXIS_Y0]))
 			{
-				if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+				if (!Mk0())
 				{
-					Buzzer(TRUE, 0);
-					DispMain(_T("정 지"), RGB_RED);
-					if (m_pVoiceCoil[0])
-						m_pVoiceCoil[0]->SetEsc();
+					if (m_dwStMkDn[0] + DELAY_SMAC < GetTickCount())
+					{
+						Buzzer(TRUE, 0);
+						DispMain(_T("정 지"), RGB_RED);
+						if (m_pVoiceCoil[0])
+							m_pVoiceCoil[0]->SetEsc();
 
-					nRtn = MsgBox(_T("21-보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
-					if (IDYES == nRtn)
-					{
-						DispMain(_T("운전중"), RGB_RED);
-						m_dwStMkDn[0] = GetTickCount();
-						m_nStepMk[0] = MK_MOVE; // MK_DO
+						nRtn = MsgBox(_T("21-보이스코일(좌) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						if (IDYES == nRtn)
+						{
+							DispMain(_T("운전중"), RGB_RED);
+							m_dwStMkDn[0] = GetTickCount();
+							m_nStepMk[0] = MK_MOVE; // MK_DO
+						}
+						else
+						{
+							m_dwStMkDn[0] = GetTickCount();
+							m_nStepMk[0]++;
+							Stop();
+						}
 					}
-					else
-					{
-						m_dwStMkDn[0] = GetTickCount();
-						m_nStepMk[0]++;
-						Stop();
-					}
+					break;
 				}
-				break;
+				else
+				{
+					m_dwStMkDn[0] = GetTickCount();
+					m_nStepMk[0]++;
+				}
 			}
 		}
 		else
@@ -30525,12 +30550,13 @@ void CGvisR2R_PunchView::DoMark0Its()
 					AfxMessageBox(_T("Error-SaveMk0Img()"));
 				}
 			}
+			m_nStepMk[0]++;
 		}
 
 		if (IsNoMk0())
 			SetDelay0(pDoc->m_nDelayShow, 1);		// [mSec]
 
-		m_nStepMk[0]++;
+		//m_nStepMk[0]++;
 		break;
 	case 14:
 		if (IsNoMk0())
@@ -31187,6 +31213,7 @@ void CGvisR2R_PunchView::DoMark1Its()
 		}
 		break;
 	case 10:
+		Sleep(300); // Wait for moving
 		m_nStepMk[1]++;
 		break;
 	case 11:
@@ -31210,33 +31237,39 @@ void CGvisR2R_PunchView::DoMark1Its()
 	case MK_DO:
 		if (!IsNoMk1())
 		{
-			if (!Mk1())
+			if (IsMkPos1(m_dTarget[AXIS_X1], m_dTarget[AXIS_Y1]))
 			{
-				if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
+				if (!Mk1())
 				{
-					Buzzer(TRUE, 0);
-					DispMain(_T("정 지"), RGB_RED);
-					if (m_pVoiceCoil[1])
-						m_pVoiceCoil[1]->SetEsc();
+					if (m_dwStMkDn[1] + DELAY_SMAC < GetTickCount())
+					{
+						Buzzer(TRUE, 0);
+						DispMain(_T("정 지"), RGB_RED);
+						if (m_pVoiceCoil[1])
+							m_pVoiceCoil[1]->SetEsc();
 
-					nRtn = MsgBox(_T("28-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
-					if (IDYES == nRtn)
-					{
-						DispMain(_T("운전중"), RGB_RED);
-						m_dwStMkDn[1] = GetTickCount();
-						m_nStepMk[1] = MK_MOVE; // MK_DO
+						nRtn = MsgBox(_T("28-보이스코일(우) 통신완료가 않됩니다.\r\n마킹을 다시 시도하시겠습니까?"), 1, MB_YESNO);
+						if (IDYES == nRtn)
+						{
+							DispMain(_T("운전중"), RGB_RED);
+							m_dwStMkDn[1] = GetTickCount();
+							m_nStepMk[1] = MK_MOVE; // MK_DO
+						}
+						else
+						{
+							m_dwStMkDn[1] = GetTickCount();
+							m_nStepMk[1]++;
+							Stop();
+						}
 					}
-					else
-					{
-						m_dwStMkDn[1] = GetTickCount();
-						m_nStepMk[1]++;
-						Stop();
-					}
+					break;
 				}
-				break;
+				else
+				{
+					m_dwStMkDn[1] = GetTickCount();
+					m_nStepMk[1]++;
+				}
 			}
-			else
-				m_dwStMkDn[1] = GetTickCount();
 		}
 		else
 		{
@@ -31266,10 +31299,11 @@ void CGvisR2R_PunchView::DoMark1Its()
 					AfxMessageBox(_T("Error-SaveMk1Img()"));
 				}
 			}
+			m_nStepMk[1]++;
 		}
 		if (IsNoMk1())
 			SetDelay1(pDoc->m_nDelayShow, 6);		// [mSec]
-		m_nStepMk[1]++;
+		//m_nStepMk[1]++;
 		break;
 	case 14:
 		if (IsNoMk1())
@@ -35288,4 +35322,41 @@ void CGvisR2R_PunchView::ResetMkImgR(int nSerial)
 			DeleteFile(sFileName);
 		}
 	}
+}
+
+BOOL CGvisR2R_PunchView::IsMkPos0(double dTgtPosX, double dTgtPosY)
+{
+	if (!m_pMotion)
+		return FALSE;
+
+	double dPosX = dTgtPosX + _tstof(pDoc->WorkingInfo.Vision[0].sMkOffsetX);
+	double dPosY = dTgtPosY + _tstof(pDoc->WorkingInfo.Vision[0].sMkOffsetY);
+	double dCurrX = m_dEnc[AXIS_X0];
+	double dCurrY = m_dEnc[AXIS_Y0];
+
+	if (dCurrX < dPosX - 0.02 || dCurrX > dPosX + 0.02)
+		return FALSE;
+	if (dCurrY < dPosY - 0.02 || dCurrY > dPosY + 0.02)
+		return FALSE;
+
+	return TRUE;
+}
+
+
+BOOL CGvisR2R_PunchView::IsMkPos1(double dTgtPosX, double dTgtPosY)
+{
+	if (!m_pMotion)
+		return FALSE;
+
+	double dPosX = dTgtPosX + _tstof(pDoc->WorkingInfo.Vision[1].sMkOffsetX);
+	double dPosY = dTgtPosY + _tstof(pDoc->WorkingInfo.Vision[1].sMkOffsetY);
+	double dCurrX = m_dEnc[AXIS_X1];
+	double dCurrY = m_dEnc[AXIS_Y1];
+
+	if (dCurrX < dPosX - 0.02 || dCurrX > dPosX + 0.02)
+		return FALSE;
+	if (dCurrY < dPosY - 0.02 || dCurrY > dPosY + 0.02)
+		return FALSE;
+
+	return TRUE;
 }
